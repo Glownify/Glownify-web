@@ -15,6 +15,7 @@ import ManageUsersPage from "./pages/SuperAdmin/ManageUsersPage";
 import ManageCitiesAndStatesPage from "./pages/SuperAdmin/ManageCitiesAndStatesPage";
 import ManageCategoriesPage from "./pages/SuperAdmin/ManageCategoriesPage";
 import ManageSalesExecutivePage from "./pages/SuperAdmin/ManageSalesExecutivePage";
+import ManageResetPassword from "./pages/SuperAdmin/ManageResetPassword";
 import ProfilePage from "./pages/SuperAdmin/ProfilePage";
 
 // Sales Executive Pages
@@ -52,6 +53,7 @@ const App = () => {
                 path="manage-sales-executives"
                 element={<ManageSalesExecutivePage />}
               />
+              <Route path="manage-reset-password" element={<ManageResetPassword />} />
               <Route path="profile" element={<ProfilePage />} />
             </Route>
           </Route>

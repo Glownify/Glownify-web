@@ -393,6 +393,63 @@ export const ResetPassword = createAsyncThunk(
   }
 );
 
+export const fetchAllSubscriptions = createAsyncThunk(
+  "superadmin/fetchAllSubscriptions",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/super-admin/get-subscription-plans`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = response.data;
+      if (response.status !== 200) {
+        return thunkAPI.rejectWithValue(
+          data.message || "Failed to fetch subscriptions"
+        );
+      }
+      return data.plans; // Assuming the API returns { subscriptions: [...] }
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.message || "Failed to fetch subscriptions"
+      );
+    }
+  }
+);
+
+export const createSubscription = createAsyncThunk(
+  "superadmin/createSubscription",
+  async (subscriptionData, thunkAPI) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/super-admin/create-subscription-plan`,
+        subscriptionData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = response.data;
+      if (response.status !== 200 && response.status !== 201) {
+        return thunkAPI.rejectWithValue(
+          data.message || "Failed to add subscription"
+        );
+      }
+      return data.plans; // Assuming the API returns { subscription: {...} }
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.message || "Failed to add subscription"
+      );
+    }
+  }
+);
+
 const superadminSlice = createSlice({
   name: "superadmin",
   initialState: {
@@ -402,6 +459,7 @@ const superadminSlice = createSlice({
     cities: [],
     states: [],
     salesExecutives: [],
+    plans: [],
     message: null,
     loading: false,
     error: null,
@@ -591,6 +649,30 @@ const superadminSlice = createSlice({
         state.message = action.payload;
       })
       .addCase(ResetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchAllSubscriptions.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllSubscriptions.fulfilled, (state, action) => {
+        state.loading = false;
+        state.plans = action.payload;
+      })
+      .addCase(fetchAllSubscriptions.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(createSubscription.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createSubscription.fulfilled, (state, action) => {
+        state.loading = false;
+        state.plans.push(action.payload);
+      })
+      .addCase(createSubscription.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

@@ -66,12 +66,34 @@ export const fetchHomeSaloonsByCategory = createAsyncThunk(
     }
 );
 
+export const getSaloonDetailsById = createAsyncThunk(
+  "user/getSaloonDetailsById",
+  async (saloonId, thunkAPI) => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/get-salon/${saloonId}`,{
+        headers: {
+            "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = response.data; 
+      if(response.status !== 200){
+        return thunkAPI.rejectWithValue(data.message || "Failed to fetch saloon details");
+      }
+      return data.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message || "Failed to fetch saloon details");
+    }
+    }
+);
+
 const userSlice = createSlice({
     name: "user",
     initialState: {
         salons: [],
         categories: [],
         homeSaloonsByCategory: [],
+        saloonDetails: null,
         loading: false,
         error: null,
     },
@@ -111,6 +133,18 @@ const userSlice = createSlice({
                 state.homeSaloonsByCategory = action.payload;
             })
             .addCase(fetchHomeSaloonsByCategory.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(getSaloonDetailsById.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getSaloonDetailsById.fulfilled, (state, action) => {
+                state.loading = false;
+                state.saloonDetails = action.payload;
+            })
+            .addCase(getSaloonDetailsById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

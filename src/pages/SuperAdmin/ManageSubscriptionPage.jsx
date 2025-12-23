@@ -126,7 +126,7 @@ const ManageSubscriptionPage = () => {
 
                 <div className="flex items-baseline gap-1 mb-5">
                   <span className="text-4xl font-extrabold">
-                    ${plan.price}
+                    ₹{plan.price}
                   </span>
                   <span className="text-slate-500">
                     / {plan.durationInDays} days

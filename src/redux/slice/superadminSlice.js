@@ -441,7 +441,7 @@ export const createSubscription = createAsyncThunk(
           data.message || "Failed to add subscription"
         );
       }
-      return data.plans; // Assuming the API returns { subscription: {...} }
+      return data.plan; // Assuming the API returns { subscription: {...} }
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.message || "Failed to add subscription"

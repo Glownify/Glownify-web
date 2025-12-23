@@ -11,6 +11,7 @@ import Services2 from "./HomePageLayout/Services2";
 import Saloons from "./HomePageLayout/Saloons";
 import { GenderSwitch } from "./HomePageLayout/GenderSwitch";
 import TopRatedSaloons from "./HomePageLayout/TopRatedSaloons";
+import HomeSaloons from "./HomePageLayout/HomeSaloons";
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -43,8 +44,9 @@ const HomePage = () => {
       <Services2 />
       <GenderSwitch gender={gender} setGender={setGender} />
       <Categories categories={filteredCategories} gender={gender} />
-      <Saloons salons={salons} gender={gender} loading={loading} />
+      <HomeSaloons category={gender} />
       <TopRatedSaloons salons={salons} categories={categories}/>
+      <Saloons salons={salons} gender={gender} loading={loading} />
     </div>
   );
 };

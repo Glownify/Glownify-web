@@ -7,7 +7,7 @@ import Hero from "./HomePageLayout/Hero";
 import { fetchAllCategories } from "../../redux/slice/userSlice";
 import Categories from "./HomePageLayout/Categories";
 import Services from "./HomePageLayout/Services";
-import Services2 from "./HomePageLayout/Services2";
+import ServicesBanner from "./HomePageLayout/ServicesBanner";
 import Saloons from "./HomePageLayout/Saloons";
 import { GenderSwitch } from "./HomePageLayout/GenderSwitch";
 import TopRatedSaloons from "./HomePageLayout/TopRatedSaloons";
@@ -41,7 +41,7 @@ const HomePage = () => {
       {/* Header */}
       <Hero />
       <Services />
-      <Services2 />
+      <ServicesBanner />
       <GenderSwitch gender={gender} setGender={setGender} />
       <Categories categories={filteredCategories} gender={gender} />
       <HomeSaloons category={gender} />

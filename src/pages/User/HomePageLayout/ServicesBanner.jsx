@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Services2 = () => {
+const ServicesBanner = () => {
   return (
     <div className="bg-gradient-to-r from-[#FFF7F1] to-[#FFEDE2] mt-4 md:p-6 p-4">
       <div className="grid md:grid-cols-2 gap-6 items-center">
@@ -42,4 +42,4 @@ const Services2 = () => {
   );
 };
 
-export default Services2;
+export default ServicesBanner;

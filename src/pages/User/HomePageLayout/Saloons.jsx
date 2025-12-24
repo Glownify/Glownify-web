@@ -14,10 +14,6 @@ import {
 const SaloonCard = ({ salon }) => {
   const navigate = useNavigate();
 
-  const handleBookClick = () => {
-    navigate(`/saloon/${salon._id}`, { state: { salon } });
-  };
-
   return (
     <div className="min-w-[260px] md:min-w-[280px] snap-start group/card">
       {/* Image */}
@@ -77,7 +73,6 @@ const SaloonCard = ({ salon }) => {
         </div>
 
         <button
-          onClick={handleBookClick}
           className="w-full py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-rose-600 transition-all shadow-md active:scale-95"
         >
           Book Appointment

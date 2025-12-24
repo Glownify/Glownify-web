@@ -37,7 +37,7 @@ export const SIDEBAR_CONFIG = {
     menu: [
       { name: "MAIN MENU", isHeader: true },
       { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-      { name: "Manage Salesmen", icon: Users, path: "/manage-salesmen" },
+      { name: "Manage Salesman", icon: Users, path: "/manage-salesman" },
       { isSeparator: true },
       { name: "Profile", icon: User, path: "/profile" },
     ],

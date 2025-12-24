@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchAllSalesmen, createSalesman } from "../../redux/slice/salesexecutiveSlice";
+import { fetchAllSalesman, createSalesman } from "../../redux/slice/salesexecutiveSlice";
 import { 
   Users, Search, Mail, Calendar, MoreHorizontal, Award, Plus
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 
-const ManageSalesmen = () => {
+const ManageSalesman = () => {
   const dispatch = useDispatch();
-  const { salesmen = [], loading, error } = useSelector(
+  const { salesman = [], loading, error } = useSelector(
     (state) => state.salesexecutive
   );
   const user = useSelector((state) => state.auth.user);
@@ -25,10 +25,10 @@ const ManageSalesmen = () => {
   });
 
   useEffect(() => {
-    dispatch(fetchAllSalesmen());
+    dispatch(fetchAllSalesman());
   }, [dispatch]);
 
-  const filteredSalesmen = salesmen.filter(s => 
+  const filteredSalesman = salesman.filter(s => 
     s.user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     s.referralId?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -72,11 +72,11 @@ const ManageSalesmen = () => {
 };
 
 
-  if (loading && salesmen.length === 0) {
+  if (loading && salesman.length === 0) {
     return (
       <div className="p-10 flex flex-col items-center justify-center min-h-[400px]">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 mb-4"></div>
-        <p className="text-slate-500 font-medium">Loading salesmen data...</p>
+        <p className="text-slate-500 font-medium">Loading salesman data...</p>
       </div>
     );
   }
@@ -87,7 +87,7 @@ const ManageSalesmen = () => {
         {/* --- HEADER --- */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
           <div>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight">Salesmen Management</h1>
+            <h1 className="text-3xl font-black text-slate-900 tracking-tight">Salesman Management</h1>
             <p className="text-slate-500 mt-1">Manage and track performance of your field agents.</p>
           </div>
 
@@ -119,7 +119,7 @@ const ManageSalesmen = () => {
 
         {/* --- CARD GRID --- */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {filteredSalesmen.map((item) => (
+          {filteredSalesman.map((item) => (
             <div key={item._id} className="bg-white rounded-[32px] border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all group relative overflow-hidden">
               {/* Top Row: Profile & Actions */}
               <div className="flex justify-between items-start mb-6">
@@ -183,7 +183,7 @@ const ManageSalesmen = () => {
         </div>
 
         {/* --- EMPTY STATE --- */}
-        {filteredSalesmen.length === 0 && (
+        {filteredSalesman.length === 0 && (
           <div className="bg-white rounded-[32px] p-20 text-center border border-dashed border-slate-200">
             <div className="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-300">
               <Users size={40} />
@@ -226,4 +226,4 @@ const ManageSalesmen = () => {
   );
 };
 
-export default ManageSalesmen;
+export default ManageSalesman;

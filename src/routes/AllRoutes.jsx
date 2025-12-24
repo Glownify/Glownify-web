@@ -21,7 +21,7 @@ import ProfilePage from "./../pages/SuperAdmin/ProfilePage";
 
 // Sales Executive Pages
 import SalesExecitiveDashboard from "./../pages/SalesExecutive/SalesExecitiveDashboard";
-import ManageSalesmen from "./../pages/SalesExecutive/ManageSalesmen";
+import ManageSalesman from "./../pages/SalesExecutive/ManageSalesman";
 
 // Saloon Owner Pages
 
@@ -92,7 +92,7 @@ const AllRoutes = () => {
             <Route path="/sales-executive" element={<DashboardLayout />}>
               <Route index element={<SalesExecitiveDashboard />} />
               <Route path="dashboard" element={<SalesExecitiveDashboard />} />
-              <Route path="manage-salesmen" element={<ManageSalesmen />} />
+              <Route path="manage-salesman" element={<ManageSalesman />} />
               <Route path="profile" element={<ProfilePage />} />
             </Route>
           </Route>

@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const fetchAllSalesmen = createAsyncThunk(
+export const fetchAllSalesman = createAsyncThunk(
   'salesexecutive/fetchAllSalesmen',
   async (_, thunkAPI) => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/salesman/get-all-salesmen`,{
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/salesman/get-all-salesman`,{
         headers: {
             "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -15,7 +15,7 @@ export const fetchAllSalesmen = createAsyncThunk(
       if(res.status!==200){
         return thunkAPI.rejectWithValue('Failed to fetch salesmen');
       }
-      return data.salesmen;
+      return data.salesman;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || 'Failed to fetch salesmen'
@@ -46,22 +46,22 @@ export const createSalesman = createAsyncThunk(
     const salesexecutiveSlice = createSlice({
     name: 'salesexecutive',
     initialState: {
-        salesmen: [],
+        salesman: [],
         loading: false,
         error: null,
     },
     reducers: {},
     extraReducers: (builder) => {
         builder
-        .addCase(fetchAllSalesmen.pending, (state) => {
+        .addCase(fetchAllSalesman.pending, (state) => {
             state.loading = true;
             state.error = null;
         })
-        .addCase(fetchAllSalesmen.fulfilled, (state, action) => {
+        .addCase(fetchAllSalesman.fulfilled, (state, action) => {
             state.loading = false;
-            state.salesmen = action.payload;
+            state.salesman = action.payload;
         })
-        .addCase(fetchAllSalesmen.rejected, (state, action) => {
+        .addCase(fetchAllSalesman.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
         })
@@ -71,7 +71,7 @@ export const createSalesman = createAsyncThunk(
         })
         .addCase(createSalesman.fulfilled, (state, action) => {
             state.loading = false;
-            state.salesmen.push(action.payload.salesman);
+            state.salesman.push(action.payload.salesman);
         })
         .addCase(createSalesman.rejected, (state, action) => {
             state.loading = false;

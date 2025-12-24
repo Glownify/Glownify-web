@@ -17,11 +17,12 @@ import ManageCategoriesPage from "./../pages/SuperAdmin/ManageCategoriesPage";
 import ManageSalesExecutivePage from "./../pages/SuperAdmin/ManageSalesExecutivePage";
 import ManageSubscriptionPage from "./../pages/SuperAdmin/ManageSubscriptionPage";
 import ManageResetPassword from "./../pages/SuperAdmin/ManageResetPassword";
-import ProfilePage from "./../pages/SuperAdmin/ProfilePage";
+import SuperAdminProfilePage from "../pages/SuperAdmin/SuperAdminProfilePage";
 
 // Sales Executive Pages
 import SalesExecitiveDashboard from "./../pages/SalesExecutive/SalesExecitiveDashboard";
 import ManageSalesman from "./../pages/SalesExecutive/ManageSalesman";
+import SalesExecutiveProfilePage from "../pages/SalesExecutive/SalesExecutiveProfilePage";
 
 // Saloon Owner Pages
 import SaloonOwnerDashboard from "../pages/SaloonOwner/SaloonOwnerDashboard";
@@ -31,10 +32,24 @@ import ManageAnalyticsPage from "../pages/SaloonOwner/ManageAnalyticsPage";
 import ManageBookingsPage from "../pages/SaloonOwner/ManageBookingsPage";
 import AIHairstyleScannerPage from "../pages/SaloonOwner/AIHairstyleScannerPage";
 import AIPosterCreatorPage from "../pages/SaloonOwner/AIPosterCreatorPage";
+import SaloonOwnerProfilePage from "../pages/SaloonOwner/SaloonOwnerProfilePage";
 
 // Salesman Pages
 import SalesmanDashboard from "../pages/Salesman/SalesmanDashboard";
 import MySaloonsPage from "../pages/Salesman/MySaloonsPage";
+import SalesmanProfilePage from "../pages/Salesman/SalesmanProfilePage";
+
+//TeamLead Pages
+import TeamLeadDashboard from "../pages/TeamLead/TeamLeadDashboard";
+import TeamLeadProfilePage from "../pages/TeamLead/TeamLeadProfilePage";
+
+//IndependentPro Pages
+import IndependentProDashboard from "../pages/IndependentPro/IndependentProDashboard";
+import IndependentProProfilePage from "../pages/IndependentPro/IndependentProProfilePage";
+
+//Specialist Pages
+import SpecialistDashboard from "../pages/Specialist/SpecialistDashboard";
+import SpecialistProfilePage from "../pages/Specialist/SpecialistProfilePage";
 
 // Customer Pages
 import UserLayout from "./../components/User/UserLayout";
@@ -83,7 +98,7 @@ const AllRoutes = () => {
                 path="manage-reset-password"
                 element={<ManageResetPassword />}
               />
-              <Route path="profile" element={<ProfilePage />} />
+              <Route path="profile" element={<SuperAdminProfilePage />} />
             </Route>
           </Route>
 
@@ -95,7 +110,7 @@ const AllRoutes = () => {
               <Route index element={<SalesExecitiveDashboard />} />
               <Route path="dashboard" element={<SalesExecitiveDashboard />} />
               <Route path="manage-salesman" element={<ManageSalesman />} />
-              <Route path="profile" element={<ProfilePage />} />
+              <Route path="profile" element={<SalesExecutiveProfilePage />} />
             </Route>
           </Route>
 
@@ -110,7 +125,7 @@ const AllRoutes = () => {
               <Route path="manage-bookings" element={<ManageBookingsPage />} />
               <Route path="ai-poster-creator" element={<AIPosterCreatorPage />} />
               <Route path="ai-hairstyle-scanner" element={<AIHairstyleScannerPage />} />
-              <Route path="profile" element={<ProfilePage />} />
+              <Route path="profile" element={<SaloonOwnerProfilePage />} />
             </Route>
           </Route>
 
@@ -120,7 +135,34 @@ const AllRoutes = () => {
               <Route index element={<SalesmanDashboard />} />
               <Route path="dashboard" element={<SalesmanDashboard />} />
               <Route path="my-saloons" element={<MySaloonsPage />} />
-              <Route path="profile" element={<ProfilePage />} />
+              <Route path="profile" element={<SalesmanProfilePage />} />
+            </Route>
+          </Route>
+
+          {/* TEAM LEAD */}
+          <Route element={<ProtectedRoute allowedRoles={["team_lead"]} />}>
+            <Route path="/team-lead" element={<DashboardLayout />}>
+              <Route index element={<TeamLeadDashboard />} />
+              <Route path="dashboard" element={<TeamLeadDashboard />} />
+              <Route path="profile" element={<TeamLeadProfilePage />} />
+            </Route>
+          </Route>
+
+          {/* INDEPENDENT PRO */}
+          <Route element={<ProtectedRoute allowedRoles={["independent_pro"]} />}>
+            <Route path="/independent-pro" element={<DashboardLayout />}>
+              <Route index element={<IndependentProDashboard />} />
+              <Route path="dashboard" element={<IndependentProDashboard />} />
+              <Route path="profile" element={<IndependentProProfilePage />} />
+            </Route>
+          </Route>
+
+          {/* SPECIALIST */}
+          <Route element={<ProtectedRoute allowedRoles={["specialist"]} />}>
+            <Route path="/specialist" element={<DashboardLayout />}>
+              <Route index element={<SpecialistDashboard />} />
+              <Route path="dashboard" element={<SpecialistDashboard />} />
+              <Route path="profile" element={<SpecialistProfilePage />} />
             </Route>
           </Route>
 

@@ -73,4 +73,37 @@ export const SIDEBAR_CONFIG = {
       { name: "Profile", icon: User, path: "/profile" },
     ],
   },
+
+  team_lead: {
+    basePath: "/team-lead",
+    avatar: "TL",
+    menu: [
+      { name: "MAIN MENU", isHeader: true },
+      { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+      { isSeparator: true },
+      { name: "Profile", icon: User, path: "/profile" },
+    ],
+  },
+
+  independent_pro: {
+    basePath: "/independent-pro",
+    avatar: "IP",
+    menu: [
+      { name: "MAIN MENU", isHeader: true },
+      { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+      { isSeparator: true },  
+      { name: "Profile", icon: User, path: "/profile" },
+    ],
+  },
+
+  specialist: {
+    basePath: "/specialist",
+    avatar: "SP",
+    menu: [
+      { name: "MAIN MENU", isHeader: true },
+      { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+      { isSeparator: true },
+      { name: "Profile", icon: User, path: "/profile" },
+    ],
+  },
 };

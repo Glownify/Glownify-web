@@ -13,7 +13,7 @@ import {
   Briefcase
 } from 'lucide-react';
 
-const ProfilePage = () => {
+const SalesmanProfilePage = () => {
   const [copied, setCopied] = useState(false);
   
   // Get and Parse the user data from localStorage
@@ -189,4 +189,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default SalesmanProfilePage;

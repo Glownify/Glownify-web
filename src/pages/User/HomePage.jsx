@@ -46,7 +46,7 @@ const HomePage = () => {
       <Categories categories={filteredCategories} gender={gender} />
       <HomeSaloons category={gender} />
       <TopRatedSaloons salons={salons} categories={categories}/>
-      <Saloons salons={salons} gender={gender} loading={loading} />
+      {/* <Saloons salons={salons} gender={gender} loading={loading} /> */}
     </div>
   );
 };

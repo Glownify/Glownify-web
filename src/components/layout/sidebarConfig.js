@@ -61,4 +61,16 @@ export const SIDEBAR_CONFIG = {
       { name: "Profile", icon: User, path: "/profile" },
     ],
   },
+
+  salesman: {
+    basePath: "/salesman",
+    avatar: "SM",
+    menu: [
+      { name: "MAIN MENU", isHeader: true },
+      { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+      { name: "My Saloons", icon: Scissors, path: "/my-saloons" },
+      { isSeparator: true },
+      { name: "Profile", icon: User, path: "/profile" },
+    ],
+  },
 };

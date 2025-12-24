@@ -24,7 +24,6 @@ import SalesExecitiveDashboard from "./../pages/SalesExecutive/SalesExecitiveDas
 import ManageSalesman from "./../pages/SalesExecutive/ManageSalesman";
 
 // Saloon Owner Pages
-
 import SaloonOwnerDashboard from "../pages/SaloonOwner/SaloonOwnerDashboard";
 import ManageServicesPage from "../pages/SaloonOwner/ManageServicesPage";
 import ManageSpecialistsPage from "../pages/SaloonOwner/ManageSpecialistsPage";
@@ -33,8 +32,11 @@ import ManageBookingsPage from "../pages/SaloonOwner/ManageBookingsPage";
 import AIHairstyleScannerPage from "../pages/SaloonOwner/AIHairstyleScannerPage";
 import AIPosterCreatorPage from "../pages/SaloonOwner/AIPosterCreatorPage";
 
-// Customer Pages
+// Salesman Pages
+import SalesmanDashboard from "../pages/Salesman/SalesmanDashboard";
+import MySaloonsPage from "../pages/Salesman/MySaloonsPage";
 
+// Customer Pages
 import UserLayout from "./../components/User/UserLayout";
 import HomePage from "./../pages/User/HomePage";
 import ServicesPage from "./../pages/User/ServicesPage";
@@ -108,6 +110,16 @@ const AllRoutes = () => {
               <Route path="manage-bookings" element={<ManageBookingsPage />} />
               <Route path="ai-poster-creator" element={<AIPosterCreatorPage />} />
               <Route path="ai-hairstyle-scanner" element={<AIHairstyleScannerPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+            </Route>
+          </Route>
+
+          {/* SALESMAN */}
+          <Route element={<ProtectedRoute allowedRoles={["salesman"]} />}>
+            <Route path="/salesman" element={<DashboardLayout />}>
+              <Route index element={<SalesmanDashboard />} />
+              <Route path="dashboard" element={<SalesmanDashboard />} />
+              <Route path="my-saloons" element={<MySaloonsPage />} />
               <Route path="profile" element={<ProfilePage />} />
             </Route>
           </Route>

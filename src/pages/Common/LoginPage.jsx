@@ -11,6 +11,7 @@ const ROLE_ROUTES = {
   customer: '/home',
   sales_executive: '/sales-executive/dashboard',
   salon_owner: '/saloon-owner/dashboard',
+  salesman: '/salesman/dashboard',
 };
 
 const LoginPage = () => {

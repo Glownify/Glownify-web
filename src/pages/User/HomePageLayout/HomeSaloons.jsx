@@ -53,7 +53,7 @@ const HomeSaloons = ({ category, lat, lng }) => {
           </h2>
           <p className="text-slate-500 text-sm mt-1">Discover the best rated services near you</p>
         </div>
-        <button className="text-indigo-600 text-sm font-semibold flex items-center gap-1 hover:underline">
+        <button onClick={()=>{navigate('/salons')}} className="text-indigo-600 text-sm hover:cursor-pointer font-semibold flex items-center gap-1 hover:underline">
           View all <ArrowRight size={16} />
         </button>
       </div>
@@ -98,9 +98,9 @@ const HomeSaloons = ({ category, lat, lng }) => {
                 <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase tracking-wider rounded-md">
                   {salon.salonCategory}
                 </span>
-                <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider rounded-md">
+                {/* <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider rounded-md">
                   {salon.shopType}
-                </span>
+                </span> */}
               </div>
 
               <div className="flex items-center gap-1.5 text-slate-500">

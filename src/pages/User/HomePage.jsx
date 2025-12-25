@@ -11,6 +11,9 @@ import ServicesBanner from "./HomePageLayout/ServicesBanner";
 import { GenderSwitch } from "./HomePageLayout/GenderSwitch";
 import TopRatedSaloons from "./HomePageLayout/TopRatedSaloons";
 import HomeSaloons from "./HomePageLayout/HomeSaloons";
+import { setSelectedCategory, setLocation } from "../../redux/slice/userSlice";
+
+
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -45,6 +48,17 @@ const HomePage = () => {
   { enableHighAccuracy: true, timeout: 15000 }
 );
   }, []);
+
+  useEffect(() => {
+  dispatch(setSelectedCategory(gender));
+}, [gender]);
+
+useEffect(() => {
+  if (lat && lng) {
+    dispatch(setLocation({ lat, lng }));
+  }
+}, [lat, lng]);
+
 
 
   return (

@@ -79,6 +79,7 @@ const AllRoutes = () => {
   <Route path="/" element={<HomePage />} />
   <Route path="/login" element={<LoginPage />} />
   <Route path="/register" element={<RegisterPage />} />
+  <Route path="/salons" element={<SalonsPage />} />
 
   <Route path="/salon/:id" element={<HomeSaloonsDetails />}>
     <Route index element={<Navigate to="services" replace />} />
@@ -89,7 +90,6 @@ const AllRoutes = () => {
     <Route path="specialists" element={<SalonSpecialists />} />
   </Route>
 
-  <Route path="/salons" element={<SalonsPage />} />
 </Route>
 
 {/* PROTECTED CUSTOMER ROUTES */}

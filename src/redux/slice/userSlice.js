@@ -47,7 +47,6 @@ export const fetchHomeSaloonsByCategory = createAsyncThunk(
   "user/fetchHomeSaloonsByCategory",
   async ({ category, lat, lng }, thunkAPI) => {
     try {
-      console.log("Fetching Home Saloons for category:", category, "at lat:", lat, "lng:", lng);
       const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/get-home-salons`,{
           params: { category, lat, lng },
         headers: {
@@ -56,7 +55,6 @@ export const fetchHomeSaloonsByCategory = createAsyncThunk(
         },
         });
         const data = response.data;
-        console.log("API Response for Home Saloons by Category:", data);
         if(response.status !== 200){
           return thunkAPI.rejectWithValue(data.message || "Failed to fetch saloons by category");
         }
@@ -88,17 +86,56 @@ export const getSaloonDetailsById = createAsyncThunk(
     }
 );
 
+export const fetchAllSalonsByCategory = createAsyncThunk(
+  "user/fetchAllSalonsByCategory",
+  async ({category,lat,lng}, thunkAPI) => {
+    console.log("Fetching All Saloons for category:", category, "at lat:", lat, "lng:", lng);
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/get-all-salons-by-category`,{
+        params: { category, lat, lng },
+        headers: {
+            "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        });
+        // console.log("API Response:", response);
+        const data = response.data;
+        console.log("API Response for All Saloons by Category:", data.salons);
+        if(response.status !== 200){
+          return thunkAPI.rejectWithValue(data.message || "Failed to fetch saloons by category");
+        }
+        return data.salons;
+    } catch (error) {
+      console.log("Error fetching salons by category:", error);
+      return thunkAPI.rejectWithValue(error.message || "Failed to fetch saloons by category");
+    }
+    }
+);
+
 const userSlice = createSlice({
     name: "user",
     initialState: {
-        salons: [],
+        featuredSalons: [],
         categories: [],
         homeSaloonsByCategory: [],
+        salons: [],
         saloonDetails: null,
+        selectedCategory: "women",
+        lat: null,
+        lng: null,
         loading: false,
         error: null,
     },
-    reducers: {},
+    reducers: {
+      setSelectedCategory: (state, action) => {
+  state.selectedCategory = action.payload;
+},
+setLocation: (state, action) => {
+  state.lat = action.payload.lat;
+  state.lng = action.payload.lng;
+},
+
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchAllFeaturedSaloons.pending, (state) => {
@@ -107,7 +144,7 @@ const userSlice = createSlice({
             })
             .addCase(fetchAllFeaturedSaloons.fulfilled, (state, action) => {
                 state.loading = false;
-                state.salons = action.payload;
+                state.featuredSalons = action.payload;
             })
             .addCase(fetchAllFeaturedSaloons.rejected, (state, action) => {
                 state.loading = false;
@@ -148,8 +185,20 @@ const userSlice = createSlice({
             .addCase(getSaloonDetailsById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+            .addCase(fetchAllSalonsByCategory.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchAllSalonsByCategory.fulfilled, (state, action) => {
+                state.loading = false;
+                state.salons = action.payload;
+            })
+            .addCase(fetchAllSalonsByCategory.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
     },
 });
-
+export const { setSelectedCategory, setLocation } = userSlice.actions;
 export default userSlice.reducer;

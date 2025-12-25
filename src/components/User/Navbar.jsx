@@ -44,7 +44,7 @@ const Navbar = () => {
         {/* Desktop Links */}
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
           <NavLink to="/" className={navLinkStyles}>Home</NavLink>
-          <NavLink to="/services" className={navLinkStyles}>Services</NavLink>
+          <NavLink to="/salons" className={navLinkStyles}>Salons</NavLink>
           <NavLink to="/bookings" className={navLinkStyles}>My Bookings</NavLink>
         </nav>
 
@@ -97,7 +97,7 @@ const Navbar = () => {
         <div className="md:hidden absolute top-16 left-0 w-full bg-white/95 backdrop-blur-xl border-b border-rose-100 px-6 py-8 flex flex-col gap-6 shadow-xl animate-in slide-in-from-top duration-300">
           <nav className="flex flex-col gap-5 text-lg font-medium">
             <NavLink to="/" onClick={() => setOpen(false)}>Home</NavLink>
-            <NavLink to="/services" onClick={() => setOpen(false)}>Services</NavLink>
+            <NavLink to="/salons" onClick={() => setOpen(false)}>Salons</NavLink>
             <NavLink to="/bookings" onClick={() => setOpen(false)}>My Bookings</NavLink>
           </nav>
 

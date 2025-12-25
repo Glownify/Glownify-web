@@ -6,7 +6,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-const SaloonOwnerDashboard = () => {
+const SalonOwnerDashboard = () => {
   const stats = [
     {
       icon: <CalendarDays className="w-5 h-5 text-white" />,
@@ -152,4 +152,4 @@ const SaloonOwnerDashboard = () => {
   );
 };
 
-export default memo(SaloonOwnerDashboard);
+export default memo(SalonOwnerDashboard);

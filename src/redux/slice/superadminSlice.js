@@ -1,12 +1,38 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchAllSaloons = createAsyncThunk(
-  "superadmin/fetchAllSaloons",
+export const fetchDashboardData = createAsyncThunk(
+  "superadmin/fetchDashboardData",
+  async (_, thunkAPI) => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/super-admin/dashboard-stats`,
+        {
+          headers: { 
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = res.data;
+      if (res.status !== 200) {
+        return thunkAPI.rejectWithValue("Failed to fetch dashboard data");
+      }
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to fetch dashboard data"
+      );
+    }
+  }
+);
+
+export const fetchAllSalons = createAsyncThunk(
+  "superadmin/fetchAllSalons",
   async (_, thunkAPI) => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/super-admin/getAllSaloons`,
+        `${import.meta.env.VITE_API_BASE_URL}/super-admin/getAllSalons`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -17,13 +43,13 @@ export const fetchAllSaloons = createAsyncThunk(
       const data = response.data;
       if (response.status !== 200) {
         return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch saloons"
+          data.message || "Failed to fetch salons"
         );
       }
-      return data.saloons; // Assuming the API returns { saloons: [...] }
+      return data.salons; // Assuming the API returns { salons: [...] }
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.message || "Failed to fetch saloons"
+        error.message || "Failed to fetch salons"
       );
     }
   }
@@ -453,7 +479,8 @@ export const createSubscription = createAsyncThunk(
 const superadminSlice = createSlice({
   name: "superadmin",
   initialState: {
-    saloons: [],
+    dashboardData: null,
+    salons: [],
     categories: [],
     users: [],
     cities: [],
@@ -467,15 +494,27 @@ const superadminSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAllSaloons.pending, (state) => {
+      .addCase(fetchDashboardData.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAllSaloons.fulfilled, (state, action) => {
+      .addCase(fetchDashboardData.fulfilled, (state, action) => {
         state.loading = false;
-        state.saloons = action.payload;
+        state.dashboardData = action.payload;
       })
-      .addCase(fetchAllSaloons.rejected, (state, action) => {
+      .addCase(fetchDashboardData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchAllSalons.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllSalons.fulfilled, (state, action) => {
+        state.loading = false;
+        state.salons = action.payload;
+      })
+      .addCase(fetchAllSalons.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

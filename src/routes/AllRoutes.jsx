@@ -9,7 +9,7 @@ import DashboardLayout from "./../components/layout/DashboardLayout";
 
 // Super Admin Pages
 import SuperAdminDashboard from "./../pages/SuperAdmin/SuperAdminDashboard";
-import ManageSaloonsPage from "./../pages/SuperAdmin/ManageSaloonsPage";
+import ManageSalonsPage from "../pages/SuperAdmin/ManageSalonsPage";
 import ManageUsersPage from "./../pages/SuperAdmin/ManageUsersPage";
 import ManageCitiesAndStatesPage from "./../pages/SuperAdmin/ManageCitiesAndStatesPage";
 import ManageCategoriesPage from "./../pages/SuperAdmin/ManageCategoriesPage";
@@ -23,16 +23,16 @@ import SalesExecitiveDashboard from "./../pages/SalesExecutive/SalesExecitiveDas
 import ManageSalesman from "./../pages/SalesExecutive/ManageSalesman";
 import SalesExecutiveProfilePage from "../pages/SalesExecutive/SalesExecutiveProfilePage";
 
-// Saloon Owner Pages
-import SaloonOwnerDashboard from "../pages/SaloonOwner/SaloonOwnerDashboard";
-import ManageServicesPage from "../pages/SaloonOwner/ManageServicesPage";
-import ManageSpecialistsPage from "../pages/SaloonOwner/ManageSpecialistsPage";
-import ManageAnalyticsPage from "../pages/SaloonOwner/ManageAnalyticsPage";
-import ManageBookingsPage from "../pages/SaloonOwner/ManageBookingsPage";
-import AIHairstyleScannerPage from "../pages/SaloonOwner/AIHairstyleScannerPage";
-import AIPosterCreatorPage from "../pages/SaloonOwner/AIPosterCreatorPage";
-import SaloonOwnerProfilePage from "../pages/SaloonOwner/SaloonOwnerProfilePage";
-import ManageAddOnPage from "../pages/SaloonOwner/ManageAddOnPage";
+// Salon Owner Pages
+import SalonOwnerDashboard from "../pages/SalonOwner/SalonOwnerDashboard";
+import ManageServicesPage from "../pages/SalonOwner/ManageServicesPage";
+import ManageSpecialistsPage from "../pages/SalonOwner/ManageSpecialistsPage";
+import ManageAnalyticsPage from "../pages/SalonOwner/ManageAnalyticsPage";
+import ManageBookingsPage from "../pages/SalonOwner/ManageBookingsPage";
+import AIHairstyleScannerPage from "../pages/SalonOwner/AIHairstyleScannerPage";
+import AIPosterCreatorPage from "../pages/SalonOwner/AIPosterCreatorPage";
+import SalonOwnerProfilePage from "../pages/SalonOwner/SalonOwnerProfilePage";
+import ManageAddOnPage from "../pages/SalonOwner/ManageAddOnPage";
 
 // Salesman Pages
 import SalesmanDashboard from "../pages/Salesman/SalesmanDashboard";
@@ -54,7 +54,6 @@ import SpecialistProfilePage from "../pages/Specialist/SpecialistProfilePage";
 //Public Pages
 import UserLayout from "./../components/User/UserLayout";
 import HomePage from "./../pages/User/HomePage";
-import ServicesPage from "./../pages/User/ServicesPage";
 import MyBookingsPage from "./../pages/User/MyBookingsPage";
 import UserProfilePage from "./../pages/User/UserProfilePage";
 import HomeSaloonsDetails from "../pages/User/HomePageLayout/HomeSaloonsDetails";
@@ -65,6 +64,7 @@ import SalonReviews from "../pages/User/HomePageLayout/HomeSaloonDetails/SalonRe
 import SalonSpecialists from "../pages/User/HomePageLayout/HomeSaloonDetails/SalonSpecialists";
 import LoginPage from "./../pages/Common/LoginPage";
 import RegisterPage from "../pages/Common/RegisterPage";
+import SalonsPage from "../pages/User/SalonsPage";
 
 
 
@@ -89,7 +89,7 @@ const AllRoutes = () => {
     <Route path="specialists" element={<SalonSpecialists />} />
   </Route>
 
-  <Route path="/services" element={<ServicesPage />} />
+  <Route path="/salons" element={<SalonsPage />} />
 </Route>
 
 {/* PROTECTED CUSTOMER ROUTES */}
@@ -106,7 +106,7 @@ const AllRoutes = () => {
             <Route path="/super-admin" element={<DashboardLayout />}>
               <Route index element={<SuperAdminDashboard />} />
               <Route path="dashboard" element={<SuperAdminDashboard />} />
-              <Route path="manage-saloons" element={<ManageSaloonsPage />} />
+              <Route path="manage-salons" element={<ManageSalonsPage />} />
               <Route
                 path="manage-categories"
                 element={<ManageCategoriesPage />}
@@ -141,11 +141,11 @@ const AllRoutes = () => {
             </Route>
           </Route>
 
-          {/* SALOON OWNER */}
+          {/* SALON OWNER */}
           <Route element={<ProtectedRoute allowedRoles={["salon_owner"]} />}>
-            <Route path="/saloon-owner" element={<DashboardLayout />}>
-              <Route index element={<SaloonOwnerDashboard />} />
-              <Route path="dashboard" element={<SaloonOwnerDashboard />} />
+            <Route path="/salon-owner" element={<DashboardLayout />}>
+              <Route index element={<SalonOwnerDashboard />} />
+              <Route path="dashboard" element={<SalonOwnerDashboard />} />
               <Route path="manage-services" element={<ManageServicesPage />} />
               <Route path="manage-specialists" element={<ManageSpecialistsPage />} />
               <Route path="manage-analytics" element={<ManageAnalyticsPage />} />
@@ -153,7 +153,7 @@ const AllRoutes = () => {
               <Route path="ai-poster-creator" element={<AIPosterCreatorPage />} />
               <Route path="ai-hairstyle-scanner" element={<AIHairstyleScannerPage />} />
               <Route path="manage-add-ons" element={<ManageAddOnPage />} />
-              <Route path="profile" element={<SaloonOwnerProfilePage />} />
+              <Route path="profile" element={<SalonOwnerProfilePage />} />
             </Route>
           </Route>
 

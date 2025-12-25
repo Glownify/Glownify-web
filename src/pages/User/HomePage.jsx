@@ -8,15 +8,13 @@ import { fetchAllCategories } from "../../redux/slice/userSlice";
 import Categories from "./HomePageLayout/Categories";
 import Services from "./HomePageLayout/Services";
 import ServicesBanner from "./HomePageLayout/ServicesBanner";
-import Saloons from "./HomePageLayout/Saloons";
 import { GenderSwitch } from "./HomePageLayout/GenderSwitch";
 import TopRatedSaloons from "./HomePageLayout/TopRatedSaloons";
 import HomeSaloons from "./HomePageLayout/HomeSaloons";
 
 const HomePage = () => {
   const dispatch = useDispatch();
-  const { salons, loading } = useSelector((state) => state.user);
-  const { categories} = useSelector((state) => state.user);
+  const { salons, categories, loading } = useSelector((state) => state.user);
   const [gender, setGender] = useState('women');
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
@@ -33,7 +31,7 @@ const HomePage = () => {
   useEffect(() => {
     dispatch(fetchAllFeaturedSaloons());
     dispatch(fetchAllCategories());
-  }, [dispatch, gender]);
+  }, [dispatch]);
 
 
   useEffect(() => {
@@ -41,13 +39,13 @@ const HomePage = () => {
   (position) => {
     setLat(position.coords.latitude);
     setLng(position.coords.longitude);
+    console.log("User's location:", position.coords);
   },
   (error) => console.error("Error code:", error.code),
-  { enableHighAccuracy: true, timeout: 5000 }
+  { enableHighAccuracy: true, timeout: 15000 }
 );
   }, []);
 
-  console.log("Filtered Salons:", lat,lng);
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-[#FFF7F1] to-[#FFEDE2] pb-20">
@@ -59,7 +57,6 @@ const HomePage = () => {
       <Categories categories={filteredCategories} gender={gender} />
       <HomeSaloons category={gender} lat={lat} lng={lng} />
       <TopRatedSaloons salons={salons} categories={categories}/>
-      {/* <Saloons salons={salons} gender={gender} loading={loading} /> */}
     </div>
   );
 };

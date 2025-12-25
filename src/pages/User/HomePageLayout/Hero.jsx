@@ -126,7 +126,7 @@ const Hero = () => {
 
       {/* Marquee */}
       <div className="mt-20 py-6 bg-slate-900 rotate-[-1deg] w-[110%] -ml-[5%] shadow-2xl">
-        <marquee scrollAmount="10">
+        <marquee scrollamount="10">
           <div className="flex gap-20 text-white/90 font-bold uppercase tracking-[0.4em] text-xs">
             <span>• INSTANT BOOKING</span>
             <span className="text-rose-400">• VERIFIED PROFESSIONALS</span>

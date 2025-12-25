@@ -10,7 +10,7 @@ const ROLE_ROUTES = {
   admin: '/admin/dashboard',
   customer: '/',
   sales_executive: '/sales-executive/dashboard',
-  salon_owner: '/saloon-owner/dashboard',
+  salon_owner: '/salon-owner/dashboard',
   salesman: '/salesman/dashboard',
 };
 

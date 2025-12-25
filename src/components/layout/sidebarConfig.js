@@ -18,7 +18,7 @@ export const SIDEBAR_CONFIG = {
     menu: [
       { name: "MAIN MENU", isHeader: true },
       { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-      { name: "Manage Saloons", icon: Scissors, path: "/manage-saloons" },
+      { name: "Manage Salons", icon: Scissors, path: "/manage-salons" },
       { name: "Manage Categories", icon: Grid, path: "/manage-categories" },
       { name: "Manage Users", icon: Users, path: "/manage-users" },
       { name: "Manage Cities & States", icon: MapPin, path: "/manage-cities-and-states" },
@@ -44,7 +44,7 @@ export const SIDEBAR_CONFIG = {
   },
 
   salon_owner: {
-    basePath: "/saloon-owner",
+    basePath: "/salon-owner",
     avatar: "SO",
     menu: [
       { name: "MAIN MENU", isHeader: true },

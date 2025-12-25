@@ -1,6 +1,34 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+export const fetchDashboardData = createAsyncThunk(
+  'salesexecutive/fetchDashboardData',
+  async (_, thunkAPI) => {
+    console.log("Fetching Sales Executive Dashboard Data");
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/sales-executive/dashboard-stats`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+        );
+        console.log("Response from Dashboard Stats API:", res);
+        const data = res.data;
+        if (res.status !== 200) {
+          return thunkAPI.rejectWithValue('Failed to fetch dashboard data');
+        }
+        return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || 'Failed to fetch dashboard data'
+      );
+    }
+    }
+);
+
 export const fetchAllSalesman = createAsyncThunk(
   'salesexecutive/fetchAllSalesmen',
   async (_, thunkAPI) => {
@@ -46,6 +74,7 @@ export const createSalesman = createAsyncThunk(
     const salesexecutiveSlice = createSlice({
     name: 'salesexecutive',
     initialState: {
+        dashboardData: null,
         salesman: [],
         loading: false,
         error: null,
@@ -53,6 +82,18 @@ export const createSalesman = createAsyncThunk(
     reducers: {},
     extraReducers: (builder) => {
         builder
+        .addCase(fetchDashboardData.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(fetchDashboardData.fulfilled, (state, action) => {
+            state.loading = false;
+            state.dashboardData = action.payload;
+        })
+        .addCase(fetchDashboardData.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        })
         .addCase(fetchAllSalesman.pending, (state) => {
             state.loading = true;
             state.error = null;

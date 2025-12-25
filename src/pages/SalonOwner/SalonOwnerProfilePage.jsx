@@ -15,7 +15,7 @@ import {
   Smartphone
 } from 'lucide-react';
 
-const SaloonOwnerProfilePage = () => {
+const SalonOwnerProfilePage = () => {
   const { user } = useSelector((state) => state.auth);
 
   if (!user) {
@@ -188,4 +188,4 @@ const SaloonOwnerProfilePage = () => {
   );
 };
 
-export default SaloonOwnerProfilePage;
+export default SalonOwnerProfilePage;

@@ -54,17 +54,17 @@ const Categories = ({ categories, gender }) => {
                   <img
                     src={category.icon}
                     alt={category.name}
-                    className="w-14 h-14 object-contain"
+                    className="w-20 h-20 object-contain"
                   />
                 </div>
 
-                <p className="text-slate-700 font-bold text-sm">
+                <p className="text-slate-700 font-bold text-lg">
                   {category.name}
                 </p>
 
-                <p className="text-[10px] text-slate-400 uppercase mt-1">
+                {/* <p className="text-[10px] text-slate-400 uppercase mt-1">
                   {category.gender === 'unisex' ? 'Everyone' : gender === 'women' ? 'For Her' : 'For Him'}
-                </p>
+                </p> */}
               </div>
             ))}
           </div>

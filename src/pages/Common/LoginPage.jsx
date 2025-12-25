@@ -8,7 +8,7 @@ import { login } from '../../redux/slice/authSlice';
 const ROLE_ROUTES = {
   super_admin: '/super-admin/dashboard',
   admin: '/admin/dashboard',
-  customer: '/home',
+  customer: '/',
   sales_executive: '/sales-executive/dashboard',
   salon_owner: '/saloon-owner/dashboard',
   salesman: '/salesman/dashboard',

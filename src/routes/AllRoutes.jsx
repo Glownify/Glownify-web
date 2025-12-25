@@ -71,8 +71,31 @@ const AllRoutes = () => {
       <Toaster position="top-right" />
       <BrowserRouter>
         <Routes>
-          {/* Public */}
-          <Route path="/" element={<LoginPage />} />
+         {/* PUBLIC CUSTOMER ROUTES */}
+<Route element={<UserLayout />}>
+  <Route path="/" element={<HomePage />} />
+  <Route path="/login" element={<LoginPage />} />
+
+  <Route path="/salon/:id" element={<HomeSaloonsDetails />}>
+    <Route index element={<Navigate to="services" replace />} />
+    <Route path="services" element={<SalonServices />} />
+    <Route path="gallery" element={<SalonGallery />} />
+    <Route path="map" element={<SalonMap />} />
+    <Route path="reviews" element={<SalonReviews />} />
+    <Route path="specialists" element={<SalonSpecialists />} />
+  </Route>
+
+  <Route path="/services" element={<ServicesPage />} />
+</Route>
+
+{/* PROTECTED CUSTOMER ROUTES */}
+<Route element={<ProtectedRoute allowedRoles={["customer"]} />}>
+  <Route element={<UserLayout />}>
+    <Route path="/bookings" element={<MyBookingsPage />} />
+    <Route path="/profile" element={<UserProfilePage />} />
+  </Route>
+</Route>
+          {/* LOGIN ROUTE */}
 
           {/* SUPER ADMIN */}
           <Route element={<ProtectedRoute allowedRoles={["super_admin"]} />}>
@@ -166,23 +189,8 @@ const AllRoutes = () => {
             </Route>
           </Route>
 
-          {/* CUSTOMER ROUTE */}
-          <Route element={<ProtectedRoute allowedRoles={["customer"]} />}>
-            <Route element={<UserLayout />}>
-              <Route path="/home" element={<HomePage />} />
-              <Route path="/salon/:id" element={<HomeSaloonsDetails />}>
-              <Route index element={<Navigate to="services" replace />} />
-                <Route path="services" element={<SalonServices />} />
-                <Route path="gallery" element={<SalonGallery />} />
-                <Route path="map" element={<SalonMap />} />
-                <Route path="reviews" element={<SalonReviews />} />
-                <Route path="specialists" element={<SalonSpecialists />} />
-              </Route>
-              <Route path="/services" element={<ServicesPage />} />
-              <Route path="/bookings" element={<MyBookingsPage />} />
-              <Route path="/profile" element={<UserProfilePage />} />
-            </Route>
-          </Route>
+          
+          
         </Routes>
       </BrowserRouter>
     </Provider>

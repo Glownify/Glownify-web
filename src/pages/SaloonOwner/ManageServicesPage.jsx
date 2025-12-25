@@ -8,7 +8,7 @@ import {
   deleteServiceItem,
 } from "../../redux/slice/saloonownerSlice";
 import { Clock, DollarSign, Pencil, Trash2, Plus, X, Tag, ChevronRight } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 const initialFormState = {
   name: "",
   category: "",
@@ -18,11 +18,11 @@ const initialFormState = {
   description: "",
   image: "",
   providerType: "salon",
-  addOns: [],
 };
 
 const ManageServicesPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { serviceItems = [], categories = [], loading } = useSelector((state) => state.saloonowner);
 
   const [showModal, setShowModal] = useState(false);
@@ -59,7 +59,6 @@ const ManageServicesPage = () => {
       description: service.description || "",
       image: service.image || "",
       providerType: service.providerType || "salon",
-      addOns: service.addOns || [],
     });
     setShowModal(true);
   };
@@ -85,22 +84,6 @@ const ManageServicesPage = () => {
     setForm(initialFormState);
   };
 
-  const handleAddAddon = () => {
-    setForm({ ...form, addOns: [...form.addOns, { name: "", price: "", duration: "" }] });
-  };
-
-  const handleRemoveAddon = (index) => {
-    const updated = [...form.addOns];
-    updated.splice(index, 1);
-    setForm({ ...form, addOns: updated });
-  };
-
-  const handleAddonChange = (index, field, value) => {
-    const updated = [...form.addOns];
-    updated[index][field] = value;
-    setForm({ ...form, addOns: updated });
-  };
-
   console.log("Service Items:", serviceItems);
 
   if (loading) {
@@ -117,8 +100,10 @@ const ManageServicesPage = () => {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
         <div>
           <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">Services</h1>
-          <p className="text-slate-500 mt-1 text-lg">Manage your salon menu and service add-ons</p>
+          <p className="text-slate-500 mt-1 text-lg">Manage your salon menu</p>
         </div>
+
+        <button onClick={() => navigate("/saloon-owner/manage-add-ons")}>Add Ons</button>
         <button
           onClick={openCreateModal}
           className="group flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg shadow-purple-200 hover:-translate-y-0.5"
@@ -173,28 +158,6 @@ const ManageServicesPage = () => {
                 <p className="text-slate-500 text-sm leading-relaxed mb-6 line-clamp-2">
                   {service.description || "Offering high-quality professional care and attention."}
                 </p>
-
-                {/* Add-ons UI */}
-                {service.addOns?.length > 0 && (
-                  <div className="mb-6">
-                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                      <Tag size={12} /> Available Add-ons
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {service.addOns.map((addon, idx) => (
-                        <div
-                          key={idx}
-                          className="bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-lg flex items-center gap-2 group/addon"
-                        >
-                          <span className="text-sm font-medium text-slate-700">{addon.name}</span>
-                          <span className="text-xs text-purple-600 font-bold bg-white px-1.5 py-0.5 rounded shadow-sm">
-                            +${addon.price}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
 
                 {/* Footer: Price & Duration */}
                 <div className="mt-auto pt-6 border-t border-slate-50 flex justify-between items-center">
@@ -325,71 +288,6 @@ const ManageServicesPage = () => {
               </div>
             </div>
           </div>
-
-          {/* Section 4: Add-ons */}
-          <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                <Plus size={18} className="text-purple-600" /> Service Add-ons
-              </h3>
-              <button 
-                type="button" 
-                onClick={handleAddAddon} 
-                className="text-xs font-bold text-purple-600 hover:text-purple-700 underline decoration-2 underline-offset-4"
-              >
-                + Add Another
-              </button>
-            </div>
-
-            {form.addOns.length === 0 ? (
-              <div className="text-center py-4 border-2 border-dashed border-slate-200 rounded-xl bg-white/50">
-                <p className="text-xs text-slate-400 font-medium">No add-ons currently linked to this service.</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {form.addOns.map((addon, index) => (
-                  <div key={index} className="grid grid-cols-12 gap-3 items-center bg-white p-3 rounded-xl shadow-sm border border-slate-100">
-                    <div className="col-span-5">
-                      <input 
-                        placeholder="Add-on name" 
-                        className="w-full text-sm border-none focus:ring-0 bg-transparent" 
-                        value={addon.name} 
-                        onChange={(e) => handleAddonChange(index, "name", e.target.value)} 
-                      />
-                    </div>
-                    <div className="col-span-3 flex items-center border-l pl-2">
-                      <span className="text-slate-400 text-xs mr-1">$</span>
-                      <input 
-                        type="number" 
-                        placeholder="Price" 
-                        className="w-full text-sm border-none focus:ring-0 bg-transparent" 
-                        value={addon.price} 
-                        onChange={(e) => handleAddonChange(index, "price", e.target.value)} 
-                      />
-                    </div>
-                    <div className="col-span-3 flex items-center border-l pl-2">
-                      <Clock size={14} className="text-slate-300 mr-2" />
-                      <input 
-                        type="number" 
-                        placeholder="Mins" 
-                        className="w-full text-sm border-none focus:ring-0 bg-transparent" 
-                        value={addon.duration} 
-                        onChange={(e) => handleAddonChange(index, "duration", e.target.value)} 
-                      />
-                    </div>
-                    <button 
-                      type="button" 
-                      onClick={() => handleRemoveAddon(index)} 
-                      className="col-span-1 text-slate-300 hover:text-red-500 transition-colors flex justify-center"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
           {/* Action Buttons */}
           <div className="flex gap-4 pt-4 sticky bottom-0 bg-white">
             <button

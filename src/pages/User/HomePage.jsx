@@ -18,6 +18,8 @@ const HomePage = () => {
   const { salons, loading } = useSelector((state) => state.user);
   const { categories} = useSelector((state) => state.user);
   const [gender, setGender] = useState('women');
+  const [lat, setLat] = useState(null);
+  const [lng, setLng] = useState(null);
 
   const filteredCategories = categories?.filter(
     (cat) => cat.gender === gender || cat.gender === 'unisex'
@@ -33,8 +35,19 @@ const HomePage = () => {
     dispatch(fetchAllCategories());
   }, [dispatch, gender]);
 
-  console.log("Filtered Salons:", salons);
-  console.log("Filtered Categories:", filteredCategories);
+
+  useEffect(() => {
+  navigator.geolocation.getCurrentPosition(
+  (position) => {
+    setLat(position.coords.latitude);
+    setLng(position.coords.longitude);
+  },
+  (error) => console.error("Error code:", error.code),
+  { enableHighAccuracy: true, timeout: 5000 }
+);
+  }, []);
+
+  console.log("Filtered Salons:", lat,lng);
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-[#FFF7F1] to-[#FFEDE2] pb-20">
@@ -44,7 +57,7 @@ const HomePage = () => {
       <ServicesBanner />
       <GenderSwitch gender={gender} setGender={setGender} />
       <Categories categories={filteredCategories} gender={gender} />
-      <HomeSaloons category={gender} />
+      <HomeSaloons category={gender} lat={lat} lng={lng} />
       <TopRatedSaloons salons={salons} categories={categories}/>
       {/* <Saloons salons={salons} gender={gender} loading={loading} /> */}
     </div>

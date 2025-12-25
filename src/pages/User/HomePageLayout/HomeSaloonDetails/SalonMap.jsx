@@ -10,7 +10,7 @@ const SalonMap = () => {
   // Construct the Google Maps Embed URL
   // Format: https://maps.google.com/maps?q=LAT,LNG&t=&z=15&ie=UTF8&iwloc=&output=embed
   const mapUrl = coords 
-    ? `https://maps.google.com/maps?q=${coords[0]},${coords[1]}&t=&z=15&ie=UTF8&iwloc=&output=embed`
+    ? `https://maps.google.com/maps?q=${coords[1]},${coords[0]}&t=&z=15&ie=UTF8&iwloc=&output=embed`
     : "";
 
   return (
@@ -45,7 +45,7 @@ const SalonMap = () => {
       
       <div className="mt-3">
         <a 
-          href={`https://www.google.com/maps/search/?api=1&query=${coords?.[0]},${coords?.[1]}`}
+          href={`https://www.google.com/maps/search/?api=1&query=${coords?.[1]},${coords?.[0]}`}
           target="_blank"
           rel="noreferrer"
           className="text-blue-600 text-sm font-medium hover:underline"

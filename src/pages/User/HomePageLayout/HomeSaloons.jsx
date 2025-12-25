@@ -4,7 +4,7 @@ import { fetchHomeSaloonsByCategory } from "../../../redux/slice/userSlice";
 import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const HomeSaloons = ({ category }) => {
+const HomeSaloons = ({ category, lat, lng }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -14,16 +14,19 @@ const HomeSaloons = ({ category }) => {
 
   useEffect(() => {
     if (category) {
-      dispatch(fetchHomeSaloonsByCategory(category));
+      dispatch(fetchHomeSaloonsByCategory({ category, lat, lng }));
     }
-  }, [dispatch, category]);
+  }, [dispatch, category, lat, lng]);
 
   const handleSalonClick = (salonId) => {
     navigate(`/salon/${salonId}`);
   };
 
+  console.log("Home Saloons lat long", lat, lng);
+
   if (loading) return <p className="p-4">Loading salons...</p>;
-  if (error) return <p className="p-4 text-red-500">{error}</p>;
+  // if (error) return <p className="p-4 text-red-500">{error}</p>;
+  if(homeSaloonsByCategory.length === 0) return <p className="p-4">No salons available in this category.</p>; 
 
   return (
     <div className="px-4 py-6">

@@ -25,14 +25,12 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (!token || !role) return;
-
     const redirectPath = ROLE_ROUTES[role] || '/';
     navigate(redirectPath, { replace: true });
   }, [token, role, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     if (!email || !password) {
       toast.error('Please enter email and password');
       return;
@@ -40,99 +38,117 @@ const LoginPage = () => {
 
     try {
       const loginPromise = dispatch(login({ email, password })).unwrap();
-
       await toast.promise(loginPromise, {
         loading: 'Authenticating...',
         success: (res) => res?.message || 'Login successful',
         error: (err) => err || 'Invalid credentials',
       });
     } catch {
-        console.error('Login failed');
+      console.error('Login failed');
     }
   };
 
   if (token) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+      <div className="h-[60vh] flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <form
-        onSubmit={handleLogin}
-        className="w-full max-w-sm p-8 bg-white rounded-2xl shadow-2xl border border-gray-100 space-y-7"
-      >
+    <div className=" pb-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md mx-auto mt-10">
         {/* Header */}
-        <div className="text-center">
-          <LogIn className="w-10 h-10 text-indigo-600 mx-auto mb-2" />
-          <h2 className="text-3xl font-extrabold text-gray-900">
-            Sign In
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
+            <LogIn className="w-8 h-8 text-indigo-600" />
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
+            Welcome Back
           </h2>
-          <p className="text-sm text-gray-500 mt-1">
-            Access your control panel
+          <p className="mt-2 text-sm text-gray-500">
+            Please enter your details to sign in
           </p>
         </div>
 
-        {/* Email */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Email Address
-          </label>
-          <div className="relative mt-1">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+        {/* Form Card */}
+        <div className="bg-white py-8 px-6 shadow-md rounded-2xl border border-gray-100">
+          <form onSubmit={handleLogin} className="space-y-5">
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading}
+                  required
+                  placeholder="you@example.com"
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Password */}
+            <div>
+              <div className="flex justify-between mb-1">
+                <label className="block text-sm font-semibold text-gray-700">
+                  Password
+                </label>
+                <a href="/forgot-password" size="sm" className="text-xs text-indigo-600 hover:underline">
+                  Forgot?
+                </a>
+              </div>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
+                  required
+                  placeholder="••••••••"
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
               disabled={loading}
-              required
-              placeholder="you@example.com"
-              className="w-full pl-10 pr-4 py-2.5 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-            />
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Signing in...</span>
+                </>
+              ) : (
+                <>
+                  <LogIn className="w-5 h-5" />
+                  <span>Sign In</span>
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Footer */}
+          <div className="mt-8 text-center pt-6 border-t border-gray-100">
+            <p className="text-sm text-gray-500">
+              Don't have an account?{" "}
+              <a href="/register" className="text-indigo-600 font-bold hover:underline">
+                Create one
+              </a>
+            </p>
           </div>
         </div>
-
-        {/* Password */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Password
-          </label>
-          <div className="relative mt-1">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={loading}
-              required
-              placeholder="••••••••"
-              className="w-full pl-10 pr-4 py-2.5 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-        </div>
-
-        {/* Submit */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 disabled:opacity-50"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              Signing in...
-            </>
-          ) : (
-            <>
-              <LogIn className="w-5 h-5" />
-              Sign In
-            </>
-          )}
-        </button>
-      </form>
+      </div>
     </div>
   );
 };

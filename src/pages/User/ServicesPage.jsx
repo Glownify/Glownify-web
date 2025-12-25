@@ -13,7 +13,7 @@ import {
 // --- DUMMY DATA ---
 const CATEGORIES = [
   { id: 1, name: "Hair Styling", icon: Scissors, count: "12 Services", color: "bg-blue-100 text-blue-600" },
-  { id: 2, name: "Facial & Skin", icon: Sparkles, icon: Sparkles, count: "8 Services", color: "bg-purple-100 text-purple-600" },
+  { id: 2, name: "Facial & Skin", icon: Sparkles, count: "8 Services", color: "bg-purple-100 text-purple-600" },
   { id: 3, name: "Manicure", icon: Zap, count: "5 Services", color: "bg-pink-100 text-pink-600" },
   { id: 4, name: "Massage", icon: Smile, count: "10 Services", color: "bg-green-100 text-green-600" },
 ];

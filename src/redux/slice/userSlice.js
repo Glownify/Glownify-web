@@ -45,10 +45,11 @@ export const fetchAllCategories = createAsyncThunk(
 
 export const fetchHomeSaloonsByCategory = createAsyncThunk(
   "user/fetchHomeSaloonsByCategory",
-  async (category, thunkAPI) => {
+  async ({ category, lat, lng }, thunkAPI) => {
     try {
+      console.log("Fetching Home Saloons for category:", category, "at lat:", lat, "lng:", lng);
       const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/get-home-salons`,{
-          params: { category },
+          params: { category, lat, lng },
         headers: {
             "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,

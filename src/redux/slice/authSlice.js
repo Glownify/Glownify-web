@@ -16,6 +16,20 @@ export const login = createAsyncThunk(
   }
 );
 
+export const registerUser = createAsyncThunk(
+  'auth/register',
+  async (userData, thunkAPI) => {
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/signup`, userData);
+      return res.data; 
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || 'Registration failed'
+      );
+    }
+  }
+);
+
 export const logoutUser = createAsyncThunk(
   'auth/logout',
   async (_, thunkAPI) => {

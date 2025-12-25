@@ -261,6 +261,93 @@ export const fetchBookings = createAsyncThunk(
   }
 );
 
+export const createAddOn = createAsyncThunk(
+  "saloonowner/createAddOn",
+  async (addOnData, thunkAPI) => {
+    try {
+      console.log("Creating Add-On Service with Data:", addOnData);
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/salon-admin/create-add-on`, addOnData,{
+        headers: {
+            "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        });
+        const data = response.data;
+        if(response.status !== 201){
+          return thunkAPI.rejectWithValue(data.message || "Failed to create add-on service");
+        }
+        return data.addOn;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message || "Failed to create add-on service");
+    }
+    }
+);
+
+export const editAddOn = createAsyncThunk(
+  "saloonowner/editAddOn",
+  async ( {addOnId, addOnData }, thunkAPI) => {
+    console.log("Editing Add-On Service:", addOnId, addOnData);
+    try {
+      const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/salon-admin/update-add-on/${addOnId}`, addOnData,{
+        headers: {
+            "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        });
+        const data = response.data;
+        if(response.status !== 200){
+          return thunkAPI.rejectWithValue(data.message || "Failed to edit add-on service");
+        }
+        return data.addOn;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message || "Failed to edit add-on service");
+    }
+    }
+);
+
+export const deleteAddOn = createAsyncThunk(
+  "saloonowner/deleteAddOn",
+  async (addOnId, thunkAPI) => {
+    try {
+      const response = await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/salon-admin/delete-add-on/${addOnId}`,{
+        headers: {
+            "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        });
+        const data = response.data;
+        if(response.status !== 200){
+          return thunkAPI.rejectWithValue(data.message || "Failed to delete add-on service");
+        }
+        return addOnId;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message || "Failed to delete add-on service");
+    }
+    }
+);
+
+export const fetchAllAddOns = createAsyncThunk(
+  "saloonowner/fetchAllAddOns",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/salon-admin/get-add-ons`,{
+        headers: {
+            "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        });
+        console.log("Fetch All Add-Ons Response:", response);
+        const data = response.data;
+        if(response.status !== 200){
+          return thunkAPI.rejectWithValue(data.message || "Failed to fetch add-on services");
+        }
+        return data.addOns;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message || "Failed to fetch add-on services");
+    }
+    }
+);
+
 const saloonownerSlice = createSlice({
   name: "saloonowner",
   initialState: {
@@ -268,6 +355,7 @@ const saloonownerSlice = createSlice({
     categories: [],
     specialists: [],
     bookings: [],
+    addOns: [],
     loading: false,
     error: null,
     },
@@ -405,6 +493,66 @@ const saloonownerSlice = createSlice({
                 state.bookings = action.payload;
             })
             .addCase(fetchBookings.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(createAddOn.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(createAddOn.fulfilled, (state, action) => {
+                state.loading = false;
+                state.addOns.push(action.payload);
+            })
+            .addCase(createAddOn.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(editAddOn.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(editAddOn.fulfilled, (state, action) => {
+  state.loading = false;
+
+  if (!action.payload) return;
+
+  const index = state.addOns.findIndex(
+    (item) => item._id === action.payload._id
+  );
+
+  if (index !== -1) {
+    state.addOns[index] = action.payload;
+  }
+})
+
+            .addCase(editAddOn.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(deleteAddOn.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(deleteAddOn.fulfilled, (state, action) => {
+                state.loading = false;
+                state.addOns = state.addOns.filter(
+                    (item) => item._id !== action.payload
+                );
+            })
+            .addCase(deleteAddOn.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(fetchAllAddOns.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchAllAddOns.fulfilled, (state, action) => {
+                state.loading = false;
+                state.addOns = action.payload;
+            })
+            .addCase(fetchAllAddOns.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

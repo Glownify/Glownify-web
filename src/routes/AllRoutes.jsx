@@ -4,7 +4,6 @@ import { Provider } from "react-redux";
 import { Toaster } from "react-hot-toast";
 
 import store from "./../redux/store";
-import LoginPage from "./../pages/Common/LoginPage";
 import ProtectedRoute from "./../components/ProtectedRoutes";
 import DashboardLayout from "./../components/layout/DashboardLayout";
 
@@ -33,6 +32,7 @@ import ManageBookingsPage from "../pages/SaloonOwner/ManageBookingsPage";
 import AIHairstyleScannerPage from "../pages/SaloonOwner/AIHairstyleScannerPage";
 import AIPosterCreatorPage from "../pages/SaloonOwner/AIPosterCreatorPage";
 import SaloonOwnerProfilePage from "../pages/SaloonOwner/SaloonOwnerProfilePage";
+import ManageAddOnPage from "../pages/SaloonOwner/ManageAddOnPage";
 
 // Salesman Pages
 import SalesmanDashboard from "../pages/Salesman/SalesmanDashboard";
@@ -51,7 +51,7 @@ import IndependentProProfilePage from "../pages/IndependentPro/IndependentProPro
 import SpecialistDashboard from "../pages/Specialist/SpecialistDashboard";
 import SpecialistProfilePage from "../pages/Specialist/SpecialistProfilePage";
 
-// Customer Pages
+//Public Pages
 import UserLayout from "./../components/User/UserLayout";
 import HomePage from "./../pages/User/HomePage";
 import ServicesPage from "./../pages/User/ServicesPage";
@@ -63,6 +63,9 @@ import SalonGallery from "../pages/User/HomePageLayout/HomeSaloonDetails/SalonGa
 import SalonMap from "../pages/User/HomePageLayout/HomeSaloonDetails/SalonMap";
 import SalonReviews from "../pages/User/HomePageLayout/HomeSaloonDetails/SalonReviews";
 import SalonSpecialists from "../pages/User/HomePageLayout/HomeSaloonDetails/SalonSpecialists";
+import LoginPage from "./../pages/Common/LoginPage";
+import RegisterPage from "../pages/Common/RegisterPage";
+
 
 
 const AllRoutes = () => {
@@ -75,6 +78,7 @@ const AllRoutes = () => {
 <Route element={<UserLayout />}>
   <Route path="/" element={<HomePage />} />
   <Route path="/login" element={<LoginPage />} />
+  <Route path="/register" element={<RegisterPage />} />
 
   <Route path="/salon/:id" element={<HomeSaloonsDetails />}>
     <Route index element={<Navigate to="services" replace />} />
@@ -148,6 +152,7 @@ const AllRoutes = () => {
               <Route path="manage-bookings" element={<ManageBookingsPage />} />
               <Route path="ai-poster-creator" element={<AIPosterCreatorPage />} />
               <Route path="ai-hairstyle-scanner" element={<AIHairstyleScannerPage />} />
+              <Route path="manage-add-ons" element={<ManageAddOnPage />} />
               <Route path="profile" element={<SaloonOwnerProfilePage />} />
             </Route>
           </Route>

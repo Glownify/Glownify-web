@@ -9,7 +9,7 @@ const Footer = () => {
         
         {/* Branding Section */}
         <div className='space-y-3'>
-          <img className="w-16 h-16 rounded-full object-cover" src="/logo.jpeg" alt="Logo" />
+          <img className="w-16 h-16 rounded-full object-contain" src="/logo.jpeg" alt="Logo" />
           <p className='text-sm leading-relaxed'>
             Book your next beauty appointment with the best salons in your area.
           </p>

@@ -61,7 +61,7 @@ const SalonsPage = () => {
           {salons?.map((salon) => (
             <div
               key={salon._id}
-              className="group bg-white rounded-[2rem] overflow-hidden shadow-xl shadow-gray-200/50 border border-white transition-all duration-300 hover:shadow-2xl hover:-translate-y-1"
+              className="group bg-white rounded-4xl overflow-hidden shadow-xl shadow-gray-200/50 border border-white transition-all duration-300 hover:shadow-2xl hover:-translate-y-1"
             >
               {/* Top Section: Image Placeholder */}
               <div className="relative h-64 bg-[#F0F5FF] flex items-center justify-center">

@@ -51,7 +51,7 @@ const Hero = () => {
             ))}
           </div>
 
-          <button className="px-10 py-5 bg-slate-900 text-white rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-xl shadow-slate-200 hover:bg-rose-600 hover:-translate-y-1 transition-all active:scale-95">
+          <button className="px-10 py-5 bg-slate-900 text-white rounded-4xl font-black text-sm uppercase tracking-widest shadow-xl shadow-slate-200 hover:bg-rose-600 hover:-translate-y-1 transition-all active:scale-95">
             Explore All Salons
           </button>
         </div>
@@ -61,7 +61,7 @@ const Hero = () => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-rose-50 rounded-full blur-3xl opacity-50 -z-10"></div>
 
           {/* Phone Mockup */}
-          <div className="w-72 h-[550px] bg-slate-900 rounded-[3rem] p-3 shadow-2xl relative border-[6px] border-slate-800">
+          <div className="w-72 h-137.5 bg-slate-900 rounded-[3rem] p-3 shadow-2xl relative border-[6px] border-slate-800">
             <div className="w-24 h-6 bg-slate-800 absolute top-0 left-1/2 -translate-x-1/2 rounded-b-2xl z-20"></div>
 
             <div className="bg-white w-full h-full rounded-[2.2rem] overflow-hidden flex flex-col">
@@ -110,7 +110,7 @@ const Hero = () => {
           </div>
 
           {/* Floating Badge */}
-          <div className="absolute -bottom-6 -right-6 md:right-0 bg-white p-4 rounded-[2rem] shadow-2xl border border-rose-50 flex items-center gap-3 animate-bounce-slow">
+          <div className="absolute -bottom-6 -right-6 md:right-0 bg-white p-4 rounded-4xl shadow-2xl border border-rose-50 flex items-center gap-3 animate-bounce-slow">
             <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white">
               <ShieldCheck size={24} />
             </div>
@@ -125,7 +125,7 @@ const Hero = () => {
       </div>
 
       {/* Marquee */}
-      <div className="mt-20 py-6 bg-slate-900 rotate-[-1deg] w-[110%] -ml-[5%] shadow-2xl">
+      <div className="mt-20 py-6 bg-slate-900 -rotate-1 w-[110%] -ml-[5%] shadow-2xl">
         <marquee scrollamount="10">
           <div className="flex gap-20 text-white/90 font-bold uppercase tracking-[0.4em] text-xs">
             <span>• INSTANT BOOKING</span>

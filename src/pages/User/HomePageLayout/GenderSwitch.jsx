@@ -6,7 +6,7 @@ export const GenderSwitch = ({ gender, setGender }) => {
   return (
     <div className="flex justify-center mt-6 w-full">
       {/* Main Container (Increased Width) */}
-      <div className="relative flex w-full max-w-[480px] p-1.5 bg-gray-100/90 backdrop-blur-xl rounded-2xl border border-gray-200/60 shadow-md">
+      <div className="relative flex w-full max-w-120 p-1.5 bg-gray-100/90 backdrop-blur-xl rounded-2xl border border-gray-200/60 shadow-md">
         
         {/* Sliding Indicator */}
         <div

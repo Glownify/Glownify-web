@@ -30,7 +30,7 @@ const HomeSaloonsDetails = () => {
         {/* TOP DETAILS CARD */}
         <div>
           {/* Image */}
-          <div className="h-[260px] rounded-xl overflow-hidden relative">
+          <div className="h-65 rounded-xl overflow-hidden relative">
             <img
               className="w-full h-full object-cover"
               src={

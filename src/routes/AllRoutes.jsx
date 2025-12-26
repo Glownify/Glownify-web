@@ -65,8 +65,9 @@ import SalonSpecialists from "../pages/User/HomePageLayout/HomeSaloonDetails/Sal
 import LoginPage from "./../pages/Common/LoginPage";
 import RegisterPage from "../pages/Common/RegisterPage";
 import SalonsPage from "../pages/User/SalonsPage";
-
-
+import PartnerWithUsPage from "../pages/Common/PartnerWithUsPage";
+import SalonOwnerRegisterPage from "../pages/Common/SalonOwnerRegisterPage";
+import IndependentProfessionalRegistrarionPage from "../pages/Common/IndependentProfessionalRegistrarionPage";
 
 const AllRoutes = () => {
   return (
@@ -74,31 +75,39 @@ const AllRoutes = () => {
       <Toaster position="top-right" />
       <BrowserRouter>
         <Routes>
-         {/* PUBLIC CUSTOMER ROUTES */}
-<Route element={<UserLayout />}>
-  <Route path="/" element={<HomePage />} />
-  <Route path="/login" element={<LoginPage />} />
-  <Route path="/register" element={<RegisterPage />} />
-  <Route path="/salons" element={<SalonsPage />} />
+          {/* PUBLIC CUSTOMER ROUTES */}
+          <Route element={<UserLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/salons" element={<SalonsPage />} />
+            <Route path="/partner-with-us" element={<PartnerWithUsPage />} />
+            <Route
+              path="/partner-with-us/salon-owner-register"
+              element={<SalonOwnerRegisterPage />}
+            />
+            <Route
+              path="/partner-with-us/independent-professional-register"
+              element={<IndependentProfessionalRegistrarionPage />}
+            />
 
-  <Route path="/salon/:id" element={<HomeSaloonsDetails />}>
-    <Route index element={<Navigate to="services" replace />} />
-    <Route path="services" element={<SalonServices />} />
-    <Route path="gallery" element={<SalonGallery />} />
-    <Route path="map" element={<SalonMap />} />
-    <Route path="reviews" element={<SalonReviews />} />
-    <Route path="specialists" element={<SalonSpecialists />} />
-  </Route>
+            <Route path="/salon/:id" element={<HomeSaloonsDetails />}>
+              <Route index element={<Navigate to="services" replace />} />
+              <Route path="services" element={<SalonServices />} />
+              <Route path="gallery" element={<SalonGallery />} />
+              <Route path="map" element={<SalonMap />} />
+              <Route path="reviews" element={<SalonReviews />} />
+              <Route path="specialists" element={<SalonSpecialists />} />
+            </Route>
+          </Route>
 
-</Route>
-
-{/* PROTECTED CUSTOMER ROUTES */}
-<Route element={<ProtectedRoute allowedRoles={["customer"]} />}>
-  <Route element={<UserLayout />}>
-    <Route path="/bookings" element={<MyBookingsPage />} />
-    <Route path="/profile" element={<UserProfilePage />} />
-  </Route>
-</Route>
+          {/* PROTECTED CUSTOMER ROUTES */}
+          <Route element={<ProtectedRoute allowedRoles={["customer"]} />}>
+            <Route element={<UserLayout />}>
+              <Route path="/bookings" element={<MyBookingsPage />} />
+              <Route path="/profile" element={<UserProfilePage />} />
+            </Route>
+          </Route>
           {/* LOGIN ROUTE */}
 
           {/* SUPER ADMIN */}
@@ -120,7 +129,10 @@ const AllRoutes = () => {
                 path="manage-sales-executives"
                 element={<ManageSalesExecutivePage />}
               />
-              <Route path="manage-subscriptions" element={<ManageSubscriptionPage />} />
+              <Route
+                path="manage-subscriptions"
+                element={<ManageSubscriptionPage />}
+              />
               <Route
                 path="manage-reset-password"
                 element={<ManageResetPassword />}
@@ -147,11 +159,23 @@ const AllRoutes = () => {
               <Route index element={<SalonOwnerDashboard />} />
               <Route path="dashboard" element={<SalonOwnerDashboard />} />
               <Route path="manage-services" element={<ManageServicesPage />} />
-              <Route path="manage-specialists" element={<ManageSpecialistsPage />} />
-              <Route path="manage-analytics" element={<ManageAnalyticsPage />} />
+              <Route
+                path="manage-specialists"
+                element={<ManageSpecialistsPage />}
+              />
+              <Route
+                path="manage-analytics"
+                element={<ManageAnalyticsPage />}
+              />
               <Route path="manage-bookings" element={<ManageBookingsPage />} />
-              <Route path="ai-poster-creator" element={<AIPosterCreatorPage />} />
-              <Route path="ai-hairstyle-scanner" element={<AIHairstyleScannerPage />} />
+              <Route
+                path="ai-poster-creator"
+                element={<AIPosterCreatorPage />}
+              />
+              <Route
+                path="ai-hairstyle-scanner"
+                element={<AIHairstyleScannerPage />}
+              />
               <Route path="manage-add-ons" element={<ManageAddOnPage />} />
               <Route path="profile" element={<SalonOwnerProfilePage />} />
             </Route>
@@ -177,7 +201,9 @@ const AllRoutes = () => {
           </Route>
 
           {/* INDEPENDENT PRO */}
-          <Route element={<ProtectedRoute allowedRoles={["independent_pro"]} />}>
+          <Route
+            element={<ProtectedRoute allowedRoles={["independent_pro"]} />}
+          >
             <Route path="/independent-pro" element={<DashboardLayout />}>
               <Route index element={<IndependentProDashboard />} />
               <Route path="dashboard" element={<IndependentProDashboard />} />
@@ -193,9 +219,6 @@ const AllRoutes = () => {
               <Route path="profile" element={<SpecialistProfilePage />} />
             </Route>
           </Route>
-
-          
-          
         </Routes>
       </BrowserRouter>
     </Provider>

@@ -11,6 +11,12 @@ const HomeSaloons = ({ category, lat, lng }) => {
   const { homeSaloonsByCategory = [], loading, error } = useSelector(
     (state) => state.user
   );
+  const mockServices = [
+    { name: "Haircut", price: 299 },
+    { name: "Facial", price: 599 },
+    { name: "Hair Spa", price: 899 },
+  ];
+
 
   useEffect(() => {
     if (category && lat && lng) {
@@ -109,6 +115,23 @@ const HomeSaloons = ({ category, lat, lng }) => {
                   {salon.location?.city}, {salon.location?.state}
                 </span>
               </div>
+
+              {/* Services */}
+                <div className="mb-4">
+                  <div className="space-y-2">
+                    {mockServices.map((service, index) => (
+                      <div
+                        key={index}
+                        className="flex justify-between text-sm font-medium text-gray-700"
+                      >
+                        <span>{service.name}</span>
+                        <span className="font-bold text-gray-900">
+                          ₹{service.price}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               
               <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between">
                 <span className="text-xs text-slate-400 uppercase font-semibold tracking-tighter">Available Now</span>

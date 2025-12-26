@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { registerUser } from "../../redux/slice/authSlice";
+import { register } from "../../redux/slice/authSlice";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -23,7 +23,7 @@ const RegisterPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(registerUser(formData));
+    dispatch(register(formData));
     toast.success("Registration successful! Please log in.");
     navigate("/login");
     setFormData({

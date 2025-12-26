@@ -10,20 +10,16 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
-  const { selectedCategory, lat, lng } = useSelector(
-  (state) => state.user
-);
+  const { selectedCategory, lat, lng } = useSelector((state) => state.user);
 
-const goToSalons = () => {
-  if (selectedCategory && lat && lng) {
-    navigate(
-      `/salons?category=${selectedCategory}&lat=${lat}&lng=${lng}`
-    );
-  } else {
-    navigate("/salons"); // fallback
-  }
-  setOpen(false);
-};
+  const goToSalons = () => {
+    if (selectedCategory && lat && lng) {
+      navigate(`/salons?category=${selectedCategory}&lat=${lat}&lng=${lng}`);
+    } else {
+      navigate("/salons"); // fallback
+    }
+    setOpen(false);
+  };
 
   const logout = () => {
     dispatch(logoutUser());
@@ -41,31 +37,41 @@ const goToSalons = () => {
   return (
     <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-rose-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-
         {/* Logo */}
         <div
           className="flex items-center gap-2 cursor-pointer group"
           onClick={() => navigate("/")}
         >
-          <div className="bg-rose-500 p-1.5 rounded-lg transition-transform group-hover:rotate-12">
-            <Scissors className="w-5 h-5 text-white" />
+          <div className="rounded-lg transition-transform group-hover:rotate-12">
+            
+          <img
+            src="/logo.jpeg"
+            alt="Logo"
+            className="h-12 object-contain"
+          />
           </div>
-          <span className="font-extrabold text-2xl tracking-tight bg-gradient-to-r from-rose-600 to-pink-500 bg-clip-text text-transparent">
-            SalonApp
-          </span>
         </div>
 
         {/* Desktop Links */}
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-          <NavLink to="/" className={navLinkStyles}>Home</NavLink>
-         <button
-  onClick={goToSalons}
-  className="transition-all duration-300 hover:text-rose-500 text-gray-600"
->
-  Salons
-</button>
+          {!user && (
+    <NavLink to="/partner-with-us" className={navLinkStyles}>
+      Partner With Us
+    </NavLink>
+  )}
+          <NavLink to="/" className={navLinkStyles}>
+            Home
+          </NavLink>
+          <button
+            onClick={goToSalons}
+            className="transition-all duration-300 hover:text-rose-500 text-gray-600"
+          >
+            Salons
+          </button>
 
-          <NavLink to="/bookings" className={navLinkStyles}>My Bookings</NavLink>
+          <NavLink to="/bookings" className={navLinkStyles}>
+            My Bookings
+          </NavLink>
         </nav>
 
         {/* Desktop Right Actions */}
@@ -116,15 +122,21 @@ const goToSalons = () => {
       {open && (
         <div className="md:hidden absolute top-16 left-0 w-full bg-white/95 backdrop-blur-xl border-b border-rose-100 px-6 py-8 flex flex-col gap-6 shadow-xl animate-in slide-in-from-top duration-300">
           <nav className="flex flex-col gap-5 text-lg font-medium">
-            <NavLink to="/" onClick={() => setOpen(false)}>Home</NavLink>
-            <button
-  onClick={goToSalons}
-  className="text-left"
->
-  Salons
-</button>
+            {!user && (
+    <NavLink to="/partner-with-us" onClick={() => setOpen(false)}>
+      Partner With Us
+    </NavLink>
+  )}
+            <NavLink to="/" onClick={() => setOpen(false)}>
+              Home
+            </NavLink>
+            <button onClick={goToSalons} className="text-left">
+              Salons
+            </button>
 
-            <NavLink to="/bookings" onClick={() => setOpen(false)}>My Bookings</NavLink>
+            <NavLink to="/bookings" onClick={() => setOpen(false)}>
+              My Bookings
+            </NavLink>
           </nav>
 
           <div className="border-t border-rose-100 pt-6">

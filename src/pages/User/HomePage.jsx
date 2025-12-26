@@ -30,7 +30,6 @@ const HomePage = () => {
     (salon) => salon.gender === gender || salon.gender === 'unisex'
   );
 
-
   useEffect(() => {
     dispatch(fetchAllFeaturedSaloons());
     dispatch(fetchAllCategories());
@@ -42,12 +41,15 @@ const HomePage = () => {
   (position) => {
     setLat(position.coords.latitude);
     setLng(position.coords.longitude);
+    localStorage.setItem('lat', position.coords.latitude);
+    localStorage.setItem('lng', position.coords.longitude);
     console.log("User's location:", position.coords);
   },
   (error) => console.error("Error code:", error.code),
   { enableHighAccuracy: true, timeout: 15000 }
 );
   }, []);
+
 
   useEffect(() => {
   dispatch(setSelectedCategory(gender));

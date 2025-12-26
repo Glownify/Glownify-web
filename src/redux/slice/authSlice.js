@@ -16,9 +16,10 @@ export const login = createAsyncThunk(
   }
 );
 
-export const registerUser = createAsyncThunk(
+export const register = createAsyncThunk(
   'auth/register',
   async (userData, thunkAPI) => {
+    console.log("Registering user with data:", userData);
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/signup`, userData);
       return res.data; 
@@ -87,6 +88,17 @@ export const logoutUser = createAsyncThunk(
         state.user = null;
         state.token = null;
         state.role = null;
+      })
+      .addCase(register.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(register.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(register.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

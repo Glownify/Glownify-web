@@ -112,6 +112,62 @@ export const fetchAllSalonsByCategory = createAsyncThunk(
     }
 );
 
+export const fetchAllStates = createAsyncThunk(
+  "superadmin/fetchAllStates",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/state-city/get-all-states`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = response.data;
+      if (response.status !== 200) {
+        return thunkAPI.rejectWithValue(
+          data.message || "Failed to fetch states"
+        );
+      }
+      return data.states; // Assuming the API returns { states: [...] }
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.message || "Failed to fetch states"
+      );
+    }
+  }
+);
+
+export const fetchAllCitiesByStateId = createAsyncThunk(
+  "superadmin/fetchAllCitiesByStateId",
+  async (stateId, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/state-city/get-cities-by-state/${stateId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = response.data;
+      if (response.status !== 200) {
+        return thunkAPI.rejectWithValue(
+          data.message || "Failed to fetch cities by state"
+        );
+      }
+      return data.cities; // Assuming the API returns { cities: [...] }
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.message || "Failed to fetch cities by state"
+      );
+    }
+  }
+);
+
 const userSlice = createSlice({
     name: "user",
     initialState: {
@@ -119,6 +175,8 @@ const userSlice = createSlice({
         categories: [],
         homeSaloonsByCategory: [],
         salons: [],
+        states: [],
+        cities: [],
         saloonDetails: null,
         selectedCategory: "women",
         lat: null,
@@ -195,6 +253,30 @@ setLocation: (state, action) => {
                 state.salons = action.payload;
             })
             .addCase(fetchAllSalonsByCategory.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(fetchAllStates.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchAllStates.fulfilled, (state, action) => {
+                state.loading = false;
+                state.states = action.payload;
+            })
+            .addCase(fetchAllStates.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(fetchAllCitiesByStateId.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchAllCitiesByStateId.fulfilled, (state, action) => {
+                state.loading = false;
+                state.cities = action.payload;
+            })
+            .addCase(fetchAllCitiesByStateId.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

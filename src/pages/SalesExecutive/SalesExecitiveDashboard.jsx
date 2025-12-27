@@ -42,7 +42,7 @@ const SalesExecutiveDashboard = () => {
           <h2 className="text-lg font-bold text-slate-800">Sales Network</h2>
           <div className="flex gap-2">
              <span className="text-xs font-medium bg-slate-100 text-slate-600 px-3 py-1 rounded-full uppercase tracking-wider">
-               {salesmen.length} Active Members
+               {salesmen?.length} Active Members
              </span>
           </div>
         </div>

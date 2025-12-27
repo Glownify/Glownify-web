@@ -103,7 +103,7 @@ const ManageServicesPage = () => {
           <p className="text-slate-500 mt-1 text-lg">Manage your salon menu</p>
         </div>
 
-        <button onClick={() => navigate("/saloon-owner/manage-add-ons")}>Add Ons</button>
+        <button onClick={() => navigate("/salon-owner/manage-add-ons")}>Add Ons</button>
         <button
           onClick={openCreateModal}
           className="group flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg shadow-purple-200 hover:-translate-y-0.5"

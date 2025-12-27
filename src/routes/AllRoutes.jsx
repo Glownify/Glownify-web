@@ -69,6 +69,10 @@ import SalonsPage from "../pages/User/SalonsPage";
 import PartnerWithUsPage from "../pages/Common/PartnerWithUsPage";
 import SalonOwnerRegisterPage from "../pages/Common/SalonOwnerRegisterPage";
 import IndependentProfessionalRegistrarionPage from "../pages/Common/IndependentProfessionalRegistrarionPage";
+import BlogPage from "../pages/Common/BlogPage";
+import AboutPage from "../pages/Common/AboutPage";
+import ContactPage from "../pages/Common/ContactPage";
+// import CareersPage from "../pages/Common/CareersPage";
 
 const AllRoutes = () => {
   return (
@@ -100,6 +104,10 @@ const AllRoutes = () => {
               <Route path="reviews" element={<SalonReviews />} />
               <Route path="specialists" element={<SalonSpecialists />} />
             </Route>
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/blogs" element={<BlogPage />} />
+            {/* <Route path="/careers" element={<CareersPage />} /> */}
           </Route>
 
           {/* PROTECTED CUSTOMER ROUTES */}

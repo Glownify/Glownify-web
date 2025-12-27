@@ -1,18 +1,8 @@
-import React,{ memo, useEffect } from 'react';
-import AOS from "aos";
-import "aos/dist/aos.css";
+import React from 'react'
 
-function ContactPage() {
-    useEffect(() => {
-        AOS.init({
-          duration: 800,
-          once: true,
-        });
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }, []);
-
+const ContactPage = () => {
   return (
-       <section className="w-full min-h-screen bg-gray-50 px-4 py-10">
+     <section className="w-full min-h-screen bg-gray-50 px-4 py-10">
       <div className="max-w-6xl mx-auto">
 
         {/* Heading */}
@@ -110,4 +100,4 @@ function ContactPage() {
   )
 }
 
-export default memo(ContactPage)
+export default ContactPage

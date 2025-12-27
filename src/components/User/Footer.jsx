@@ -25,15 +25,15 @@ const Footer = () => {
         <div>
           <p className='font-semibold text-2xl mb-3'>Quick Links</p>
           <ul className='space-y-1.5'>
-            <li><Link to='/aboutpage' className="hover:underline">About Us</Link></li>
+            <li><Link to='/about' className="hover:underline">About Us</Link></li>
             <li>
-              <Link to='/contactpage' className="hover:underline">Contact</Link>
+              <Link to='/contact' className="hover:underline">Contact</Link>
             </li>
              <li>
-              <Link to='/partnerwithus' className="hover:underline">Career</Link>
+              <Link to='/partner-with-us' className="hover:underline">Career</Link>
             </li>
              <li>
-              <Link to='/blogpage' className="hover:underline">Blog</Link>
+              <Link to='/blogs' className="hover:underline">Blog</Link>
             </li>
             {/* <li>Blog</li> */}
           </ul>

@@ -65,7 +65,7 @@ const Footer = () => {
 
       {/* Bottom Bar */}
       <div className='grid md:grid-cols-2 mt-4 text-sm opacity-80'>
-        <p>© 2025 Glamour Studio. All rights reserved.</p>
+        <p>© 2025 Glownify Studio. All rights reserved.</p>
         <p className='md:text-end'>Powered by VaishaliTech</p>
       </div>
     </footer>

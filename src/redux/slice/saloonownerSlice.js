@@ -30,47 +30,61 @@ export const fetchAllCategories = createAsyncThunk(
   }
 );
 
-
 export const fetchAllServiceItems = createAsyncThunk(
   "saloonowner/fetchAllServiceItems",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/salon-admin/get-service-items`,{
-        headers: {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/salon-admin/get-service-items`,
+        {
+          headers: {
             "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        });
-        const data = response.data;
-        if(response.status !== 200){
-          return thunkAPI.rejectWithValue(data.message || "Failed to fetch services");
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-        return data.services;
+      );
+      const data = response.data;
+      if (response.status !== 200) {
+        return thunkAPI.rejectWithValue(
+          data.message || "Failed to fetch services"
+        );
+      }
+      return data.services;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to fetch services");
+      return thunkAPI.rejectWithValue(
+        error.message || "Failed to fetch services"
+      );
     }
-    }
+  }
 );
 
 export const createServiceItem = createAsyncThunk(
   "saloonowner/createServiceItem",
   async (serviceData, thunkAPI) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/salon-admin/create-service-item`, serviceData,{
-        headers: {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/salon-admin/create-service-item`,
+        serviceData,
+        {
+          headers: {
             "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        });
-        const data = response.data;
-        if(response.status !== 201){
-          return thunkAPI.rejectWithValue(data.message || "Failed to create service item");
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-        return data.service;
+      );
+      const data = response.data;
+      if (response.status !== 201) {
+        return thunkAPI.rejectWithValue(
+          data.message || "Failed to create service item"
+        );
+      }
+      return data.service;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to create service item");
+      return thunkAPI.rejectWithValue(
+        error.message || "Failed to create service item"
+      );
     }
-    }
+  }
 );
 
 export const editServiceItem = createAsyncThunk(
@@ -78,42 +92,61 @@ export const editServiceItem = createAsyncThunk(
   async ({ serviceId, serviceData }, thunkAPI) => {
     console.log("Editing Service Item:", serviceId, serviceData);
     try {
-      const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/salon-admin/update-service-item/${serviceId}`, serviceData,{
-        headers: {
+      const response = await axios.put(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/salon-admin/update-service-item/${serviceId}`,
+        serviceData,
+        {
+          headers: {
             "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        });
-        const data = response.data;
-        if(response.status !== 200){
-          return thunkAPI.rejectWithValue(data.message || "Failed to edit service item");
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-        return data.service;
+      );
+      const data = response.data;
+      if (response.status !== 200) {
+        return thunkAPI.rejectWithValue(
+          data.message || "Failed to edit service item"
+        );
+      }
+      return data.service;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to edit service item");
+      return thunkAPI.rejectWithValue(
+        error.message || "Failed to edit service item"
+      );
     }
-    }
+  }
 );
 
 export const deleteServiceItem = createAsyncThunk(
   "saloonowner/deleteServiceItem",
   async (serviceId, thunkAPI) => {
     try {
-      const response = await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/salon-admin/delete-service-item/${serviceId}`,{
-        headers: {
+      const response = await axios.delete(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/salon-admin/delete-service-item/${serviceId}`,
+        {
+          headers: {
             "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        });
-        const data = response.data;
-        if(response.status !== 200){
-          return thunkAPI.rejectWithValue(data.message || "Failed to delete service item");
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-        return serviceId;
+      );
+      const data = response.data;
+      if (response.status !== 200) {
+        return thunkAPI.rejectWithValue(
+          data.message || "Failed to delete service item"
+        );
+      }
+      return serviceId;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to delete service item");
+      return thunkAPI.rejectWithValue(
+        error.message || "Failed to delete service item"
+      );
     }
-    }
+  }
 );
 
 export const fetchAllSpecialists = createAsyncThunk(
@@ -181,7 +214,9 @@ export const editSpecialist = createAsyncThunk(
     console.log("Editing Specialist:", specialistId, specialistData);
     try {
       const response = await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/salon-admin/update-specialist/${specialistId}`,
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/salon-admin/update-specialist/${specialistId}`,
         specialistData,
         {
           headers: {
@@ -210,7 +245,9 @@ export const deleteSpecialist = createAsyncThunk(
   async (specialistId, thunkAPI) => {
     try {
       const response = await axios.delete(
-        `${import.meta.env.VITE_API_BASE_URL}/salon-admin/delete-specialist/${specialistId}`,
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/salon-admin/delete-specialist/${specialistId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -266,86 +303,151 @@ export const createAddOn = createAsyncThunk(
   async (addOnData, thunkAPI) => {
     try {
       console.log("Creating Add-On Service with Data:", addOnData);
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/salon-admin/create-add-on`, addOnData,{
-        headers: {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/salon-admin/create-add-on`,
+        addOnData,
+        {
+          headers: {
             "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        });
-        const data = response.data;
-        if(response.status !== 201){
-          return thunkAPI.rejectWithValue(data.message || "Failed to create add-on service");
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-        return data.addOn;
+      );
+      const data = response.data;
+      if (response.status !== 201) {
+        return thunkAPI.rejectWithValue(
+          data.message || "Failed to create add-on service"
+        );
+      }
+      return data.addOn;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to create add-on service");
+      return thunkAPI.rejectWithValue(
+        error.message || "Failed to create add-on service"
+      );
     }
-    }
+  }
 );
 
 export const editAddOn = createAsyncThunk(
   "saloonowner/editAddOn",
-  async ( {addOnId, addOnData }, thunkAPI) => {
+  async ({ addOnId, addOnData }, thunkAPI) => {
     console.log("Editing Add-On Service:", addOnId, addOnData);
     try {
-      const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/salon-admin/update-add-on/${addOnId}`, addOnData,{
-        headers: {
+      const response = await axios.put(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/salon-admin/update-add-on/${addOnId}`,
+        addOnData,
+        {
+          headers: {
             "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        });
-        const data = response.data;
-        if(response.status !== 200){
-          return thunkAPI.rejectWithValue(data.message || "Failed to edit add-on service");
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-        return data.addOn;
+      );
+      const data = response.data;
+      if (response.status !== 200) {
+        return thunkAPI.rejectWithValue(
+          data.message || "Failed to edit add-on service"
+        );
+      }
+      return data.addOn;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to edit add-on service");
+      return thunkAPI.rejectWithValue(
+        error.message || "Failed to edit add-on service"
+      );
     }
-    }
+  }
 );
 
 export const deleteAddOn = createAsyncThunk(
   "saloonowner/deleteAddOn",
   async (addOnId, thunkAPI) => {
     try {
-      const response = await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/salon-admin/delete-add-on/${addOnId}`,{
-        headers: {
+      const response = await axios.delete(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/salon-admin/delete-add-on/${addOnId}`,
+        {
+          headers: {
             "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        });
-        const data = response.data;
-        if(response.status !== 200){
-          return thunkAPI.rejectWithValue(data.message || "Failed to delete add-on service");
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-        return addOnId;
+      );
+      const data = response.data;
+      if (response.status !== 200) {
+        return thunkAPI.rejectWithValue(
+          data.message || "Failed to delete add-on service"
+        );
+      }
+      return addOnId;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to delete add-on service");
+      return thunkAPI.rejectWithValue(
+        error.message || "Failed to delete add-on service"
+      );
     }
-    }
+  }
 );
 
 export const fetchAllAddOns = createAsyncThunk(
   "saloonowner/fetchAllAddOns",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/salon-admin/get-add-ons`,{
-        headers: {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/salon-admin/get-add-ons`,
+        {
+          headers: {
             "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        });
-        console.log("Fetch All Add-Ons Response:", response);
-        const data = response.data;
-        if(response.status !== 200){
-          return thunkAPI.rejectWithValue(data.message || "Failed to fetch add-on services");
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-        return data.addOns;
+      );
+      console.log("Fetch All Add-Ons Response:", response);
+      const data = response.data;
+      if (response.status !== 200) {
+        return thunkAPI.rejectWithValue(
+          data.message || "Failed to fetch add-on services"
+        );
+      }
+      return data.addOns;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to fetch add-on services");
+      return thunkAPI.rejectWithValue(
+        error.message || "Failed to fetch add-on services"
+      );
     }
+  }
+);
+
+export const fetchAllSubscriptions = createAsyncThunk(
+  "saloonowner/fetchAllSubscriptions",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/salon-admin/get-subscription-plans`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log("Fetch All Subscriptions Response:", response);
+      const data = response.data;
+      if (response.status !== 200) {
+        return thunkAPI.rejectWithValue(
+          data.message || "Failed to fetch subscriptions"
+        );
+      }
+      return data.plans;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.message || "Failed to fetch subscriptions"
+      );
     }
+  }
 );
 
 const saloonownerSlice = createSlice({
@@ -356,207 +458,220 @@ const saloonownerSlice = createSlice({
     specialists: [],
     bookings: [],
     addOns: [],
+    subscriptions: [],
     loading: false,
     error: null,
-    },
-    reducers: {},
-    extraReducers: (builder) => {
-        builder
-            .addCase(fetchAllCategories.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(fetchAllCategories.fulfilled, (state, action) => {
-                state.loading = false;
-                state.categories = action.payload;
-            })
-            .addCase(fetchAllCategories.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(fetchAllServiceItems.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(fetchAllServiceItems.fulfilled, (state, action) => {
-                state.loading = false;
-                state.serviceItems = action.payload;
-            })
-            .addCase(fetchAllServiceItems.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(createServiceItem.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(createServiceItem.fulfilled, (state, action) => {
-                state.loading = false;
-                state.serviceItems.push(action.payload);
-            })
-            .addCase(createServiceItem.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(editServiceItem.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(editServiceItem.fulfilled, (state, action) => {
-                state.loading = false;
-                const index = state.serviceItems.findIndex(
-                    (item) => item._id === action.payload._id
-                );
-                if (index !== -1) {
-                    state.serviceItems[index] = action.payload;
-                }
-            })
-            .addCase(editServiceItem.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(deleteServiceItem.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(deleteServiceItem.fulfilled, (state, action) => {
-                state.loading = false;
-                state.serviceItems = state.serviceItems.filter(
-                    (item) => item._id !== action.payload
-                );
-            })
-            .addCase(deleteServiceItem.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(fetchAllSpecialists.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(fetchAllSpecialists.fulfilled, (state, action) => {
-                state.loading = false;
-                state.specialists = action.payload;
-            })
-            .addCase(fetchAllSpecialists.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(createSpecialist.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(createSpecialist.fulfilled, (state, action) => {
-                state.loading = false;
-                state.specialists.push(action.payload);
-            })
-            .addCase(createSpecialist.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(editSpecialist.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(editSpecialist.fulfilled, (state, action) => {
-                state.loading = false;
-                const index = state.specialists.findIndex(
-                    (specialist) => specialist._id === action.payload._id
-                );
-                if (index !== -1) {
-                    state.specialists[index] = action.payload;
-                }
-            })
-            .addCase(editSpecialist.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(deleteSpecialist.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(deleteSpecialist.fulfilled, (state, action) => {
-                state.loading = false;
-                state.specialists = state.specialists.filter(
-                    (specialist) => specialist._id !== action.payload
-                );
-            })
-            .addCase(deleteSpecialist.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(fetchBookings.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(fetchBookings.fulfilled, (state, action) => {
-                state.loading = false;
-                state.bookings = action.payload;
-            })
-            .addCase(fetchBookings.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(createAddOn.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(createAddOn.fulfilled, (state, action) => {
-                state.loading = false;
-                state.addOns.push(action.payload);
-            })
-            .addCase(createAddOn.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(editAddOn.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(editAddOn.fulfilled, (state, action) => {
-  state.loading = false;
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchAllCategories.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllCategories.fulfilled, (state, action) => {
+        state.loading = false;
+        state.categories = action.payload;
+      })
+      .addCase(fetchAllCategories.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchAllServiceItems.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllServiceItems.fulfilled, (state, action) => {
+        state.loading = false;
+        state.serviceItems = action.payload;
+      })
+      .addCase(fetchAllServiceItems.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(createServiceItem.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createServiceItem.fulfilled, (state, action) => {
+        state.loading = false;
+        state.serviceItems.push(action.payload);
+      })
+      .addCase(createServiceItem.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(editServiceItem.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(editServiceItem.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.serviceItems.findIndex(
+          (item) => item._id === action.payload._id
+        );
+        if (index !== -1) {
+          state.serviceItems[index] = action.payload;
+        }
+      })
+      .addCase(editServiceItem.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteServiceItem.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteServiceItem.fulfilled, (state, action) => {
+        state.loading = false;
+        state.serviceItems = state.serviceItems.filter(
+          (item) => item._id !== action.payload
+        );
+      })
+      .addCase(deleteServiceItem.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchAllSpecialists.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllSpecialists.fulfilled, (state, action) => {
+        state.loading = false;
+        state.specialists = action.payload;
+      })
+      .addCase(fetchAllSpecialists.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(createSpecialist.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createSpecialist.fulfilled, (state, action) => {
+        state.loading = false;
+        state.specialists.push(action.payload);
+      })
+      .addCase(createSpecialist.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(editSpecialist.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(editSpecialist.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.specialists.findIndex(
+          (specialist) => specialist._id === action.payload._id
+        );
+        if (index !== -1) {
+          state.specialists[index] = action.payload;
+        }
+      })
+      .addCase(editSpecialist.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteSpecialist.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteSpecialist.fulfilled, (state, action) => {
+        state.loading = false;
+        state.specialists = state.specialists.filter(
+          (specialist) => specialist._id !== action.payload
+        );
+      })
+      .addCase(deleteSpecialist.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchBookings.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchBookings.fulfilled, (state, action) => {
+        state.loading = false;
+        state.bookings = action.payload;
+      })
+      .addCase(fetchBookings.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(createAddOn.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createAddOn.fulfilled, (state, action) => {
+        state.loading = false;
+        state.addOns.push(action.payload);
+      })
+      .addCase(createAddOn.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(editAddOn.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(editAddOn.fulfilled, (state, action) => {
+        state.loading = false;
 
-  if (!action.payload) return;
+        if (!action.payload) return;
 
-  const index = state.addOns.findIndex(
-    (item) => item._id === action.payload._id
-  );
+        const index = state.addOns.findIndex(
+          (item) => item._id === action.payload._id
+        );
 
-  if (index !== -1) {
-    state.addOns[index] = action.payload;
-  }
-})
+        if (index !== -1) {
+          state.addOns[index] = action.payload;
+        }
+      })
 
-            .addCase(editAddOn.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(deleteAddOn.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(deleteAddOn.fulfilled, (state, action) => {
-                state.loading = false;
-                state.addOns = state.addOns.filter(
-                    (item) => item._id !== action.payload
-                );
-            })
-            .addCase(deleteAddOn.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(fetchAllAddOns.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(fetchAllAddOns.fulfilled, (state, action) => {
-                state.loading = false;
-                state.addOns = action.payload;
-            })
-            .addCase(fetchAllAddOns.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            });
-    },
+      .addCase(editAddOn.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteAddOn.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteAddOn.fulfilled, (state, action) => {
+        state.loading = false;
+        state.addOns = state.addOns.filter(
+          (item) => item._id !== action.payload
+        );
+      })
+      .addCase(deleteAddOn.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchAllAddOns.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllAddOns.fulfilled, (state, action) => {
+        state.loading = false;
+        state.addOns = action.payload;
+      })
+      .addCase(fetchAllAddOns.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchAllSubscriptions.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllSubscriptions.fulfilled, (state, action) => {
+        state.loading = false;
+        state.subscriptions = action.payload;
+      })
+      .addCase(fetchAllSubscriptions.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
 });
 
 export default saloonownerSlice.reducer;

@@ -5,8 +5,19 @@ import {
   Users,
   TrendingUp,
 } from "lucide-react";
+import { useEffect } from "react";
+import { checkSubscription } from "../../utils/checkSubscription";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const SalonOwnerDashboard = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if(location.state?.skipSubscriptionCheck) return;
+    checkSubscription(navigate);
+  }, [navigate]);
   const stats = [
     {
       icon: <CalendarDays className="w-5 h-5 text-white" />,

@@ -33,6 +33,7 @@ import AIHairstyleScannerPage from "../pages/SalonOwner/AIHairstyleScannerPage";
 import AIPosterCreatorPage from "../pages/SalonOwner/AIPosterCreatorPage";
 import SalonOwnerProfilePage from "../pages/SalonOwner/SalonOwnerProfilePage";
 import ManageAddOnPage from "../pages/SalonOwner/ManageAddOnPage";
+import SubscriptionPage from "../pages/SalonOwner/SubscriptionPage";
 
 // Salesman Pages
 import SalesmanDashboard from "../pages/Salesman/SalesmanDashboard";
@@ -179,6 +180,7 @@ const AllRoutes = () => {
               <Route path="manage-add-ons" element={<ManageAddOnPage />} />
               <Route path="profile" element={<SalonOwnerProfilePage />} />
             </Route>
+            <Route path="subscription" element={<SubscriptionPage />} />
           </Route>
 
           {/* SALESMAN */}

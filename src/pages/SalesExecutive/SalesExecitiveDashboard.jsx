@@ -63,7 +63,7 @@ const SalesExecutiveDashboard = () => {
                 <tr key={person.salesmanId} className="group hover:bg-slate-50/80 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-slate-200 to-slate-100 flex items-center justify-center font-bold text-slate-600 uppercase">
+                      <div className="h-10 w-10 rounded-full bg-linear-to-tr from-slate-200 to-slate-100 flex items-center justify-center font-bold text-slate-600 uppercase">
                         {person.name.charAt(0)}
                       </div>
                       <span className="font-semibold text-slate-700">{person.name}</span>

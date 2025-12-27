@@ -1,5 +1,6 @@
 import React from 'react';
-import { Store, Sparkles, ArrowRight, Smartphone } from 'lucide-react';
+import { Store, Sparkles, ArrowRight, Smartphone} from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const ServicesBanner = () => {
   return (
@@ -30,10 +31,21 @@ const ServicesBanner = () => {
           </div>
 
           <div className="relative z-10 mt-6">
-            <button className="flex items-center gap-2 bg-[#FFBC86] text-[#5A2C1E] font-bold py-2.5 px-6 rounded-xl hover:bg-white transition-colors text-sm">
-              Partner With Us
-              <ArrowRight size={16} />
-            </button>
+            <Link
+  to="/partner-with-us"
+  className="group inline-flex items-center gap-2 
+             bg-[#FFBC86] text-[#5A2C1E]
+             font-bold py-2.5 px-6 rounded-xl
+             text-sm transition-all duration-300
+             hover:bg-white focus:outline-none
+             focus:ring-2 focus:ring-[#FFBC86]"
+>
+  Partner With Us
+  <ArrowRight
+    size={16}
+    className="transition-transform duration-300 group-hover:translate-x-1"
+  />
+</Link>
           </div>
         </div>
 

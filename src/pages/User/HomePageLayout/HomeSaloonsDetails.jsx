@@ -17,7 +17,7 @@ const HomeSaloonsDetails = () => {
     }
   }, [dispatch, id]);
 
-  console.log("Saloon Details:", saloonDetails);
+  // console.log("Saloon Details:", saloonDetails);
 
   if (loading) return <p className="p-4">Loading salon details...</p>;
   if (error) return <p className="p-4 text-red-500">{error}</p>;

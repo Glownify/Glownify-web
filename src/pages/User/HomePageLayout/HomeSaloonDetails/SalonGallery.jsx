@@ -1,11 +1,10 @@
 import React from "react";
+import { useOutletContext } from "react-router-dom";
 
 const SalonGallery = () => {
-  const images = [
-    "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9",
-    "https://images.unsplash.com/photo-1515377905703-c4788e51af15",
-    "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f",
-  ];
+  const { saloonDetails } = useOutletContext();
+
+  const images = saloonDetails?.galleryImages || [];
 
   return (
     <div className="p-4 grid grid-cols-2 md:grid-cols-3 gap-4">

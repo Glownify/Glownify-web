@@ -202,6 +202,7 @@ export const createSpecialist = createAsyncThunk(
       return data.specialist;
     } catch (error) {
       return thunkAPI.rejectWithValue(
+        console.log("Error Creating Specialist:", error.message),
         error.message || "Failed to create specialist"
       );
     }

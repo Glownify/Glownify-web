@@ -278,8 +278,8 @@ const ManageServicesPage = () => {
               <div className="space-y-1">
                 <label className="text-sm font-semibold text-slate-700 ml-1">Provider Type</label>
                 <select name="providerType" className="w-full border-slate-200 border rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none bg-white" value={form.providerType} onChange={handleChange}>
-                  <option value="salon">Salon</option>
-                  <option value="freelancer">Freelancer</option>
+                  <option value="Salon">Salon</option>
+                  <option value="IndependentProfessional">Independent Professional</option>
                 </select>
               </div>
               <div className="space-y-1">

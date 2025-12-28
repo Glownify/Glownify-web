@@ -72,6 +72,7 @@ import IndependentProfessionalRegistrarionPage from "../pages/Common/Independent
 import BlogPage from "../pages/Common/BlogPage";
 import AboutPage from "../pages/Common/AboutPage";
 import ContactPage from "../pages/Common/ContactPage";
+import CartPage from "../pages/User/CartPage";
 // import CareersPage from "../pages/Common/CareersPage";
 
 const AllRoutes = () => {
@@ -107,6 +108,7 @@ const AllRoutes = () => {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/blogs" element={<BlogPage />} />
+            <Route path="/cart" element={<CartPage />} />
             {/* <Route path="/careers" element={<CareersPage />} /> */}
           </Route>
 

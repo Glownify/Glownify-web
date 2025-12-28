@@ -168,6 +168,29 @@ export const fetchAllCitiesByStateId = createAsyncThunk(
   }
 );
 
+export const fetchServiceItemByCategory = createAsyncThunk(
+  "user/fetchServiceItemByCategory",
+  async ({ salonId, categoryId }, thunkAPI) => {
+    console.log("Fetching Service Items for Salon ID:", salonId, "Category ID:", categoryId);
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/get-serviceItems-by-category/${salonId}/${categoryId}`,{
+        
+        headers: {
+            "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        });
+        const data = response.data;
+        if(response.status !== 200){
+          return thunkAPI.rejectWithValue(data.message || "Failed to fetch services by category");
+        }
+        return data.services;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message || "Failed to fetch services by category");
+    }
+    }
+);
+
 const userSlice = createSlice({
     name: "user",
     initialState: {
@@ -179,6 +202,7 @@ const userSlice = createSlice({
         cities: [],
         saloonDetails: null,
         selectedCategory: "women",
+        serviceItems: [],
         lat: null,
         lng: null,
         loading: false,
@@ -277,6 +301,18 @@ setLocation: (state, action) => {
                 state.cities = action.payload;
             })
             .addCase(fetchAllCitiesByStateId.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(fetchServiceItemByCategory.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchServiceItemByCategory.fulfilled, (state, action) => {
+                state.loading = false;
+                state.serviceItems = action.payload;
+            })
+            .addCase(fetchServiceItemByCategory.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

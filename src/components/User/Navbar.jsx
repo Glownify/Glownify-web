@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Menu, X, LogOut, Scissors } from "lucide-react";
+import { Menu, X, LogOut, Scissors, ShoppingCart } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../redux/slice/authSlice";
 
@@ -78,6 +78,9 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-6">
           {user ? (
             <>
+              <NavLink to="/cart" className="relative">
+                <ShoppingCart className="w-6 h-6 text-gray-600 hover:text-rose-600 transition" />
+              </NavLink>
               <NavLink to="/profile">
                 <div className="flex items-center gap-3 px-3 py-1.5 rounded-full bg-rose-50 border border-rose-100 hover:bg-rose-100 transition cursor-pointer">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-rose-500 to-pink-400 flex items-center justify-center text-white shadow-md">

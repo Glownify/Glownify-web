@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { handleAxiosError } from "../../utils/HandleErrors";
 
 export const fetchAllCategories = createAsyncThunk(
   "saloonowner/fetchAllCategories",
@@ -17,15 +18,11 @@ export const fetchAllCategories = createAsyncThunk(
       const data = response.data;
       console.log("Categories Response Data:", data);
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch categories"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.categories; // Assuming the API returns { categories: [...] }
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to fetch categories"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -45,15 +42,11 @@ export const fetchAllServiceItems = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch services"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.services;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to fetch services"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -74,15 +67,11 @@ export const createServiceItem = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 201) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to create service item"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.service;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to create service item"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -106,15 +95,11 @@ export const editServiceItem = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to edit service item"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.service;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to edit service item"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -136,15 +121,11 @@ export const deleteServiceItem = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to delete service item"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return serviceId;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to delete service item"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -165,15 +146,11 @@ export const fetchAllSpecialists = createAsyncThunk(
       const data = response.data;
       console.log("Specialists Response Data:", data);
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch specialists"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.specialists; // Assuming the API returns { specialists: [...] }
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to fetch specialists"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -195,16 +172,11 @@ export const createSpecialist = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 201) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to create specialist"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.specialist;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        console.log("Error Creating Specialist:", error.message),
-        error.message || "Failed to create specialist"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -228,17 +200,13 @@ export const editSpecialist = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to edit specialist"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.specialist;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to edit specialist"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
-  }
+    }
 );
 
 export const deleteSpecialist = createAsyncThunk(
@@ -258,15 +226,11 @@ export const deleteSpecialist = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to delete specialist"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return specialistId;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to delete specialist"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -286,15 +250,11 @@ export const fetchBookings = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch bookings"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.bookings; // Assuming the API returns { bookings: [...] }
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to fetch bookings"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -316,15 +276,11 @@ export const createAddOn = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 201) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to create add-on service"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.addOn;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to create add-on service"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -348,15 +304,11 @@ export const editAddOn = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to edit add-on service"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.addOn;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to edit add-on service"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -378,15 +330,11 @@ export const deleteAddOn = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to delete add-on service"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return addOnId;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to delete add-on service"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -407,15 +355,11 @@ export const fetchAllAddOns = createAsyncThunk(
       console.log("Fetch All Add-Ons Response:", response);
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch add-on services"
-        );
-      }
+        return handleAxiosError(error, thunkAPI);
+      } 
       return data.addOns;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to fetch add-on services"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -438,15 +382,11 @@ export const fetchAllSubscriptions = createAsyncThunk(
       console.log("Fetch All Subscriptions Response:", response);
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch subscriptions"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.plans;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to fetch subscriptions"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );

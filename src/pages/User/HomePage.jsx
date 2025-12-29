@@ -12,6 +12,7 @@ import { GenderSwitch } from "./HomePageLayout/GenderSwitch";
 import TopRatedSaloons from "./HomePageLayout/TopRatedSaloons";
 import HomeSaloons from "./HomePageLayout/HomeSaloons";
 import { setSelectedCategory, setLocation } from "../../redux/slice/userSlice";
+import toast from "react-hot-toast";
 
 
 
@@ -31,24 +32,57 @@ const HomePage = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchAllFeaturedSaloons());
-    dispatch(fetchAllCategories());
-  }, [dispatch]);
+  const loadHomeData = async () => {
+    try {
+      const salonsPromise = dispatch(fetchAllFeaturedSaloons()).unwrap();
+      const categoriesPromise = dispatch(fetchAllCategories()).unwrap();
+
+      await toast.promise(
+        Promise.all([salonsPromise, categoriesPromise]),
+        {
+          loading: "Loading salons & categories...",
+          success: "Welcome 👋",
+          error: (err) =>
+            err?.message || "Failed to load homepage data",
+        }
+      );
+    } catch (error) {
+      console.error("Homepage data load failed:", error);
+    }
+  };
+
+  loadHomeData();
+}, [dispatch]);
 
 
-  useEffect(() => {
+
+ useEffect(() => {
   navigator.geolocation.getCurrentPosition(
-  (position) => {
-    setLat(position.coords.latitude);
-    setLng(position.coords.longitude);
-    localStorage.setItem('lat', position.coords.latitude);
-    localStorage.setItem('lng', position.coords.longitude);
-    console.log("User's location:", position.coords);
-  },
-  (error) => console.error("Error code:", error.code),
-  { enableHighAccuracy: true, timeout: 15000 }
-);
-  }, []);
+    (position) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      setLat(latitude);
+      setLng(longitude);
+
+      localStorage.setItem("lat", latitude);
+      localStorage.setItem("lng", longitude);
+
+      toast.success("Location detected 📍");
+    },
+    (error) => {
+      console.error("Geolocation error:", error);
+
+      if (error.code === error.PERMISSION_DENIED) {
+        toast.error("Location permission denied");
+      } else {
+        toast.error("Unable to detect location");
+      }
+    },
+    { enableHighAccuracy: true, timeout: 15000 }
+  );
+}, []);
+
 
 
   useEffect(() => {

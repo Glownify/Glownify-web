@@ -19,7 +19,7 @@ const Sidebar = () => {
           <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center text-white font-bold">
             {roleConfig.avatar}
           </div>
-          <span className="font-bold text-gray-800 tracking-tight">SALON CRM</span>
+          <span className="font-bold text-gray-800 tracking-tight">{(user?.role || "User").toUpperCase()}</span>
         </div>
       </div>
 

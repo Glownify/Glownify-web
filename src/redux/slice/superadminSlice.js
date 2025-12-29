@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { handleAxiosError } from "../../utils/HandleErrors";
 
 export const fetchDashboardData = createAsyncThunk(
   "superadmin/fetchDashboardData",
@@ -16,13 +17,11 @@ export const fetchDashboardData = createAsyncThunk(
       );
       const data = res.data;
       if (res.status !== 200) {
-        return thunkAPI.rejectWithValue("Failed to fetch dashboard data");
+        return handleAxiosError(error, thunkAPI);
       }
       return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to fetch dashboard data"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -42,15 +41,11 @@ export const fetchAllSalons = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch salons"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.salons; // Assuming the API returns { salons: [...] }
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to fetch salons"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -70,15 +65,11 @@ export const fetchAllCategories = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch categories"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.categories; // Assuming the API returns { categories: [...] }
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to fetch categories"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -99,15 +90,11 @@ export const addCategory = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200 && response.status !== 201) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to add category"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.category; // Assuming the API returns { category: {...} }
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to add category"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -131,15 +118,11 @@ export const updateCategory = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200 && response.status !== 201) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to update category"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.category; // Assuming the API returns { category: {...} }
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to update category"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -159,13 +142,11 @@ export const fetchAllUsers = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch users"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.users; // Assuming the API returns { users: [...] }
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to fetch users");
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -187,11 +168,11 @@ export const blockUser = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200 && response.status !== 204) {
-        return thunkAPI.rejectWithValue(data.message || "Failed to block user");
+        return handleAxiosError(error, thunkAPI);
       }
       return data.user; // Assuming the API returns { user: {...} }
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to block user");
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -215,15 +196,11 @@ export const activateUser = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200 && response.status !== 204) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to activate user"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.user; // Assuming the API returns { user: {...} }
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to activate user"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -243,15 +220,11 @@ export const fetchAllCities = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch cities"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.cities; // Assuming the API returns { cities: [...] }
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to fetch cities"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -271,15 +244,11 @@ export const fetchAllStates = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch states"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.states; // Assuming the API returns { states: [...] }
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to fetch states"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -300,11 +269,11 @@ export const createState = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200 && response.status !== 201) {
-        return thunkAPI.rejectWithValue(data.message || "Failed to add state");
+        return handleAxiosError(error, thunkAPI);
       }
       return data.state; // Assuming the API returns { state: {...} }
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to add state");
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -326,11 +295,11 @@ export const createCity = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200 && response.status !== 201) {
-        return thunkAPI.rejectWithValue(data.message || "Failed to add city");
+        return handleAxiosError(error, thunkAPI);
       }
       return data.city; // Assuming the API returns { city: {...} }
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to add city");
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -352,15 +321,11 @@ export const fetchAllSalesExecutives = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch sales executives"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.salesExecutives; // Assuming the API returns { salesExecutives: [...] }
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to fetch sales executives"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -382,15 +347,11 @@ export const createSalesExecutive = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200 && response.status !== 201) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to add sales executive"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.salesExecutive; // Assuming the API returns { salesExecutive: {...} }
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to add sales executive"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -412,9 +373,7 @@ export const ResetPassword = createAsyncThunk(
 
       return response.data.message; // ✅ success message
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to reset password"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -434,15 +393,11 @@ export const fetchAllSubscriptions = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch subscriptions"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.plans; // Assuming the API returns { subscriptions: [...] }
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to fetch subscriptions"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -463,15 +418,11 @@ export const createSubscription = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200 && response.status !== 201) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to add subscription"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.plan; // Assuming the API returns { subscription: {...} }
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to add subscription"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );

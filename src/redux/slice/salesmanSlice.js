@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { handleAxiosError } from "../../utils/HandleErrors";
 
 export const fetchDashboardData = createAsyncThunk(
   "salesman/fetchDashboardData",
@@ -20,9 +21,7 @@ export const fetchDashboardData = createAsyncThunk(
         }
         return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to fetch dashboard data"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
     }
 );

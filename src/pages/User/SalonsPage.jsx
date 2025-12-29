@@ -2,20 +2,46 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchAllSalonsByCategory } from "../../redux/slice/userSlice";
 import { useEffect } from "react";
 import { MapPin, Pin, Route, Star } from "lucide-react";
+import toast from "react-hot-toast";
 
 const SalonsPage = () => {
   const dispatch = useDispatch();
   const { salons, selectedCategory, lat, lng, loading } = useSelector(
     (state) => state.user
   );
+  // const lat = localStorage.getItem("lat");
+  // const lng = localStorage.getItem("lng");
 
-  useEffect(() => {
-    if (selectedCategory && lat && lng) {
-      dispatch(
-        fetchAllSalonsByCategory({ category: selectedCategory, lat, lng })
-      );
+useEffect(() => {
+  if (!selectedCategory || !lat || !lng) return;
+
+  const fetchSalons = async () => {
+    try {
+      const fetchPromise = dispatch(
+        fetchAllSalonsByCategory({
+          category: selectedCategory,
+          lat,
+          lng,
+        })
+      ).unwrap();
+
+      await toast.promise(fetchPromise, {
+        loading: "Finding nearby salons...",
+        success: (res) =>
+          res?.length
+            ? "Salons loaded successfully ✨"
+            : "No salons found nearby",
+        error: (err) =>
+          err?.message || "Failed to load nearby salons",
+      });
+    } catch (error) {
+      console.error("Fetch salons failed:", error);
     }
-  }, [selectedCategory, lat, lng, dispatch]);
+  };
+
+  fetchSalons();
+}, [selectedCategory, lat, lng, dispatch]);
+
 
   const formatDistance = (meters) => {
     if (!meters) return "";

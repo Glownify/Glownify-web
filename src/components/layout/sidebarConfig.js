@@ -91,6 +91,7 @@ export const SIDEBAR_CONFIG = {
     menu: [
       { name: "MAIN MENU", isHeader: true },
       { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+      { name: "Manage Services", icon: Scissors, path: "/manage-services" },
       { isSeparator: true },  
       { name: "Profile", icon: User, path: "/profile" },
     ],

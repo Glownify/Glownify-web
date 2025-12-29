@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { register } from "../../redux/slice/authSlice";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 const RegisterPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { loading } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -21,10 +22,18 @@ const RegisterPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    dispatch(register(formData));
-    toast.success("Registration successful! Please log in.");
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const registerPromise = dispatch(register(formData)).unwrap();
+
+    await toast.promise(registerPromise, {
+      loading: "Creating account...",
+      success: (res) => res?.message || "Registration successful! Please log in.",
+      error: (err) => err?.message || "Registration failed",
+    });
+
     navigate("/login");
     setFormData({
       name: "",
@@ -33,7 +42,12 @@ const RegisterPage = () => {
       password: "",
       role: "customer",
     });
-  };
+  } catch (error) {
+    // Error already handled by toast.promise
+    console.error("Registration failed:", error);
+  }
+};
+
 
   return (
     <div className=" pb-12 px-4 sm:px-6 lg:px-8">
@@ -115,9 +129,10 @@ const RegisterPage = () => {
 
             <button
               type="submit"
+              disabled={loading}
               className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform active:scale-[0.98]"
             >
-              Sign Up
+              {loading ? "Creating Account..." : "Register"}
             </button>
           </form>
 

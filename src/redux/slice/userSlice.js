@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { handleAxiosError } from "../../utils/HandleErrors";
 
 export const fetchAllFeaturedSaloons = createAsyncThunk(
   "user/fetchAllFeaturedSaloons",
@@ -13,11 +14,11 @@ export const fetchAllFeaturedSaloons = createAsyncThunk(
       });
       const data = response.data;
       if(response.status !== 200){
-        return thunkAPI.rejectWithValue(data.message || "Failed to fetch featured salons");
+        return handleAxiosError(error, thunkAPI);
       }
       return data.salons;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to fetch featured salons");
+      return handleAxiosError(error, thunkAPI);
     }
     }
 );
@@ -34,11 +35,11 @@ export const fetchAllCategories = createAsyncThunk(
         });
         const data = response.data;
         if(response.status !== 200){
-          return thunkAPI.rejectWithValue(data.message || "Failed to fetch categories");
+          return handleAxiosError(error, thunkAPI);
         }
         return data.categories;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to fetch categories");
+      return handleAxiosError(error, thunkAPI);
     }
     }
 );
@@ -56,11 +57,11 @@ export const fetchHomeSaloonsByCategory = createAsyncThunk(
         });
         const data = response.data;
         if(response.status !== 200){
-          return thunkAPI.rejectWithValue(data.message || "Failed to fetch saloons by category");
+          return handleAxiosError(error, thunkAPI);
         }
         return data.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to fetch saloons by category");
+      return handleAxiosError(error, thunkAPI);
     }
     }
 );
@@ -77,11 +78,11 @@ export const getSaloonDetailsById = createAsyncThunk(
       });
       const data = response.data; 
       if(response.status !== 200){
-        return thunkAPI.rejectWithValue(data.message || "Failed to fetch saloon details");
+        return handleAxiosError(error, thunkAPI);
       }
       return data.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to fetch saloon details");
+      return handleAxiosError(error, thunkAPI);
     }
     }
 );
@@ -102,12 +103,12 @@ export const fetchAllSalonsByCategory = createAsyncThunk(
         const data = response.data;
         console.log("API Response for All Saloons by Category:", data.salons);
         if(response.status !== 200){
-          return thunkAPI.rejectWithValue(data.message || "Failed to fetch saloons by category");
+          return handleAxiosError(error, thunkAPI);
         }
         return data.salons;
     } catch (error) {
       console.log("Error fetching salons by category:", error);
-      return thunkAPI.rejectWithValue(error.message || "Failed to fetch saloons by category");
+      return handleAxiosError(error, thunkAPI);
     }
     }
 );
@@ -127,15 +128,11 @@ export const fetchAllStates = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch states"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.states; // Assuming the API returns { states: [...] }
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to fetch states"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -155,15 +152,11 @@ export const fetchAllCitiesByStateId = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Failed to fetch cities by state"
-        );
+        return handleAxiosError(error, thunkAPI);
       }
       return data.cities; // Assuming the API returns { cities: [...] }
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.message || "Failed to fetch cities by state"
-      );
+      return handleAxiosError(error, thunkAPI);
     }
   }
 );
@@ -182,11 +175,11 @@ export const fetchServiceItemByCategory = createAsyncThunk(
         });
         const data = response.data;
         if(response.status !== 200){
-          return thunkAPI.rejectWithValue(data.message || "Failed to fetch services by category");
+          return handleAxiosError(error, thunkAPI);
         }
         return data.services;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message || "Failed to fetch services by category");
+      return handleAxiosError(error, thunkAPI);
     }
     }
 );

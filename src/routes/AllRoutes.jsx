@@ -47,6 +47,7 @@ import TeamLeadProfilePage from "../pages/TeamLead/TeamLeadProfilePage";
 //IndependentPro Pages
 import IndependentProDashboard from "../pages/IndependentPro/IndependentProDashboard";
 import IndependentProProfilePage from "../pages/IndependentPro/IndependentProProfilePage";
+import ManageIndependentServicesPage from "../pages/IndependentPro/ManageIndependentServicesPage";
 
 //Specialist Pages
 import SpecialistDashboard from "../pages/Specialist/SpecialistDashboard";
@@ -219,6 +220,7 @@ const AllRoutes = () => {
             <Route path="/independent-pro" element={<DashboardLayout />}>
               <Route index element={<IndependentProDashboard />} />
               <Route path="dashboard" element={<IndependentProDashboard />} />
+              <Route path="manage-services" element={<ManageIndependentServicesPage />} />
               <Route path="profile" element={<IndependentProProfilePage />} />
             </Route>
           </Route>

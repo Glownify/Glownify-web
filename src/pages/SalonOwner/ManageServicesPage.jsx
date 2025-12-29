@@ -68,21 +68,65 @@ const ManageServicesPage = () => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    dispatch(deleteServiceItem(deletingServiceId));
-    setShowDeleteModal(false);
-  };
+const confirmDelete = async () => {
+  try {
+    const deletePromise = dispatch(
+      deleteServiceItem(deletingServiceId)
+    ).unwrap();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (isEditMode) {
-      dispatch(editServiceItem({ serviceId: editingServiceId, serviceData: form }));
-    } else {
-      dispatch(createServiceItem(form));
-    }
+    await toast.promise(deletePromise, {
+      loading: "Deleting service...",
+      success: (res) =>
+        res?.message || "Service deleted successfully!",
+      error: (err) =>
+        err?.message ||
+        err?.error ||
+        "Failed to delete service",
+    });
+
+    setShowDeleteModal(false);
+    setDeletingServiceId(null);
+  } catch (error) {
+    console.error("Delete service error:", error);
+  }
+};
+
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const actionPromise = isEditMode
+      ? dispatch(
+          editServiceItem({
+            serviceId: editingServiceId,
+            serviceData: form,
+          })
+        ).unwrap()
+      : dispatch(createServiceItem(form)).unwrap();
+
+    await toast.promise(actionPromise, {
+      loading: isEditMode ? "Updating service..." : "Creating service...",
+      success: (res) =>
+        res?.message ||
+        (isEditMode
+          ? "Service updated successfully!"
+          : "Service created successfully!"),
+      error: (err) =>
+        err?.message ||
+        err?.error ||
+        "Operation failed. Please try again.",
+    });
+
     setShowModal(false);
     setForm(initialFormState);
-  };
+    setIsEditMode(false);
+    setEditingServiceId(null);
+  } catch (error) {
+    console.error("Service submit error:", error);
+  }
+};
+
 
   console.log("Service Items:", serviceItems);
 

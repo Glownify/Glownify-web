@@ -195,14 +195,22 @@ const SalonOwnerRegisterPage = () => {
 
       // 4. Send to Backend
       // This only runs if all previous awaits succeeded
-      await dispatch(register(finalPayload)).unwrap();
+       const registerPromise = dispatch(register(finalPayload)).unwrap();
 
-      toast.success("Registration Successful!", { id: toastId });
-      navigate("/login");
+    await toast.promise(registerPromise, {
+      loading: "Creating salon owner account...",
+      success: (res) =>
+        res?.message || "Registration successful! Please log in.",
+      error: (err) =>
+        err?.message ||
+        err?.error ||
+        "Registration failed. Please try again.",
+    });
+    
+    navigate("/login");
     } catch (err) {
       // This catches Cloudinary errors AND Backend errors
       console.error("Registration Error:", err);
-      toast.error(err.message || "Registration failed", { id: toastId });
     } finally {
       setLoading(false);
     }

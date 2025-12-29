@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { Mail, Lock, LogIn, Loader2 } from 'lucide-react';
 import { login } from '../../redux/slice/authSlice';
+import { clearError } from '../../redux/slice/authSlice';
 
 const ROLE_ROUTES = {
   super_admin: '/super-admin/dashboard',
@@ -12,6 +13,7 @@ const ROLE_ROUTES = {
   sales_executive: '/sales-executive/dashboard',
   salon_owner: '/salon-owner/dashboard',
   salesman: '/salesman/dashboard',
+  independent_pro: '/independent-pro/dashboard',
 };
 
 const LoginPage = () => {
@@ -30,25 +32,35 @@ const LoginPage = () => {
   }, [token, role, navigate]);
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    if (!email || !password) {
-      toast.error('Please enter email and password');
-      return;
-    }
+  e.preventDefault();
 
-    try {
-      const loginPromise = dispatch(login({ email, password })).unwrap();
-      await toast.promise(loginPromise, {
-        loading: 'Authenticating...',
-        success: (res) => res?.message || 'Login successful',
-        error: (err) => err || 'Invalid credentials',
-      });
-    } catch {
-      console.error('Login failed');
-    }
-  };
+  if (!email || !password) {
+    toast.error('Please enter email and password');
+    return;
+  }
 
-  if (token) {
+  try {
+    const loginPromise = dispatch(login({ email, password })).unwrap();
+
+    await toast.promise(loginPromise, {
+      loading: 'Authenticating...',
+      success: (res) => res?.message || 'Login successful',
+      error: (err) => err?.message || 'Invalid email or password',
+    });
+  } catch (error) {
+    // No need to toast here (already handled by toast.promise)
+    console.error('Login failed:', error);
+  }
+};
+
+useEffect(() => {
+    return () => {
+      dispatch(clearError());
+    };
+  }, [dispatch]);
+
+
+  if (loading) {
     return (
       <div className="h-[60vh] flex items-center justify-center">
         <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />

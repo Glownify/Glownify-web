@@ -4,12 +4,12 @@ import {
   fetchAllSubscriptions,
   createSubscription,
 } from "../../redux/slice/superadminSlice";
+import toast from "react-hot-toast";
 import {
   Plus,
   CheckCircle2,
   AlertCircle,
   Layers,
-  Zap,
   X,
   Trash2,
 } from "lucide-react";
@@ -32,11 +32,8 @@ const ManageSubscriptionPage = () => {
 
   /* ---------------- FEATURES HANDLING ---------------- */
   const addFeature = () => setFeatures([...features, ""]);
-
-  const removeFeature = (index) => {
+  const removeFeature = (index) =>
     setFeatures(features.filter((_, i) => i !== index));
-  };
-
   const updateFeature = (index, value) => {
     const updated = [...features];
     updated[index] = value;
@@ -44,30 +41,44 @@ const ManageSubscriptionPage = () => {
   };
 
   /* ---------------- CREATE SUBSCRIPTION ---------------- */
-  const handleCreate = () => {
-    dispatch(
-      createSubscription({
-        name,
-        price: Number(price),
-        durationInDays: Number(durationInDays),
-        features: features.filter((f) => f.trim() !== ""),
-      })
-    );
+  const handleCreate = async () => {
+    if (!name || !price || !durationInDays) {
+      return toast.error("Please fill in all required fields");
+    }
 
-    // Reset & close
-    setName("");
-    setPrice("");
-    setDurationInDays("");
-    setFeatures([""]);
-    setOpen(false);
+    try {
+      const createPromise = dispatch(
+        createSubscription({
+          name,
+          price: Number(price),
+          durationInDays: Number(durationInDays),
+          features: features.filter((f) => f.trim() !== ""),
+        })
+      ).unwrap();
+
+      await toast.promise(createPromise, {
+        loading: "Creating subscription...",
+        success: (res) => res?.message || "Subscription created successfully!",
+        error: (err) => err?.message || "Failed to create subscription",
+      });
+
+      // Reset form and close modal
+      setName("");
+      setPrice("");
+      setDurationInDays("");
+      setFeatures([""]);
+      setOpen(false);
+
+      // Refresh subscription list
+      dispatch(fetchAllSubscriptions());
+    } catch (err) {
+      console.error("Subscription creation failed:", err);
+    }
   };
-
-  console.log("Plans:", plans);
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-6 md:p-10">
       <div className="max-w-7xl mx-auto">
-
         {/* HEADER */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
           <div>
@@ -125,9 +136,7 @@ const ManageSubscriptionPage = () => {
                 </div>
 
                 <div className="flex items-baseline gap-1 mb-5">
-                  <span className="text-4xl font-extrabold">
-                    ₹{plan.price}
-                  </span>
+                  <span className="text-4xl font-extrabold">₹{plan.price}</span>
                   <span className="text-slate-500">
                     / {plan.durationInDays} days
                   </span>
@@ -155,11 +164,10 @@ const ManageSubscriptionPage = () => {
         </div>
       </div>
 
-      {/* ---------------- CREATE MODAL ---------------- */}
+      {/* CREATE MODAL */}
       {open && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-3xl w-full max-w-xl p-8 relative shadow-xl">
-
             <button
               onClick={() => setOpen(false)}
               className="absolute top-5 right-5 text-slate-400 hover:text-slate-700"
@@ -205,9 +213,7 @@ const ManageSubscriptionPage = () => {
                     className="flex-1 px-4 py-2 border rounded-xl"
                     placeholder={`Feature ${index + 1}`}
                     value={feature}
-                    onChange={(e) =>
-                      updateFeature(index, e.target.value)
-                    }
+                    onChange={(e) => updateFeature(index, e.target.value)}
                   />
                   {features.length > 1 && (
                     <button

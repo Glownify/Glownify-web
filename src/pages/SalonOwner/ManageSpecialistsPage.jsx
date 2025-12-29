@@ -18,6 +18,7 @@ import {
   Calendar,
   Clock,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 const expertiseOptions = ["Hair", "Skin", "Makeup", "Massage", "Nails", "Other"];
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -85,33 +86,58 @@ const ManageSpecialistsPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const payload = {
-      name: form.name,
-      phone: form.phone,
-      email: form.email,
-      expertise: form.expertise,
-      experienceYears: Number(form.experienceYears),
-      certifications: form.certifications
-        .split(",")
-        .map((c) => c.trim())
-        .filter(Boolean),
-      image: form.image,
-      availability: form.availability.filter((a) => a.start && a.end),
-    };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (isEdit && selectedId) {
-      dispatch(editSpecialist({ specialistId: selectedId, specialistData: payload }));
-    } else {
-      dispatch(createSpecialist(payload));
-    }
+  const payload = {
+    name: form.name,
+    phone: form.phone,
+    email: form.email,
+    expertise: form.expertise,
+    experienceYears: Number(form.experienceYears),
+    certifications: form.certifications
+      .split(",")
+      .map((c) => c.trim())
+      .filter(Boolean),
+    image: form.image,
+    availability: form.availability.filter((a) => a.start && a.end),
+  };
+
+  try {
+    const actionPromise = isEdit
+      ? dispatch(
+          editSpecialist({
+            specialistId: selectedId,
+            specialistData: payload,
+          })
+        ).unwrap()
+      : dispatch(createSpecialist(payload)).unwrap();
+
+    await toast.promise(actionPromise, {
+      loading: isEdit ? "Updating specialist..." : "Creating specialist...",
+      success: (res) =>
+        res?.message ||
+        (isEdit
+          ? "Specialist updated successfully!"
+          : "Specialist added successfully!"),
+      error: (err) =>
+        err?.message ||
+        err?.error ||
+        "Operation failed. Please try again.",
+    });
 
     setOpen(false);
     setIsEdit(false);
     setSelectedId(null);
     resetForm();
-  };
+
+    // Optional refresh if backend doesn't auto-update list
+    dispatch(fetchAllSpecialists());
+  } catch (error) {
+    console.error("Specialist submit error:", error);
+  }
+};
+
 
   const handleEdit = (s) => {
     setIsEdit(true);
@@ -129,11 +155,28 @@ const ManageSpecialistsPage = () => {
     setOpen(true);
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this specialist?")) {
-      dispatch(deleteSpecialist(id));
-    }
-  };
+const handleDelete = async (id) => {
+  if (!window.confirm("Are you sure you want to delete this specialist?")) return;
+
+  try {
+    const deletePromise = dispatch(deleteSpecialist(id)).unwrap();
+
+    await toast.promise(deletePromise, {
+      loading: "Deleting specialist...",
+      success: (res) =>
+        res?.message || "Specialist deleted successfully!",
+      error: (err) =>
+        err?.message ||
+        err?.error ||
+        "Failed to delete specialist",
+    });
+
+    dispatch(fetchAllSpecialists());
+  } catch (error) {
+    console.error("Delete specialist error:", error);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-4 md:p-8">

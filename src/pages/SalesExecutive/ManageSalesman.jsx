@@ -48,28 +48,35 @@ const ManageSalesman = () => {
   const payload = {
     ...formData,
     city: user.roleDetails.city,
-    comissionRate: Number(formData.commissionRate),
+    commissionRate: Number(formData.commissionRate),
   };
 
   try {
-    const resultAction = await dispatch(createSalesman(payload));
+    const createPromise = dispatch(createSalesman(payload)).unwrap();
 
-    if (createSalesman.fulfilled.match(resultAction)) {
-      toast.success("Salesman created successfully!");
-      setOpenCreate(false);
-      setFormData({
-        name: "",
-        email: "",
-        mobile: "",
-        commissionRate: "",
-      });
-    } else {
-      toast.error(resultAction.payload || "Failed to create salesman.");
-    }
-  } catch {
-    toast.error("Something went wrong!");
+    await toast.promise(createPromise, {
+      loading: "Creating salesman...",
+      success: (res) =>
+        res?.message || "Salesman created successfully!",
+      error: (err) =>
+        err?.message ||
+        err?.error ||
+        "Failed to create salesman",
+    });
+
+    setOpenCreate(false);
+    setFormData({
+      name: "",
+      email: "",
+      mobile: "",
+      commissionRate: "",
+    });
+  } catch (error) {
+    // Only non-API errors (edge cases)
+    console.error("Create Salesman Error:", error);
   }
 };
+
 
 
   if (loading && salesman.length === 0) {

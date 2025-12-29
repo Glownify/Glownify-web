@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { handleAxiosError } from '../../utils/HandleErrors';
 
 export const fetchDashboardData = createAsyncThunk(
   'salesexecutive/fetchDashboardData',
@@ -22,9 +23,7 @@ export const fetchDashboardData = createAsyncThunk(
         }
         return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || 'Failed to fetch dashboard data'
-      );
+      return handleAxiosError(error, thunkAPI);
     }
     }
 );
@@ -45,9 +44,7 @@ export const fetchAllSalesman = createAsyncThunk(
       }
       return data.salesman;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || 'Failed to fetch salesmen'
-      );
+      return handleAxiosError(error, thunkAPI);
     }
     }
 );
@@ -64,9 +61,7 @@ export const createSalesman = createAsyncThunk(
             });
             return res.data; 
         } catch (error) {
-            return thunkAPI.rejectWithValue(
-                error.response?.data?.message || 'Failed to create salesman'
-            );
+            return handleAxiosError(error, thunkAPI);
         }
     }
 );

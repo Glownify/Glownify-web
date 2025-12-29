@@ -15,6 +15,7 @@ import {
   CheckCircle2,
   AlertCircle,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 const TABS = ["men", "women", "unisex"];
 
@@ -51,24 +52,44 @@ const ManageCategoriesPage = () => {
     setCategoryData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (isEditMode) {
-      dispatch(
-        updateCategory({
-          categoryId: editingCategoryId,
-          categoryData: categoryData,
-        })
-      );
-    } else {
-      dispatch(addCategory(categoryData));
-    }
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const actionPromise = isEditMode
+      ? dispatch(
+          updateCategory({
+            categoryId: editingCategoryId,
+            categoryData: categoryData,
+          })
+        ).unwrap()
+      : dispatch(addCategory(categoryData)).unwrap();
+
+    await toast.promise(actionPromise, {
+      loading: isEditMode ? "Updating category..." : "Creating category...",
+      success: (res) =>
+        res?.message ||
+        (isEditMode
+          ? "Category updated successfully!"
+          : "Category created successfully!"),
+      error: (err) =>
+        err?.message ||
+        err?.error ||
+        "Operation failed. Please try again.",
+    });
 
     setIsModalOpen(false);
     setIsEditMode(false);
     setEditingCategoryId(null);
-    setCategoryData({ name: "", gender: "men", icon: null });
-  };
+    setCategoryData({ name: "", gender: "men", icon: "" });
+
+    // Optional refresh if slice doesn't auto-update
+    dispatch(fetchAllCategories());
+  } catch (error) {
+    console.error("Category submit error:", error);
+  }
+};
+
 
   const handleEditCategory = (category) => {
     setIsEditMode(true);
@@ -108,6 +129,13 @@ const ManageCategoriesPage = () => {
           Create Category
         </button>
       </div>
+
+      {error && (
+  <div className="mb-6 bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm font-medium">
+    {error.message || error}
+  </div>
+)}
+
 
       {/* Modern Tabs */}
       <div className="inline-flex p-1 bg-slate-200/50 rounded-2xl mb-8 border border-slate-200">

@@ -2,15 +2,21 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchAllSalonsByCategory } from "../../redux/slice/userSlice";
 import { useEffect } from "react";
 import { MapPin, Pin, Route, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const SalonsPage = () => {
   const dispatch = useDispatch();
-  const { salons, selectedCategory, lat, lng, loading } = useSelector(
+  const navigate = useNavigate();
+  const { salons, selectedCategory, loading } = useSelector(
     (state) => state.user
   );
-  // const lat = localStorage.getItem("lat");
-  // const lng = localStorage.getItem("lng");
+  const lat = localStorage.getItem("lat");
+  const lng = localStorage.getItem("lng");
+
+    const handleSalonClick = (salonId) => {
+    navigate(`/salon/${salonId}`);
+  };
 
 useEffect(() => {
   if (!selectedCategory || !lat || !lng) return;
@@ -154,7 +160,9 @@ useEffect(() => {
                   {/* <span className="text-[11px] font-bold text-gray-400 uppercase tracking-tighter">
                     Available Now
                   </span> */}
-                  <button className="text-indigo-600 font-extrabold text-lg hover:text-indigo-800 transition-colors">
+                  <button
+                  onClick={() => handleSalonClick(salon._id)}
+                   className="text-indigo-600 font-extrabold text-lg hover:text-indigo-800 transition-colors">
                     Book Visit
                   </button>
                 </div>

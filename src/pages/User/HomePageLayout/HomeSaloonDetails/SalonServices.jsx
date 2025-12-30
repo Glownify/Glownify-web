@@ -7,6 +7,7 @@ import { addToCart, getCart } from "../../../../utils/CartStorage";
 
 const SalonServices = () => {
   const dispatch = useDispatch();
+  const userId = useSelector((state) => state.auth.user._id);
   const { saloonDetails } = useOutletContext();
 
   const [activeTab, setActiveTab] = useState(null);
@@ -19,8 +20,10 @@ const SalonServices = () => {
 
   /* 🔹 Load cart on mount */
   useEffect(() => {
-    setCartItems(getCart());
-  }, []);
+    if(userId){
+      setCartItems(getCart(userId));
+    }
+  }, [userId]);
 
   /* 🔹 Auto select first category */
   // useEffect(() => {
@@ -40,7 +43,7 @@ const SalonServices = () => {
   };
 
   const handleAddToCart = (service) => {
-    const updatedCart = addToCart(saloonDetails, service);
+    const updatedCart = addToCart(userId, saloonDetails, service);
     setCartItems(updatedCart);
   };
 

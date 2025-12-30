@@ -184,6 +184,53 @@ export const fetchServiceItemByCategory = createAsyncThunk(
     }
 );
 
+export const createBooking = createAsyncThunk(
+  "user/createBooking",
+  async (bookingData, thunkAPI) => {
+    console.log("Creating booking with data:", bookingData);
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/booking/create-booking`, bookingData,{
+        headers: {
+            "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = response.data;
+      if(response.status !== 200){
+        return handleAxiosError(error, thunkAPI);
+      }
+      return data.booking;
+    } catch (error) {
+      return handleAxiosError(error, thunkAPI);
+    }
+    }
+);
+
+export const fetchUserBookings = createAsyncThunk(
+  "user/fetchUserBookings",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/booking/get-my-bookings`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = response.data;
+      if (response.status !== 200) {
+        return handleAxiosError(error, thunkAPI);
+      }
+      return data.bookings;
+    } catch (error) {
+      return handleAxiosError(error, thunkAPI);
+    }
+  }
+);
+
+
 const userSlice = createSlice({
     name: "user",
     initialState: {
@@ -193,6 +240,7 @@ const userSlice = createSlice({
         salons: [],
         states: [],
         cities: [],
+        bookings: [],
         saloonDetails: null,
         selectedCategory: "women",
         serviceItems: [],
@@ -306,6 +354,30 @@ setLocation: (state, action) => {
                 state.serviceItems = action.payload;
             })
             .addCase(fetchServiceItemByCategory.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(createBooking.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(createBooking.fulfilled, (state, action) => {
+                state.loading = false;
+                state.bookings.push(action.payload);
+            })
+            .addCase(createBooking.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(fetchUserBookings.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchUserBookings.fulfilled, (state, action) => {
+                state.loading = false;
+                state.bookings = action.payload;
+            })
+            .addCase(fetchUserBookings.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

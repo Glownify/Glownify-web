@@ -240,7 +240,7 @@ export const fetchBookings = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/salon-admin/get-bookings`,
+        `${import.meta.env.VITE_API_BASE_URL}/booking/get-salon-bookings`,
         {
           headers: {
             "Content-Type": "application/json",

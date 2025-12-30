@@ -1,12 +1,12 @@
-const CART_KEY = "@user_cart";
+export const getCartKey = (userId) => `@user_cart_${userId}`;
 
-export const getCart = () => {
-  const data = localStorage.getItem(CART_KEY);
+export const getCart = (userId) => {
+  const data = localStorage.getItem(getCartKey(userId));
   return data ? JSON.parse(data) : [];
 };
 
-export const addToCart = (salon, service) => {
-  let cart = getCart();
+export const addToCart = (userId, salon, service) => {
+  let cart = getCart(userId);
 
   const salonIndex = cart.findIndex(
     (item) => item.salonId === salon._id
@@ -28,6 +28,6 @@ export const addToCart = (salon, service) => {
     });
   }
 
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  localStorage.setItem(getCartKey(userId), JSON.stringify(cart));
   return cart;
 };

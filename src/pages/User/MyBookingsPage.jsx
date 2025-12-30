@@ -1,176 +1,148 @@
-import React, { useState } from 'react';
-import { 
-  Calendar, 
-  Clock, 
-  MapPin, 
-  ChevronRight, 
-  MoreVertical, 
-  CheckCircle2, 
-  Timer, 
-  History 
-} from 'lucide-react';
-
-// --- DUMMY DATA ---
-const BOOKINGS = [
-  {
-    id: "BK-8821",
-    salonName: "Elegance Beauty Lounge",
-    service: "Signature Haircut & Style",
-    date: "Oct 24, 2023",
-    time: "10:30 AM",
-    status: "Confirmed", // Confirmed, Pending, Completed, Cancelled
-    price: 899,
-    address: "123 Metro Plaza, New Delhi",
-    image: "https://img.freepik.com/premium-photo/hairdressers-makeup-artist-working-beauty-salon_10069-11140.jpg?w=740"
-  },
-  {
-    id: "BK-7712",
-    salonName: "Modern Cut Studio",
-    service: "Beard Trim & Facial",
-    date: "Oct 28, 2023",
-    time: "02:00 PM",
-    status: "Pending",
-    price: 499,
-    address: "Block B, Green Park, Delhi",
-    image: "https://img.freepik.com/free-photo/client-doing-hair-cut-barber-shop-salon_1303-20861.jpg?w=740"
-  },
-  {
-    id: "BK-5540",
-    salonName: "Glow Nail Bar",
-    service: "Gel Manicure",
-    date: "Oct 15, 2023",
-    time: "11:00 AM",
-    status: "Completed",
-    price: 599,
-    address: "Civic Center, Shop 42, Delhi",
-    image: "https://img.freepik.com/free-photo/manicure-process-nail-salon_1303-16335.jpg?w=740"
-  }
-];
+import React, { useEffect, useState, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserBookings } from "../../redux/slice/userSlice";
+import { Calendar, Clock, MapPin, Scissors, CreditCard, Filter } from "lucide-react";
 
 const MyBookingsPage = () => {
-  const [activeTab, setActiveTab] = useState('upcoming');
+  const dispatch = useDispatch();
+  const { bookings, loading } = useSelector((state) => state.user);
+  
+  // State for the active filter tab
+  const [activeTab, setActiveTab] = useState("all");
 
-  const statusStyles = {
-    Confirmed: "bg-green-50 text-green-600 border-green-100",
-    Pending: "bg-orange-50 text-orange-600 border-orange-100",
-    Completed: "bg-blue-50 text-blue-600 border-blue-100",
-    Cancelled: "bg-red-50 text-red-600 border-red-100",
+  useEffect(() => {
+    dispatch(fetchUserBookings());
+  }, [dispatch]);
+
+  // Filter logic
+  const filteredBookings = useMemo(() => {
+    if (!bookings) return [];
+    if (activeTab === "all") return bookings;
+    return bookings.filter(b => b.status?.toLowerCase() === activeTab.toLowerCase());
+  }, [bookings, activeTab]);
+
+  const tabs = [
+    { id: "all", label: "All Bookings" },
+    { id: "pending", label: "Upcoming" },
+    { id: "completed", label: "Completed" },
+    { id: "cancelled", label: "Cancelled" },
+  ];
+
+  const getStatusStyle = (status) => {
+    const base = "px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize";
+    switch (status?.toLowerCase()) {
+      case "completed": return `${base} bg-emerald-100 text-emerald-700`;
+      case "pending": return `${base} bg-amber-100 text-amber-700`;
+      case "cancelled": return `${base} bg-rose-100 text-rose-700`;
+      default: return `${base} bg-slate-100 text-slate-700`;
+    }
   };
 
-  const filteredBookings = activeTab === 'upcoming' 
-    ? BOOKINGS.filter(b => b.status === 'Confirmed' || b.status === 'Pending')
-    : BOOKINGS.filter(b => b.status === 'Completed' || b.status === 'Cancelled');
+  if (loading) return (
+    <div className="flex flex-col justify-center items-center h-96 text-gray-400 space-y-4">
+      <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      <p className="font-medium">Fetching your appointments...</p>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-100 pt-10 pb-6 px-6">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">My Bookings</h1>
-          
-          {/* Tabs */}
-          <div className="flex gap-8 border-b border-gray-100">
-            <button 
-              onClick={() => setActiveTab('upcoming')}
-              className={`pb-3 text-sm font-semibold transition-all relative ${
-                activeTab === 'upcoming' ? "text-indigo-600" : "text-gray-400"
-              }`}
-            >
-              Upcoming
-              {activeTab === 'upcoming' && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-600 rounded-full" />}
-            </button>
-            <button 
-              onClick={() => setActiveTab('past')}
-              className={`pb-3 text-sm font-semibold transition-all relative ${
-                activeTab === 'past' ? "text-indigo-600" : "text-gray-400"
-              }`}
-            >
-              Past History
-              {activeTab === 'past' && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-600 rounded-full" />}
-            </button>
-          </div>
-        </div>
+    <div className="max-w-full mx-auto p-4 md:p-8 bg-gray-50 min-h-screen">
+      <header className="mb-8">
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">My Bookings</h2>
+        <p className="text-gray-500 mt-1">Track and manage your salon appointments</p>
+      </header>
+
+      {/* Modern Filter Tabs */}
+      <div className="flex items-center space-x-1 bg-gray-200/50 p-1 rounded-xl mb-8 w-fit">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+              activeTab === tab.id
+                ? "bg-white text-blue-600 shadow-sm"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-200/50"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* Bookings List */}
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        <div className="space-y-4">
-          {filteredBookings.length > 0 ? (
-            filteredBookings.map((booking) => (
-              <div key={booking.id} className="bg-white border border-gray-100 rounded-2xl p-4 md:p-6 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex gap-4">
-                    <img 
-                      src={booking.image} 
-                      alt={booking.salonName} 
-                      className="size-16 md:size-20 rounded-xl object-cover"
-                    />
-                    <div>
-                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md border ${statusStyles[booking.status]}`}>
-                        {booking.status}
-                      </span>
-                      <h3 className="font-bold text-gray-900 mt-1">{booking.salonName}</h3>
-                      <p className="text-sm text-gray-500">{booking.service}</p>
+      <div className="space-y-6">
+        {filteredBookings.length > 0 ? (
+          filteredBookings.map((booking) => (
+            <div
+              key={booking._id}
+              className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300"
+            >
+              {/* Header */}
+              <div className="p-5 flex justify-between items-start border-b border-gray-50">
+                <div className="flex gap-4">
+                   {/* Placeholder for Shop Image/Avatar */}
+                  <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-gray-400">
+                    <Scissors size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-800 leading-none mb-2">
+                      {booking.providerId?.shopName}
+                    </h3>
+                    <div className="flex items-center text-gray-500 text-xs">
+                      <MapPin size={12} className="mr-1" />
+                      {booking.providerId?.location?.address}
                     </div>
                   </div>
-                  <button className="text-gray-400 hover:text-gray-600 p-1">
-                    <MoreVertical size={20} />
-                  </button>
                 </div>
+                <span className={getStatusStyle(booking.status)}>
+                  {booking.status}
+                </span>
+              </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-4 border-y border-gray-50 my-4">
-                  <div className="flex items-center gap-3 text-sm text-gray-600">
-                    <Calendar size={16} className="text-indigo-500" />
-                    <span>{booking.date}</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm text-gray-600">
-                    <Clock size={16} className="text-indigo-500" />
-                    <span>{booking.time}</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm text-gray-600">
-                    <MapPin size={16} className="text-indigo-500" />
-                    <span className="truncate">{booking.address}</span>
-                  </div>
+              {/* Appointment Stats */}
+              <div className="px-5 py-4 grid grid-cols-2 md:grid-cols-4 gap-4 bg-gray-50/50">
+                <div>
+                  <p className="text-[10px] uppercase font-bold text-gray-400 mb-1 tracking-widest">Date</p>
+                  <p className="text-sm font-semibold text-gray-700">
+                    {new Date(booking.bookingDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </p>
                 </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="text-sm">
-                    <span className="text-gray-400">Total Paid: </span>
-                    <span className="font-bold text-gray-900">₹{booking.price}</span>
-                  </div>
-                  
-                  <div className="flex gap-3">
-                    {activeTab === 'upcoming' ? (
-                      <>
-                        <button className="text-sm font-bold text-red-500 px-4 py-2 hover:bg-red-50 rounded-lg transition-colors">
-                          Cancel
-                        </button>
-                        <button className="text-sm font-bold bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-100">
-                          Reschedule
-                        </button>
-                      </>
-                    ) : (
-                      <button className="text-sm font-bold border border-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors">
-                        Rebook
-                      </button>
-                    )}
-                  </div>
+                <div>
+                  <p className="text-[10px] uppercase font-bold text-gray-400 mb-1 tracking-widest">Time Slot</p>
+                  <p className="text-sm font-semibold text-gray-700">{booking.timeSlot?.start}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase font-bold text-gray-400 mb-1 tracking-widest">Payment</p>
+                  <p className="text-sm font-semibold text-gray-700 capitalize">{booking.paymentMethod}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase font-bold text-gray-400 mb-1 tracking-widest">Amount</p>
+                  <p className="text-sm font-bold text-blue-600">₹{booking.totalAmount}</p>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
-              <div className="bg-gray-50 size-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                {activeTab === 'upcoming' ? <Timer className="text-gray-300" /> : <History className="text-gray-300" />}
+
+              {/* Services Toggle or List */}
+              <div className="p-5">
+                <p className="text-xs font-bold text-gray-400 uppercase mb-3 tracking-widest">Services Included</p>
+                <div className="flex flex-wrap gap-2">
+                  {booking.serviceItems.map((item, idx) => (
+                    <span key={idx} className="bg-white border border-gray-200 px-3 py-1 rounded-full text-xs text-gray-600 shadow-sm">
+                      {item.service?.name} • ₹{item.service?.price}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <h3 className="font-bold text-gray-900">No {activeTab} bookings</h3>
-              <p className="text-sm text-gray-500 mt-1">You haven't made any appointments yet.</p>
-              <button className="mt-6 text-indigo-600 font-bold hover:underline">
-                Book a Salon Now
-              </button>
             </div>
-          )}
-        </div>
+          ))
+        ) : (
+          <div className="bg-white rounded-2xl border-2 border-dashed border-gray-200 p-12 text-center">
+            <div className="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Filter className="text-gray-400" size={24} />
+            </div>
+            <h3 className="text-lg font-bold text-gray-800">No {activeTab} bookings</h3>
+            <p className="text-gray-500 text-sm">Try changing your filter or book a new service.</p>
+          </div>
+        )}
       </div>
     </div>
   );

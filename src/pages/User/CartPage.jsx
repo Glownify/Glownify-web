@@ -1,41 +1,53 @@
 import React, { useEffect, useState } from "react";
 import { Trash2, Clock, Calendar, ChevronRight, ShoppingBag, ChevronLeft, X } from "lucide-react";
 import DateTimePicker from "../../utils/DateTimePicker";
-
-const CART_KEY = "@user_cart";
+import { useNavigate } from "react-router-dom";
+import { useSelector,useDispatch } from "react-redux";
+import { createBooking } from "../../redux/slice/userSlice";
+import toast from "react-hot-toast";
+const getCartKey = (userId) => `@user_cart_${userId}`;
 
 const CartPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const userId = useSelector((state) => state.auth.user._id);
   const [cart, setCart] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeSalon, setActiveSalon] = useState(null);
   const [bookings, setBookings] = useState({}); // Stores { salonId: { day, month, year, time } }
 
-  useEffect(() => {
-    const data = localStorage.getItem(CART_KEY);
-    setCart(data ? JSON.parse(data) : []);
-  }, []);
+useEffect(() => {
+  if (!userId) return;
 
-  const removeSalon = (salonId) => {
-    const updated = cart.filter((s) => s.salonId !== salonId);
-    setCart(updated);
-    localStorage.setItem(CART_KEY, JSON.stringify(updated));
-    const newBookings = { ...bookings };
-    delete newBookings[salonId];
-    setBookings(newBookings);
-  };
+  const data = localStorage.getItem(getCartKey(userId));
+  setCart(data ? JSON.parse(data) : []);
+}, [userId]);
 
-  const removeService = (salonId, serviceId) => {
-    const updated = cart
-      .map((salon) =>
-        salon.salonId === salonId
-          ? { ...salon, services: salon.services.filter((s) => s._id !== serviceId) }
-          : salon
-      )
-      .filter((salon) => salon.services.length > 0);
 
-    setCart(updated);
-    localStorage.setItem(CART_KEY, JSON.stringify(updated));
-  };
+const removeSalon = (salonId) => {
+  const updated = cart.filter((s) => s.salonId !== salonId);
+  setCart(updated);
+  localStorage.setItem(getCartKey(userId), JSON.stringify(updated));
+
+  const newBookings = { ...bookings };
+  delete newBookings[salonId];
+  setBookings(newBookings);
+};
+
+
+const removeService = (salonId, serviceId) => {
+  const updated = cart
+    .map((salon) =>
+      salon.salonId === salonId
+        ? { ...salon, services: salon.services.filter((s) => s._id !== serviceId) }
+        : salon
+    )
+    .filter((salon) => salon.services.length > 0);
+
+  setCart(updated);
+  localStorage.setItem(getCartKey(userId), JSON.stringify(updated));
+};
+
 
   const openPicker = (salon) => {
     setActiveSalon(salon);
@@ -55,6 +67,41 @@ const CartPage = () => {
     acc + salon.services.reduce((sum, s) => sum + s.price, 0), 0
   );
 
+  const handleSubmit = async () => {
+  const payload = {
+    userId,
+    salons: cart.map((salon) => ({
+      salonId: salon.salonId,
+      bookingDateTime: bookings[salon.salonId],
+      services: salon.services.map((service) => service._id),
+    })),
+  };
+
+  try {
+    await toast.promise(
+      dispatch(createBooking(payload)).unwrap(),
+      {
+        loading: "Processing your booking...",
+        success: "Booking confirmed! 🎉",
+        error: "Booking failed. Please try again.",
+      }
+    );
+
+    // ✅ CLEAR CART FIRST
+    setCart([]);
+    setBookings({});
+    localStorage.removeItem(getCartKey(userId));
+
+    // ✅ THEN NAVIGATE
+    navigate("/bookings");
+
+  } catch (error) {
+    console.error("Booking Error:", error);
+  }
+};
+
+
+
   if (!cart.length) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
@@ -63,7 +110,7 @@ const CartPage = () => {
         </div>
         <h2 className="text-2xl font-bold text-gray-800">Your cart is empty</h2>
         <p className="text-gray-500 mt-2 mb-8">Looks like you haven't added any services yet.</p>
-        <button className="px-8 py-3 bg-[#5A2C1E] text-white rounded-full font-semibold hover:bg-[#452117] transition-all">
+        <button onClick={()=>{navigate('/salons')}} className="px-8 py-3 bg-[#5A2C1E] text-white rounded-full font-semibold hover:bg-[#452117] transition-all">
           Explore Salons
         </button>
       </div>
@@ -203,6 +250,7 @@ const CartPage = () => {
 
             <button 
               disabled={Object.keys(bookings).length < cart.length}
+              onClick={handleSubmit}
               className={`w-full py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 group shadow-lg ${
                 Object.keys(bookings).length < cart.length
                 ? "bg-gray-200 text-gray-400 cursor-not-allowed shadow-none"

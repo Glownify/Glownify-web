@@ -6,6 +6,7 @@ import {
   ChevronLeft, ChevronRight, MoreVertical, Filter,
   ShieldCheck, UserPlus
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const ManageUsersPage = () => {
   const dispatch = useDispatch();
@@ -20,15 +21,41 @@ const ManageUsersPage = () => {
     dispatch(fetchAllUsers());
   }, [dispatch]);
 
-  const handleBlockUser = (userId) => {
-    console.log("Blocking user with ID:", userId);
-  dispatch(blockUser(userId));
+  const handleBlockUser = async (userId) => {
+  try {
+    const blockPromise = dispatch(blockUser(userId)).unwrap();
+
+    await toast.promise(blockPromise, {
+      loading: "Blocking user...",
+      success: (res) => res?.message || "User blocked successfully",
+      error: (err) => err?.message || "Failed to block user",
+    });
+
+    // Optional: refresh list if backend doesn't auto-update state
+    dispatch(fetchAllUsers());
+  } catch (error) {
+    console.error("Block user failed:", error);
+  }
 };
 
-const handleActivateUser = (userId) => {
-  console.log("Activating user with ID:", userId);
-  dispatch(activateUser(userId));
+
+const handleActivateUser = async (userId) => {
+  try {
+    const activatePromise = dispatch(activateUser(userId)).unwrap();
+
+    await toast.promise(activatePromise, {
+      loading: "Activating user...",
+      success: (res) => res?.message || "User activated successfully",
+      error: (err) => err?.message || "Failed to activate user",
+    });
+
+    // Optional refresh
+    dispatch(fetchAllUsers());
+  } catch (error) {
+    console.error("Activate user failed:", error);
+  }
 };
+
 
 
   // Search Logic

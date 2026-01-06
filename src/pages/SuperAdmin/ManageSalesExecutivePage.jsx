@@ -10,6 +10,7 @@ import {
   ShieldCheck, Search, Copy, Check, MoreVertical, 
   ArrowRight, Users, Briefcase
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const ManageSalesExecutivePage = () => {
   const dispatch = useDispatch();
@@ -50,13 +51,23 @@ const ManageSalesExecutivePage = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const resultAction = await dispatch(createSalesExecutive(formData));
-    if (createSalesExecutive.fulfilled.match(resultAction)) {
-      setSuccessData({ password: resultAction.payload.password });
+  e.preventDefault();
+
+  // Wrap the async thunk with toast.promise
+  toast.promise(
+    dispatch(createSalesExecutive(formData)).unwrap(),
+    {
+      loading: "Creating executive...",
+      success: (payload) => {
+        setSuccessData({ password: payload.password });
+        dispatch(fetchAllSalesExecutives()); // refresh list
+        return "Executive created successfully!";
+      },
+      error: (err) => err?.message || "Failed to create executive",
     }
-    dispatch(fetchAllSalesExecutives()); 
-  };
+  );
+};
+
 
   const closeModal = () => {
     setIsModalOpen(false);

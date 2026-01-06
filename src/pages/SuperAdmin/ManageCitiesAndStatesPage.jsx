@@ -10,6 +10,7 @@ import {
   MapPin, Globe, Plus, X, Search, 
   Map as MapIcon, Calendar, Hash, Navigation2 
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const ManageCitiesAndStatesPage = () => {
   const dispatch = useDispatch();
@@ -37,26 +38,61 @@ const ManageCitiesAndStatesPage = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (activeTab === 'cities') {
-      dispatch(createCity({
-        name: formData.name,
-        state: formData.state,
-        country: formData.country,
-        pincode: formData.pincode
-      }));
-    } else {
-      dispatch(createState({
-        name: formData.name,
-        country: formData.country,
-        code: formData.code
-      }));
-    }
-    setFormData({ name: '', state: '', country: 'India', pincode: '', code: '' });
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const actionPromise =
+      activeTab === "cities"
+        ? dispatch(
+            createCity({
+              name: formData.name,
+              state: formData.state,
+              country: formData.country,
+              pincode: formData.pincode,
+            })
+          ).unwrap()
+        : dispatch(
+            createState({
+              name: formData.name,
+              country: formData.country,
+              code: formData.code,
+            })
+          ).unwrap();
+
+    await toast.promise(actionPromise, {
+      loading:
+        activeTab === "cities"
+          ? "Creating city..."
+          : "Creating state...",
+      success: (res) =>
+        res?.message ||
+        (activeTab === "cities"
+          ? "City created successfully!"
+          : "State created successfully!"),
+      error: (err) =>
+        err?.message ||
+        err?.error ||
+        "Operation failed. Please try again.",
+    });
+
+    // Reset form & close modal ONLY on success
+    setFormData({
+      name: "",
+      state: "",
+      country: "India",
+      pincode: "",
+      code: "",
+    });
     setIsModalOpen(false);
-    
-  };
+
+    // Refresh list (optional if slice auto-updates)
+    dispatch(fetchAllCities());
+    dispatch(fetchAllStates());
+  } catch (error) {
+    console.error("Create city/state error:", error);
+  }
+};
 
 
 

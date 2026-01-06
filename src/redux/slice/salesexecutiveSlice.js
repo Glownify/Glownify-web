@@ -1,11 +1,38 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { handleAxiosError } from '../../utils/HandleErrors';
 
-export const fetchAllSalesmen = createAsyncThunk(
+export const fetchDashboardData = createAsyncThunk(
+  'salesexecutive/fetchDashboardData',
+  async (_, thunkAPI) => {
+    console.log("Fetching Sales Executive Dashboard Data");
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/sales-executive/dashboard-stats`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+        );
+        console.log("Response from Dashboard Stats API:", res);
+        const data = res.data;
+        if (res.status !== 200) {
+          return thunkAPI.rejectWithValue('Failed to fetch dashboard data');
+        }
+        return data;
+    } catch (error) {
+      return handleAxiosError(error, thunkAPI);
+    }
+    }
+);
+
+export const fetchAllSalesman = createAsyncThunk(
   'salesexecutive/fetchAllSalesmen',
   async (_, thunkAPI) => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/salesman/get-all-salesmen`,{
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/salesman/get-all-salesman`,{
         headers: {
             "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -15,11 +42,9 @@ export const fetchAllSalesmen = createAsyncThunk(
       if(res.status!==200){
         return thunkAPI.rejectWithValue('Failed to fetch salesmen');
       }
-      return data.salesmen;
+      return data.salesman;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || 'Failed to fetch salesmen'
-      );
+      return handleAxiosError(error, thunkAPI);
     }
     }
 );
@@ -36,9 +61,7 @@ export const createSalesman = createAsyncThunk(
             });
             return res.data; 
         } catch (error) {
-            return thunkAPI.rejectWithValue(
-                error.response?.data?.message || 'Failed to create salesman'
-            );
+            return handleAxiosError(error, thunkAPI);
         }
     }
 );
@@ -46,22 +69,35 @@ export const createSalesman = createAsyncThunk(
     const salesexecutiveSlice = createSlice({
     name: 'salesexecutive',
     initialState: {
-        salesmen: [],
+        dashboardData: null,
+        salesman: [],
         loading: false,
         error: null,
     },
     reducers: {},
     extraReducers: (builder) => {
         builder
-        .addCase(fetchAllSalesmen.pending, (state) => {
+        .addCase(fetchDashboardData.pending, (state) => {
             state.loading = true;
             state.error = null;
         })
-        .addCase(fetchAllSalesmen.fulfilled, (state, action) => {
+        .addCase(fetchDashboardData.fulfilled, (state, action) => {
             state.loading = false;
-            state.salesmen = action.payload;
+            state.dashboardData = action.payload;
         })
-        .addCase(fetchAllSalesmen.rejected, (state, action) => {
+        .addCase(fetchDashboardData.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        })
+        .addCase(fetchAllSalesman.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(fetchAllSalesman.fulfilled, (state, action) => {
+            state.loading = false;
+            state.salesman = action.payload;
+        })
+        .addCase(fetchAllSalesman.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
         })
@@ -71,7 +107,7 @@ export const createSalesman = createAsyncThunk(
         })
         .addCase(createSalesman.fulfilled, (state, action) => {
             state.loading = false;
-            state.salesmen.push(action.payload.salesman);
+            state.salesman.push(action.payload.salesman);
         })
         .addCase(createSalesman.rejected, (state, action) => {
             state.loading = false;

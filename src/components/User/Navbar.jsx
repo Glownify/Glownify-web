@@ -45,7 +45,7 @@ const Navbar = () => {
           <div className="rounded-lg transition-transform group-hover:rotate-12">
             
           <img
-            src="/logo.jpeg"
+            src="/GlownifyLogoPng.png"
             alt="Logo"
             className="h-12 object-contain"
           />

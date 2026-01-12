@@ -1,32 +1,15 @@
 import React from "react";
 import { MapPin, Star, ShieldCheck, Sparkles, Calendar, Scissors } from "lucide-react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination } from "swiper/modules";
-import HeroSection2 from "../../../components/HeroSection2";
 
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/pagination";
-
-
-const Hero = () => {
+const HeroSection2 = () => {
   const steps = [
-    { icon: <MapPin size={22} />, title: "Find Salon", desc: "Top rated spots near you" },
-    { icon: <Scissors size={22} />, title: "Pick Service", desc: "Hair, Skin & Grooming" },
-    { icon: <Calendar size={22} />, title: "Book Slot", desc: "Instant confirmation" },
+    { icon: <MapPin size={22} />, title: "Find Salon from home", desc: "Top rated spots near you" },
+    { icon: <Scissors size={22} />, title: "Pick Service from home", desc: "Hair, Skin & Grooming" },
+    { icon: <Calendar size={22} />, title: "Book Slot from home", desc: "Instant confirmation" },
   ];
 
   return (
-    <>
-<Swiper
-      modules={[Pagination, Autoplay]}
-      pagination={{ clickable: true }}
-      autoplay={{ delay: 4000 }}
-      loop={true}
-      className="w-full h-screen"
-    >
-      <SwiperSlide>
-        <section className="relative bg-white pb-20 overflow-hidden font-[Poppins]">
+    <section className="relative bg-white pb-20 overflow-hidden font-[Poppins]">
       <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
 
         {/* Left Side */}
@@ -142,16 +125,7 @@ const Hero = () => {
       </div>
 
       {/* Marquee */}
-     
-    </section>
-      
-      </SwiperSlide>
-
-      <SwiperSlide>
-        <HeroSection2 />
-      </SwiperSlide>
-    </Swiper>
-     <div className=" py-6 bg-slate-900 -rotate-1 w-[110%] -ml-[5%] shadow-2xl">
+      {/* <div className="mt-20 py-6 bg-slate-900 -rotate-1 w-[110%] -ml-[5%] shadow-2xl">
         <marquee scrollamount="10">
           <div className="flex gap-20 text-white/90 font-bold uppercase tracking-[0.4em] text-xs">
             <span>• INSTANT BOOKING</span>
@@ -161,12 +135,9 @@ const Hero = () => {
             <span>• LUXURY EXPERIENCE</span>
           </div>
         </marquee>
-      </div>
-
-    
-    </>
-    
+      </div> */}
+    </section>
   );
 };
 
-export default Hero;
+export default HeroSection2;

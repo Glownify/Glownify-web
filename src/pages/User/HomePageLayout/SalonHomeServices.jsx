@@ -33,7 +33,7 @@ const SalonHomeServices = ({ category, lat, lng }) => {
         <div className="h-8 w-48 bg-slate-200 animate-pulse rounded mb-6"></div>
         <div className="flex gap-6 overflow-hidden">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="min-w-[250px] h-[400px] bg-slate-100 animate-pulse rounded-2xl"></div>
+            <div key={i} className="min-w-62.5 h-100 bg-slate-100 animate-pulse rounded-2xl"></div>
           ))}
         </div>
       </div>
@@ -86,11 +86,11 @@ const SalonHomeServices = ({ category, lat, lng }) => {
             1024: { slidesPerView: 4 },
             1280: { slidesPerView: 5 },
           }}
-          className="!pb-12"
+          className="pb-12!"
         >
           {salonsforhomeServices.map((item) => (
             <SwiperSlide key={item._id}>
-              <div className="group/card h-[350px] flex flex-col bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 overflow-hidden">
+              <div className="group/card h-87.5 flex flex-col bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 overflow-hidden">
                 
                 {/* IMAGE HEADER */}
                 <div className="relative h-44 overflow-hidden">
@@ -112,7 +112,7 @@ const SalonHomeServices = ({ category, lat, lng }) => {
                     <span className="text-[11px] font-bold text-slate-800">4.8</span>
                   </div>
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-slate-900/80 via-transparent to-transparent" />
 
                   <div className="absolute bottom-3 left-3 right-3 text-white">
                     <p className="text-[10px] font-bold uppercase tracking-wider text-indigo-300 mb-0.5">

@@ -101,7 +101,7 @@ useEffect(() => {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-[#FFF7F1] to-[#FFEDE2] pb-20">
+    <div className="min-h-screen bg-linear-to-r from-[#FFF7F1] to-[#FFEDE2] pb-20">
       {/* Header */}
       <Hero />
       <Services />

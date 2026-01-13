@@ -35,7 +35,7 @@ const UnisexSalon = ({ lat, lng }) => {
         <div className="h-8 w-56 bg-slate-100 animate-pulse rounded mb-8" />
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="h-[400px] bg-slate-50 animate-pulse rounded-2xl border" />
+            <div key={i} className="h-100 bg-slate-50 animate-pulse rounded-2xl border" />
           ))}
         </div>
       </div>
@@ -94,13 +94,13 @@ const UnisexSalon = ({ lat, lng }) => {
             1024: { slidesPerView: 5, slidesPerGroup: 5 },
           }}
           loop={unisexSalonServices.length > 5}
-          className="!pb-12"
+          className="pb-12!"
         >
           {unisexSalonServices.map((items) => (
             <SwiperSlide key={items._id}>
               <div
                 onClick={() => navigate(`/salon/${items._id}`)}
-                className="group/card flex flex-col h-[350px] bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden"
+                className="group/card flex flex-col h-87.5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden"
               >
                 {/* IMAGE */}
                 <div className="relative h-44 overflow-hidden">
@@ -116,7 +116,7 @@ const UnisexSalon = ({ lat, lng }) => {
                     </div>
                   )}
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent opacity-80" />
+                  <div className="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/20 to-transparent opacity-80" />
                   
                   <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
                     <Star size={10} className="text-amber-500 fill-amber-500" />
@@ -134,7 +134,7 @@ const UnisexSalon = ({ lat, lng }) => {
                 </div>
 
                 {/* CONTENT */}
-                <div className="p-5 flex flex-col flex-grow">
+                <div className="p-5 flex flex-col grow">
                   <div className="flex items-center gap-1.5 text-[11px] text-slate-500 mb-4">
                     <MapPin size={12} className="text-indigo-500" />
                     <span className="font-medium">
@@ -142,7 +142,7 @@ const UnisexSalon = ({ lat, lng }) => {
                     </span>
                   </div>
 
-                  <div className="space-y-2 flex-grow">
+                  <div className="space-y-2 grow">
                     {mockServices.map((s, i) => (
                       <div key={i} className="flex justify-between items-center text-xs">
                         <span className="text-slate-600">{s.name}</span>

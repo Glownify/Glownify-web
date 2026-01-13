@@ -41,7 +41,7 @@ const Categories = ({ categories, gender }) => {
         </div>
         
         <div className="hidden md:flex items-center gap-2">
-           <div className={`h-[1px] w-12 ${styles.bgLight} mr-2`} />
+           <div className={`h-px w-12 ${styles.bgLight} mr-2`} />
            <p className={`text-[10px] font-black uppercase tracking-[0.2em] opacity-60 text-slate-500`}>Select Style</p>
         </div>
       </div>
@@ -81,13 +81,13 @@ const Categories = ({ categories, gender }) => {
             1280: { slidesPerView: 10 },
           }}
           slidesPerView="auto"
-          className="categories-swiper !pb-4"
+          className="categories-swiper pb-4!"
         >
           {categories.map((category) => (
-            <SwiperSlide key={category._id} className="!w-[100px] md:!w-[130px]">
+            <SwiperSlide key={category._id} className="w-25! md:w-32.5!">
               <div className="flex flex-col items-center group cursor-pointer">
                 {/* Smaller Squircle Container */}
-                <div className={`relative w-full aspect-square bg-white border ${styles.border} rounded-[2rem] md:rounded-[2.5rem] flex items-center justify-center mb-3 transition-all duration-500 group-hover:shadow-xl ${styles.shadow} ${styles.borderHover} group-hover:-translate-y-1 overflow-hidden`}>
+                <div className={`relative w-full aspect-square bg-white border ${styles.border} rounded-4xl md:rounded-[2.5rem] flex items-center justify-center mb-3 transition-all duration-500 group-hover:shadow-xl ${styles.shadow} ${styles.borderHover} group-hover:-translate-y-1 overflow-hidden`}>
                   
                   <div className={`absolute inset-0 ${styles.bgLight} opacity-0 group-hover:opacity-50 transition-opacity duration-500`} />
                   

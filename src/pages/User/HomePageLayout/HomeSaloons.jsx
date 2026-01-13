@@ -37,7 +37,7 @@ const HomeSaloons = ({ category, lat, lng }) => {
         <div className="h-8 w-64 bg-slate-100 animate-pulse rounded mb-8" />
         <div className="flex gap-4 overflow-hidden">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="min-w-[220px] h-[400px] bg-slate-50 animate-pulse rounded-2xl border" />
+            <div key={i} className="min-w-55 h-100 bg-slate-50 animate-pulse rounded-2xl border" />
           ))}
         </div>
       </div>
@@ -96,13 +96,13 @@ const HomeSaloons = ({ category, lat, lng }) => {
             1024: { slidesPerView: 4 },
             1280: { slidesPerView: 5 },
           }}
-          className="!pb-10 !pt-2"
+          className="pb-10! pt-2!"
         >
           {homeSaloonsByCategory.map((salon) => (
             <SwiperSlide key={salon._id}>
               <div
                 onClick={() => navigate(`/salon/${salon._id}`)}
-                className="flex flex-col h-[350px] group/card bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer"
+                className="flex flex-col h-87.5 group/card bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer"
               >
                 {/* Image Section */}
                 <div className="relative h-44 overflow-hidden">
@@ -124,7 +124,7 @@ const HomeSaloons = ({ category, lat, lng }) => {
                     <span className="text-[10px] font-bold text-slate-800">4.7</span>
                   </div>
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
                   
                   <div className="absolute bottom-3 left-4 right-4">
                     <h3 className="font-bold text-white text-base leading-tight truncate">
@@ -138,13 +138,13 @@ const HomeSaloons = ({ category, lat, lng }) => {
                 </div>
 
                 {/* Body Section */}
-                <div className="p-5 flex flex-col flex-grow bg-white">
-                  <div className="space-y-2.5 flex-grow">
+                <div className="p-5 flex flex-col grow bg-white">
+                  <div className="space-y-2.5 grow">
                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Service Menu</p>
                     {mockServices.map((s, i) => (
                       <div key={i} className="flex justify-between items-center text-xs group/item">
                         <span className="text-slate-600">{s.name}</span>
-                        <div className="h-px flex-grow mx-2 border-b border-dotted border-slate-200" />
+                        <div className="h-px grow mx-2 border-b border-dotted border-slate-200" />
                         <span className="font-bold text-slate-900">₹{s.price}</span>
                       </div>
                     ))}

@@ -27,7 +27,7 @@ const IndependentProfessionals = () => {
         <div className="h-8 w-64 bg-slate-200 animate-pulse rounded mb-8"></div>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="h-[400px] bg-slate-100 animate-pulse rounded-2xl"></div>
+            <div key={i} className="h-100 bg-slate-100 animate-pulse rounded-2xl"></div>
           ))}
         </div>
       </div>
@@ -78,11 +78,11 @@ const IndependentProfessionals = () => {
             1024: { slidesPerView: 4 },
             1280: { slidesPerView: 5 },
           }}
-          className="!pb-10 !pt-2"
+          className="pb-10! pt-2!"
         >
           {independentProfessionals.map((pro) => (
             <SwiperSlide key={pro._id}>
-              <div className="flex flex-col h-[320px] bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden group/card">
+              <div className="flex flex-col h-80 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden group/card">
                 
                 {/* Image Section */}
                 <div className="relative h-52 overflow-hidden">
@@ -100,7 +100,7 @@ const IndependentProfessionals = () => {
                   )}
                   
                   {/* Overlays */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
                   
                   <div className="absolute top-3 left-3 bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg uppercase">
                     {pro.experienceYears}+ Yrs Exp

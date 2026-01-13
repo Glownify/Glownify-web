@@ -60,8 +60,8 @@ export const Services = memo(() => {
             // className="pb-14"
           >
             {services.map((item, i) => (
-              <SwiperSlide key={i} className="h-[300px]">
-                <div className="group flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 mb-4 border border-gray-100 h-[350px]">
+              <SwiperSlide key={i} className="h-75">
+                <div className="group flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 mb-4 border border-gray-100 h-87.5">
                   
                   {/* Top Half: Image (50% height) */}
                   <div className="h-1/2 overflow-hidden relative">

@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import store from "./../redux/store";
 import ProtectedRoute from "./../components/ProtectedRoutes";
 import DashboardLayout from "./../components/layout/DashboardLayout";
+import AuthRedirect from "../components/AuthRedirect";
 
 // Super Admin Pages
 import SuperAdminDashboard from "./../pages/SuperAdmin/SuperAdminDashboard";
@@ -81,6 +82,7 @@ const AllRoutes = () => {
     <Provider store={store}>
       <Toaster position="top-right" />
       <BrowserRouter>
+      <AuthRedirect />
         <Routes>
           {/* PUBLIC CUSTOMER ROUTES */}
           <Route element={<UserLayout />}>

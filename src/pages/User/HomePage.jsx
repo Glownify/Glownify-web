@@ -16,11 +16,11 @@ import toast from "react-hot-toast";
 import IndependentProfessionals from "./HomePageLayout/IndependentProfessionals";
 import UnisexSalon from "./HomePageLayout/UnisexSalon";
 import SalonHomeServices from "./HomePageLayout/SalonHomeServices";
-
-
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { salons, categories, loading } = useSelector((state) => state.user);
   const [gender, setGender] = useState('women');
   const [lat, setLat] = useState(null);

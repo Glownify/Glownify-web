@@ -28,6 +28,7 @@ const LoginPage = () => {
   useEffect(() => {
     if (!token || !role) return;
     const redirectPath = ROLE_ROUTES[role] || '/';
+    console.log('Redirecting to:', redirectPath, 'for role:', role);
     navigate(redirectPath, { replace: true });
   }, [token, role, navigate]);
 

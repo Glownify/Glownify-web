@@ -230,6 +230,30 @@ export const fetchUserBookings = createAsyncThunk(
   }
 );
 
+export const fetchIndependentProfessionals=createAsyncThunk(
+  "user/fetchIndependentProfessionals",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/independent-pro/get-home-independentpros`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log("Independent Professionals API Response:", response);
+      const data = response.data;
+      if (response.status !== 200) {
+        return handleAxiosError(error, thunkAPI);
+      }
+      return data.data;
+    } catch (error) {
+      return handleAxiosError(error, thunkAPI);
+    }
+  }
+);
 
 const userSlice = createSlice({
     name: "user",
@@ -241,6 +265,7 @@ const userSlice = createSlice({
         states: [],
         cities: [],
         bookings: [],
+        independentProfessionals:[],
         saloonDetails: null,
         selectedCategory: "women",
         serviceItems: [],
@@ -380,7 +405,20 @@ setLocation: (state, action) => {
             .addCase(fetchUserBookings.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+               .addCase(fetchIndependentProfessionals.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchIndependentProfessionals.fulfilled, (state, action) => {
+                state.loading = false;
+                state.independentProfessionals = action.payload;
+            })
+            .addCase(fetchIndependentProfessionals.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
+            
     },
 });
 export const { setSelectedCategory, setLocation } = userSlice.actions;

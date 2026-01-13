@@ -13,6 +13,9 @@ import TopRatedSaloons from "./HomePageLayout/TopRatedSaloons";
 import HomeSaloons from "./HomePageLayout/HomeSaloons";
 import { setSelectedCategory, setLocation } from "../../redux/slice/userSlice";
 import toast from "react-hot-toast";
+import IndependentProfessionals from "./HomePageLayout/IndependentProfessionals";
+import UnisexSalon from "./HomePageLayout/UnisexSalon";
+import SalonHomeServices from "./HomePageLayout/SalonHomeServices";
 
 
 
@@ -106,7 +109,10 @@ useEffect(() => {
       <GenderSwitch gender={gender} setGender={setGender} />
       <Categories categories={filteredCategories} gender={gender} />
       <HomeSaloons category={gender} lat={lat} lng={lng} />
-      <TopRatedSaloons salons={salons} categories={categories}/>
+      {/* <TopRatedSaloons salons={salons} categories={categories}/> */}
+      <SalonHomeServices />
+      <UnisexSalon />
+      <IndependentProfessionals />
     </div>
   );
 };

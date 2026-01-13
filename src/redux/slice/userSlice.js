@@ -280,6 +280,31 @@ export const fetchAllSalonsforhomeServices = createAsyncThunk(
     }
     }
 );
+export const fetchAllUnisexSalonServices = createAsyncThunk(
+  "user/fetchAllUnisexSalonServices",
+  async ({lat,lng}, thunkAPI) => {
+    console.log("Fetching All unisex salon for home services category:",  "at lat:", lat, "lng:", lng);
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/get-unisex-salons`,{
+        params: {lat,lng},
+        headers: {
+            "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        });
+        console.log("API Response for unisex:", response);
+        const data = response.data;
+        console.log("API Response for All Saloons by Category:", data.salons);
+        if(response.status !== 200){
+          return handleAxiosError(error, thunkAPI);
+        }
+        return data.salons;
+    } catch (error) {
+      console.log("Error fetching salons by category:", error);
+      return handleAxiosError(error, thunkAPI);
+    }
+    }
+);
 
 const userSlice = createSlice({
     name: "user",
@@ -293,6 +318,7 @@ const userSlice = createSlice({
         bookings: [],
         independentProfessionals:[],
         salonsforhomeServices:[],
+        unisexSalonServices:[],
         saloonDetails: null,
         selectedCategory: "women",
         serviceItems: [],
@@ -454,6 +480,18 @@ setLocation: (state, action) => {
                 state.salonsforhomeServices = action.payload;
             })
             .addCase(fetchAllSalonsforhomeServices.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(fetchAllUnisexSalonServices.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchAllUnisexSalonServices.fulfilled, (state, action) => {
+                state.loading = false;
+                state.unisexSalonServices = action.payload;
+            })
+            .addCase(fetchAllUnisexSalonServices.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })

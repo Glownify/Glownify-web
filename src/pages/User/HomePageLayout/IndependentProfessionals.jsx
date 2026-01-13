@@ -36,7 +36,8 @@ useEffect(()=>{
     );
   }
   return (
-    <div>
+    <div className="px-4 py-10 max-w-7xl mx-auto">
+      <div>
       <h1 className='text-2xl  px-6 py-5 md:text-3xl font-bold text-slate-900 capitalize'>Independent Professionals</h1>
        <Swiper
       modules={[Pagination, Autoplay]}
@@ -130,6 +131,8 @@ useEffect(()=>{
       ))}
     </Swiper>
       
+    </div>
+
     </div>
   )
 }

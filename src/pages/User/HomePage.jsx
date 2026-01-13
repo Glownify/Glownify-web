@@ -110,7 +110,7 @@ useEffect(() => {
       <Categories categories={filteredCategories} gender={gender} />
       <HomeSaloons category={gender} lat={lat} lng={lng} />
       {/* <TopRatedSaloons salons={salons} categories={categories}/> */}
-      <SalonHomeServices />
+      <SalonHomeServices category={gender} lat={lat} lng={lng} />
       <UnisexSalon />
       <IndependentProfessionals />
     </div>

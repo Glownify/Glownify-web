@@ -111,7 +111,8 @@ export const fetchAllSalonsByCategory = createAsyncThunk(
       return handleAxiosError(error, thunkAPI);
     }
     }
-);
+)
+
 
 export const fetchAllStates = createAsyncThunk(
   "superadmin/fetchAllStates",
@@ -254,6 +255,31 @@ export const fetchIndependentProfessionals=createAsyncThunk(
     }
   }
 );
+export const fetchAllSalonsforhomeServices = createAsyncThunk(
+  "user/fetchAllSalonsforhomeServices",
+  async ({category,lat,lng}, thunkAPI) => {
+    console.log("Fetching All Saloons for home services category:", category, "at lat:", lat, "lng:", lng);
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/get-home-salons`,{
+        params: { category, lat, lng },
+        headers: {
+            "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        });
+        console.log("API Response for home services:", response);
+        const data = response.data;
+        console.log("API Response for All Saloons by Category:", data.salons);
+        if(response.status !== 200){
+          return handleAxiosError(error, thunkAPI);
+        }
+        return data.data;
+    } catch (error) {
+      console.log("Error fetching salons by category:", error);
+      return handleAxiosError(error, thunkAPI);
+    }
+    }
+);
 
 const userSlice = createSlice({
     name: "user",
@@ -266,6 +292,7 @@ const userSlice = createSlice({
         cities: [],
         bookings: [],
         independentProfessionals:[],
+        salonsforhomeServices:[],
         saloonDetails: null,
         selectedCategory: "women",
         serviceItems: [],
@@ -417,7 +444,19 @@ setLocation: (state, action) => {
             .addCase(fetchIndependentProfessionals.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-            });
+            })
+              .addCase(fetchAllSalonsforhomeServices.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchAllSalonsforhomeServices.fulfilled, (state, action) => {
+                state.loading = false;
+                state.salonsforhomeServices = action.payload;
+            })
+            .addCase(fetchAllSalonsforhomeServices.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
             
     },
 });

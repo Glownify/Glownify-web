@@ -1,23 +1,22 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllSalonsforhomeServices } from "../../../redux/slice/userSlice";
-import { MapPin, Star, ArrowRight } from "lucide-react";
+import { MapPin, Star, ChevronLeft, ChevronRight, Clock, CheckCircle2 } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
+import "swiper/css/navigation";
 
 const SalonHomeServices = ({ category, lat, lng }) => {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
-
   const dispatch = useDispatch();
-  const { salonsforhomeServices, loading, error } = useSelector(
-    (state) => state.user
-  );
+
+  const { salonsforhomeServices, loading } = useSelector((state) => state.user);
+
   useEffect(() => {
     dispatch(fetchAllSalonsforhomeServices({ category, lat, lng }));
   }, [dispatch, category, lat, lng]);
@@ -30,136 +29,128 @@ const SalonHomeServices = ({ category, lat, lng }) => {
 
   if (loading) {
     return (
-      <div className="w-full py-10 text-center text-slate-500">
-        Loading nearby home salons services...
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="h-8 w-48 bg-slate-200 animate-pulse rounded mb-6"></div>
+        <div className="flex gap-6 overflow-hidden">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="min-w-[250px] h-[400px] bg-slate-100 animate-pulse rounded-2xl"></div>
+          ))}
+        </div>
       </div>
     );
   }
 
-  if (!salonsforhomeServices.length) {
-    return (
-      <div className="w-full py-10 text-center text-slate-500">
-        No home salon services found
-      </div>
-    );
-  }
+  if (!salonsforhomeServices?.length) return null;
 
   return (
-     <div className="max-w-7xl mx-auto px-4">
-      <h1 className="py-5 text-2xl md:text-3xl font-bold text-slate-900 capitalize">
-        Home Salon Services
-      </h1>
+    <div className="max-w-7xl mx-auto px-4 md:px-6">
+      <div className="flex items-end justify-between mb-8">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Salon Home Services
+          </h2>
+          <p className="text-slate-500 text-sm mt-1 flex items-center gap-1">
+            Professional grooming at your doorstep
+          </p>
+        </div>
 
-      {/* SLIDER SECTION */}
-      <div className="relative group/cat-section">
-        {/* LEFT ARROW */}
-        <button
-          ref={prevRef}
-          className="absolute -left-4 top-1/2 -translate-y-1/2 z-20
-                     w-10 h-10 bg-white shadow-lg border rounded-full
-                     flex items-center justify-center text-rose-500
-                     opacity-0 group-hover/cat-section:opacity-100
-                     transition-opacity"
-        >
-          <ChevronLeft size={20} />
-        </button>
+        {/* Custom Navigation */}
+        <div className="hidden md:flex gap-3">
+          <button
+            ref={prevRef}
+            className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-indigo-600 hover:text-white transition-all disabled:opacity-20"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <button
+            ref={nextRef}
+            className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-indigo-600 hover:text-white transition-all disabled:opacity-20"
+          >
+            <ChevronRight size={20} />
+          </button>
+        </div>
+      </div>
 
-        {/* RIGHT ARROW */}
-        <button
-          ref={nextRef}
-          className="absolute -right-4 top-1/2 -translate-y-1/2 z-20
-                     w-10 h-10 bg-white shadow-lg border rounded-full
-                     flex items-center justify-center text-rose-500
-                     opacity-0 group-hover/cat-section:opacity-100
-                     transition-opacity"
-        >
-          <ChevronRight size={20} />
-        </button>
-
+      <div className="relative group">
         <Swiper
           modules={[Pagination, Autoplay, Navigation]}
           spaceBetween={24}
-          pagination={{ clickable: true }}
-          autoplay={{
-            delay: 2500,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true,
-          }}
-          navigation={{
-            prevEl: prevRef.current,
-            nextEl: nextRef.current,
-          }}
           onBeforeInit={(swiper) => {
             swiper.params.navigation.prevEl = prevRef.current;
             swiper.params.navigation.nextEl = nextRef.current;
           }}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
           breakpoints={{
-            0: { slidesPerView: 2, slidesPerGroup: 2 },
-            640: { slidesPerView: 3, slidesPerGroup: 3 },
-            1024: { slidesPerView: 5, slidesPerGroup: 5 },
+            0: { slidesPerView: 1.3, spaceBetween: 16 },
+            640: { slidesPerView: 2.3 },
+            1024: { slidesPerView: 4 },
+            1280: { slidesPerView: 5 },
           }}
-          loop
-          className="w-full"
+          className="!pb-12"
         >
-          {salonsforhomeServices.map((items) => (
-            <SwiperSlide key={items._id}>
-              {/* CARD (FIXED HEIGHT) */}
-              <div
-                className="h-[420px] flex flex-col bg-white rounded-2xl
-                           border border-slate-100 shadow-sm
-                           hover:shadow-2xl hover:-translate-y-1
-                           transition-all cursor-pointer"
-              >
-                {/* IMAGE */}
-                <div className="relative h-[160px] overflow-hidden rounded-t-2xl">
-                  {items.galleryImages?.length > 0 ? (
+          {salonsforhomeServices.map((item) => (
+            <SwiperSlide key={item._id}>
+              <div className="group/card h-[350px] flex flex-col bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 overflow-hidden">
+                
+                {/* IMAGE HEADER */}
+                <div className="relative h-44 overflow-hidden">
+                  {item.galleryImages?.length > 0 ? (
                     <img
-                      src={items.galleryImages[0]}
-                      alt={items.shopName}
-                      className="w-full h-full object-cover"
+                      src={item.galleryImages[0]}
+                      alt={item.shopName}
+                      className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="flex items-center justify-center h-full bg-slate-100 text-slate-400 text-sm">
-                      No Image Available
+                    <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-400">
+                      No Image
                     </div>
                   )}
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-
-                  <div className="absolute bottom-3 left-3 text-white space-y-1">
-                    <h3 className="font-bold text-base truncate">
-                      {items.shopName}
-                    </h3>
-
-                    <span className="inline-block px-2 py-0.5 bg-indigo-600/90 text-[10px] font-semibold rounded">
-                      {items.salonCategory}
-                    </span>
-
-                    <div className="flex items-center gap-1 text-xs">
-                      <MapPin size={12} />
-                      Nearby ({Math.round(items.distanceInMeters / 1000)} km)
-                    </div>
+                  
+                  {/* Floating Badges */}
+                  <div className="absolute top-3 right-3 bg-white/95 backdrop-blur px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
+                    <Star size={12} className="text-amber-500 fill-amber-500" />
+                    <span className="text-[11px] font-bold text-slate-800">4.8</span>
                   </div>
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
+
+                  <div className="absolute bottom-3 left-3 right-3 text-white">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-indigo-300 mb-0.5">
+                      {item.salonCategory}
+                    </p>
+                    <h3 className="font-bold text-base leading-tight truncate">
+                      {item.shopName}
+                    </h3>
+                  </div>
+                  {/* <div className="flex items-center gap-1 text-[11px] text-slate-500 mb-4">
+                    <MapPin size={12} className="text-indigo-500" />
+                    <span>{Math.round(item.distanceInMeters / 1000)} km away</span>
+                  </div> */}
                 </div>
 
-                {/* CONTENT */}
+                {/* CONTENT SECTION */}
                 <div className="p-5 flex flex-col flex-1">
-                  {/* SERVICES (FIXED SPACE) */}
-                  <div className="space-y-1 h-[72px] overflow-hidden">
+                  
+
+                  <div className="space-y-2.5 flex-1">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Popular Services</p>
                     {mockServices.map((s, i) => (
-                      <div key={i} className="flex justify-between text-sm">
-                        <span>{s.name}</span>
-                        <span className="font-bold">₹{s.price}</span>
+                      <div key={i} className="flex justify-between items-center text-xs">
+                        <span className="text-slate-600 font-medium">{s.name}</span>
+                        <span className="text-slate-900 font-bold text-[13px]">₹{s.price}</span>
                       </div>
                     ))}
                   </div>
 
-                  {/* BOTTOM */}
-                  <div className="mt-auto pt-4 border-t flex justify-between text-sm">
-                    <span className="text-slate-400">Available Now</span>
-                    <span className="text-indigo-600 font-bold">
-                      Book Visit
-                    </span>
+                  {/* FOOTER */}
+                  <div className=" border-t border-slate-50 flex items-center justify-between">
+                    <div className="flex items-center gap-1 text-emerald-600">
+                      <Clock size={12} />
+                      <span className="text-[10px] font-bold uppercase">Quick Visit</span>
+                    </div>
+                    <button className="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-600 hover:text-white transition-colors">
+                      Book Now
+                    </button>
                   </div>
                 </div>
               </div>

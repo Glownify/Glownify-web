@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchIndependentProfessionals } from '../../../redux/slice/userSlice';
+import React, { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchIndependentProfessionals } from "../../../redux/slice/userSlice";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
-import { MapPin, ChevronRight, ChevronLeft } from "lucide-react";
+import { MapPin, ChevronRight, ChevronLeft, Star, ShieldCheck } from "lucide-react";
 
 // Import Swiper styles
 import "swiper/css";
@@ -13,121 +13,144 @@ import "swiper/css/navigation";
 const IndependentProfessionals = () => {
   const dispatch = useDispatch();
   const { independentProfessionals, loading } = useSelector((state) => state.user);
-  
+
   const prevRef = useRef(null);
   const nextRef = useRef(null);
-  const [swiperLoaded, setSwiperLoaded] = useState(false);
 
   useEffect(() => {
     dispatch(fetchIndependentProfessionals());
   }, [dispatch]);
 
-  // IMPORTANT: This effect forces Swiper to recognize the buttons after they mount
-  useEffect(() => {
-    if (prevRef.current && nextRef.current) {
-      setSwiperLoaded(true);
-    }
-  }, []);
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-6 py-20">
+        <div className="h-8 w-64 bg-slate-200 animate-pulse rounded mb-8"></div>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="h-[400px] bg-slate-100 animate-pulse rounded-2xl"></div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
-  if (loading) return <div className="py-20 text-center animate-pulse">Loading professionals...</div>;
   if (!independentProfessionals?.length) return null;
 
   return (
-    <div className="w-full max-w-7xl mx-auto py-8">
-      <h1 className='text-2xl px-6 py-5 md:text-3xl font-bold text-slate-900 capitalize'>
-        Independent Professionals
-      </h1>
-
-      <div className="relative group px-6">
+    <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Service At Home
+          </h2>
+          <p className="text-slate-500 text-sm mt-1">Top-rated independent professionals near you</p>
+        </div>
         
-        {/* Navigation Buttons - Added z-40 and pointer-events-auto */}
-        <button
-          ref={prevRef}
-          className="absolute left-2 top-1/2 -translate-y-1/2 z-40 w-11 h-11 bg-white shadow-xl border border-slate-200 rounded-full flex items-center justify-center text-rose-500 hover:bg-rose-50 transition-all opacity-0 group-hover:opacity-100 disabled:opacity-20"
-        >
-          <ChevronLeft size={24} />
-        </button>
+        {/* Custom Navigation Controls */}
+        <div className="flex gap-2">
+          <button
+            ref={prevRef}
+            className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all disabled:opacity-30"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <button
+            ref={nextRef}
+            className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all disabled:opacity-30"
+          >
+            <ChevronRight size={20} />
+          </button>
+        </div>
+      </div>
 
-        <button
-          ref={nextRef}
-          className="absolute right-2 top-1/2 -translate-y-1/2 z-40 w-11 h-11 bg-white shadow-xl border border-slate-200 rounded-full flex items-center justify-center text-rose-500 hover:bg-rose-50 transition-all opacity-0 group-hover:opacity-100 disabled:opacity-20"
-        >
-          <ChevronRight size={24} />
-        </button>
-
-        {/* FIX: We only pass the navigation config once swiperLoaded is true 
-            to ensure prevRef.current is not null 
-        */}
+      <div className="relative group">
         <Swiper
           modules={[Pagination, Autoplay, Navigation]}
-          spaceBetween={24}
-          navigation={{
-            prevEl: prevRef.current,
-            nextEl: nextRef.current,
+          spaceBetween={20}
+          onBeforeInit={(swiper) => {
+            swiper.params.navigation.prevEl = prevRef.current;
+            swiper.params.navigation.nextEl = nextRef.current;
           }}
-          // This re-links the navigation after the swiper instance is created
-          onSwiper={(swiper) => {
-            setTimeout(() => {
-              if (swiper.params.navigation) {
-                swiper.params.navigation.prevEl = prevRef.current;
-                swiper.params.navigation.nextEl = nextRef.current;
-                swiper.navigation.destroy();
-                swiper.navigation.init();
-                swiper.navigation.update();
-              }
-            });
-          }}
-          pagination={{ clickable: true, dynamicBullets: true }}
-          autoplay={{ delay: 3500, disableOnInteraction: false }}
+          autoplay={{ delay: 4000, disableOnInteraction: false }}
           breakpoints={{
-            0: { slidesPerView: 1.2 },
-            640: { slidesPerView: 2.5 },
+            0: { slidesPerView: 1.2, spaceBetween: 16 },
+            640: { slidesPerView: 2.3 },
             1024: { slidesPerView: 4 },
             1280: { slidesPerView: 5 },
           }}
-          className="pb-14 pt-4"
+          className="!pb-10 !pt-2"
         >
           {independentProfessionals.map((pro) => (
-            <SwiperSlide key={pro._id} className="h-full">
-              <div className="flex flex-col h-[400px] bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden">
-                <div className="relative h-48 overflow-hidden">
+            <SwiperSlide key={pro._id}>
+              <div className="flex flex-col h-[320px] bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden group/card">
+                
+                {/* Image Section */}
+                <div className="relative h-52 overflow-hidden">
                   {pro.profilePhoto ? (
-                    <img src={pro.profilePhoto} alt={pro.user?.name} className="w-full h-full object-cover" />
+                    <img
+                      src={pro.profilePhoto}
+                      alt={pro.user?.name}
+                      className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700"
+                    />
                   ) : (
-                    <div className="flex items-center justify-center h-full bg-slate-100 text-slate-400">No Image</div>
+                    <div className="flex flex-col items-center justify-center h-full bg-indigo-50 text-indigo-300">
+                      <ShieldCheck size={40} strokeWidth={1} />
+                      <span className="text-[10px] mt-2 font-medium uppercase tracking-widest">Verified Pro</span>
+                    </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                  <div className="absolute top-3 right-3 bg-white/95 px-2 py-1 rounded-lg text-[10px] font-bold text-slate-800 shadow-sm">
-                    {pro.experienceYears} yrs exp
+                  
+                  {/* Overlays */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
+                  
+                  <div className="absolute top-3 left-3 bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg uppercase">
+                    {pro.experienceYears}+ Yrs Exp
                   </div>
-                  <div className="absolute bottom-3 left-3 right-3 text-white">
-                    <h3 className="font-bold text-base truncate">{pro.user?.name}</h3>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="px-1.5 py-0.5 bg-indigo-600 text-[9px] font-bold uppercase rounded">{pro.gender}</span>
-                      <div className="flex items-center gap-1 text-[10px] text-white/90">
-                        <MapPin size={10} />
-                        <span>{pro.location?.radiusInKm || 0} km</span>
+
+                  <div className="absolute bottom-4 left-4 right-4 text-white">
+                    <h3 className="font-bold text-lg leading-tight truncate">
+                      {pro.user?.name}
+                    </h3>
+                    <div className="flex items-center gap-3 mt-1.5">
+                       <div className="flex items-center gap-1 text-[11px] text-white/90">
+                        <MapPin size={12} className="text-indigo-400" />
+                        <span>{pro.location?.radiusInKm || 5} km away</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-4 flex flex-col flex-1">
-                  <div className="space-y-2 flex-1">
-                    <p className="text-[11px] font-semibold text-slate-400 uppercase">Specializations</p>
-                    {pro.specializations?.slice(0, 3).map((spec) => (
-                      <div key={spec._id} className="flex justify-between text-xs text-slate-600">
-                        <span className="truncate">{spec.name}</span>
-                        <span className="text-slate-400 italic">{spec.gender}</span>
-                      </div>
-                    ))}
+                {/* Content Section */}
+                <div className="p-5 flex flex-col flex-1 bg-white">
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-3">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Specialties</span>
+                        <div className="flex items-center gap-0.5 text-amber-500">
+                            <Star size={10} fill="currentColor" />
+                            <span className="text-[10px] font-bold text-slate-700">4.9</span>
+                        </div>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-1.5">
+                      {pro.specializations?.slice(0, 3).map((spec, idx) => (
+                        <span 
+                          key={idx} 
+                          className="px-2 py-1 bg-slate-50 border border-slate-100 text-slate-600 text-[10px] font-medium rounded-md italic"
+                        >
+                          {typeof spec === 'string' ? spec : spec.name}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  <div className="mt-4 pt-3 border-t border-slate-50 flex justify-between items-center">
-                    <span className="text-[10px] text-green-600 font-medium flex items-center gap-1">
-                       <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                       Available
-                    </span>
-                    <span className="text-indigo-600 text-xs font-bold">Book Now</span>
+
+                  {/* Action Section */}
+                  <div className="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                      <span className="text-[11px] text-emerald-600 font-bold uppercase tracking-tight">Available</span>
+                    </div>
+                    <button className="text-indigo-600 text-xs font-bold hover:text-indigo-800 transition-colors flex items-center gap-1">
+                      Book Now <ChevronRight size={14} />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -137,6 +160,6 @@ const IndependentProfessionals = () => {
       </div>
     </div>
   );
-}
+};
 
 export default IndependentProfessionals;

@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchHomeSaloonsByCategory } from "../../../redux/slice/userSlice";
-import { MapPin, Star, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import  { MapPin, Star, ArrowRight } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 
@@ -101,7 +101,7 @@ const HomeSaloons = ({ category, lat, lng }) => {
           <SwiperSlide key={salon._id}>
             <div
               onClick={() => handleSalonClick(salon._id)}
-              className="group bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer h-full"
+              className="px-3 py-3 group bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer h-full"
             >
               <div className="relative aspect-[16/10] overflow-hidden rounded-t-2xl">
                 {/* Image */}

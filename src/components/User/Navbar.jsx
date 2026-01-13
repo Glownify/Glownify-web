@@ -1,22 +1,25 @@
 import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { Menu, X, LogOut, Scissors, ShoppingCart } from "lucide-react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { Menu, X, LogOut, ShoppingCart } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../redux/slice/authSlice";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation(); // Added to track active state for custom button
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
   const { selectedCategory, lat, lng } = useSelector((state) => state.user);
 
+  const isSalonsActive = location.pathname.startsWith("/salons");
+
   const goToSalons = () => {
     if (selectedCategory && lat && lng) {
       navigate(`/salons?category=${selectedCategory}&lat=${lat}&lng=${lng}`);
     } else {
-      navigate("/salons"); // fallback
+      navigate("/salons");
     }
     setOpen(false);
   };
@@ -43,28 +46,27 @@ const Navbar = () => {
           onClick={() => navigate("/")}
         >
           <div className="rounded-lg transition-transform group-hover:rotate-12">
-            
-          <img
-            src="/GlownifyLogoPng.png"
-            alt="Logo"
-            className="h-12 object-contain"
-          />
+            <img
+              src="/GlownifyLogoPng.png"
+              alt="Logo"
+              className="h-12 object-contain"
+            />
           </div>
         </div>
 
         {/* Desktop Links */}
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-          {!user && (
-    <NavLink to="/partner-with-us" className={navLinkStyles}>
-      Partner With Us
-    </NavLink>
-  )}
           <NavLink to="/" className={navLinkStyles}>
             Home
           </NavLink>
+          
           <button
             onClick={goToSalons}
-            className="transition-all duration-300 hover:text-rose-500 text-gray-600"
+            className={`transition-all cursor-pointer duration-300 hover:text-rose-500 ${
+              isSalonsActive 
+                ? "text-rose-600 font-bold border-b-2 border-rose-600" 
+                : "text-gray-600"
+            }`}
           >
             Salons
           </button>
@@ -72,6 +74,17 @@ const Navbar = () => {
           <NavLink to="/bookings" className={navLinkStyles}>
             My Bookings
           </NavLink>
+
+          {!user && (
+            <NavLink 
+              to="/partner-with-us" 
+              className={({ isActive }) => 
+                `${navLinkStyles({ isActive })} font-extrabold text-rose-600`
+              }
+            >
+              Partner With Us
+            </NavLink>
+          )}
         </nav>
 
         {/* Desktop Right Actions */}
@@ -83,7 +96,7 @@ const Navbar = () => {
               </NavLink>
               <NavLink to="/profile">
                 <div className="flex items-center gap-3 px-3 py-1.5 rounded-full bg-rose-50 border border-rose-100 hover:bg-rose-100 transition cursor-pointer">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-rose-500 to-pink-400 flex items-center justify-center text-white shadow-md">
+                  <div className="w-8 h-8 rounded-full bg-linear-to-tr from-rose-500 to-pink-400 flex items-center justify-center text-white shadow-md">
                     <span className="text-xs font-bold">
                       {user?.name?.[0]?.toUpperCase() || "U"}
                     </span>
@@ -125,21 +138,29 @@ const Navbar = () => {
       {open && (
         <div className="md:hidden absolute top-16 left-0 w-full bg-white/95 backdrop-blur-xl border-b border-rose-100 px-6 py-8 flex flex-col gap-6 shadow-xl animate-in slide-in-from-top duration-300">
           <nav className="flex flex-col gap-5 text-lg font-medium">
-            {!user && (
-    <NavLink to="/partner-with-us" onClick={() => setOpen(false)}>
-      Partner With Us
-    </NavLink>
-  )}
             <NavLink to="/" onClick={() => setOpen(false)}>
               Home
             </NavLink>
-            <button onClick={goToSalons} className="text-left">
+            <button 
+              onClick={goToSalons} 
+              className={`text-left ${isSalonsActive ? "text-rose-600 font-bold" : "text-gray-600"}`}
+            >
               Salons
             </button>
 
             <NavLink to="/bookings" onClick={() => setOpen(false)}>
               My Bookings
             </NavLink>
+
+            {!user && (
+              <NavLink 
+                to="/partner-with-us" 
+                onClick={() => setOpen(false)} 
+                className="font-bold text-rose-600"
+              >
+                Partner With Us
+              </NavLink>
+            )}
           </nav>
 
           <div className="border-t border-rose-100 pt-6">

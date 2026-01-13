@@ -1,7 +1,7 @@
 import { Star } from "lucide-react";
 
 export const PhoneMockup = () => (
-  <div className="w-64 h-[500px] bg-slate-900 rounded-[3rem] p-3 shadow-2xl relative border-[6px] border-slate-800">
+  <div className="w-64 h-125 bg-slate-900 rounded-[3rem] p-3 shadow-2xl relative border-[6px] border-slate-800">
     <div className="w-24 h-6 bg-slate-800 absolute top-0 left-1/2 -translate-x-1/2 rounded-b-2xl z-20"></div>
     <div className="bg-white w-full h-full rounded-[2.2rem] overflow-hidden flex flex-col">
       <div className="p-5 border-b border-slate-50">

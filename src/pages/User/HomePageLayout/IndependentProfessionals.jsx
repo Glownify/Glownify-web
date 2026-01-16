@@ -4,6 +4,7 @@ import { fetchIndependentProfessionals } from "../../../redux/slice/userSlice";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { MapPin, ChevronRight, ChevronLeft, Star, ShieldCheck } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 // Import Swiper styles
 import "swiper/css";
@@ -12,6 +13,7 @@ import "swiper/css/navigation";
 
 const IndependentProfessionals = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { independentProfessionals, loading } = useSelector((state) => state.user);
 
   const prevRef = useRef(null);
@@ -20,6 +22,22 @@ const IndependentProfessionals = () => {
   useEffect(() => {
     dispatch(fetchIndependentProfessionals());
   }, [dispatch]);
+
+  // const goToDetailsPage = (id) => {
+  //   navigate( `/independentprofessionaldetailspage`)
+  //   window.scrollTo(0, 0);
+  //   loacalstorage.setItem("independentProfessionalIdForDetails", id);
+    
+
+   
+  // }
+  const goToDetailPage=(salon)=>{
+     localStorage.setItem(
+      "selectedSalon",
+      JSON.stringify(salon)
+    );
+    navigate(`/independentprofessionaldetailspage`);
+  }
 
   if (loading) {
     return (
@@ -148,7 +166,7 @@ const IndependentProfessionals = () => {
                       <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
                       <span className="text-[11px] text-emerald-600 font-bold uppercase tracking-tight">Available</span>
                     </div>
-                    <button className="text-indigo-600 text-xs font-bold hover:text-indigo-800 transition-colors flex items-center gap-1">
+                    <button   onClick={() =>goToDetailPage(pro)} className="text-indigo-600 text-xs font-bold hover:text-indigo-800 transition-colors flex items-center gap-1">
                       Book Now <ChevronRight size={14} />
                     </button>
                   </div>

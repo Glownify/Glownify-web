@@ -9,17 +9,27 @@ import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import { useNavigate } from "react-router-dom";
 
 const SalonHomeServices = ({ category, lat, lng }) => {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
   const dispatch = useDispatch();
+  const navigate=useNavigate()
 
   const { salonsforhomeServices, loading } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(fetchAllSalonsforhomeServices({ category, lat, lng }));
   }, [dispatch, category, lat, lng]);
+
+  const gotoDetailsPage = (id) => {
+    navigate(`/salondetailPageforhome/${id}`)
+    localStorage.setItem("salonIdForHomeDetails", id);
+    console.log(id, "salon id for home details");
+    window.scrollTo(0, 0);
+  }
+
 
   const mockServices = [
     { name: "Haircut", price: 299 },
@@ -148,7 +158,7 @@ const SalonHomeServices = ({ category, lat, lng }) => {
                       <Clock size={12} />
                       <span className="text-[10px] font-bold uppercase">Quick Visit</span>
                     </div>
-                    <button className="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-600 hover:text-white transition-colors">
+                    <button onClick={()=>gotoDetailsPage(item._id)} className="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-600 hover:text-white transition-colors">
                       Book Now
                     </button>
                   </div>

@@ -60,6 +60,7 @@ import HomePage from "./../pages/User/HomePage";
 import MyBookingsPage from "./../pages/User/MyBookingsPage";
 import UserProfilePage from "./../pages/User/UserProfilePage";
 import HomeSaloonsDetails from "../pages/User/HomePageLayout/HomeSaloonsDetails";
+import SalonDetailPageForHome from "../pages/User/HomePageLayout/SalonDetailPageForHome";
 import SalonServices from "../pages/User/HomePageLayout/HomeSaloonDetails/SalonServices";
 import SalonGallery from "../pages/User/HomePageLayout/HomeSaloonDetails/SalonGallery";
 import SalonMap from "../pages/User/HomePageLayout/HomeSaloonDetails/SalonMap";
@@ -71,6 +72,7 @@ import SalonsPage from "../pages/User/SalonsPage";
 import PartnerWithUsPage from "../pages/Common/PartnerWithUsPage";
 import SalonOwnerRegisterPage from "../pages/Common/SalonOwnerRegisterPage";
 import IndependentProfessionalRegistrarionPage from "../pages/Common/IndependentProfessionalRegistrarionPage";
+import IndependentProfessionalDetailPage from "../pages/User/HomePageLayout/IndependentProfessionalDetailPage";
 import BlogPage from "../pages/Common/BlogPage";
 import AboutPage from "../pages/Common/AboutPage";
 import ContactPage from "../pages/Common/ContactPage";
@@ -82,7 +84,7 @@ const AllRoutes = () => {
     <Provider store={store}>
       <Toaster position="top-right" />
       <BrowserRouter>
-      <AuthRedirect />
+        <AuthRedirect />
         <Routes>
           {/* PUBLIC CUSTOMER ROUTES */}
           <Route element={<UserLayout />}>
@@ -99,7 +101,14 @@ const AllRoutes = () => {
               path="/partner-with-us/independent-professional-register"
               element={<IndependentProfessionalRegistrarionPage />}
             />
-
+            <Route
+              path="/independentprofessionaldetailspage"
+              element={<IndependentProfessionalDetailPage />}
+            />
+            <Route
+              path="/salondetailPageforhome/:id"
+              element={<SalonDetailPageForHome />}
+            />
             <Route path="/salon/:id" element={<HomeSaloonsDetails />}>
               <Route index element={<Navigate to="services" replace />} />
               <Route path="services" element={<SalonServices />} />
@@ -222,7 +231,10 @@ const AllRoutes = () => {
             <Route path="/independent-pro" element={<DashboardLayout />}>
               <Route index element={<IndependentProDashboard />} />
               <Route path="dashboard" element={<IndependentProDashboard />} />
-              <Route path="manage-services" element={<ManageIndependentServicesPage />} />
+              <Route
+                path="manage-services"
+                element={<ManageIndependentServicesPage />}
+              />
               <Route path="profile" element={<IndependentProProfilePage />} />
             </Route>
           </Route>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, LogOut, ShoppingCart, MapPin, User, ChevronRight } from "lucide-react";
+import { Menu, X, LogOut, ShoppingCart, MapPin, User, ChevronRight ,Search} from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../redux/slice/authSlice";
 
@@ -85,6 +85,11 @@ const Navbar = () => {
               Partner With Us
             </NavLink>
           )}
+          <div>
+            <Search className="w-5 h-5 text-gray-600 text-rose-600 hover:bg-rose-80 cursor-pointer"/>
+            <span className="absolute top-1 right-1 w-2 h-2  hover:bg-rose-500 rounded-full border-2 border-white"></span>
+          </div>
+          
         </nav>
 
         {/* Action Center */}
@@ -101,8 +106,8 @@ const Navbar = () => {
           {user ? (
             <div className="flex items-center gap-4">
               <NavLink to="/cart" className="relative p-2 hover:bg-rose-50 rounded-full transition-colors group">
-                <ShoppingCart className="w-5 h-5 text-gray-600 group-hover:text-rose-600" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+                <ShoppingCart className="w-5 h-5 group-hover:text-rose-600" />
+                <span className=" top-1 right-1 w-2 h-2 bg-rose-500 rounded-full "></span>
               </NavLink>
 
               <div className="hidden md:flex items-center gap-3 border-l border-gray-200 pl-6">

@@ -385,7 +385,7 @@ setLocation: (state, action) => {
             })
             .addCase(getSaloonDetailsById.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload;
+                state.error = action.payload?.message || "Failed to fetch salon details";
             })
             .addCase(fetchAllSalonsByCategory.pending, (state) => {
                 state.loading = true;

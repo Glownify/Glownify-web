@@ -13,11 +13,14 @@ import TopRatedSaloons from "./HomePageLayout/TopRatedSaloons";
 import HomeSaloons from "./HomePageLayout/HomeSaloons";
 import { setSelectedCategory, setLocation } from "../../redux/slice/userSlice";
 import toast from "react-hot-toast";
-
-
+import IndependentProfessionals from "./HomePageLayout/IndependentProfessionals";
+import UnisexSalon from "./HomePageLayout/UnisexSalon";
+import SalonHomeServices from "./HomePageLayout/SalonHomeServices";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { salons, categories, loading } = useSelector((state) => state.user);
   const [gender, setGender] = useState('women');
   const [lat, setLat] = useState(null);
@@ -98,7 +101,7 @@ useEffect(() => {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-[#FFF7F1] to-[#FFEDE2] pb-20">
+    <div className="min-h-screen bg-linear-to-r from-[#FFF7F1] to-[#FFEDE2] pb-20">
       {/* Header */}
       <Hero />
       <Services />
@@ -106,7 +109,10 @@ useEffect(() => {
       <GenderSwitch gender={gender} setGender={setGender} />
       <Categories categories={filteredCategories} gender={gender} />
       <HomeSaloons category={gender} lat={lat} lng={lng} />
-      <TopRatedSaloons salons={salons} categories={categories}/>
+      {/* <TopRatedSaloons salons={salons} categories={categories}/> */}
+      <IndependentProfessionals />
+      <SalonHomeServices category={gender} lat={lat} lng={lng} />
+      <UnisexSalon lat={lat} lng={lng} />
     </div>
   );
 };

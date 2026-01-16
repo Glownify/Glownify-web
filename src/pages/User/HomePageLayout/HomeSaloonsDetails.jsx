@@ -17,8 +17,9 @@ const HomeSaloonsDetails = () => {
     }
   }, [dispatch, id]);
 
-  // console.log("Saloon Details:", saloonDetails);
+ 
 
+  
   if (loading) return <p className="p-4">Loading salon details...</p>;
   if (error) return <p className="p-4 text-red-500">{error}</p>;
   if (!saloonDetails) return null;
@@ -38,10 +39,10 @@ const HomeSaloonsDetails = () => {
                 "https://img.freepik.com/premium-photo/hairdressers-makeup-artist-working-beauty-salon_10069-11140.jpg"
               }
               alt={saloonDetails.shopName}
-            />
-
+            /> 
+           {/* Book Now Button */}
             <Link to="/bookappoitment">
-              <button className="px-5 font-medium p-2 rounded-lg bg-white absolute right-6 bottom-5">
+              <button  className="px-5 font-medium p-2 rounded-lg bg-white absolute right-6 bottom-5">
                 Book Now
               </button>
             </Link>

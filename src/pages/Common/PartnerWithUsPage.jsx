@@ -31,7 +31,7 @@ const PartnerWithUsPage = () => {
 
   return (
     <div className="w-full min-h-screen flex justify-center bg-gray-50 py-10">
-      <div className="w-[750px] bg-white p-10 rounded-xl shadow-md">
+      <div className="w-187.5 bg-white p-10 rounded-xl shadow-md">
         
         {/* Heading */}
         <header>

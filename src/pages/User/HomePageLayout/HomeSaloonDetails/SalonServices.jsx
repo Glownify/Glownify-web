@@ -7,7 +7,7 @@ import { addToCart, getCart } from "../../../../utils/CartStorage";
 
 const SalonServices = () => {
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.auth.user._id);
+  const userId = useSelector((state) => state?.auth?.user?._id);
   const { saloonDetails } = useOutletContext();
 
   const [activeTab, setActiveTab] = useState(null);

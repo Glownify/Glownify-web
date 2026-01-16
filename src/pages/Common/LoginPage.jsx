@@ -5,16 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Mail, Lock, LogIn, Loader2 } from 'lucide-react';
 import { login } from '../../redux/slice/authSlice';
 import { clearError } from '../../redux/slice/authSlice';
-
-const ROLE_ROUTES = {
-  super_admin: '/super-admin/dashboard',
-  admin: '/admin/dashboard',
-  customer: '/',
-  sales_executive: '/sales-executive/dashboard',
-  salon_owner: '/salon-owner/dashboard',
-  salesman: '/salesman/dashboard',
-  independent_pro: '/independent-pro/dashboard',
-};
+import { ROLE_ROUTES } from '../../utils/role_Routes.js';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -28,6 +19,7 @@ const LoginPage = () => {
   useEffect(() => {
     if (!token || !role) return;
     const redirectPath = ROLE_ROUTES[role] || '/';
+    console.log('Redirecting to:', redirectPath, 'for role:', role);
     navigate(redirectPath, { replace: true });
   }, [token, role, navigate]);
 

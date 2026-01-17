@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
-  Scissors,
-  Hand,
-  Smile,
   Trash2,
-  Calendar,
   ChevronRight,
   ShoppingBag,
   Clock,
+  MapPin,
+  Home,
+  Store,
 } from "lucide-react";
-import { MdSpa } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { createBooking } from "../../redux/slice/userSlice";
@@ -26,10 +24,8 @@ const CartPage = () => {
 
   const [cart, setCart] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Track specific service being edited
-  const [activeServiceInfo, setActiveServiceInfo] = useState(null);
-  const [bookings, setBookings] = useState({}); // Keyed by serviceId
+  const [activeSlotInfo, setActiveSlotInfo] = useState(null);
+  const [bookings, setBookings] = useState({});
 
   useEffect(() => {
     if (!userId) return;
@@ -51,16 +47,12 @@ const CartPage = () => {
 
     setCart(updated);
     localStorage.setItem(getCartKey(userId), JSON.stringify(updated));
-
-    // Clean up booking state if service removed
-    const newBookings = { ...bookings };
-    delete newBookings[serviceId];
-    setBookings(newBookings);
   };
 
   const handleConfirmDateTime = (data) => {
-    if (activeServiceInfo) {
-      setBookings({ ...bookings, [activeServiceInfo.serviceId]: data });
+    if (activeSlotInfo) {
+      const key = `${activeSlotInfo.salonId}-${activeSlotInfo.mode}`;
+      setBookings({ ...bookings, [key]: data });
     }
     setIsModalOpen(false);
   };
@@ -70,22 +62,21 @@ const CartPage = () => {
     0
   );
 
-  // Validation: Count total services vs scheduled services
-  const totalServicesInCart = cart.reduce(
-    (acc, salon) => acc + salon.services.length,
-    0
-  );
-  const scheduledServicesCount = Object.keys(bookings).length;
+  const requiredSlotsCount = cart.reduce((acc, salon) => {
+    const uniqueModesInSalon = new Set(salon.services.map((s) => s.bookedMode));
+    return acc + uniqueModesInSalon.size;
+  }, 0);
+
+  const scheduledSlotsCount = Object.keys(bookings).length;
 
   const handleSubmit = async () => {
     const payload = {
       userId,
       salons: cart.map((salon) => ({
         salonId: salon.salonId,
-        // Map individual services with their specific times
         services: salon.services.map((s) => ({
           serviceId: s._id,
-          bookingDateTime: bookings[s._id],
+          bookingDateTime: bookings[`${salon.salonId}-${s.bookedMode}`],
         })),
       })),
     };
@@ -106,174 +97,166 @@ const CartPage = () => {
 
   if (!cart.length) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 px-4">
-        <ShoppingBag size={64} className="text-gray-300 mb-4" />
-        <h2 className="text-2xl font-bold text-gray-800">Your cart is empty</h2>
-        <button
-          onClick={() => navigate("/salons")}
-          className="mt-6 px-8 py-3 bg-purple-900 text-white rounded-full font-semibold"
-        >
-          Explore Salons
-        </button>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
+        <div className="bg-white p-10 rounded-[40px] shadow-sm flex flex-col items-center border border-gray-100">
+          <ShoppingBag size={80} className="text-purple-200 mb-6" />
+          <h2 className="text-2xl font-bold text-gray-800">Your cart is empty</h2>
+          <p className="text-gray-500 mt-2 mb-8 text-center max-w-[250px]">
+            Looks like you haven't added any beauty services yet.
+          </p>
+          <button
+            onClick={() => navigate("/salons")}
+            className="px-10 py-3 bg-purple-900 text-white rounded-2xl font-semibold hover:bg-purple-950 transition-all shadow-lg shadow-purple-200"
+          >
+            Explore Salons
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 items-start">
-        <div className="bg-white rounded-[28px] shadow-2xl p-5 sm:p-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6 px-2">
-            Your Selections
-          </h1>
+    <div className="min-h-screen bg-gray-50/50 py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8">
+        
+        {/* LEFT COLUMN: SALON CARDS */}
+        <div className="space-y-8">
+          <h1 className="text-3xl font-black text-gray-900 px-2">Your Selections</h1>
+          
+          {cart.map((salon) => {
+            const homeServices = salon.services.filter(s => s.bookedMode === "home");
+            const salonServices = salon.services.filter(s => s.bookedMode === "salon" || !s.bookedMode);
+            
+            const groups = [
+              { mode: "home", label: "Home Service", icon: <Home size={16}/>, services: homeServices },
+              { mode: "salon", label: "In-Salon", icon: <MapPin size={16}/>, services: salonServices }
+            ].filter(g => g.services.length > 0);
 
-          {cart.map((salon) => (
-            <div key={salon.salonId} className="mb-10 last:mb-0">
-              <div className="flex items-center gap-2 text-purple-900 font-bold mb-4 px-2">
-                <span className="text-xl">🏪</span>
-                <span className="text-xl">{salon.salonName}</span>
-                <ChevronRight size={20} className="text-gray-400" />
-              </div>
-
-              <div className="rounded-2xl shadow-[0_0_30px_rgba(0,0,0,0.15)] overflow-hidden bg-white border border-gray-100">
-                {salon.services.map((service, idx) => (
-                  <div key={service._id}>
-                    {idx > 0 && (
-                      <div className="w-full border-t border-gray-100"></div>
-                    )}
-
-                    <div className="p-5">
-                      <div className="flex items-start justify-between gap-3 mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-rose-500 text-white flex items-center justify-center shrink-0">
-                            {service?.image}
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-gray-800 text-base sm:text-lg">
-                              {service.name}
-                            </h3>
-                            <div className="flex items-center gap-1 text-xs text-gray-400 mt-1">
-                              <Clock size={12} /> {service.durationMins} mins
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="text-xs sm:text-sm text-gray-600 flex flex-col items-end gap-2">
-                          <button
-                            onClick={() => {
-                              setActiveServiceInfo({
-                                salonId: salon.salonId,
-                                serviceId: service._id,
-                              });
-                              setIsModalOpen(true);
-                            }}
-                            className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors ${
-                              bookings[service._id]
-                                ? "bg-purple-50 text-purple-700 border border-purple-100"
-                                : "bg-gray-50 text-rose-500 border border-rose-100"
-                            }`}
-                          >
-                            📅{" "}
-                            <span>
-                              {bookings[service._id]
-                                ? `${bookings[service._id].day} ${bookings[service._id].month}, ${bookings[service._id].time}`
-                                : "Set Time"}
-                            </span>
-                          </button>
-                          <button
-                            onClick={() =>
-                              removeService(salon.salonId, service._id)
-                            }
-                            className="text-gray-300 hover:text-red-500 transition-colors pt-1"
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col sm:flex-row sm:justify-between items-end sm:items-center bg-gray-50/50 p-4 rounded-xl border border-dashed border-gray-200">
-                        <ul className="space-y-1 text-gray-500 text-sm list-disc marker:text-rose-500 ml-4">
-                          <li>Service Price: ₹{service.price}</li>
-                          <li>Location: {service?.location || "At Salon"}</li>
-                        </ul>
-                        <div className="text-right mt-3 sm:mt-0">
-                          <div className="text-purple-700 font-bold text-lg">
-                            ₹{service.price}
-                          </div>
-                          <div className="text-gray-500 text-[10px] uppercase tracking-wider font-semibold">
-                            Amount to Pay
-                          </div>
-                        </div>
-                      </div>
+            return (
+              <div 
+                key={salon.salonId} 
+                className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden"
+              >
+                {/* Salon Header */}
+                <div className="bg-purple-50/50 px-6 py-5 flex items-center justify-between border-b border-purple-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-purple-100">
+                      <Store className="text-purple-600" size={24} />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-gray-900">{salon.salonName}</h2>
+                      <p className="text-xs text-purple-600 font-semibold uppercase tracking-wider">Professional Studio</p>
                     </div>
                   </div>
-                ))}
+                </div>
+
+                {/* Service Groups (Home vs Salon) */}
+                <div className="p-6 space-y-6">
+                  {groups.map((group) => {
+                    const slotKey = `${salon.salonId}-${group.mode}`;
+                    const timeData = bookings[slotKey];
+
+                    return (
+                      <div key={group.mode} className="rounded-2xl border border-gray-100 bg-gray-50/30 overflow-hidden">
+                        {/* Group Sub-Header */}
+                        <div className="px-4 py-3 bg-white border-b border-gray-100 flex justify-between items-center">
+                          <div className="flex items-center gap-2 text-gray-600 font-bold text-xs uppercase tracking-tight">
+                            {group.icon}
+                            {group.label}
+                          </div>
+                          
+                          <button
+                            onClick={() => {
+                              setActiveSlotInfo({ salonId: salon.salonId, mode: group.mode });
+                              setIsModalOpen(true);
+                            }}
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                              timeData 
+                                ? "bg-green-50 text-green-700 border-green-100" 
+                                : "bg-rose-50 text-rose-600 border-rose-100 animate-pulse"
+                            }`}
+                          >
+                            {timeData ? `📅 ${timeData.day} ${timeData.month}, ${timeData.time}` : "🕒 Select Time"}
+                          </button>
+                        </div>
+
+                        {/* Services List */}
+                        <div className="divide-y divide-gray-100">
+                          {group.services.map((service) => (
+                            <div key={service._id} className="p-4 flex items-center justify-between group">
+                              <div className="flex items-center gap-4">
+                                <div className="w-14 h-14 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-2xl shadow-sm">
+                                  {service?.image || "✨"}
+                                </div>
+                                <div>
+                                  <h3 className="font-bold text-gray-800">{service.name}</h3>
+                                  <div className="flex items-center gap-3 mt-1">
+                                    <span className="flex items-center gap-1 text-xs text-gray-400">
+                                      <Clock size={12} /> {service.durationMins}m
+                                    </span>
+                                    <span className="text-purple-700 font-bold text-sm">₹{service.price}</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => removeService(salon.salonId, service._id)}
+                                className="p-2 text-gray-300 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                              >
+                                <Trash2 size={18} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        <div className="lg:sticky lg:top-8">
-          <div className="bg-white rounded-[28px] shadow-2xl p-6 border border-gray-50">
-            <h3 className="text-xl font-bold text-gray-900 mb-6">
-              Booking Summary
-            </h3>
+        {/* RIGHT COLUMN: STICKY SUMMARY */}
+        <div className="lg:sticky lg:top-8 h-fit">
+          <div className="bg-white rounded-[32px] shadow-xl shadow-gray-200/50 p-8 border border-gray-100">
+            <h3 className="text-xl font-black text-gray-900 mb-6">Summary</h3>
 
-            <div className="space-y-4 max-h-100 overflow-y-auto pr-2">
-              {cart.map((salon) => (
-                <div
-                  key={salon.salonId}
-                  className="pb-4 border-b border-gray-50 last:border-0"
-                >
-                  <p className="text-sm font-bold text-gray-800 mb-2">
-                    {salon.salonName}
-                  </p>
-                  {salon.services.map((s) => (
-                    <div
-                      key={s._id}
-                      className="flex justify-between items-center mb-1"
-                    >
-                      <p className="text-xs text-gray-500 truncate max-w-37.5">
-                        {s.name}
-                      </p>
-                      <p className="text-[10px] font-medium text-purple-600">
-                        {bookings[s._id]
-                          ? `${bookings[s._id].day} ${bookings[s._id].month.substring(0, 3)}`
-                          : "⚠️ Missing Time"}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-6 pt-6 border-t-2 border-dashed border-gray-100">
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-gray-500 font-medium">Grand Total</span>
-                <span className="text-3xl font-black text-purple-900">
-                  ₹{grandTotal}
+            <div className="space-y-4 mb-8">
+              <div className="flex justify-between text-gray-500 text-sm">
+                <span>Total Services</span>
+                <span className="font-bold text-gray-800">
+                  {cart.reduce((acc, s) => acc + s.services.length, 0)}
                 </span>
               </div>
-
-              <button
-                disabled={scheduledServicesCount < totalServicesInCart}
-                onClick={handleSubmit}
-                className={`w-full mt-6 py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 shadow-lg ${
-                  scheduledServicesCount < totalServicesInCart
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-purple-900 text-white hover:bg-purple-950 active:scale-[0.98]"
-                }`}
-              >
-                Confirm & Pay
-                <ChevronRight size={20} />
-              </button>
-
-              {scheduledServicesCount < totalServicesInCart && (
-                <p className="text-center text-[10px] text-rose-500 font-bold mt-4 uppercase tracking-tighter">
-                  ⚠ Schedule all {totalServicesInCart} services to continue
-                </p>
-              )}
+              <div className="flex justify-between items-end">
+                <span className="text-gray-500 text-sm">Amount Payable</span>
+                <span className="text-3xl font-black text-purple-900 leading-none">₹{grandTotal}</span>
+              </div>
             </div>
+
+            <button
+              disabled={scheduledSlotsCount < requiredSlotsCount}
+              onClick={handleSubmit}
+              className={`w-full py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 shadow-lg ${
+                scheduledSlotsCount < requiredSlotsCount
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed shadow-none"
+                  : "bg-purple-900 text-white hover:bg-purple-950 active:scale-[0.98] shadow-purple-200"
+              }`}
+            >
+              Confirm & Pay
+              <ChevronRight size={20} />
+            </button>
+            
+            {scheduledSlotsCount < requiredSlotsCount && (
+              <div className="mt-6 p-4 bg-rose-50 rounded-2xl border border-rose-100">
+                <p className="text-[11px] text-rose-600 font-bold text-center uppercase tracking-wider">
+                  Action Required:
+                </p>
+                <p className="text-[10px] text-rose-500 text-center mt-1">
+                  Please select dates for all {requiredSlotsCount} service groups.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

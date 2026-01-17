@@ -22,12 +22,20 @@ export const removeFromCart = (userId, salonId, serviceId) => {
   return cart;
 };
 
-export const addToCart = (userId, salon, service) => {
+export const addToCart = (userId, salon, service, selectedMode) => {
   let cart = getCart(userId);
 
   const salonIndex = cart.findIndex(
     (item) => item.salonId === salon._id
   );
+
+  // Prepare the service object with the selected mode
+  const serviceWithMode = {
+    ...service,
+    bookedMode: selectedMode // Store if this specific booking is for 'home' or 'salon'
+  };
+
+  console.log("Adding to cart:", { salon, service: serviceWithMode });
 
   if (salonIndex > -1) {
     const exists = cart[salonIndex].services.some(
@@ -35,13 +43,14 @@ export const addToCart = (userId, salon, service) => {
     );
 
     if (!exists) {
-      cart[salonIndex].services.push(service);
+      cart[salonIndex].services.push(serviceWithMode);
     }
   } else {
     cart.push({
       salonId: salon._id,
       salonName: salon.shopName,
-      services: [service],
+      // You can also store salon address/phone here if needed for checkout
+      services: [serviceWithMode],
     });
   }
 

@@ -17,8 +17,10 @@ const initialFormState = {
   discountPercent: "",
   description: "",
   image: "",
-  providerType: "salon",
+  serviceMode: "salon",
+  providerType: "Salon",
 };
+import { toast } from "react-hot-toast";
 
 const ManageServicesPage = () => {
   const dispatch = useDispatch();
@@ -58,7 +60,8 @@ const ManageServicesPage = () => {
       discountPercent: service.discountPercent || "",
       description: service.description || "",
       image: service.image || "",
-      providerType: service.providerType || "salon",
+      serviceMode: service.serviceMode || "salon",
+      providerType: service.providerType || "Salon",
     });
     setShowModal(true);
   };
@@ -94,7 +97,7 @@ const confirmDelete = async () => {
 
   const handleSubmit = async (e) => {
   e.preventDefault();
-
+    console.log("Submitting form:", form, "Edit Mode:", isEditMode, "Editing ID:", editingServiceId);
   try {
     const actionPromise = isEditMode
       ? dispatch(
@@ -201,6 +204,9 @@ const confirmDelete = async () => {
 
                 <p className="text-slate-500 text-sm leading-relaxed mb-6 line-clamp-2">
                   {service.description || "Offering high-quality professional care and attention."}
+                </p>
+                <p className="text-slate-400 text-xs italic mb-6">
+                  Service Mode: {service.serviceMode || "salon"}
                 </p>
 
                 {/* Footer: Price & Duration */}
@@ -317,8 +323,17 @@ const confirmDelete = async () => {
 
           {/* Section 3: Advanced Details */}
           <div className="space-y-4 pt-2">
+            
             <h3 className="text-xs font-bold text-purple-600 uppercase tracking-widest">Provider & Media</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-sm font-semibold text-slate-700 ml-1">Service Mode</label>
+                <select name="serviceMode" className="w-full border-slate-200 border rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none bg-white" value={form.serviceMode} onChange={handleChange}>
+                  <option value="salon">Salon</option>
+                  <option value="home">Home</option>
+                  <option value="both">Both</option>
+                </select>
+              </div>
               <div className="space-y-1">
                 <label className="text-sm font-semibold text-slate-700 ml-1">Provider Type</label>
                 <select name="providerType" className="w-full border-slate-200 border rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none bg-white" value={form.providerType} onChange={handleChange}>

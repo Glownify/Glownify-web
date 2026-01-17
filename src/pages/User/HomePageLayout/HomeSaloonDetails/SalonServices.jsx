@@ -2,8 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchServiceItemByCategory } from "../../../../redux/slice/userSlice";
 import { useOutletContext } from "react-router-dom";
-import { Clock, Plus, Info, Check } from "lucide-react";
-import { addToCart, getCart } from "../../../../utils/CartStorage";
+import {
+  Clock,
+  Plus,
+  Info,
+  Minus,
+  Home,
+  Store,
+  Smartphone,
+} from "lucide-react";
+import {
+  addToCart,
+  removeFromCart,
+  getCart,
+} from "../../../../utils/CartStorage";
 
 const SalonServices = () => {
   const dispatch = useDispatch();
@@ -15,19 +27,14 @@ const SalonServices = () => {
 
   const categories = saloonDetails?.serviceCategories || [];
   const selectedSalonId = saloonDetails?._id;
-
   const { serviceItems, loading } = useSelector((state) => state.user);
 
-  /* 🔹 Load cart on mount */
   useEffect(() => {
-    if(userId){
-      setCartItems(getCart(userId));
-    }
+    if (userId) setCartItems(getCart(userId));
   }, [userId]);
 
-  /* 🔹 Auto select first category */
   // useEffect(() => {
-  //   if (categories.length && !activeTab) {
+  //   if (categories.length > 0 && !activeTab) {
   //     handleTabClick(categories[0]._id);
   //   }
   // }, [categories]);
@@ -35,127 +42,142 @@ const SalonServices = () => {
   const handleTabClick = (categoryId) => {
     setActiveTab(categoryId);
     dispatch(
-      fetchServiceItemByCategory({
-        salonId: selectedSalonId,
-        categoryId,
-      })
+      fetchServiceItemByCategory({ salonId: selectedSalonId, categoryId }),
     );
   };
 
-  const handleAddToCart = (service) => {
-    const updatedCart = addToCart(userId, saloonDetails, service);
-    setCartItems(updatedCart);
+  const handleUpdateCart = (service, action) => {
+    let updated;
+    if (action === "add") {
+      updated = addToCart(userId, saloonDetails, service);
+    } else {
+      updated = removeFromCart(userId, selectedSalonId, service._id);
+    }
+    setCartItems(updated);
   };
 
-  const isInCart = (serviceId) =>
-    cartItems.some(
-      (salon) =>
-        salon.salonId === selectedSalonId &&
-        salon.services.some((s) => s._id === serviceId)
-    );
+  const getServiceQuantity = (serviceId) => {
+    const salon = cartItems.find((s) => s.salonId === selectedSalonId);
+    const service = salon?.services.find((s) => s._id === serviceId);
+    return service ? service.quantity || 1 : 0;
+  };
 
   return (
-    <div className="flex flex-col h-full bg-white">
-      {/* 🔹 Sticky Tabs */}
-      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b">
-        <div className="flex overflow-x-auto no-scrollbar px-4 py-3 gap-8">
-          {categories.map((category) => (
-            <button
-              key={category._id}
-              onClick={() => handleTabClick(category._id)}
-              className={`relative pb-2 text-sm font-semibold whitespace-nowrap
-                ${
-                  activeTab === category._id
-                    ? "text-[#5A2C1E]"
-                    : "text-gray-400 hover:text-gray-600"
-                }`}
-            >
-              {category.name}
-              {activeTab === category._id && (
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#5A2C1E]" />
-              )}
-            </button>
-          ))}
+    <div className="w-full bg-white min-h-screen">
+      {/* 🔹 Full-Width Sticky Tabs */}
+      <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b w-full">
+        <div className="w-full px-6">
+          <div className="flex overflow-x-auto no-scrollbar gap-8">
+            {categories.map((category) => (
+              <button
+                key={category._id}
+                onClick={() => handleTabClick(category._id)}
+                className={`relative py-5 text-xs font-black uppercase tracking-[0.15em] whitespace-nowrap transition-all
+                  ${activeTab === category._id ? "text-[#5A2C1E]" : "text-gray-400 hover:text-gray-600"}`}
+              >
+                {category.name}
+                {activeTab === category._id && (
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#5A2C1E]" />
+                )}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* 🔹 Services */}
-      <div className="p-4 overflow-y-auto">
+      {/* 🔹 Services Grid */}
+      <div className="w-full p-6">
         {loading ? (
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="h-24 bg-gray-50 animate-pulse rounded-xl"
+                className="h-60 bg-gray-50 animate-pulse rounded-3xl"
               />
             ))}
           </div>
-        ) : serviceItems?.length > 0 ? (
-          <div className="divide-y">
-            {serviceItems.map((service) => {
-              const added = isInCart(service._id);
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {serviceItems?.map((service) => {
+              const qty = getServiceQuantity(service._id);
 
               return (
                 <div
                   key={service._id}
-                  className="py-5 flex justify-between items-center gap-4"
+                  className="flex flex-col bg-white border border-gray-100 rounded-[2rem] p-6 transition-all hover:shadow-2xl hover:shadow-gray-200/50 hover:-translate-y-1"
                 >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-bold text-gray-800">
-                        {service.name}
-                      </h4>
-                      {service.discountPercent > 0 && (
-                        <span className="bg-green-100 text-green-700 text-[10px] px-1.5 py-0.5 rounded font-bold">
-                          {service.discountPercent}% OFF
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-3 text-xs text-gray-500 mb-2">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5" />
-                        {service.durationMins} mins
+                  {/* Mode Badge Logic */}
+                  <div className="mb-4">
+                    {service.serviceMode === "both" ? (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-[10px] font-bold uppercase border border-purple-100">
+                        <Smartphone className="w-3 h-3" /> Home & Salon
                       </span>
-                      <span className="text-gray-300">|</span>
-                      <button className="flex items-center gap-1 text-[#5A2C1E]/70 hover:underline">
-                        <Info className="w-3.5 h-3.5" />
-                        Details
-                      </button>
-                    </div>
-
-                    <p className="text-sm font-bold text-gray-900">
-                      ₹{service.price}
-                    </p>
+                    ) : service.serviceMode === "home" ? (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold uppercase border border-blue-100">
+                        <Home className="w-3 h-3" /> At Home
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 text-orange-700 text-[10px] font-bold uppercase border border-orange-100">
+                        <Store className="w-3 h-3" /> In Salon
+                      </span>
+                    )}
                   </div>
 
-                  {/* 🔹 Add / Added Button */}
-                  <button
-                    disabled={added}
-                    onClick={() => handleAddToCart(service)}
-                    className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all
-                      ${
-                        added
-                          ? "bg-green-100 border-green-500 text-green-600 cursor-default"
-                          : "border-[#FFBC86] text-[#5A2C1E] hover:bg-[#FFBC86]"
-                      }`}
-                  >
-                    {added ? (
-                      <Check className="w-5 h-5" />
-                    ) : (
-                      <Plus className="w-5 h-5" />
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="text-xl font-bold text-gray-800 leading-tight">
+                      {service.name}
+                    </h4>
+                    {service.discountPercent > 0 && (
+                      <span className="text-green-600 font-black text-sm">
+                        {service.discountPercent}%
+                      </span>
                     )}
-                  </button>
+                  </div>
+
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="flex items-center gap-1 text-gray-400 text-xs font-medium">
+                      <Clock className="w-3.5 h-3.5" />
+                      {service.durationMins}m
+                    </div>
+                    <button className="flex items-center gap-1 text-[#5A2C1E]/60 text-xs font-bold hover:underline">
+                      <Info className="w-3.5 h-3.5" /> Details
+                    </button>
+                  </div>
+
+                  <div className="mt-auto flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] text-gray-400 font-bold uppercase block tracking-wider">
+                        Price
+                      </span>
+                      <p className="text-2xl font-black text-gray-900">
+                        ₹{service.price}
+                      </p>
+                    </div>
+
+                    {/* 🔹 Add / Remove Action Toggle */}
+                    <div className="flex items-center">
+                      {qty > 0 ? (
+                        <button
+                          onClick={() => handleUpdateCart(service, "remove")}
+                          className="group/btn flex items-center gap-2 px-5 py-2.5 bg-red-50 border-2 border-red-200 text-red-600 font-black rounded-2xl hover:bg-red-600 hover:border-red-600 hover:text-white transition-all duration-200 active:scale-95 shadow-sm"
+                        >
+                          <Minus className="w-4 h-4" />
+                          <span className="text-xs tracking-wider">REMOVE</span>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleUpdateCart(service, "add")}
+                          className="group/btn flex items-center gap-2 px-6 py-2.5 bg-white border-2 border-[#5A2C1E] text-[#5A2C1E] font-black rounded-2xl hover:bg-[#5A2C1E] hover:text-white transition-all duration-200 active:scale-95 shadow-sm"
+                        >
+                          <Plus className="w-4 h-4 group-hover/btn:rotate-90 transition-transform duration-300" />
+                          <span className="text-xs tracking-wider">ADD</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
               );
             })}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center py-20 text-center">
-            <Info className="w-8 h-8 text-gray-300 mb-3" />
-            <p className="text-gray-400 text-sm">
-              No services available in this category
-            </p>
           </div>
         )}
       </div>

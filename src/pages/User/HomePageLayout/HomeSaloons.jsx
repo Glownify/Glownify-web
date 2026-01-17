@@ -31,6 +31,7 @@ const HomeSaloons = ({ category, lat, lng }) => {
     }
   }, [dispatch, category, lat, lng]);
 
+  console.log("HomeSaloons - Category:", category, "Data:", homeSaloonsByCategory, "Loading:", loading);
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-6 py-12">

@@ -246,7 +246,7 @@ const CartPage = () => {
                     return (
                       <div
                         key={group.mode}
-                        className="bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden transition-all hover:shadow-md"
+                        className="bg-white rounded-4xl shadow-sm border border-slate-100 overflow-hidden transition-all hover:shadow-md"
                       >
                         {/* Group Header */}
                         <div className="px-8 py-4 bg-slate-50/50 border-b border-slate-100 flex justify-between items-center">
@@ -387,7 +387,7 @@ const CartPage = () => {
             </div>
 
             {/* Support Box */}
-            <div className="bg-indigo-950 rounded-[32px] p-8 text-white">
+            <div className="bg-indigo-950 rounded-4xl p-8 text-white">
               <h4 className="font-bold mb-2">Need Help?</h4>
               <p className="text-indigo-200 text-sm mb-4">
                 Our beauty experts are here to assist you with your booking.

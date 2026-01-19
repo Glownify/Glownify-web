@@ -1,108 +1,89 @@
 import React from "react";
-import { Camera, Image } from "lucide-react";
+import { Camera, Image as ImageIcon, Plus } from "lucide-react";
 
-const SalonDocumentUploadForm = ({onBack}) => {
-  const UploadBox = ({ icon: Icon, label, required }) => (
+const SalonDocumentUploadForm = ({ onBack }) => {
+  const UploadBox = ({ icon: Icon, label, required, small = false }) => (
     <div
-      className="border border-dashed border-gray-300 rounded-lg
-               flex flex-col items-center justify-center
-               py-5 sm:py-6 text-center cursor-pointer
-               hover:border-purple-400 transition"
+      className={`border border-dashed border-gray-300 rounded-lg
+                 flex flex-col items-center justify-center
+                 cursor-pointer hover:border-purple-400 transition bg-gray-50/50
+                 ${small ? "py-3" : "py-5"}`}
     >
       <div
-        className="w-10 h-10 flex items-center justify-center
-                    bg-purple-100 text-purple-600 rounded-md mb-2"
+        className={`${small ? "w-7 h-7" : "w-10 h-10"} 
+                   flex items-center justify-center
+                   bg-purple-100 text-purple-600 rounded-md mb-2`}
       >
-        <Icon className="w-6 h-6" />
+        <Icon className={small ? "w-4 h-4" : "w-6 h-6"} />
       </div>
-
-      <p className="text-sm font-medium text-purple-600">
-        + {label} {required && <span className="text-red-500">*</span>}
+      <p className={`${small ? "text-[10px]" : "text-xs"} font-medium text-purple-600`}>
+        {label} {required && <span className="text-red-500">*</span>}
       </p>
     </div>
   );
 
   return (
-    <div className="bg-gray-50 min-h-screen flex justify-center px-4 py-6">
-      <div
-        className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl
-                   bg-white rounded-xl shadow-md px-4 sm:px-6 py-6"
-      >
-        {/* Progress */}
-        <div className="w-full h-[3px] bg-gray-200 rounded-full mb-6">
-          <div className="h-[3px] w-full bg-purple-600 rounded-full" />
-        </div>
+    <div className="w-full">
+      {/* Progress */}
+      {/* <div className="w-full h-[3px] bg-gray-200 rounded-full mb-6">
+        <div className="h-[3px] w-full bg-purple-600 rounded-full" />
+      </div>
 
-        <h2 className="text-center font-semibold text-gray-800 text-sm sm:text-base">
-          Step 3 of 3: Photos, Logo & Submit
-        </h2>
+      <h2 className="text-center font-semibold text-gray-800 text-sm">
+        Step 3 of 3: Photos & Logo
+      </h2>
+      <p className="text-center text-[11px] text-gray-500 mt-1 mb-6">
+        Finalize your branding and gallery.
+      </p> */}
 
-        <p className="text-center text-xs sm:text-sm text-gray-500 mt-2 mb-6">
-          Upload salon photos and branding, then submit your registration.
-        </p>
+      {/* Salon Logo */}
+      <div className="mb-5">
+        <h3 className="text-xs font-bold text-gray-700 mb-2 uppercase tracking-tight">Salon Logo</h3>
+        <UploadBox icon={Camera} label="Upload Logo" />
+        <p className="text-[10px] text-gray-400 mt-2">Max 2MB, Square (1:1) preferred.</p>
+      </div>
 
-        {/* Salon Logo */}
-        <h3 className="text-sm font-medium text-gray-800 mb-2">Salon Logo</h3>
-        <UploadBox icon={Camera} label="Upload Salon Logo" />
-        <ul className="text-xs text-gray-500 space-y-1 mt-3 mb-6">
-          <li>• PNG / JPG format</li>
-          <li>• Square image preferred (1:1)</li>
-          <li>• White or transparent background</li>
-          <li>• Max size: 2 MB</li>
-        </ul>
-
-        {/* Cover Image */}
-        <h3 className="text-sm font-medium text-gray-800 mb-2">
-          Salon Cover Image
+      {/* Cover Image */}
+      <div className="mb-5">
+        <h3 className="text-xs font-bold text-gray-700 mb-2 uppercase tracking-tight">
+          Cover Image <span className="text-red-500">*</span>
         </h3>
-        <UploadBox icon={Image} label="Upload Cover Image" required />
-        <ul className="text-xs text-gray-500 space-y-1 mt-3 mb-6">
-          <li>• Front view of salon or reception area</li>
-          <li>• Well-lit, high-quality photo</li>
-          <li>• Aspect ratio 16:9 (landscape)</li>
-        </ul>
+        <UploadBox icon={ImageIcon} label="Upload Cover" />
+        <p className="text-[10px] text-gray-400 mt-2">Landscape (16:9) looks best.</p>
+      </div>
 
-        {/* Gallery */}
-        <h3 className="text-sm font-medium text-gray-800 mb-1">
-          Salon Gallery
+      {/* Gallery */}
+      <div className="mb-6">
+        <h3 className="text-xs font-bold text-gray-700 mb-1 uppercase tracking-tight">
+          Gallery
         </h3>
-        <p className="text-xs text-gray-500 mb-3">
-          Upload 3 to 8 photos of inside your salon
-        </p>
+        <p className="text-[10px] text-gray-500 mb-3">Add 3-8 interior photos.</p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
-          <UploadBox icon={Image} label="Upload Photo" />
-          <UploadBox icon={Image} label="Upload Photo" />
-
-          <div
-            className="border border-dashed border-gray-300 rounded-lg
-                       flex flex-col items-center justify-center
-                       py-5 text-center cursor-pointer hover:border-purple-400"
-          >
-            <div className="text-xl font-bold text-gray-500">+</div>
-            <p className="text-xs text-gray-600 font-medium">Add More</p>
+        <div className="grid grid-cols-2 gap-2">
+          <UploadBox icon={ImageIcon} label="Photo 1" small />
+          <UploadBox icon={ImageIcon} label="Photo 2" small />
+          <div className="border border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center py-3 cursor-pointer hover:border-purple-400 transition bg-gray-50/50">
+            <Plus className="w-4 h-4 text-gray-400" />
+            <p className="text-[10px] font-medium text-gray-500">Add More</p>
           </div>
         </div>
+      </div>
 
-        <p className="text-xs text-gray-500 mb-5">
-          * Minimum 1 cover image and 3 inside photos required
-        </p>
-
-        {/* Submit */}
+      {/* Action Buttons */}
+      <div className="space-y-3 pt-4 border-t border-gray-100">
         <button
-        onClick={onBack}
-          className="w-full py-2.5 rounded-md text-white text-sm font-medium
-                     bg-gradient-to-r from-[#5F3DC4] to-[#7B5DE8]
-                     shadow-md hover:opacity-90 transition"
+          onClick={() => alert("Registration Submitted!")}
+          className="w-full py-2.5 rounded-md text-white text-sm font-semibold
+                     bg-linear-to-r from-[#5F3DC4] to-[#7B5DE8]
+                     shadow-lg shadow-purple-200 transition active:scale-95"
         >
-          Back
+          Register Salon
         </button>
         <button
-          className="w-full py-2.5 rounded-md text-white text-sm font-medium
-                     bg-gradient-to-r from-[#5F3DC4] to-[#7B5DE8]
-                     shadow-md hover:opacity-90 transition"
+          onClick={onBack}
+          className="w-full py-2 text-gray-500 text-xs font-medium hover:text-purple-600 transition"
         >
-          Submit & Register Salon
+          ← Edit Address
         </button>
       </div>
     </div>

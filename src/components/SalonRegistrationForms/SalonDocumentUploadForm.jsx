@@ -1,7 +1,13 @@
-import React from "react";
+import React,{useState} from "react";
 import { Camera, Image as ImageIcon, Plus } from "lucide-react";
 
-const SalonDocumentUploadForm = ({ onBack }) => {
+const SalonDocumentUploadForm = ({ onBack,data,onChange,onSubmit }) => {
+
+  // const[uploadData,setUploadData]=useState({
+  //   saloLog:"",
+  //   coverImg:"",
+  //   gallaryImg:""
+  // })
   const UploadBox = ({ icon: Icon, label, required, small = false }) => (
     <div
       className={`border border-dashed border-gray-300 rounded-lg
@@ -22,6 +28,11 @@ const SalonDocumentUploadForm = ({ onBack }) => {
     </div>
   );
 
+  const handleChange=(e)=>{
+ const { name, value } = e.target;
+    setUploadData(prev => ({ ...prev, [name]: value }));
+  }
+
   return (
     <div className="w-full">
       {/* Progress */}
@@ -37,9 +48,16 @@ const SalonDocumentUploadForm = ({ onBack }) => {
       </p> */}
 
       {/* Salon Logo */}
+      <div className="w-full h-[8px] bg-gray-200 rounded-full mb-6 mt-5 ">
+        <div className="h-[3px] w-full bg-purple-600 rounded-full" />
+      
+       <h2 className="text-center font-bold text-gray-800 text-sm">
+        Step 3 of 3: Photos & Logo
+      </h2>
+      </div>
       <div className="mb-5">
         <h3 className="text-xs font-bold text-gray-700 mb-2 uppercase tracking-tight">Salon Logo</h3>
-        <UploadBox icon={Camera} label="Upload Logo" />
+        <UploadBox icon={Camera} label="Upload Logo"  value={data.salonLogo} onchange={(e)=>onChange(e.target.name, e.target.value)}/>
         <p className="text-[10px] text-gray-400 mt-2">Max 2MB, Square (1:1) preferred.</p>
       </div>
 
@@ -48,7 +66,7 @@ const SalonDocumentUploadForm = ({ onBack }) => {
         <h3 className="text-xs font-bold text-gray-700 mb-2 uppercase tracking-tight">
           Cover Image <span className="text-red-500">*</span>
         </h3>
-        <UploadBox icon={ImageIcon} label="Upload Cover" />
+        <UploadBox icon={ImageIcon} label="Upload Cover" value={data.coverImg} onChange={(e)=>onChange(e.target.name, e.target.value)} />
         <p className="text-[10px] text-gray-400 mt-2">Landscape (16:9) looks best.</p>
       </div>
 
@@ -59,11 +77,11 @@ const SalonDocumentUploadForm = ({ onBack }) => {
         </h3>
         <p className="text-[10px] text-gray-500 mb-3">Add 3-8 interior photos.</p>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2" >
           <UploadBox icon={ImageIcon} label="Photo 1" small />
           <UploadBox icon={ImageIcon} label="Photo 2" small />
           <div className="border border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center py-3 cursor-pointer hover:border-purple-400 transition bg-gray-50/50">
-            <Plus className="w-4 h-4 text-gray-400" />
+            <Plus className="w-4 h-4 text-gray-400" value={data.gallaryImg} onChnage={onChange} />
             <p className="text-[10px] font-medium text-gray-500">Add More</p>
           </div>
         </div>
@@ -72,7 +90,7 @@ const SalonDocumentUploadForm = ({ onBack }) => {
       {/* Action Buttons */}
       <div className="space-y-3 pt-4 border-t border-gray-100">
         <button
-          onClick={() => alert("Registration Submitted!")}
+          onClick={() => {onSubmit(),alert("Registration Submitted!"),(console.log(data,"data"))}}
           className="w-full py-2.5 rounded-md text-white text-sm font-semibold
                      bg-linear-to-r from-[#5F3DC4] to-[#7B5DE8]
                      shadow-lg shadow-purple-200 transition active:scale-95"
@@ -87,6 +105,8 @@ const SalonDocumentUploadForm = ({ onBack }) => {
         </button>
       </div>
     </div>
+
+
   );
 };
 

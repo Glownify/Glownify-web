@@ -6,7 +6,44 @@ import SalonDocumentUploadForm from "../../components/SalonRegistrationForms/Sal
 
 const SalonOwnerRegisterPage = () => {
   const [step, setStep] = useState(1);
+const [formData,setFormData]=useState({
+         basicInfo: {
+        salonname: "",
+    salonType: "Unisex",
+    mobileno: "",
+    watsupno: "",
+    email: "",
+    },
+    addressInfo: {
+      country: "India",
+    state: "",
+    city: "",
+    area: "",
+    pincode: "",
+    fullAddress: ""
+    },
+    documents: {
+       salonLogo:"",
+    coverImg:"",
+    gallaryImg:""
+    },
+})
+
   const totalSteps = 3;
+
+    const updateData = (section, field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [field]: value,
+      },
+    }));
+  };
+    const handleFinalSubmit = () => {
+    console.log("final form sumbit data", formData);
+  
+  };
 
   return (
     <div className="min-h-screen flex">
@@ -31,18 +68,33 @@ const SalonOwnerRegisterPage = () => {
           </div>
 
           {step === 1 && (
-            <BasicInfoRegistrationForm onNext={() => setStep(2)} />
+            <BasicInfoRegistrationForm onNext={() => setStep(2)}
+              data={formData.basicInfo}
+            onChange={(field, value) =>
+              updateData("basicInfo", field, value)
+            }
+ />
           )}
 
           {step === 2 && (
             <SalonAddressRegistrationForm
               onNext={() => setStep(3)}
               onBack={() => setStep(1)}
+               data={formData.addressInfo}
+            onChange={(field, value) =>
+              updateData("addressInfo", field, value)
+            }
             />
           )}
 
           {step === 3 && (
-            <SalonDocumentUploadForm onBack={() => setStep(2)} />
+            <SalonDocumentUploadForm onBack={() => setStep(2)}
+              data={formData.documents}
+            onChange={(field, value) =>
+              updateData("documents", field, value)
+            }
+             onSubmit={handleFinalSubmit}
+            />
           )}
 
         </div>

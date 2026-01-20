@@ -1,14 +1,15 @@
 import React, { useState } from "react";
+import BasicInfoRegistrationForm from "./BasicInfoRegistrationForm";
 
-const SalonAddressRegistrationForm = ({ onNext, onBack }) => {
-  const [addressData, setAddressData] = useState({
-    country: "India",
-    state: "",
-    city: "",
-    area: "",
-    pincode: "",
-    fullAddress: ""
-  });
+const SalonAddressRegistrationForm = ({ onNext, onBack,data,onChange }) => {
+  // const [addressData, setAddressData] = useState({
+  //   country: "India",
+  //   state: "",
+  //   city: "",
+  //   area: "",
+  //   pincode: "",
+  //   fullAddress: ""
+  // });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,6 +18,7 @@ const SalonAddressRegistrationForm = ({ onNext, onBack }) => {
 
   return (
     <div className="w-full">
+     
       {/* Form Header */}
       <div className="mt-4 mb-4">
         {/* Progress bar */}
@@ -62,8 +64,8 @@ const SalonAddressRegistrationForm = ({ onNext, onBack }) => {
             <label className="text-xs text-gray-700 font-medium">Country</label>
             <select
               name="country"
-              value={addressData.country}
-              onChange={handleChange}
+              value={data.country}
+              onChange={(e)=>onChange(e.target.name, e.target.value)}
               className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
               <option>India</option>
@@ -74,7 +76,8 @@ const SalonAddressRegistrationForm = ({ onNext, onBack }) => {
             <input
               name="state"
               placeholder="e.g. Delhi"
-              onChange={handleChange}
+              value={data.state}
+              onChange={(e)=>onChange(e.target.name, e.target.value)}
               className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
@@ -85,7 +88,8 @@ const SalonAddressRegistrationForm = ({ onNext, onBack }) => {
             <label className="text-xs text-gray-700 font-medium">City</label>
             <input
               name="city"
-              onChange={handleChange}
+              value={data.city}
+              onChange={(e)=>onChange(e.target.name, e.target.value)}
               className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
@@ -93,7 +97,8 @@ const SalonAddressRegistrationForm = ({ onNext, onBack }) => {
             <label className="text-xs text-gray-700 font-medium">Pincode</label>
             <input
               name="pincode"
-              onChange={handleChange}
+              value={data.pincode}
+              onChange={(e)=>onChange(e.target.name, e.target.value)}
               className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
@@ -104,7 +109,8 @@ const SalonAddressRegistrationForm = ({ onNext, onBack }) => {
           <textarea
             name="fullAddress"
             rows="2"
-            onChange={handleChange}
+            value={data.fullAddress}
+            onChange={(e)=>onChange(e.target.name, e.target.value)}
             className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
             placeholder="Shop no, Building, Street..."
           />
@@ -119,7 +125,7 @@ const SalonAddressRegistrationForm = ({ onNext, onBack }) => {
             ← Back
           </button>
           <button
-            onClick={() => onNext(addressData)}
+            onClick={() => onNext(data)}
             className="flex-[1.5] py-2 rounded-md text-white text-sm font-medium bg-linear-to-r from-[#5F3DC4] to-[#7B5DE8] shadow-md transition active:scale-95"
           >
             Next

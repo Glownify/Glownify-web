@@ -9,13 +9,6 @@ const BasicInfoRegistrationForm = ({ onNext,data,onChange }) => {
   //   email: "",
   // });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
 
   return (
     <div className="w-full max-w-md sm:max-w-lg bg-white rounded-lg shadow-md px-4 sm:px-6 py-6">

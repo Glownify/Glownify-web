@@ -1,8 +1,9 @@
 import React,{useState} from "react";
+import { useNavigate } from "react-router-dom";
 import { Camera, Image as ImageIcon, Plus } from "lucide-react";
 
 const SalonDocumentUploadForm = ({ onBack,data,onChange,onSubmit }) => {
-
+  const navigate=useNavigate()
   // const[uploadData,setUploadData]=useState({
   //   saloLog:"",
   //   coverImg:"",
@@ -31,6 +32,16 @@ const SalonDocumentUploadForm = ({ onBack,data,onChange,onSubmit }) => {
   const handleChange=(e)=>{
  const { name, value } = e.target;
     setUploadData(prev => ({ ...prev, [name]: value }));
+
+    const handleSubmit = () => {
+  onSubmit(); // parent wala handleFinalSubmit
+  console.log("documents data:", data);
+  alert("Registration Submitted!");
+
+  setTimeout(() => {
+    navigate("/booksubscriptionpage");
+  }, 300);
+};
   }
 
   return (
@@ -57,7 +68,7 @@ const SalonDocumentUploadForm = ({ onBack,data,onChange,onSubmit }) => {
       </div>
       <div className="mb-5">
         <h3 className="text-xs font-bold text-gray-700 mb-2 uppercase tracking-tight">Salon Logo</h3>
-        <UploadBox icon={Camera} label="Upload Logo"  value={data.salonLogo} onchange={(e)=>onChange(e.target.name, e.target.value)}/>
+        <UploadBox icon={Camera} label="Upload Logo" type="file" value={data.salonLogo} onChange={(e)=>onChange(e.target.name, e.target.value)}/>
         <p className="text-[10px] text-gray-400 mt-2">Max 2MB, Square (1:1) preferred.</p>
       </div>
 
@@ -66,7 +77,7 @@ const SalonDocumentUploadForm = ({ onBack,data,onChange,onSubmit }) => {
         <h3 className="text-xs font-bold text-gray-700 mb-2 uppercase tracking-tight">
           Cover Image <span className="text-red-500">*</span>
         </h3>
-        <UploadBox icon={ImageIcon} label="Upload Cover" value={data.coverImg} onChange={(e)=>onChange(e.target.name, e.target.value)} />
+        <UploadBox icon={ImageIcon} label="Upload Cover" type="file" value={data.coverImg} onChange={(e)=>onChange(e.target.name, e.target.value)} />
         <p className="text-[10px] text-gray-400 mt-2">Landscape (16:9) looks best.</p>
       </div>
 
@@ -81,7 +92,7 @@ const SalonDocumentUploadForm = ({ onBack,data,onChange,onSubmit }) => {
           <UploadBox icon={ImageIcon} label="Photo 1" small />
           <UploadBox icon={ImageIcon} label="Photo 2" small />
           <div className="border border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center py-3 cursor-pointer hover:border-purple-400 transition bg-gray-50/50">
-            <Plus className="w-4 h-4 text-gray-400" value={data.gallaryImg} onChnage={onChange} />
+            <Plus className="w-4 h-4 text-gray-400" type="file" value={data.gallaryImg} onChange={(e)=>onChange(e.target.name, e.target.value)} />
             <p className="text-[10px] font-medium text-gray-500">Add More</p>
           </div>
         </div>
@@ -90,7 +101,7 @@ const SalonDocumentUploadForm = ({ onBack,data,onChange,onSubmit }) => {
       {/* Action Buttons */}
       <div className="space-y-3 pt-4 border-t border-gray-100">
         <button
-          onClick={() => {onSubmit(),alert("Registration Submitted!"),(console.log(data,"data"))}}
+          onClick={() => handleSubmit()}
           className="w-full py-2.5 rounded-md text-white text-sm font-semibold
                      bg-linear-to-r from-[#5F3DC4] to-[#7B5DE8]
                      shadow-lg shadow-purple-200 transition active:scale-95"

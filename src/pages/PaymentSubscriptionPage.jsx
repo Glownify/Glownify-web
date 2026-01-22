@@ -76,13 +76,13 @@ const PaymentSubscriptionPage = () => {
           {/* LEFT PLAN CARD */}
           <div className="relative rounded-xl overflow-hidden shadow-lg bg-white">
             {/* 🔵 TOP HEADER STRIP */}
-            <div className="relative bg-gradient-to-b from-[#2c4aa3] to-[#1f3a8a] px-6 py-4 rounded-t-xl">
+            <div className="relative bg-linear-to-b from-[#2c4aa3] to-[#1f3a8a] px-6 py-4 rounded-t-xl">
               <h2 className="text-lg font-semibold text-white text-center">
                 Growth Plan
               </h2>
 
               {/* 🟡 Yellow Diagonal Ribbon */}
-              <div className="absolute top-3 right-[-38px] rotate-45 bg-yellow-400 text-black text-[11px] font-bold px-10 py-1 shadow-md">
+              <div className="absolute top-3 -right-9.5 rotate-45 bg-yellow-400 text-black text-[11px] font-bold px-10 py-1 shadow-md">
                 ★ ★ ★
               </div>
             </div>
@@ -192,7 +192,7 @@ const PaymentSubscriptionPage = () => {
               </div>
 
               {/* CTA */}
-              <button className="mt-6 w-full bg-gradient-to-b from-[#729c32] to-[#144401] text-white py-3 rounded-lg font-semibold shadow hover:opacity-95 transition">
+              <button className="mt-6 w-full bg-linear-to-b from-[#729c32] to-[#144401] text-white py-3 rounded-lg font-semibold shadow hover:opacity-95 transition">
                 Proceed to Payment →
               </button>
 

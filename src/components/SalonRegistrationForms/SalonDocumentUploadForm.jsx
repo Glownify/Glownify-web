@@ -59,8 +59,8 @@ const SalonDocumentUploadForm = ({ onBack,data,onChange,onSubmit }) => {
       </p> */}
 
       {/* Salon Logo */}
-      <div className="w-full h-[8px] bg-gray-200 rounded-full mb-6 mt-5 ">
-        <div className="h-[3px] w-full bg-purple-600 rounded-full" />
+      <div className="w-full h-2 bg-gray-200 rounded-full mb-6 mt-5 ">
+        <div className="h-0.75 w-full bg-purple-600 rounded-full" />
       
        <h2 className="text-center font-bold text-gray-800 text-sm">
         Step 3 of 3: Photos & Logo

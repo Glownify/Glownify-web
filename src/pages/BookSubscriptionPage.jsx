@@ -115,8 +115,8 @@ const BookSubscriptionPage = () => {
                 <div
                   className={`-mx-6 -mt-6 mb-5 py-4 text-center font-semibold text-white rounded-t-xl ${
                     plan.highlight
-                      ? "bg-gradient-to-b from-[#0a4ab3] to-[#052861]"
-                      : "bg-gradient-to-b from-[#2f4574] to-[#1f2f52]"
+                      ? "bg-linear-to-b from-[#0a4ab3] to-[#052861]"
+                      : "bg-linear-to-b from-[#2f4574] to-[#1f2f52]"
                   }`}
                 >
                   {plan.name}
@@ -145,8 +145,8 @@ const BookSubscriptionPage = () => {
                   onClick={(e) => navigate("/paymentsubscriptionpage")}
                   className={`mt-6 py-2 rounded-md text-sm font-medium text-white cursor-pointer ${
                     plan.highlight
-                      ? "bg-gradient-to-r from-green-900 to-green-700"
-                      : "bg-gradient-to-b from-[#2f4574] to-[#1f2f52] text-white"
+                      ? "bg-linear-to-r from-green-900 to-green-700"
+                      : "bg-linear-to-b from-[#2f4574] to-[#1f2f52] text-white"
                   }`}
                 >
                   {plan.button}
@@ -156,7 +156,7 @@ const BookSubscriptionPage = () => {
           </div>
 
           <div className="bg-white rounded-xl shadow-lg p-6  mt-10 border-grey-200 m-4">
-            <div className=" top-0 -mx-6 -mt-6 bg-gradient-to-r from-[#0a4ab3] to-[#052861] text-white text-center rounded-lg py-3 text-sm font-medium shadow">
+            <div className=" top-0 -mx-6 -mt-6 bg-linear-to-r from-[#0a4ab3] to-[#052861] text-white text-center rounded-lg py-3 text-sm font-medium shadow">
               All Plans Include All Features. Try Growth Plan 7 Days Free
             </div>
 
@@ -167,13 +167,13 @@ const BookSubscriptionPage = () => {
             </p>
 
             <div className="flex items-center justify-center gap-6 mt-5">
-              <div className="flex-1 h-px bg-gray-300 max-w-[120px]" />
+              <div className="flex-1 h-px bg-gray-300 max-w-30" />
 
-              <button className="bg-gradient-to-r from-green-900 to-green-700 text-white px-10 py-2.5 rounded-md text-sm font-semibold shadow-md">
+              <button className="bg-linear-to-r from-green-900 to-green-700 text-white px-10 py-2.5 rounded-md text-sm font-semibold shadow-md">
                 Get Started Now
               </button>
 
-              <div className="flex-1 h-px bg-gray-300 max-w-[120px]" />
+              <div className="flex-1 h-px bg-gray-300 max-w-30" />
             </div>
           </div>
 
@@ -181,7 +181,7 @@ const BookSubscriptionPage = () => {
           <div className="mt-14 flex justify-center px-2 sm:px-4">
             {/* WIDTH CONTROLLED CONTAINER */}
             <div className="w-full max-w-7xl lg:max-w-6xl">
-              <div className="bg-gradient-to-b from-white to-[#f5f7ff] rounded-xl shadow-sm border border-gray-200 px-5 sm:px-6 py-8">
+              <div className="bg-linear-to-b from-white to-[#f5f7ff] rounded-xl shadow-sm border border-gray-200 px-5 sm:px-6 py-8">
                 {/* FAQ HEADER */}
                 <div className="flex items-center gap-4 mb-6">
                   <h2 className="text-lg sm:text-xl font-bold text-[#152650] whitespace-nowrap">

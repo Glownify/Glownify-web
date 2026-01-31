@@ -32,6 +32,7 @@ const SalonDocumentUploadForm = ({ onBack,data,onChange,onSubmit }) => {
   const handleChange=(e)=>{
  const { name, value } = e.target;
     setUploadData(prev => ({ ...prev, [name]: value }));
+  }
 
     const handleSubmit = () => {
   onSubmit(); // parent wala handleFinalSubmit
@@ -42,7 +43,7 @@ const SalonDocumentUploadForm = ({ onBack,data,onChange,onSubmit }) => {
     navigate("/booksubscriptionpage");
   }, 300);
 };
-  }
+  
 
   return (
     <div className="w-full">

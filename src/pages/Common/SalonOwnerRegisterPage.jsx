@@ -40,9 +40,9 @@ const [formData,setFormData]=useState({
       },
     }));
   };
-    const handleFinalSubmit = () => {
-      e.preventDefault();
-      onSubmit();
+    const handleFinalSubmit = (e) => {
+     
+      
     console.log("final form sumbit data", formData);
   
   };

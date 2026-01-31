@@ -6,6 +6,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { PhoneMockup } from "../../components/User/MockPhone";
+import MockPhoneMobile from "./MockPhoneMobile";
 
 export const HeroSection1 = () => {
   const steps = [
@@ -29,34 +30,33 @@ export const HeroSection1 = () => {
   return (
     <section className="relative font-[Poppins]">
       {/* ================= MOBILE VERSION ================= */}
-      <div className="md:hidden px-5 pt-14 pb-20">
-        <h2 className="text-xl font-extrabold text-slate-900 mb-6 leading-snug">
-          Book Your Salon Appointment <br />
-          <span className="text-rose-500">in 3 Easy Steps</span>
-        </h2>
+<div className="md:hidden w-full bg-white flex items-center justify-center px-4">
+  <div className="w-full flex items-center justify-between gap-4">
+    
+    {/* LEFT SIDE TEXT */}
+    <div className="w-1/2">
+      <h2 className="text-lg font-bold leading-tight mb-4">
+        Book a Beautician/Barber at Home
+      </h2>
 
-        <div className="relative pl-6 space-y-8">
-          {/* Vertical line */}
-          <div className="absolute left-[11px] top-1 bottom-1 w-px bg-rose-200" />
-
-          {steps.map((step, i) => (
-            <div key={i} className="flex gap-4">
-              <div className="w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0">
-                {step.icon}
-              </div>
-
-              <div>
-                <h4 className="font-bold text-slate-800 text-sm">
-                  {step.title}
-                </h4>
-                <p className="text-slate-500 text-xs leading-relaxed">
-                  {step.desc}
-                </p>
-              </div>
-            </div>
-          ))}
+      <div className="flex items-start gap-3">
+        <div className="bg-purple-100 text-lg p-2 rounded-lg">👩</div>
+        <div>
+          <p className="text-purple-600 font-semibold text-sm">
+            Step 1 Choose Your Beautician
+          </p>
+          <p className="text-gray-500 mt-1 text-xs">
+            Browse beauticians and pick your favorite.
+          </p>
         </div>
       </div>
+    </div>
+
+    {/* RIGHT SIDE PHONE */}
+    <MockPhoneMobile />
+  </div>
+</div>
+
 
       {/* ================= DESKTOP VERSION ================= */}
       <div className="hidden md:block pt-20 pb-32 lg:pt-5 lg:pb-40">

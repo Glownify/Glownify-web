@@ -7,6 +7,7 @@ import {
   Scissors,
 } from "lucide-react";
 import { PhoneMockup } from "../../components/User/MockPhone";
+import MockPhoneMobile from "./MockPhoneMobile";
 
 export const HeroSection2 = () => {
   const steps = [
@@ -30,43 +31,48 @@ export const HeroSection2 = () => {
   return (
     <section className="relative bg-white font-[Poppins]">
       {/* ================= MOBILE ================= */}
-      <div className="md:hidden px-5 pt-14 pb-20">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-50 text-rose-600 text-[10px] font-bold uppercase tracking-widest mb-5">
-          <Sparkles size={12} />
-          Home Service Available
-        </div>
-
-        <h2 className="text-xl font-extrabold text-slate-900 mb-6 leading-snug">
-          Salon at your <br />
-          <span className="text-rose-500">Doorstep</span>
-        </h2>
-
-        <div className="relative pl-6 pb-16 space-y-8">
-          {/* Vertical line */}
-          <div className="absolute left-[11px] top-1 bottom-1 w-px bg-rose-200" />
-
-          {steps.map((step, i) => (
-            <div key={i} className="flex gap-4">
-              <div className="w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0">
-                {step.icon}
-              </div>
-
-              <div>
-                <h4 className="font-bold text-slate-800 text-sm">
-                  {step.title}
-                </h4>
-                <p className="text-slate-500 text-xs leading-relaxed">
-                  {step.desc}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* <button className="mt-10 w-full py-4 bg-rose-600 text-white rounded-full font-black text-sm uppercase tracking-widest shadow-lg">
-          Book Home Service
-        </button> */}
+<div className="md:hidden px-4 mb-30">
+  <div className="flex items-start justify-between gap-4">
+    
+    {/* LEFT CONTENT */}
+    <div className="w-1/2">
+      <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-rose-50 text-rose-600 text-[9px] font-bold uppercase tracking-widest mb-3">
+        <Sparkles size={10} />
+        Home Service
       </div>
+
+      <h2 className="text-lg font-extrabold text-slate-900 mb-4 leading-snug">
+        Salon at your <br />
+        <span className="text-rose-500">Doorstep</span>
+      </h2>
+
+      <div className="space-y-4">
+        {steps.map((step, i) => (
+          <div key={i} className="flex gap-2">
+            <div className="w-5 h-5 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0">
+              {React.cloneElement(step.icon, { size: 12 })}
+            </div>
+            <div>
+              <h4 className="font-bold text-slate-800 text-xs">
+                {step.title}
+              </h4>
+              <p className="text-slate-500 text-[10px] leading-tight">
+                {step.desc}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* RIGHT PHONE */}
+    
+        <MockPhoneMobile />
+
+
+  </div>
+</div>
+
 
       {/* ================= DESKTOP ================= */}
       <div className="hidden md:block pt-12 pb-32 lg:pt-5 lg:pb-40">

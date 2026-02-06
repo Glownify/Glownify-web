@@ -99,7 +99,7 @@ const ManageSalesExecutivePage = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading && salesExecutives.length === 0 ? (
            [...Array(6)].map((_, i) => (
-            <div key={i} className="h-64 bg-slate-100 animate-pulse rounded-[32px]" />
+            <div key={i} className="h-64 bg-slate-100 animate-pulse rounded-4xl" />
           ))
         ) : (
           salesExecutives.map((se) => {
@@ -107,10 +107,10 @@ const ManageSalesExecutivePage = () => {
             const cityName = cities.find(c => c._id === se.city)?.name || "Not Assigned";
 
             return (
-              <div key={se._id} className="group bg-white rounded-[32px] border border-slate-200 p-6 transition-all hover:border-indigo-300 hover:shadow-2xl hover:shadow-indigo-500/10 flex flex-col justify-between">
+              <div key={se._id} className="group bg-white rounded-4xl border border-slate-200 p-6 transition-all hover:border-indigo-300 hover:shadow-2xl hover:shadow-indigo-500/10 flex flex-col justify-between">
                 <div>
                   <div className="flex justify-between items-start mb-6">
-                    <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-center text-xl font-bold shadow-lg">
+                    <div className="h-14 w-14 rounded-2xl bg-linear-to-br from-slate-800 to-slate-900 text-white flex items-center justify-center text-xl font-bold shadow-lg">
                       {se.user?.name?.charAt(0)}
                     </div>
                     <span className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter border border-emerald-100">
@@ -208,7 +208,7 @@ const ManageSalesExecutivePage = () => {
             ) : (
               /* SUCCESS VIEW */
               <div className="p-12 text-center">
-                <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-[32px] flex items-center justify-center mx-auto mb-6 rotate-6">
+                <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-4xl flex items-center justify-center mx-auto mb-6 rotate-6">
                   <Check size={48} strokeWidth={3} />
                 </div>
                 <h2 className="text-3xl font-black text-slate-900 mb-2">Done!</h2>
@@ -216,7 +216,7 @@ const ManageSalesExecutivePage = () => {
                 
                 <div 
                   onClick={() => handleCopy(successData.password)}
-                  className="bg-indigo-50 border-2 border-dashed border-indigo-200 rounded-[24px] p-8 mb-8 cursor-pointer group relative overflow-hidden transition-all hover:bg-indigo-100/50"
+                  className="bg-indigo-50 border-2 border-dashed border-indigo-200 rounded-3xl p-8 mb-8 cursor-pointer group relative overflow-hidden transition-all hover:bg-indigo-100/50"
                 >
                   <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-2">Temporary Password</p>
                   <div className="flex items-center justify-center gap-3">

@@ -3,7 +3,7 @@ import React from 'react'
 export const MockPhoneMobile = () => {
   return (
     <div className="w-1/2 flex justify-end">
-      <div className="relative w-[160px] h-[330px] bg-black rounded-[28px] p-2 shadow-xl">
+      <div className="relative w-40 h-82.5 bg-black rounded-[28px] p-2 shadow-xl">
         
         {/* Screen */}
         <div className="w-full h-full bg-white rounded-[22px] p-2 overflow-hidden">

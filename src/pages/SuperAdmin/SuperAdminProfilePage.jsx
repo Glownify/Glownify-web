@@ -32,7 +32,7 @@ const SuperAdminProfilePage = () => {
       <div className="max-w-4xl mx-auto space-y-6">
         
         {/* Authority Header Card */}
-        <div className="bg-slate-900 rounded-[2rem] p-8 text-white relative overflow-hidden shadow-2xl">
+        <div className="bg-slate-900 rounded-4xl p-8 text-white relative overflow-hidden shadow-2xl">
           {/* Abstract background glow */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
           
@@ -71,7 +71,7 @@ const SuperAdminProfilePage = () => {
           
           {/* Sidebar Info */}
           <div className="space-y-6">
-            <div className="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm">
+            <div className="bg-white rounded-4xl p-6 border border-slate-200 shadow-sm">
               <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
                 <Info size={14}/> Contact Registry
               </h3>
@@ -94,7 +94,7 @@ const SuperAdminProfilePage = () => {
             </div>
 
             {/* verification status card */}
-            <div className="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm">
+            <div className="bg-white rounded-4xl p-6 border border-slate-200 shadow-sm">
                 <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Security Verification</h3>
                 <div className={`flex items-center justify-between p-4 rounded-2xl border ${user.isVerified ? 'bg-emerald-50 border-emerald-100' : 'bg-amber-50 border-amber-100'}`}>
                     <div className="flex items-center gap-3">
@@ -114,7 +114,7 @@ const SuperAdminProfilePage = () => {
           <div className="lg:col-span-2 space-y-6">
             
             {/* System Privileges */}
-            <div className="bg-white rounded-[2rem] p-8 border border-slate-200 shadow-sm">
+            <div className="bg-white rounded-4xl p-8 border border-slate-200 shadow-sm">
                 <div className="flex items-center gap-3 mb-8">
                     <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600"><Key size={20}/></div>
                     <h3 className="text-lg font-bold text-slate-900">Privilege Level: Tier 1 Root</h3>
@@ -135,7 +135,7 @@ const SuperAdminProfilePage = () => {
             </div>
 
             {/* Technical Traceability */}
-            <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-4xl border border-slate-200 shadow-sm overflow-hidden">
               <div className="px-8 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
                 <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">Technical Signature</h3>
                 <Fingerprint size={16} className="text-slate-300"/>

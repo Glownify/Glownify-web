@@ -76,7 +76,7 @@ const SalonServices = () => {
     <div className="w-full bg-white min-h-cover relative">
       {/* 🔹 Selection Modal */}
       {showModeModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowModeModal(false)} />
           <div className="relative bg-white w-full max-w-sm rounded-[2.5rem] p-8 shadow-2xl animate-in fade-in zoom-in duration-200">
             <button 
@@ -155,7 +155,7 @@ const SalonServices = () => {
             {serviceItems?.map((service) => {
               const qty = getServiceQuantity(service._id);
               return (
-                <div key={service._id} className="flex flex-col bg-white border border-gray-100 rounded-[2rem] p-6 transition-all hover:shadow-2xl hover:shadow-gray-200/50 hover:-translate-y-1">
+                <div key={service._id} className="flex flex-col bg-white border border-gray-100 rounded-4xl p-6 transition-all hover:shadow-2xl hover:shadow-gray-200/50 hover:-translate-y-1">
                   <div className="mb-4">
                     {service.serviceMode === "both" ? (
                       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-[10px] font-bold uppercase border border-purple-100">

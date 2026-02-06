@@ -15,7 +15,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative mt-12 bg-gradient-to-br from-[#FFF7F1] via-[#FFEDE2] to-[#FFF7F1] text-slate-800 border-t border-orange-100">
+    <footer className="relative mt-12 bg-linear-to-br from-[#FFF7F1] via-[#FFEDE2] to-[#FFF7F1] text-slate-800 border-t border-orange-100">
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           

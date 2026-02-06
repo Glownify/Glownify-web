@@ -68,7 +68,7 @@ const ManageBookingsPage = () => {
                 </div>
 
                 {/* Middle Section: Customer & Services */}
-                <div className="flex-grow p-6 grid md:grid-cols-2 gap-6">
+                <div className="grow p-6 grid md:grid-cols-2 gap-6">
                   <div>
                     <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Customer Details</h3>
                     <div className="space-y-2">

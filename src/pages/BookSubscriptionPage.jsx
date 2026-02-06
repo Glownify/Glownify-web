@@ -83,7 +83,7 @@ const BookSubscriptionPage = () => {
 
             {/* TOGGLE */}
             <div className="flex justify-center mt-5">
-              <div className="bg-gray-200 rounded-full px-1 py-1 flex text-xs select-none text-sm font-medium text-heading">
+              <div className="bg-gray-200 rounded-full px-1 py-1 flex text-sm select-none font-medium text-heading">
                 <span className="bg-white px-4 py-1 rounded-full font-medium">
                   Monthly
                 </span>
@@ -115,7 +115,7 @@ const BookSubscriptionPage = () => {
               >
                 {/* BADGE */}
                 {plan.highlight && (
-                   <div className="absolute top-3 right-[-38px] rotate-45 bg-yellow-400 text-black text-[11px] font-bold px-10 py-1 shadow-md">
+                   <div className="absolute top-3 -right-9.5 rotate-45 bg-yellow-400 text-black text-[11px] font-bold px-10 py-1 shadow-md">
                 ★ ★ ★
               </div>
                 )}

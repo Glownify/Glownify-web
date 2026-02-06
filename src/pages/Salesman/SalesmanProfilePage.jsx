@@ -46,7 +46,7 @@ const SalesmanProfilePage = () => {
           <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full -mr-16 -mt-16 z-0"></div>
           
           <div className="relative z-10 flex flex-col md:flex-row items-center md:items-end gap-6">
-            <div className="h-24 w-24 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center text-white text-4xl font-bold shadow-lg shadow-indigo-100">
+            <div className="h-24 w-24 bg-linear-to-tr from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center text-white text-4xl font-bold shadow-lg shadow-indigo-100">
               {user.name.charAt(0).toUpperCase()}
             </div>
             
@@ -105,7 +105,7 @@ const SalesmanProfilePage = () => {
             </div>
 
             {/* Referral Card */}
-            <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-6 text-white shadow-xl shadow-slate-200">
+            <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-3xl p-6 text-white shadow-xl shadow-slate-200">
               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Your Referral ID</p>
               <div className="flex items-center justify-between bg-white/10 rounded-xl p-3 border border-white/10">
                 <code className="font-mono font-bold text-indigo-300">{user.roleDetails?.referralId || 'N/A'}</code>

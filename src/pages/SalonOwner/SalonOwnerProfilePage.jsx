@@ -37,7 +37,7 @@ const SalonOwnerProfilePage = () => {
           <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full -mr-20 -mt-20 z-0"></div>
           
           <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-            <div className="h-32 w-32 bg-indigo-600 rounded-[2rem] flex items-center justify-center text-white shadow-2xl shadow-indigo-200">
+            <div className="h-32 w-32 bg-indigo-600 rounded-4xl flex items-center justify-center text-white shadow-2xl shadow-indigo-200">
               <Store size={48} strokeWidth={1.5} />
             </div>
             
@@ -71,7 +71,7 @@ const SalonOwnerProfilePage = () => {
           
           {/* Left Column: Personal Owner Info */}
           <div className="space-y-6">
-            <div className="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm">
+            <div className="bg-white rounded-4xl p-6 border border-slate-200 shadow-sm">
               <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
                 <Info size={14}/> Owner Profile
               </h3>
@@ -98,7 +98,7 @@ const SalonOwnerProfilePage = () => {
             </div>
 
             {/* Quick Stats Column */}
-            <div className="bg-indigo-600 rounded-[2rem] p-6 text-white shadow-xl shadow-indigo-100">
+            <div className="bg-indigo-600 rounded-4xl p-6 text-white shadow-xl shadow-indigo-100">
                <div className="flex justify-between items-center mb-6">
                   <p className="text-[10px] font-black uppercase tracking-widest text-indigo-200">Capacity</p>
                   <Users size={20} className="text-indigo-300"/>
@@ -115,7 +115,7 @@ const SalonOwnerProfilePage = () => {
             
             {/* Grid for Operational Hours & Location */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm">
+              <div className="bg-white rounded-4xl p-6 border border-slate-200 shadow-sm">
                 <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Opening Hours</h3>
                 <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
                   <div className="flex items-center gap-3 text-slate-700">
@@ -126,7 +126,7 @@ const SalonOwnerProfilePage = () => {
                 </div>
               </div>
 
-              <div className="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm">
+              <div className="bg-white rounded-4xl p-6 border border-slate-200 shadow-sm">
                 <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Contact Sync</h3>
                 <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
                   <Smartphone size={18} className="text-emerald-500"/>
@@ -136,7 +136,7 @@ const SalonOwnerProfilePage = () => {
             </div>
 
             {/* Address & Location Card */}
-            <div className="bg-white rounded-[2rem] p-8 border border-slate-200 shadow-sm">
+            <div className="bg-white rounded-4xl p-8 border border-slate-200 shadow-sm">
                 <div className="flex justify-between items-start mb-6">
                   <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">Business Location</h3>
                   <button className="text-indigo-600 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:underline">
@@ -152,7 +152,7 @@ const SalonOwnerProfilePage = () => {
             </div>
 
             {/* Internal Metadata */}
-            <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-4xl border border-slate-200 shadow-sm overflow-hidden">
                <div className="px-8 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
                   <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Administrative Data</h3>
                   <ShieldCheck size={16} className="text-emerald-500"/>

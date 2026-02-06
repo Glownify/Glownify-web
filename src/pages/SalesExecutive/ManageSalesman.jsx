@@ -81,7 +81,7 @@ const ManageSalesman = () => {
 
   if (loading && salesman.length === 0) {
     return (
-      <div className="p-10 flex flex-col items-center justify-center min-h-[400px]">
+      <div className="p-10 flex flex-col items-center justify-center min-h-100">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 mb-4"></div>
         <p className="text-slate-500 font-medium">Loading salesman data...</p>
       </div>
@@ -127,7 +127,7 @@ const ManageSalesman = () => {
         {/* --- CARD GRID --- */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredSalesman.map((item) => (
-            <div key={item._id} className="bg-white rounded-[32px] border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all group relative overflow-hidden">
+            <div key={item._id} className="bg-white rounded-4xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all group relative overflow-hidden">
               {/* Top Row: Profile & Actions */}
               <div className="flex justify-between items-start mb-6">
                 <div className="flex items-center gap-4">
@@ -191,7 +191,7 @@ const ManageSalesman = () => {
 
         {/* --- EMPTY STATE --- */}
         {filteredSalesman.length === 0 && (
-          <div className="bg-white rounded-[32px] p-20 text-center border border-dashed border-slate-200">
+          <div className="bg-white rounded-4xl p-20 text-center border border-dashed border-slate-200">
             <div className="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-300">
               <Users size={40} />
             </div>
@@ -203,7 +203,7 @@ const ManageSalesman = () => {
         {/* --- CREATE SALESMAN MODAL --- */}
         {openCreate && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-            <div className="bg-white rounded-[32px] w-full max-w-lg p-8 shadow-2xl animate-in fade-in zoom-in">
+            <div className="bg-white rounded-4xl w-full max-w-lg p-8 shadow-2xl animate-in fade-in zoom-in">
 
               {/* Modal Header */}
               <div className="flex items-center justify-between mb-6">

@@ -46,7 +46,7 @@ const HomeSaloonsDetails = () => {
                 alt={saloonDetails.shopName}
               />
               {/* Overlay for better text readability if needed */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+              <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent"></div>
               
               {/* Book Now Button - Repositioned for full-width impact */}
               <Link to="/bookappoitment">
@@ -122,7 +122,7 @@ const HomeSaloonsDetails = () => {
           </div>
 
           {/* TAB CONTENT AREA */}
-          <div className="p-6 md:p-8 min-h-[400px]">
+          <div className="p-6 md:p-8 min-h-100">
             <Outlet context={{ saloonDetails }} />
           </div>
           

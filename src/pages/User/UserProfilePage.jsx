@@ -20,7 +20,7 @@ const UserProfilePage = () => {
         {/* Left Column: Profile Card */}
         <div className="lg:col-span-4 flex flex-col items-center">
           <div className="relative">
-            <div className="w-40 h-40 rounded-full bg-gradient-to-tr from-rose-500 to-pink-400 p-1">
+            <div className="w-40 h-40 rounded-full bg-linear-to-tr from-rose-500 to-pink-400 p-1">
               <div className="w-full h-full rounded-full bg-white p-1">
                  <div className="w-full h-full rounded-full bg-rose-50 flex items-center justify-center text-rose-600 text-5xl font-light">
                    {user?.name?.[0]?.toUpperCase() || "R"}

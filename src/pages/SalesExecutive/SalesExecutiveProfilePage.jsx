@@ -78,7 +78,7 @@ const SalesExecutiveProfilePage = () => {
           {/* Left Column: ID & Contact */}
           <div className="space-y-6">
             {/* Referral Card */}
-            <div className="bg-slate-900 rounded-[2rem] p-6 text-white shadow-xl">
+            <div className="bg-slate-900 rounded-4xl p-6 text-white shadow-xl">
               <div className="flex items-center justify-between mb-4">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Executive Referral ID</p>
                 <QrCode size={18} className="text-indigo-400"/>
@@ -96,7 +96,7 @@ const SalesExecutiveProfilePage = () => {
             </div>
 
             {/* Contact Information */}
-            <div className="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm">
+            <div className="bg-white rounded-4xl p-6 border border-slate-200 shadow-sm">
               <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Contact Registry</h3>
               <div className="space-y-5">
                 <div className="flex items-center gap-4">
@@ -129,7 +129,7 @@ const SalesExecutiveProfilePage = () => {
             
             {/* Financial Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-white rounded-[2rem] p-8 border border-slate-200 shadow-sm relative overflow-hidden group">
+              <div className="bg-white rounded-4xl p-8 border border-slate-200 shadow-sm relative overflow-hidden group">
                 <div className="absolute -right-4 -bottom-4 text-emerald-50/50 group-hover:text-emerald-50 transition-colors">
                   <DollarSign size={100} />
                 </div>
@@ -142,7 +142,7 @@ const SalesExecutiveProfilePage = () => {
                 </div>
               </div>
 
-              <div className="bg-white rounded-[2rem] p-8 border border-slate-200 shadow-sm relative overflow-hidden group">
+              <div className="bg-white rounded-4xl p-8 border border-slate-200 shadow-sm relative overflow-hidden group">
                 <div className="absolute -right-4 -bottom-4 text-indigo-50/50 group-hover:text-indigo-50 transition-colors">
                   <Award size={100} />
                 </div>
@@ -157,7 +157,7 @@ const SalesExecutiveProfilePage = () => {
             </div>
 
             {/* Metadata & System Info */}
-            <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-4xl border border-slate-200 shadow-sm overflow-hidden">
               <div className="px-8 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
                 <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Account Metadata</h3>
                 <code className="text-[10px] text-slate-400 font-mono">ID: {user._id.slice(-8)}</code>

@@ -64,8 +64,8 @@ const ManageSalonsPage = () => {
                   {salon.shopName || 'N/A'}
                 </h3>
                 {salon.verifiedByAdmin ? 
-                  <CheckCircle size={16} className="text-emerald-500 flex-shrink-0" /> : 
-                  <Clock size={16} className="text-amber-500 flex-shrink-0" />
+                  <CheckCircle size={16} className="text-emerald-500 shrink-0" /> : 
+                  <Clock size={16} className="text-amber-500 shrink-0" />
                 }
               </div>
               

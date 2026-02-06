@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import { HelpCircle, Plus ,CreditCard,XCircle} from "lucide-react";
-import { Check,ShieldCheck ,Headphones ,Globe ,Zap} from "lucide-react";
+import { HelpCircle, Plus, CreditCard, XCircle } from "lucide-react";
+import { Check, ShieldCheck, Headphones, Globe, Zap } from "lucide-react";
 import { FiCreditCard } from "react-icons/fi";
 import { MdSubscriptions } from "react-icons/md";
 
 const PaymentSubscriptionPage = () => {
   const [billing, setBilling] = useState("monthly");
-    const [active, setActive] = useState("subscription");
-
+  const [active, setActive] = useState("subscription");
 
   const features = [
     "Salon & Home Booking",
@@ -40,37 +39,31 @@ const PaymentSubscriptionPage = () => {
             Review your plan and make a secure payment
           </p>
         </div>
-        
-        <div className="w-full flex items-center py-4">
-  
-  {/* Left Divider */}
-  <div className="flex-1 h-px bg-gray-300" />
 
-  {/* Center Capsules */}
-  <div className="mx-6 flex items-center gap-2 bg-gray-100 p-1 rounded-full shadow-sm">
-    
-    {/* Subscription - Active */}
-    <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500 text-white text-sm font-medium">
-      <span className="w-2 h-2 bg-white rounded-full"></span>
-      Subscription
-    </div>
+        {/* <div className="w-full flex items-center py-4">
+         
+          <div className="flex-1 h-px bg-gray-300" />
 
-    {/* Payment - Inactive */}
-    <div className="flex items-center gap-2 px-4 py-1.5 rounded-full text-gray-400 text-sm font-medium">
-      <span className="w-2 h-2 border border-gray-300 rounded-full"></span>
-      Payment
-    </div>
+         
+          <div className="mx-6 flex items-center gap-2 bg-gray-100 p-1 rounded-full shadow-sm">
+           
+            <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500 text-white text-sm font-medium">
+              <span className="w-2 h-2 bg-white rounded-full"></span>
+              Subscription
+            </div>
 
-  </div>
+           
+            <div className="flex items-center gap-2 px-4 py-1.5 rounded-full text-gray-400 text-sm font-medium">
+              <span className="w-2 h-2 border border-gray-300 rounded-full"></span>
+              Payment
+            </div>
+          </div>
 
-  {/* Right Divider */}
-  <div className="flex-1 h-px bg-gray-300" />
+         
+          <div className="flex-1 h-px bg-gray-300" />
+        </div> */}
 
-</div>
-
-        
-        
-          <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
+        <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* LEFT PLAN CARD */}
@@ -204,96 +197,85 @@ const PaymentSubscriptionPage = () => {
           </div>
         </div>
 
-      {/* FAQ + TRUST BAR WRAPPER */}
+        {/* FAQ + TRUST BAR WRAPPER */}
 
-<div className="w-full py-10">
-  <div className="max-w-6xl mx-auto space-y-6 px-2 sm:px-0">
+        <div className="w-full py-10">
+          <div className="max-w-6xl mx-auto space-y-6 px-2 sm:px-0">
+            {/* FAQ BOX */}
+            <div className="bg-white rounded-2xl shadow-lg px-6 sm:px-8 py-6">
+              {/* Heading */}
+              <div className="flex items-center gap-4 mb-6">
+                <h2 className="text-lg sm:text-xl font-bold text-[#152650] whitespace-nowrap">
+                  Frequently Asked Questions
+                </h2>
+                <div className="flex-1 h-px bg-gray-300"></div>
+              </div>
 
-    {/* FAQ BOX */}
-    <div className="bg-white rounded-2xl shadow-lg px-6 sm:px-8 py-6">
-      {/* Heading */}
-      <div className="flex items-center gap-4 mb-6">
-        <h2 className="text-lg sm:text-xl font-bold text-[#152650] whitespace-nowrap">
-          Frequently Asked Questions
-        </h2>
-        <div className="flex-1 h-px bg-gray-300"></div>
-      </div>
-
-      {/* FAQ Items */}
-      <div className="divide-y divide-gray-300">
-        {faqs.map((item, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-between py-4"
-          >
-            <div className="flex items-center gap-3 text-[#152650] font-semibold text-sm sm:text-base">
-              <span className="flex items-center justify-center w-5 h-5 rounded-full fill-[#091d50] bg-[#042c6d] text-white text-xs font-bold">
-                          ?
-                        </span>
-              {item}
+              {/* FAQ Items */}
+              <div className="divide-y divide-gray-300">
+                {faqs.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between py-4"
+                  >
+                    <div className="flex items-center gap-3 text-[#152650] font-semibold text-sm sm:text-base">
+                      <span className="flex items-center justify-center w-5 h-5 rounded-full fill-[#091d50] bg-[#042c6d] text-white text-xs font-bold">
+                        ?
+                      </span>
+                      {item}
+                    </div>
+                    <Plus className="w-5 h-5 text-blue-700" />
+                  </div>
+                ))}
+              </div>
             </div>
-            <Plus className="w-5 h-5 text-blue-700" />
+
+            {/* TRUST + INFO SECTION */}
+            <div className="w-full mt-6">
+              <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg px-6 sm:px-8 py-5">
+                {/* TOP ROW */}
+                <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-[#2f3e63] text-md font-medium">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#eef2ff] flex items-center justify-center">
+                      <ShieldCheck size={24} />
+                    </div>
+                    Secure Payments
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#eef2ff] flex items-center justify-center">
+                      <Headphones size={24} />
+                    </div>
+                    24×7 Support
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#eef2ff] flex items-center justify-center">
+                      <Globe size={24} />
+                    </div>
+                    Built for Salons Worldwide
+                  </div>
+                </div>
+
+                {/* DIVIDER */}
+                <div className="my-4 h-px bg-gray-200"></div>
+
+                {/* BOTTOM ROW */}
+                <div className="flex flex-wrap justify-center items-center gap-4 gap-y-3 text-xs text-gray-500">
+                  <div className="flex items-center gap-2">
+                    <CreditCard size={14} className="text-gray-400" />
+                    All payments are processed via trusted and secure gateways.
+                  </div>
+
+                  <div className="flex items-center gap-2 text-lg font-semibold text-[#152650]">
+                    <XCircle size={14} />
+                    Cancel Anytime
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        ))}
-      </div>
-    </div>
-
-  {/* TRUST + INFO SECTION */}
-<div className="w-full mt-6">
-  <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg px-6 sm:px-8 py-5">
-
-    {/* TOP ROW */}
-    <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-[#2f3e63] text-md font-medium">
-
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-[#eef2ff] flex items-center justify-center">
-          <ShieldCheck size={24} />
         </div>
-        Secure Payments
-      </div>
-
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-[#eef2ff] flex items-center justify-center">
-          <Headphones size={24} />
-        </div>
-        24×7 Support
-      </div>
-
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-[#eef2ff] flex items-center justify-center">
-          <Globe size={24} />
-        </div>
-        Built for Salons Worldwide
-      </div>
-
-    </div>
-
-    {/* DIVIDER */}
-    <div className="my-4 h-px bg-gray-200"></div>
-
-    {/* BOTTOM ROW */}
-    <div className="flex flex-wrap justify-center items-center gap-4 gap-y-3 text-xs text-gray-500">
-
-      <div className="flex items-center gap-2">
-        <CreditCard size={14} className="text-gray-400" />
-        All payments are processed via trusted and secure gateways.
-      </div>
-
-      <div className="flex items-center gap-2 text-lg font-semibold text-[#152650]">
-        <XCircle size={14} />
-        Cancel Anytime
-      </div>
-
-    </div>
-
-  </div>
-</div>
-
-
-  </div>
-</div>
-
-        
       </div>
     </div>
   );

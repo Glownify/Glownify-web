@@ -83,17 +83,26 @@ const BookSubscriptionPage = () => {
 
             {/* TOGGLE */}
             <div className="flex justify-center mt-5">
-              <div className="bg-gray-200 rounded-full px-1 py-1 flex text-xs">
+              <div className="bg-gray-200 rounded-full px-1 py-1 flex text-xs select-none text-sm font-medium text-heading">
                 <span className="bg-white px-4 py-1 rounded-full font-medium">
                   Monthly
                 </span>
-                <span className="px-4 py-1 text-gray-600">
+                  <input type="checkbox" value="" className="sr-only peer"/>
+                <span className="px-4 py-1 text-gray-600 select-none text-sm font-medium text-heading">
                   Yearly{" "}
                   <span className="text-green-600 font-semibold">20%</span>
                 </span>
               </div>
             </div>
           </div>
+          
+{/* <label className="inline-flex items-center cursor-pointer">
+  <span className="select-none text-sm font-medium text-heading">Monthly</span>
+  <input type="checkbox" value="" className="sr-only peer"/>
+  <div className="relative mx-3 w-9 h-5 bg-neutral-quaternary peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-soft dark:peer-focus:ring-brand-soft rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand"></div>
+  <span className="select-none text-sm font-medium text-heading">Yearly</span>
+</label> */}
+
 
           {/* PLANS */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
@@ -106,9 +115,9 @@ const BookSubscriptionPage = () => {
               >
                 {/* BADGE */}
                 {plan.highlight && (
-                  <span className="absolute top-3 right-3 bg-yellow-400 text-xs font-bold px-2 py-1 rounded rotate-12">
-                    ★
-                  </span>
+                   <div className="absolute top-3 right-[-38px] rotate-45 bg-yellow-400 text-black text-[11px] font-bold px-10 py-1 shadow-md">
+                ★ ★ ★
+              </div>
                 )}
 
                 {/* HEADER */}

@@ -78,6 +78,8 @@ import AboutPage from "../pages/Common/AboutPage";
 import ContactPage from "../pages/Common/ContactPage";
 import CartPage from "../pages/User/CartPage";
 // import CareersPage from "../pages/Common/CareersPage";
+import BookSubscriptionPage from "../pages/BookSubscriptionPage";
+import PaymentSubscriptionPage from "../pages/PaymentSubscriptionPage";
 
 const AllRoutes = () => {
   return (
@@ -97,6 +99,8 @@ const AllRoutes = () => {
               path="/partner-with-us/salon-owner-register"
               element={<SalonOwnerRegisterPage />}
             />
+            <Route path="/booksubscriptionpage"  element={<BookSubscriptionPage/>} />
+            <Route path="/paymentsubscriptionpage"  element={<PaymentSubscriptionPage/>} />
             <Route
               path="/partner-with-us/independent-professional-register"
               element={<IndependentProfessionalRegistrarionPage />}
@@ -117,7 +121,7 @@ const AllRoutes = () => {
               <Route path="reviews" element={<SalonReviews />} />
               <Route path="specialists" element={<SalonSpecialists />} />
             </Route>
-            <Route path="/about" element={<AboutPage />} />
+            <Route path="/about-us" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/blogs" element={<BlogPage />} />
             <Route path="/cart" element={<CartPage />} />

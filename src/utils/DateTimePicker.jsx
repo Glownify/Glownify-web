@@ -50,8 +50,8 @@ const DateTimePicker = ({ isOpen, onClose, onConfirm }) => {
 
   const timeSlots = [
     { time: "9:00 AM", status: "available" }, { time: "10:00 AM", status: "available" },
-    { time: "11:00 AM", status: "few" }, { time: "12:00 PM", status: "available" },
-    { time: "2:00 PM", status: "few" }, { time: "3:00 PM", status: "unavailable" },
+    { time: "11:00 AM", status: "available" }, { time: "12:00 PM", status: "available" },
+    { time: "2:00 PM", status: "available" }, { time: "3:00 PM", status: "available" },
     { time: "4:00 PM", status: "available" }, { time: "5:00 PM", status: "available" },
   ];
 

@@ -16,7 +16,7 @@ const Categories = ({ categories, gender }) => {
   // Dynamic Theme Colors
   const isMen = gender?.toLowerCase() === "men";
   const themeColor = isMen ? "blue" : "rose";
-  
+
   // Tailwind class mappings to ensure stability
   const styles = {
     text: isMen ? "text-blue-500" : "text-rose-500",
@@ -29,7 +29,7 @@ const Categories = ({ categories, gender }) => {
   };
 
   return (
-    <section className="py-12 px-6 max-w-7xl mx-auto group/cat-section">
+    <section className="py-12 px-6 lg:px-12 w-full mx-auto group/cat-section">
       <div className="mb-8 flex justify-between items-center px-2">
         <div className="relative">
           <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight leading-none">
@@ -39,10 +39,10 @@ const Categories = ({ categories, gender }) => {
             </span>
           </h2>
         </div>
-        
+
         <div className="hidden md:flex items-center gap-2">
-           <div className={`h-px w-12 ${styles.bgLight} mr-2`} />
-           <p className={`text-[10px] font-black uppercase tracking-[0.2em] opacity-60 text-slate-500`}>Select Style</p>
+          <div className={`h-px w-12 ${styles.bgLight} mr-2`} />
+          <p className={`text-[10px] font-black uppercase tracking-[0.2em] opacity-60 text-slate-500`}>Select Style</p>
         </div>
       </div>
 
@@ -75,7 +75,7 @@ const Categories = ({ categories, gender }) => {
           spaceBetween={16}
           autoplay={{ delay: 1000, disableOnInteraction: false }}
           breakpoints={{
-            0: { slidesPerView: 4,},
+            0: { slidesPerView: 4, },
             640: { slidesPerView: 6 },
             1024: { slidesPerView: 8 },
             1280: { slidesPerView: 10 },
@@ -88,15 +88,15 @@ const Categories = ({ categories, gender }) => {
               <div className="flex flex-col items-center group cursor-pointer">
                 {/* Smaller Squircle Container */}
                 <div className={`relative w-full aspect-square bg-white border ${styles.border} rounded-4xl md:rounded-[2.5rem] flex items-center justify-center mb-3 transition-all duration-500 group-hover:shadow-xl ${styles.shadow} ${styles.borderHover} group-hover:-translate-y-1 overflow-hidden`}>
-                  
+
                   <div className={`absolute inset-0 ${styles.bgLight} opacity-0 group-hover:opacity-50 transition-opacity duration-500`} />
-                  
+
                   <img
                     src={category.icon}
                     alt={category.name}
                     className="w-12 h-12 md:w-16 md:h-16 object-contain relative z-10 transition-transform duration-500 group-hover:scale-110"
                   />
-                  
+
                   <div className={`absolute bottom-0 left-0 right-0 h-1 ${styles.bg} translate-y-full group-hover:translate-y-0 transition-transform duration-300`} />
                 </div>
 

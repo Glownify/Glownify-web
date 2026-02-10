@@ -70,7 +70,7 @@ const BookSubscriptionPage = () => {
   return (
     <div>
       <div className="bg-[#f4f6ff] min-h-screen px-4 py-10">
-        <div className="max-w-7xl mx-auto">
+        <div className="w-full mx-auto px-6 lg:px-12">
           {/* HEADER */}
           <div className="text-center">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
@@ -87,7 +87,7 @@ const BookSubscriptionPage = () => {
                 <span className="bg-white px-4 py-1 rounded-full font-medium">
                   Monthly
                 </span>
-                  <input type="checkbox" value="" className="sr-only peer"/>
+                <input type="checkbox" value="" className="sr-only peer" />
                 <span className="px-4 py-1 text-gray-600 select-none text-sm font-medium text-heading">
                   Yearly{" "}
                   <span className="text-green-600 font-semibold">20%</span>
@@ -95,8 +95,8 @@ const BookSubscriptionPage = () => {
               </div>
             </div>
           </div>
-          
-{/* <label className="inline-flex items-center cursor-pointer">
+
+          {/* <label className="inline-flex items-center cursor-pointer">
   <span className="select-none text-sm font-medium text-heading">Monthly</span>
   <input type="checkbox" value="" className="sr-only peer"/>
   <div className="relative mx-3 w-9 h-5 bg-neutral-quaternary peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-soft dark:peer-focus:ring-brand-soft rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand"></div>
@@ -109,24 +109,22 @@ const BookSubscriptionPage = () => {
             {plans.map((plan, i) => (
               <div
                 key={i}
-                className={`relative bg-white rounded-xl shadow-xl p-6 flex flex-col ${
-                  plan.highlight ? "border-2 border-blue-600 scale-[1.02]" : ""
-                }`}
+                className={`relative bg-white rounded-xl shadow-xl p-6 flex flex-col ${plan.highlight ? "border-2 border-blue-600 scale-[1.02]" : ""
+                  }`}
               >
                 {/* BADGE */}
                 {plan.highlight && (
-                   <div className="absolute top-3 right-[-38px] rotate-45 bg-yellow-400 text-black text-[11px] font-bold px-10 py-1 shadow-md">
-                ★ ★ ★
-              </div>
+                  <div className="absolute top-3 right-[-38px] rotate-45 bg-yellow-400 text-black text-[11px] font-bold px-10 py-1 shadow-md">
+                    ★ ★ ★
+                  </div>
                 )}
 
                 {/* HEADER */}
                 <div
-                  className={`-mx-6 -mt-6 mb-5 py-4 text-center font-semibold text-white rounded-t-xl ${
-                    plan.highlight
+                  className={`-mx-6 -mt-6 mb-5 py-4 text-center font-semibold text-white rounded-t-xl ${plan.highlight
                       ? "bg-gradient-to-b from-[#0a4ab3] to-[#052861]"
                       : "bg-gradient-to-b from-[#2f4574] to-[#1f2f52]"
-                  }`}
+                    }`}
                 >
                   {plan.name}
                 </div>
@@ -152,11 +150,10 @@ const BookSubscriptionPage = () => {
                 {/* BUTTON */}
                 <button
                   onClick={(e) => navigate("/paymentsubscriptionpage")}
-                  className={`mt-6 py-2 rounded-md text-sm font-medium text-white cursor-pointer ${
-                    plan.highlight
+                  className={`mt-6 py-2 rounded-md text-sm font-medium text-white cursor-pointer ${plan.highlight
                       ? "bg-gradient-to-r from-green-900 to-green-700"
                       : "bg-gradient-to-b from-[#2f4574] to-[#1f2f52] text-white"
-                  }`}
+                    }`}
                 >
                   {plan.button}
                 </button>
@@ -237,7 +234,7 @@ const BookSubscriptionPage = () => {
 
                       <div className="leading-tight">
                         <div className="text-xl font-semibold text-[#152650]">
-                          Fast & 
+                          Fast &
                         </div>
                         <div className="text-sm  text-[#152650] ">
                           Reliable Platform

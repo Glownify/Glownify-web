@@ -81,7 +81,7 @@ const ManageAddOnPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen">
+    <div className="w-full mx-auto p-4 sm:p-6 lg:p-8 lg:px-12 bg-gray-50 min-h-screen">
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
@@ -105,11 +105,11 @@ const ManageAddOnPage = () => {
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Backdrop */}
-          <div 
-            className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" 
+          <div
+            className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
             onClick={resetForm}
           />
-          
+
           {/* Modal Content */}
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
@@ -120,7 +120,7 @@ const ManageAddOnPage = () => {
                 <X className="w-5 h-5 text-gray-500" />
               </button>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="space-y-1">
@@ -240,7 +240,7 @@ const ManageAddOnPage = () => {
       ) : addOns.length === 0 ? (
         <div className="bg-white rounded-3xl p-12 text-center border-2 border-dashed border-gray-200">
           <div className="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-             <Plus className="text-gray-400 w-8 h-8" />
+            <Plus className="text-gray-400 w-8 h-8" />
           </div>
           <h3 className="text-lg font-bold text-gray-900">No add-ons yet</h3>
           <p className="text-gray-500 mb-6">Start by adding a new service to your salon.</p>
@@ -271,7 +271,7 @@ const ManageAddOnPage = () => {
                   <h3 className="font-bold text-gray-900 text-lg">{addon.name}</h3>
                   <span className="text-indigo-600 font-black text-lg">₹{addon.price}</span>
                 </div>
-                
+
                 <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
                   <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />

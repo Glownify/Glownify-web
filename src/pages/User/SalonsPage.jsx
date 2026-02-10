@@ -14,39 +14,39 @@ const SalonsPage = () => {
   const lat = localStorage.getItem("lat");
   const lng = localStorage.getItem("lng");
 
-    const handleSalonClick = (salonId) => {
+  const handleSalonClick = (salonId) => {
     navigate(`/salon/${salonId}`);
   };
 
-useEffect(() => {
-  if (!selectedCategory || !lat || !lng) return;
+  useEffect(() => {
+    if (!selectedCategory || !lat || !lng) return;
 
-  const fetchSalons = async () => {
-    try {
-      const fetchPromise = dispatch(
-        fetchAllSalonsByCategory({
-          category: selectedCategory,
-          lat,
-          lng,
-        })
-      ).unwrap();
+    const fetchSalons = async () => {
+      try {
+        const fetchPromise = dispatch(
+          fetchAllSalonsByCategory({
+            category: selectedCategory,
+            lat,
+            lng,
+          })
+        ).unwrap();
 
-      await toast.promise(fetchPromise, {
-        loading: "Finding nearby salons...",
-        success: (res) =>
-          res?.length
-            ? "Salons loaded successfully ✨"
-            : "No salons found nearby",
-        error: (err) =>
-          err?.message || "Failed to load nearby salons",
-      });
-    } catch (error) {
-      console.error("Fetch salons failed:", error);
-    }
-  };
+        await toast.promise(fetchPromise, {
+          loading: "Finding nearby salons...",
+          success: (res) =>
+            res?.length
+              ? "Salons loaded successfully ✨"
+              : "No salons found nearby",
+          error: (err) =>
+            err?.message || "Failed to load nearby salons",
+        });
+      } catch (error) {
+        console.error("Fetch salons failed:", error);
+      }
+    };
 
-  fetchSalons();
-}, [selectedCategory, lat, lng, dispatch]);
+    fetchSalons();
+  }, [selectedCategory, lat, lng, dispatch]);
 
 
   const formatDistance = (meters) => {
@@ -64,7 +64,7 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen bg-[#FFF8F1] py-12 px-4">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full mx-auto px-6 lg:px-12">
         {/* Header Section */}
 
         <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -161,8 +161,8 @@ useEffect(() => {
                     Available Now
                   </span> */}
                   <button
-                  onClick={() => handleSalonClick(salon._id)}
-                   className="text-indigo-600 font-extrabold text-lg hover:text-indigo-800 transition-colors">
+                    onClick={() => handleSalonClick(salon._id)}
+                    className="text-indigo-600 font-extrabold text-lg hover:text-indigo-800 transition-colors">
                     Book Visit
                   </button>
                 </div>

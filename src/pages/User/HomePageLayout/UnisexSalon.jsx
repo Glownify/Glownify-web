@@ -31,7 +31,7 @@ const UnisexSalon = ({ lat, lng }) => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="w-full mx-auto px-6 lg:px-12 py-12">
         <div className="h-8 w-56 bg-slate-100 animate-pulse rounded mb-8" />
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -45,10 +45,10 @@ const UnisexSalon = ({ lat, lng }) => {
   if (!unisexSalonServices?.length) return null;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6">
+    <div className="w-full mx-auto px-4 md:px-6 lg:px-12">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
-          
+
           <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
             Unisex Salon
           </h1>
@@ -117,7 +117,7 @@ const UnisexSalon = ({ lat, lng }) => {
                   )}
 
                   <div className="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/20 to-transparent opacity-80" />
-                  
+
                   <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
                     <Star size={10} className="text-amber-500 fill-amber-500" />
                     <span className="text-[11px] font-bold text-slate-800">4.8</span>

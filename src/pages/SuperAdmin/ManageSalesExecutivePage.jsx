@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
-  fetchAllSalesExecutives, 
-  fetchAllCities, 
-  createSalesExecutive 
+import {
+  fetchAllSalesExecutives,
+  fetchAllCities,
+  createSalesExecutive
 } from '../../redux/slice/superadminSlice';
-import { 
-  UserPlus, Mail, Phone, MapPin, X, Percent, 
-  ShieldCheck, Search, Copy, Check, MoreVertical, 
+import {
+  UserPlus, Mail, Phone, MapPin, X, Percent,
+  ShieldCheck, Search, Copy, Check, MoreVertical,
   ArrowRight, Users, Briefcase
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -24,7 +24,7 @@ const ManageSalesExecutivePage = () => {
 
   // Local UI States
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [successData, setSuccessData] = useState(null); 
+  const [successData, setSuccessData] = useState(null);
   const [copied, setCopied] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -51,22 +51,22 @@ const ManageSalesExecutivePage = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  // Wrap the async thunk with toast.promise
-  toast.promise(
-    dispatch(createSalesExecutive(formData)).unwrap(),
-    {
-      loading: "Creating executive...",
-      success: (payload) => {
-        setSuccessData({ password: payload.password });
-        dispatch(fetchAllSalesExecutives()); // refresh list
-        return "Executive created successfully!";
-      },
-      error: (err) => err?.message || "Failed to create executive",
-    }
-  );
-};
+    // Wrap the async thunk with toast.promise
+    toast.promise(
+      dispatch(createSalesExecutive(formData)).unwrap(),
+      {
+        loading: "Creating executive...",
+        success: (payload) => {
+          setSuccessData({ password: payload.password });
+          dispatch(fetchAllSalesExecutives()); // refresh list
+          return "Executive created successfully!";
+        },
+        error: (err) => err?.message || "Failed to create executive",
+      }
+    );
+  };
 
 
   const closeModal = () => {
@@ -77,16 +77,16 @@ const ManageSalesExecutivePage = () => {
 
   return (
     <div className="min-h-screen bg-[#FBFBFE] p-4 lg:p-10 font-sans text-slate-900">
-      
+
       {/* --- PAGE HEADER --- */}
-      <div className="max-w-7xl mx-auto mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="w-full mx-auto px-6 lg:px-12 mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-         
+
           <h1 className="text-4xl font-black tracking-tight text-slate-900">Sales Executives</h1>
           <p className="text-slate-500 mt-2 font-medium">Manage your field team and commission structures.</p>
         </div>
-        
-        <button 
+
+        <button
           onClick={() => setIsModalOpen(true)}
           className="flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-indigo-200 active:scale-95"
         >
@@ -94,11 +94,11 @@ const ManageSalesExecutivePage = () => {
         </button>
       </div>
 
-      
+
       {/* --- GRID OF CARDS --- */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="w-full mx-auto px-6 lg:px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading && salesExecutives.length === 0 ? (
-           [...Array(6)].map((_, i) => (
+          [...Array(6)].map((_, i) => (
             <div key={i} className="h-64 bg-slate-100 animate-pulse rounded-[32px]" />
           ))
         ) : (
@@ -120,7 +120,7 @@ const ManageSalesExecutivePage = () => {
 
                   <h3 className="text-xl font-black text-slate-800 mb-1">{se.user?.name}</h3>
                   <p className="text-xs font-mono text-indigo-500 font-bold mb-6 tracking-tight">{se.referralId}</p>
-                  
+
                   {/* SQUARE INFO BOXES (Bento Style) */}
                   <div className="grid grid-cols-2 gap-3 mb-6">
                     <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
@@ -136,11 +136,11 @@ const ManageSalesExecutivePage = () => {
 
                 <div className="space-y-2 text-sm text-slate-500 border-t border-slate-50 pt-4">
                   <div className="flex items-center gap-3 font-medium">
-                    <div className="p-1.5 bg-slate-100 rounded-lg"><Mail size={14}/></div> 
+                    <div className="p-1.5 bg-slate-100 rounded-lg"><Mail size={14} /></div>
                     {se.user?.email}
                   </div>
                   <div className="flex items-center gap-3 font-medium">
-                    <div className="p-1.5 bg-slate-100 rounded-lg"><Phone size={14}/></div> 
+                    <div className="p-1.5 bg-slate-100 rounded-lg"><Phone size={14} /></div>
                     {se.user?.phone || se.mobile || 'N/A'}
                   </div>
                 </div>
@@ -155,7 +155,7 @@ const ManageSalesExecutivePage = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={closeModal} />
           <div className="relative bg-white w-full max-w-lg rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
-            
+
             {!successData ? (
               /* FORM VIEW */
               <form onSubmit={handleSubmit} className="p-10">
@@ -167,27 +167,27 @@ const ManageSalesExecutivePage = () => {
                 <div className="space-y-5">
                   <div>
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-2 ml-1">Full Name</label>
-                    <input type="text" name="name" required value={formData.name} onChange={handleInputChange} 
-                      className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none font-semibold transition-all" placeholder="Enter full name"/>
+                    <input type="text" name="name" required value={formData.name} onChange={handleInputChange}
+                      className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none font-semibold transition-all" placeholder="Enter full name" />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-2 ml-1">Email</label>
-                      <input type="email" name="email" required value={formData.email} onChange={handleInputChange} 
-                        className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none font-semibold transition-all"/>
+                      <input type="email" name="email" required value={formData.email} onChange={handleInputChange}
+                        className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none font-semibold transition-all" />
                     </div>
                     <div>
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-2 ml-1">Mobile</label>
-                      <input type="text" name="mobile" required value={formData.mobile} onChange={handleInputChange} 
-                        className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none font-semibold transition-all"/>
+                      <input type="text" name="mobile" required value={formData.mobile} onChange={handleInputChange}
+                        className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none font-semibold transition-all" />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-2 ml-1">City</label>
-                      <select name="city" required value={formData.city} onChange={handleInputChange} 
+                      <select name="city" required value={formData.city} onChange={handleInputChange}
                         className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none font-semibold transition-all appearance-none">
                         <option value="">Select City</option>
                         {cities.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
@@ -195,8 +195,8 @@ const ManageSalesExecutivePage = () => {
                     </div>
                     <div>
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-2 ml-1">Comm. %</label>
-                      <input type="number" name="commissionRate" value={formData.commissionRate} onChange={handleInputChange} 
-                        className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none font-semibold transition-all"/>
+                      <input type="number" name="commissionRate" value={formData.commissionRate} onChange={handleInputChange}
+                        className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none font-semibold transition-all" />
                     </div>
                   </div>
 
@@ -213,20 +213,20 @@ const ManageSalesExecutivePage = () => {
                 </div>
                 <h2 className="text-3xl font-black text-slate-900 mb-2">Done!</h2>
                 <p className="text-slate-500 mb-8 font-medium">The account is ready. Copy this password for the executive.</p>
-                
-                <div 
+
+                <div
                   onClick={() => handleCopy(successData.password)}
                   className="bg-indigo-50 border-2 border-dashed border-indigo-200 rounded-[24px] p-8 mb-8 cursor-pointer group relative overflow-hidden transition-all hover:bg-indigo-100/50"
                 >
                   <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-2">Temporary Password</p>
                   <div className="flex items-center justify-center gap-3">
                     <span className="text-4xl font-mono font-black text-indigo-600 tracking-tighter">{successData.password}</span>
-                    {copied ? <Check className="text-emerald-500" size={24}/> : <Copy className="text-indigo-300 group-hover:text-indigo-500" size={24} />}
+                    {copied ? <Check className="text-emerald-500" size={24} /> : <Copy className="text-indigo-300 group-hover:text-indigo-500" size={24} />}
                   </div>
                 </div>
 
                 <button onClick={closeModal} className="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold flex items-center justify-center gap-2">
-                  Complete Setup <ArrowRight size={20}/>
+                  Complete Setup <ArrowRight size={20} />
                 </button>
               </div>
             )}

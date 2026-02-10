@@ -1,11 +1,11 @@
 import React, { memo, useState } from "react";
-import { 
-  Star, 
-  IndianRupee, 
-  MapPin, 
-  Clock, 
-  Filter, 
-  X 
+import {
+  Star,
+  IndianRupee,
+  MapPin,
+  Clock,
+  Filter,
+  X
 } from "lucide-react";
 
 // --- DUMMY DATA ---
@@ -146,15 +146,15 @@ const TopRatedSalons = () => {
   );
 
   return (
-    <div className="p-4 md:p-6 max-w-7xl mx-auto min-h-screen">
+    <div className="p-4 md:p-6 lg:px-12 w-full mx-auto min-h-screen">
       <header className="mb-6">
         <h1 className="font-bold text-2xl text-gray-900">Top Rated Salons</h1>
         <p className="text-gray-500 text-sm">Find the best grooming experts near you</p>
       </header>
 
       {/* Mobile Filter Toggle */}
-      <button 
-        onClick={() => setIsFilterOpen(true)} 
+      <button
+        onClick={() => setIsFilterOpen(true)}
         className="md:hidden flex items-center justify-center gap-2 bg-white border border-gray-200 w-full py-2.5 rounded-xl font-medium mb-6 shadow-sm active:bg-gray-50 transition-colors"
       >
         <Filter className="size-4" /> Filter
@@ -170,8 +170,8 @@ const TopRatedSalons = () => {
         {isFilterOpen && (
           <div className="fixed inset-0 z-50 md:hidden bg-black/40 backdrop-blur-sm flex justify-end">
             <div className="w-[85%] bg-white h-full p-6 relative shadow-2xl animate-in slide-in-from-right duration-300">
-              <button 
-                onClick={() => setIsFilterOpen(false)} 
+              <button
+                onClick={() => setIsFilterOpen(false)}
                 className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
                 <X className="size-6 text-gray-500" />
@@ -188,19 +188,19 @@ const TopRatedSalons = () => {
           {DUMMY_SALONS.map((salon) => (
             <div key={salon.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all overflow-hidden group">
               <div className="h-48 overflow-hidden relative">
-                <img 
-                  src={salon.image} 
-                  alt={salon.name} 
+                <img
+                  src={salon.image}
+                  alt={salon.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 text-xs font-bold text-yellow-600 shadow-sm">
                   <Star className="size-3 fill-yellow-500 text-yellow-500" /> {salon.rating}
                 </div>
               </div>
-              
+
               <div className="p-4">
                 <h3 className="font-bold text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors">{salon.name}</h3>
-                
+
                 <div className="flex items-center text-xs text-gray-500 mb-4">
                   <MapPin className="size-3 mr-1" /> {salon.distance} away
                 </div>

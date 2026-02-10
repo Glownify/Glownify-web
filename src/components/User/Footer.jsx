@@ -16,9 +16,9 @@ const Footer = () => {
 
   return (
     <footer className="relative mt-12 bg-gradient-to-br from-[#FFF7F1] via-[#FFEDE2] to-[#FFF7F1] text-slate-800 border-t border-orange-100">
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="w-full mx-auto px-6 lg:px-12 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          
+
           {/* Branding Section */}
           <div className="space-y-6">
             <Link to="/" className="inline-block transition-transform hover:scale-105">
@@ -29,8 +29,8 @@ const Footer = () => {
               />
             </Link>
             <p className="text-sm leading-relaxed text-slate-600">
-              Glownify helps you find nearby salons and book appointments easily. 
-              Compare prices, read reviews, and choose between in-salon or 
+              Glownify helps you find nearby salons and book appointments easily.
+              Compare prices, read reviews, and choose between in-salon or
               professional home services.
             </p>
           </div>
@@ -41,8 +41,8 @@ const Footer = () => {
             <ul className="space-y-3 text-sm">
               {["About Us", "Terms and Conditions", "Privacy Policy", "Blogs"].map((item) => (
                 <li key={item}>
-                  <Link 
-                    to={`/${item.toLowerCase().replace(/ /g, "-")}`} 
+                  <Link
+                    to={`/${item.toLowerCase().replace(/ /g, "-")}`}
                     className="text-slate-600 hover:text-orange-600 transition-colors hover:translate-x-1 inline-block transform"
                   >
                     {item}
@@ -69,7 +69,7 @@ const Footer = () => {
                 </Link>
               </li>
             </ul>
-            
+
             {/* Contact Support Box */}
             <div className="p-4 rounded-2xl bg-white/40 border border-white/60 backdrop-blur-sm shadow-sm">
               <p className="text-xs font-medium text-slate-500 mb-1">Facing issues?</p>

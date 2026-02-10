@@ -87,56 +87,56 @@ const ManageSpecialistsPage = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const payload = {
-    name: form.name,
-    phone: form.phone,
-    email: form.email,
-    expertise: form.expertise,
-    experienceYears: Number(form.experienceYears),
-    certifications: form.certifications
-      .split(",")
-      .map((c) => c.trim())
-      .filter(Boolean),
-    image: form.image,
-    availability: form.availability.filter((a) => a.start && a.end),
-  };
+    const payload = {
+      name: form.name,
+      phone: form.phone,
+      email: form.email,
+      expertise: form.expertise,
+      experienceYears: Number(form.experienceYears),
+      certifications: form.certifications
+        .split(",")
+        .map((c) => c.trim())
+        .filter(Boolean),
+      image: form.image,
+      availability: form.availability.filter((a) => a.start && a.end),
+    };
 
-  try {
-    const actionPromise = isEdit
-      ? dispatch(
+    try {
+      const actionPromise = isEdit
+        ? dispatch(
           editSpecialist({
             specialistId: selectedId,
             specialistData: payload,
           })
         ).unwrap()
-      : dispatch(createSpecialist(payload)).unwrap();
+        : dispatch(createSpecialist(payload)).unwrap();
 
-    await toast.promise(actionPromise, {
-      loading: isEdit ? "Updating specialist..." : "Creating specialist...",
-      success: (res) =>
-        res?.message ||
-        (isEdit
-          ? "Specialist updated successfully!"
-          : "Specialist added successfully!"),
-      error: (err) =>
-        err?.message ||
-        err?.error ||
-        "Operation failed. Please try again.",
-    });
+      await toast.promise(actionPromise, {
+        loading: isEdit ? "Updating specialist..." : "Creating specialist...",
+        success: (res) =>
+          res?.message ||
+          (isEdit
+            ? "Specialist updated successfully!"
+            : "Specialist added successfully!"),
+        error: (err) =>
+          err?.message ||
+          err?.error ||
+          "Operation failed. Please try again.",
+      });
 
-    setOpen(false);
-    setIsEdit(false);
-    setSelectedId(null);
-    resetForm();
+      setOpen(false);
+      setIsEdit(false);
+      setSelectedId(null);
+      resetForm();
 
-    // Optional refresh if backend doesn't auto-update list
-    dispatch(fetchAllSpecialists());
-  } catch (error) {
-    console.error("Specialist submit error:", error);
-  }
-};
+      // Optional refresh if backend doesn't auto-update list
+      dispatch(fetchAllSpecialists());
+    } catch (error) {
+      console.error("Specialist submit error:", error);
+    }
+  };
 
 
   const handleEdit = (s) => {
@@ -155,32 +155,32 @@ const ManageSpecialistsPage = () => {
     setOpen(true);
   };
 
-const handleDelete = async (id) => {
-  if (!window.confirm("Are you sure you want to delete this specialist?")) return;
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this specialist?")) return;
 
-  try {
-    const deletePromise = dispatch(deleteSpecialist(id)).unwrap();
+    try {
+      const deletePromise = dispatch(deleteSpecialist(id)).unwrap();
 
-    await toast.promise(deletePromise, {
-      loading: "Deleting specialist...",
-      success: (res) =>
-        res?.message || "Specialist deleted successfully!",
-      error: (err) =>
-        err?.message ||
-        err?.error ||
-        "Failed to delete specialist",
-    });
+      await toast.promise(deletePromise, {
+        loading: "Deleting specialist...",
+        success: (res) =>
+          res?.message || "Specialist deleted successfully!",
+        error: (err) =>
+          err?.message ||
+          err?.error ||
+          "Failed to delete specialist",
+      });
 
-    dispatch(fetchAllSpecialists());
-  } catch (error) {
-    console.error("Delete specialist error:", error);
-  }
-};
+      dispatch(fetchAllSpecialists());
+    } catch (error) {
+      console.error("Delete specialist error:", error);
+    }
+  };
 
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="w-full mx-auto px-6 lg:px-12 space-y-8">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
           <div>
@@ -258,17 +258,17 @@ const handleDelete = async (id) => {
 
                   {s.availability?.length > 0 && (
                     <div className="mt-4 bg-indigo-50/50 rounded-xl p-3">
-                       <p className="text-[10px] font-bold text-indigo-400 uppercase mb-2 flex items-center gap-1">
-                        <Clock size={12}/> Weekly Schedule
-                       </p>
-                       <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                      <p className="text-[10px] font-bold text-indigo-400 uppercase mb-2 flex items-center gap-1">
+                        <Clock size={12} /> Weekly Schedule
+                      </p>
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                         {s.availability.slice(0, 4).map((a) => (
                           <div key={a._id} className="flex justify-between text-[11px]">
                             <span className="text-slate-500 font-medium">{a.day}</span>
                             <span className="text-slate-900">{a.start}-{a.end}</span>
                           </div>
                         ))}
-                       </div>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -297,7 +297,7 @@ const handleDelete = async (id) => {
         {open && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onClick={() => setOpen(false)}></div>
-            
+
             <div className="relative bg-white rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
               <div className="flex justify-between items-center p-6 border-b border-slate-100">
                 <div>
@@ -354,11 +354,10 @@ const handleDelete = async (id) => {
                           key={e}
                           type="button"
                           onClick={() => toggleExpertise(e)}
-                          className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all ${
-                            form.expertise.includes(e)
+                          className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all ${form.expertise.includes(e)
                               ? "bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-100"
                               : "bg-white border-slate-200 text-slate-600 hover:border-indigo-300"
-                          }`}
+                            }`}
                         >
                           {e}
                         </button>
@@ -412,8 +411,8 @@ const handleDelete = async (id) => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row justify-end gap-3 pt-8 mt-4 border-t border-slate-100">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={() => setOpen(false)}
                     className="px-6 py-3 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
                   >

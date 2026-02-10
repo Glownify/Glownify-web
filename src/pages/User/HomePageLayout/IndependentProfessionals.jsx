@@ -27,12 +27,12 @@ const IndependentProfessionals = () => {
   //   navigate( `/independentprofessionaldetailspage`)
   //   window.scrollTo(0, 0);
   //   loacalstorage.setItem("independentProfessionalIdForDetails", id);
-    
 
-   
+
+
   // }
-  const goToDetailPage=(salon)=>{
-     localStorage.setItem(
+  const goToDetailPage = (salon) => {
+    localStorage.setItem(
       "selectedSalon",
       JSON.stringify(salon)
     );
@@ -41,7 +41,7 @@ const IndependentProfessionals = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-20">
+      <div className="w-full mx-auto px-6 lg:px-12 py-20">
         <div className="h-8 w-64 bg-slate-200 animate-pulse rounded mb-8"></div>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -55,7 +55,7 @@ const IndependentProfessionals = () => {
   if (!independentProfessionals?.length) return null;
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
+    <div className="w-full mx-auto px-4 md:px-6 lg:px-12">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -63,7 +63,7 @@ const IndependentProfessionals = () => {
           </h2>
           <p className="text-slate-500 text-sm mt-1">Top-rated independent professionals near you</p>
         </div>
-        
+
         {/* Custom Navigation Controls */}
         <div className="flex gap-2">
           <button
@@ -101,7 +101,7 @@ const IndependentProfessionals = () => {
           {independentProfessionals.map((pro) => (
             <SwiperSlide key={pro._id}>
               <div className="flex flex-col h-80 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden group/card">
-                
+
                 {/* Image Section */}
                 <div className="relative h-52 overflow-hidden">
                   {pro.profilePhoto ? (
@@ -116,10 +116,10 @@ const IndependentProfessionals = () => {
                       <span className="text-[10px] mt-2 font-medium uppercase tracking-widest">Verified Pro</span>
                     </div>
                   )}
-                  
+
                   {/* Overlays */}
                   <div className="absolute inset-0 bg-linear-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
-                  
+
                   <div className="absolute top-3 left-3 bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg uppercase">
                     {pro.experienceYears}+ Yrs Exp
                   </div>
@@ -129,7 +129,7 @@ const IndependentProfessionals = () => {
                       {pro.user?.name}
                     </h3>
                     <div className="flex items-center gap-3 mt-1.5">
-                       <div className="flex items-center gap-1 text-[11px] text-white/90">
+                      <div className="flex items-center gap-1 text-[11px] text-white/90">
                         <MapPin size={12} className="text-indigo-400" />
                         <span>{pro.location?.radiusInKm || 5} km away</span>
                       </div>
@@ -141,17 +141,17 @@ const IndependentProfessionals = () => {
                 <div className="p-5 flex flex-col flex-1 bg-white">
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-3">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Specialties</span>
-                        <div className="flex items-center gap-0.5 text-amber-500">
-                            <Star size={10} fill="currentColor" />
-                            <span className="text-[10px] font-bold text-slate-700">4.9</span>
-                        </div>
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Specialties</span>
+                      <div className="flex items-center gap-0.5 text-amber-500">
+                        <Star size={10} fill="currentColor" />
+                        <span className="text-[10px] font-bold text-slate-700">4.9</span>
+                      </div>
                     </div>
-                    
+
                     <div className="flex flex-wrap gap-1.5">
                       {pro.specializations?.slice(0, 3).map((spec, idx) => (
-                        <span 
-                          key={idx} 
+                        <span
+                          key={idx}
                           className="px-2 py-1 bg-slate-50 border border-slate-100 text-slate-600 text-[10px] font-medium rounded-md italic"
                         >
                           {typeof spec === 'string' ? spec : spec.name}
@@ -166,7 +166,7 @@ const IndependentProfessionals = () => {
                       <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
                       <span className="text-[11px] text-emerald-600 font-bold uppercase tracking-tight">Available</span>
                     </div>
-                    <button   onClick={() =>goToDetailPage(pro)} className="text-indigo-600 text-xs font-bold hover:text-indigo-800 transition-colors flex items-center gap-1">
+                    <button onClick={() => goToDetailPage(pro)} className="text-indigo-600 text-xs font-bold hover:text-indigo-800 transition-colors flex items-center gap-1">
                       Book Now <ChevronRight size={14} />
                     </button>
                   </div>

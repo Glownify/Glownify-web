@@ -62,7 +62,7 @@ const SalesmanDashboard = () => {
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="w-full mx-auto px-6 lg:px-12 space-y-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -102,9 +102,8 @@ const SalesmanDashboard = () => {
                   {stat.value}
                 </h3>
                 <p
-                  className={`text-xs mt-2 font-medium ${
-                    index === 2 ? "text-emerald-600" : "text-slate-400"
-                  }`}
+                  className={`text-xs mt-2 font-medium ${index === 2 ? "text-emerald-600" : "text-slate-400"
+                    }`}
                 >
                   {stat.change}
                 </p>
@@ -152,13 +151,12 @@ const SalesmanDashboard = () => {
 
                         <td className="px-6 py-4">
                           <span
-                            className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${
-                              salon.status === "paid"
+                            className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${salon.status === "paid"
                                 ? "bg-emerald-100 text-emerald-700"
                                 : salon.status === "pending"
-                                ? "bg-amber-100 text-amber-700"
-                                : "bg-red-100 text-red-700"
-                            }`}
+                                  ? "bg-amber-100 text-amber-700"
+                                  : "bg-red-100 text-red-700"
+                              }`}
                           >
                             {salon.status}
                           </span>

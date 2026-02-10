@@ -15,7 +15,7 @@ const SalonHomeServices = ({ category, lat, lng }) => {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
   const dispatch = useDispatch();
-  const navigate=useNavigate()
+  const navigate = useNavigate()
 
   const { salonsforhomeServices, loading } = useSelector((state) => state.user);
 
@@ -39,7 +39,7 @@ const SalonHomeServices = ({ category, lat, lng }) => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="w-full mx-auto px-6 lg:px-12 py-12">
         <div className="h-8 w-48 bg-slate-200 animate-pulse rounded mb-6"></div>
         <div className="flex gap-6 overflow-hidden">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -53,7 +53,7 @@ const SalonHomeServices = ({ category, lat, lng }) => {
   if (!salonsforhomeServices?.length) return null;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6">
+    <div className="w-full mx-auto px-4 md:px-6 lg:px-12">
       <div className="flex items-end justify-between mb-8">
         <div>
           <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -101,7 +101,7 @@ const SalonHomeServices = ({ category, lat, lng }) => {
           {salonsforhomeServices.map((item) => (
             <SwiperSlide key={item._id}>
               <div className="group/card h-87.5 flex flex-col bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 overflow-hidden">
-                
+
                 {/* IMAGE HEADER */}
                 <div className="relative h-44 overflow-hidden">
                   {item.galleryImages?.length > 0 ? (
@@ -115,7 +115,7 @@ const SalonHomeServices = ({ category, lat, lng }) => {
                       No Image
                     </div>
                   )}
-                  
+
                   {/* Floating Badges */}
                   <div className="absolute top-3 right-3 bg-white/95 backdrop-blur px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
                     <Star size={12} className="text-amber-500 fill-amber-500" />
@@ -140,7 +140,7 @@ const SalonHomeServices = ({ category, lat, lng }) => {
 
                 {/* CONTENT SECTION */}
                 <div className="p-5 flex flex-col flex-1">
-                  
+
 
                   <div className="space-y-2.5 flex-1">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Popular Services</p>
@@ -158,7 +158,7 @@ const SalonHomeServices = ({ category, lat, lng }) => {
                       <Clock size={12} />
                       <span className="text-[10px] font-bold uppercase">Quick Visit</span>
                     </div>
-                    <button onClick={()=>gotoDetailsPage(item._id)} className="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-600 hover:text-white transition-colors">
+                    <button onClick={() => gotoDetailsPage(item._id)} className="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-600 hover:text-white transition-colors">
                       Book Now
                     </button>
                   </div>

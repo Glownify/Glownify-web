@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchAllSalesman, createSalesman } from "../../redux/slice/salesexecutiveSlice";
-import { 
+import {
   Users, Search, Mail, Calendar, MoreHorizontal, Award, Plus
 } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -28,7 +28,7 @@ const ManageSalesman = () => {
     dispatch(fetchAllSalesman());
   }, [dispatch]);
 
-  const filteredSalesman = salesman.filter(s => 
+  const filteredSalesman = salesman.filter(s =>
     s.user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     s.referralId?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -38,44 +38,44 @@ const ManageSalesman = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!user?.roleDetails?.city) {
-    toast.error("City not found for logged-in user");
-    return;
-  }
+    if (!user?.roleDetails?.city) {
+      toast.error("City not found for logged-in user");
+      return;
+    }
 
-  const payload = {
-    ...formData,
-    city: user.roleDetails.city,
-    commissionRate: Number(formData.commissionRate),
+    const payload = {
+      ...formData,
+      city: user.roleDetails.city,
+      commissionRate: Number(formData.commissionRate),
+    };
+
+    try {
+      const createPromise = dispatch(createSalesman(payload)).unwrap();
+
+      await toast.promise(createPromise, {
+        loading: "Creating salesman...",
+        success: (res) =>
+          res?.message || "Salesman created successfully!",
+        error: (err) =>
+          err?.message ||
+          err?.error ||
+          "Failed to create salesman",
+      });
+
+      setOpenCreate(false);
+      setFormData({
+        name: "",
+        email: "",
+        mobile: "",
+        commissionRate: "",
+      });
+    } catch (error) {
+      // Only non-API errors (edge cases)
+      console.error("Create Salesman Error:", error);
+    }
   };
-
-  try {
-    const createPromise = dispatch(createSalesman(payload)).unwrap();
-
-    await toast.promise(createPromise, {
-      loading: "Creating salesman...",
-      success: (res) =>
-        res?.message || "Salesman created successfully!",
-      error: (err) =>
-        err?.message ||
-        err?.error ||
-        "Failed to create salesman",
-    });
-
-    setOpenCreate(false);
-    setFormData({
-      name: "",
-      email: "",
-      mobile: "",
-      commissionRate: "",
-    });
-  } catch (error) {
-    // Only non-API errors (edge cases)
-    console.error("Create Salesman Error:", error);
-  }
-};
 
 
 
@@ -90,7 +90,7 @@ const ManageSalesman = () => {
 
   return (
     <div className="p-6 lg:p-10 bg-[#FBFBFE] min-h-screen">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full mx-auto px-6 lg:px-12">
         {/* --- HEADER --- */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
           <div>
@@ -102,7 +102,7 @@ const ManageSalesman = () => {
             {/* Search */}
             <div className="relative group w-full md:w-72">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
-              <input 
+              <input
                 type="text"
                 placeholder="Search by name or ID..."
                 className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all shadow-sm"
@@ -137,7 +137,7 @@ const ManageSalesman = () => {
                   <div>
                     <h3 className="font-bold text-slate-900 text-lg leading-tight">{item.user?.name}</h3>
                     <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium mt-1">
-                      <Mail size={12}/> {item.user?.email}
+                      <Mail size={12} /> {item.user?.email}
                     </div>
                   </div>
                 </div>
@@ -165,8 +165,8 @@ const ManageSalesman = () => {
                   <span>{(item.commissionRate)}%</span>
                 </div>
                 <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-indigo-500 rounded-full transition-all duration-500" 
+                  <div
+                    className="h-full bg-indigo-500 rounded-full transition-all duration-500"
                     style={{ width: `${(item.commissionRate)}%` }}
                   />
                 </div>

@@ -69,7 +69,7 @@ import SalonSpecialists from "../pages/User/HomePageLayout/HomeSaloonDetails/Sal
 import LoginPage from "./../pages/Common/LoginPage";
 import RegisterPage from "../pages/Common/RegisterPage";
 import SalonsPage from "../pages/User/SalonsPage";
-import PartnerWithUsPage from "../pages/Common/PartnerWithUsPage";
+import PartnerRegistrationPage from "../pages/Common/PartnerRegistrationPage";
 import SalonOwnerRegisterPage from "../pages/Common/SalonOwnerRegisterPage";
 import IndependentProfessionalRegistrarionPage from "../pages/Common/IndependentProfessionalRegistrarionPage";
 import IndependentProfessionalDetailPage from "../pages/User/HomePageLayout/IndependentProfessionalDetailPage";
@@ -94,13 +94,13 @@ const AllRoutes = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/salons" element={<SalonsPage />} />
-            <Route path="/partner-with-us" element={<PartnerWithUsPage />} />
+            <Route path="/partner-with-us" element={<PartnerRegistrationPage />} />
             <Route
               path="/partner-with-us/salon-owner-register"
               element={<SalonOwnerRegisterPage />}
             />
-            <Route path="/booksubscriptionpage"  element={<BookSubscriptionPage/>} />
-            <Route path="/paymentsubscriptionpage"  element={<PaymentSubscriptionPage/>} />
+            <Route path="/booksubscriptionpage" element={<BookSubscriptionPage />} />
+            <Route path="/paymentsubscriptionpage" element={<PaymentSubscriptionPage />} />
             <Route
               path="/partner-with-us/independent-professional-register"
               element={<IndependentProfessionalRegistrarionPage />}

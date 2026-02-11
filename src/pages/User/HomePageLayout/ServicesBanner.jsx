@@ -1,15 +1,15 @@
 import React from 'react';
-import { Store, Sparkles, ArrowRight, Smartphone} from 'lucide-react';
+import { Store, Sparkles, ArrowRight, Smartphone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const ServicesBanner = () => {
   return (
     <div className="w-full px-4 py-8 bg-white">
       {/* Container with forced equal height for children */}
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-6 items-stretch">
-        
+      <div className="w-full mx-auto px-6 lg:px-12 grid md:grid-cols-2 gap-6 items-stretch">
+
         {/* Left Section - Salon Owner */}
-        <div 
+        <div
           data-aos="fade-right"
           className="group relative flex flex-col justify-between bg-[#5A2C1E] rounded-3xl p-6 md:p-8 overflow-hidden transition-all duration-300 hover:shadow-xl shadow-md"
         >
@@ -32,25 +32,25 @@ const ServicesBanner = () => {
 
           <div className="relative z-10 mt-6">
             <Link
-  to="/partner-with-us"
-  className="group inline-flex items-center gap-2 
+              to="/partner-with-us"
+              className="group inline-flex items-center gap-2 
              bg-[#FFBC86] text-[#5A2C1E]
              font-bold py-2.5 px-6 rounded-xl
              text-sm transition-all duration-300
              hover:bg-white focus:outline-none
              focus:ring-2 focus:ring-[#FFBC86]"
->
-  Partner With Us
-  <ArrowRight
-    size={16}
-    className="transition-transform duration-300 group-hover:translate-x-1"
-  />
-</Link>
+            >
+              Partner With Us
+              <ArrowRight
+                size={16}
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              />
+            </Link>
           </div>
         </div>
 
         {/* Right Section - Customer */}
-        <div 
+        <div
           data-aos="fade-left"
           className="group relative flex flex-col justify-between bg-[#FFF7F1] border border-[#FFEDE2] rounded-3xl p-6 md:p-8 overflow-hidden transition-all duration-300 hover:shadow-xl shadow-sm"
         >

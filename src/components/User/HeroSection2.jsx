@@ -30,7 +30,7 @@ export const HeroSection2 = () => {
 
   return (
     <section className="relative bg-white pt-12 pb-32 lg:pt-5 lg:pb-40 font-[Poppins]">
-      <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
+      <div className="w-full mx-auto px-6 lg:px-12 grid lg:grid-cols-2 gap-16 items-center">
         <div>
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-50 text-rose-600 text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
             <Sparkles size={14} />

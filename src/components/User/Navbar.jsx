@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, LogOut, ShoppingCart, MapPin, User, ChevronRight ,Search} from "lucide-react";
+import { Menu, X, LogOut, ShoppingCart, MapPin, User, ChevronRight, Search } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../redux/slice/authSlice";
 
@@ -49,17 +49,16 @@ const Navbar = () => {
   }, [lat, lng]);
 
   const navLinkStyles = ({ isActive }) =>
-    `relative py-2 transition-all duration-300 hover:text-rose-500 font-medium ${
-      isActive ? "text-rose-600 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-rose-500 after:rounded-full" : "text-gray-600"
+    `relative py-2 transition-all duration-300 hover:text-rose-500 font-medium ${isActive ? "text-rose-600 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-rose-500 after:rounded-full" : "text-gray-600"
     }`;
 
   return (
     <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-lg border-b border-rose-100/50 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        
+      <div className="w-full mx-auto px-4 sm:px-6 lg:px-12 h-16 flex items-center justify-between">
+
         {/* Logo & Brand */}
-        <div 
-          className="flex items-center gap-2 cursor-pointer transition-transform active:scale-95" 
+        <div
+          className="flex items-center gap-2 cursor-pointer transition-transform active:scale-95"
           onClick={() => navigate("/")}
         >
           <img src="/GlownifyLogoPng.png" alt="Logo" className="h-10 md:h-12 w-auto object-contain" />
@@ -68,12 +67,11 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-10">
           <NavLink to="/" className={navLinkStyles}>Home</NavLink>
-          
+
           <button
             onClick={goToSalons}
-            className={`relative py-2 font-medium transition-colors hover:text-rose-500 ${
-              isSalonsActive ? "text-rose-600 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-rose-500" : "text-gray-600"
-            }`}
+            className={`relative py-2 font-medium transition-colors hover:text-rose-500 ${isSalonsActive ? "text-rose-600 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-rose-500" : "text-gray-600"
+              }`}
           >
             Salons
           </button>
@@ -86,10 +84,10 @@ const Navbar = () => {
             </NavLink>
           )}
           <div>
-            <Search className="w-5 h-5 text-gray-600 text-rose-600 hover:bg-rose-80 cursor-pointer"/>
+            <Search className="w-5 h-5 text-gray-600 text-rose-600 hover:bg-rose-80 cursor-pointer" />
             <span className="absolute top-1 right-1 w-2 h-2  hover:bg-rose-500 rounded-full border-2 border-white"></span>
           </div>
-          
+
         </nav>
 
         {/* Action Center */}
@@ -101,7 +99,7 @@ const Navbar = () => {
               <span className="text-xs text-rose-900 font-semibold">{cityName}</span>
             </div>
           )}
-      
+
 
           {user ? (
             <div className="flex items-center gap-4">
@@ -117,15 +115,15 @@ const Navbar = () => {
                   </div>
                   <span className="text-sm font-semibold text-gray-700">{user?.name}</span>
                 </NavLink>
-                
+
                 <button onClick={logout} className="p-2 text-gray-400 hover:text-rose-600 transition-colors" title="Logout">
                   <LogOut size={20} />
                 </button>
               </div>
             </div>
           ) : (
-            <NavLink 
-              to="/login" 
+            <NavLink
+              to="/login"
               className="px-6 py-2.5 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 text-white text-sm font-bold shadow-lg shadow-rose-200 hover:shadow-rose-300 hover:scale-105 transition-all active:scale-95"
             >
               Login
@@ -133,7 +131,7 @@ const Navbar = () => {
           )}
 
           {/* Mobile Toggle */}
-          <button 
+          <button
             className="md:hidden p-2 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors"
             onClick={() => setOpen(!open)}
           >
@@ -146,7 +144,7 @@ const Navbar = () => {
       {open && (
         <div className="md:hidden fixed inset-0 top-20 bg-white z-50 animate-in fade-in slide-in-from-right-10 duration-300">
           <div className="p-6 flex flex-col h-full">
-            
+
             {/* Mobile Location Badge */}
             {lat && lng && (
               <div className="flex items-center gap-4 p-4 bg-gradient-to-br from-rose-50 to-orange-50 rounded-2xl mb-8">
@@ -161,14 +159,14 @@ const Navbar = () => {
             )}
 
             <nav className="flex flex-col gap-2">
-              <MobileNavLink to="/" label="Home" icon={<ChevronRight size={18}/>} onClick={() => setOpen(false)} />
-              <button 
-                onClick={goToSalons} 
+              <MobileNavLink to="/" label="Home" icon={<ChevronRight size={18} />} onClick={() => setOpen(false)} />
+              <button
+                onClick={goToSalons}
                 className={`flex items-center justify-between p-4 rounded-xl text-lg font-semibold transition-colors ${isSalonsActive ? "bg-rose-50 text-rose-600" : "text-gray-700 hover:bg-gray-50"}`}
               >
-                Salons <ChevronRight size={18}/>
+                Salons <ChevronRight size={18} />
               </button>
-              <MobileNavLink to="/bookings" label="My Bookings" icon={<ChevronRight size={18}/>} onClick={() => setOpen(false)} />
+              <MobileNavLink to="/bookings" label="My Bookings" icon={<ChevronRight size={18} />} onClick={() => setOpen(false)} />
               {!user && <MobileNavLink to="/partner-with-us" label="Partner With Us" highlight onClick={() => setOpen(false)} />}
             </nav>
 
@@ -204,9 +202,9 @@ const Navbar = () => {
 
 // Helper component for Mobile Links
 const MobileNavLink = ({ to, label, onClick, highlight, icon }) => (
-  <NavLink 
-    to={to} 
-    onClick={onClick} 
+  <NavLink
+    to={to}
+    onClick={onClick}
     className={({ isActive }) => `
       flex items-center justify-between p-4 rounded-xl text-lg font-semibold transition-all
       ${isActive ? "bg-rose-50 text-rose-600" : highlight ? "text-rose-600" : "text-gray-700 hover:bg-gray-50"}

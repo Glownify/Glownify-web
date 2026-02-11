@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { 
-  Search, 
-  MapPin, 
-  User, 
-  ExternalLink, 
-  Filter, 
-  MoreVertical, 
+import {
+  Search,
+  MapPin,
+  User,
+  ExternalLink,
+  Filter,
+  MoreVertical,
   Phone,
   MessageSquare,
   Building2
@@ -50,8 +50,8 @@ const MySaloonsPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
+      <div className="w-full mx-auto px-6 lg:px-12 space-y-6">
+
         {/* Header Area */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -61,9 +61,9 @@ const MySaloonsPage = () => {
           <div className="flex items-center gap-3">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-              <input 
-                type="text" 
-                placeholder="Search salons..." 
+              <input
+                type="text"
+                placeholder="Search salons..."
                 className="pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none bg-white w-full md:w-64 transition-all"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -81,17 +81,16 @@ const MySaloonsPage = () => {
             <div key={salon.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg transition-all group">
               {/* Salon Header Image/Cover */}
               <div className="relative h-32 bg-slate-200">
-                <img 
-                  src={salon.image} 
-                  alt={salon.name} 
+                <img
+                  src={salon.image}
+                  alt={salon.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute top-3 right-3">
-                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${
-                    salon.status === 'Active' 
-                    ? 'bg-emerald-500 text-white border-emerald-400' 
-                    : 'bg-amber-400 text-white border-amber-300'
-                  }`}>
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${salon.status === 'Active'
+                      ? 'bg-emerald-500 text-white border-emerald-400'
+                      : 'bg-amber-400 text-white border-amber-300'
+                    }`}>
                     {salon.status}
                   </span>
                 </div>
@@ -123,8 +122,8 @@ const MySaloonsPage = () => {
 
                 {/* Performance Mini-Stat */}
                 <div className="bg-slate-50 rounded-xl p-3 flex justify-between items-center mb-5">
-                   <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Commission</span>
-                   <span className="text-indigo-600 font-bold">{salon.commission}</span>
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Commission</span>
+                  <span className="text-indigo-600 font-bold">{salon.commission}</span>
                 </div>
 
                 {/* Actions */}

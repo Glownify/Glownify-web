@@ -34,7 +34,7 @@ const HomeSaloons = ({ category, lat, lng }) => {
   console.log("HomeSaloons - Category:", category, "Data:", homeSaloonsByCategory, "Loading:", loading);
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="w-full mx-auto px-6 lg:px-12 py-12">
         <div className="h-8 w-64 bg-slate-100 animate-pulse rounded mb-8" />
         <div className="flex gap-4 overflow-hidden">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -49,7 +49,7 @@ const HomeSaloons = ({ category, lat, lng }) => {
   if (!homeSaloonsByCategory?.length) return null;
 
   return (
-    <div className="px-4 py-12 max-w-7xl mx-auto group">
+    <div className="px-4 lg:px-12 py-12 w-full mx-auto group">
       {/* Header Section */}
       <div className="flex items-end justify-between mb-8 px-2">
         <div>
@@ -58,8 +58,8 @@ const HomeSaloons = ({ category, lat, lng }) => {
           </h2>
           <p className="text-slate-500 text-sm mt-1">Premium grooming services in your area</p>
         </div>
-        <button 
-          onClick={() => navigate("/salons")} 
+        <button
+          onClick={() => navigate("/salons")}
           className="group/btn flex items-center gap-2 text-indigo-600 font-bold text-sm bg-indigo-50 px-4 py-2 rounded-full hover:bg-indigo-600 hover:text-white transition-all duration-300"
         >
           View All <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
@@ -115,10 +115,10 @@ const HomeSaloons = ({ category, lat, lng }) => {
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full bg-slate-50 text-slate-300">
-                       <Star size={32} strokeWidth={1} />
+                      <Star size={32} strokeWidth={1} />
                     </div>
                   )}
-                  
+
                   {/* Rating Badge */}
                   <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
                     <Star size={10} className="text-amber-500 fill-amber-500" />
@@ -126,13 +126,13 @@ const HomeSaloons = ({ category, lat, lng }) => {
                   </div>
 
                   <div className="absolute inset-0 bg-linear-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
-                  
+
                   <div className="absolute bottom-3 left-4 right-4">
                     <h3 className="font-bold text-white text-base leading-tight truncate">
                       {salon.shopName}
                     </h3>
                     <div className="flex items-center gap-1 text-[10px] text-white/80 mt-1 uppercase font-medium tracking-wide">
-                      <MapPin size={10} className="text-indigo-400" /> 
+                      <MapPin size={10} className="text-indigo-400" />
                       {salon.location?.city}
                     </div>
                   </div>

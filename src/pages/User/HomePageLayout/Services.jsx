@@ -26,7 +26,7 @@ const services = [
 export const Services = memo(() => {
   return (
     <section id="services" className="w-full bg-[#FCF9F7] py-16 px-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full mx-auto px-6 lg:px-12">
         {/* Header Section */}
         <div className="text-center mb-12">
           <span className="text-sm font-bold uppercase tracking-widest text-[#F7A97E] mb-3 block">
@@ -56,19 +56,19 @@ export const Services = memo(() => {
               disableOnInteraction: false,
               pauseOnMouseEnter: true,
             }}
-            // pagination={{ clickable: true, dynamicBullets: true }}
-            // className="pb-14"
+          // pagination={{ clickable: true, dynamicBullets: true }}
+          // className="pb-14"
           >
             {services.map((item, i) => (
               <SwiperSlide key={i} className="h-75">
                 <div className="group flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 mb-4 border border-gray-100 h-87.5">
-                  
+
                   {/* Top Half: Image (50% height) */}
                   <div className="h-1/2 overflow-hidden relative">
-                    <img 
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                      src={item.icon} 
-                      alt={item.title} 
+                    <img
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      src={item.icon}
+                      alt={item.title}
                     />
                     <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
                   </div>
@@ -83,9 +83,9 @@ export const Services = memo(() => {
                         {item.desc}
                       </p>
                     </div>
-                    
+
                     <button className="text-xs font-bold uppercase tracking-wider text-[#F7A97E] flex items-center gap-2 group/btn mt-4">
-                      Explore More 
+                      Explore More
                       <span className="transition-transform duration-300 group-hover/btn:translate-x-1">→</span>
                     </button>
                   </div>

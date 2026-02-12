@@ -90,7 +90,7 @@ const ManageSalesman = () => {
 
   return (
     <div className="p-6 lg:p-10 bg-[#FBFBFE] min-h-screen">
-      <div className="w-full mx-auto px-6 lg:px-12">
+      <div className="w-full mx-auto px-4 md:px-8 lg:px-12">
         {/* --- HEADER --- */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
           <div>

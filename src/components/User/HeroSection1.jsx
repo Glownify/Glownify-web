@@ -26,8 +26,8 @@ export const HeroSection1 = () => {
     },
   ];
   return (
-    <section className="relative pt-20 pb-32 lg:pt-5 lg:pb-40 font-[Poppins]">
-      <div className="w-full mx-auto px-6 lg:px-12 grid lg:grid-cols-2 gap-16 items-center">
+    <section className="relative pt-10 md:pt-20 pb-20 md:pb-32 lg:pt-5 lg:pb-40 font-[Poppins] overflow-hidden">
+      <div className="w-full mx-auto px-4 md:px-8 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         {/* Left Side */}
         <div>
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-50 text-rose-600 text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
@@ -73,8 +73,8 @@ export const HeroSection1 = () => {
         </div>
 
         {/* Right Side (Phone) */}
-        <div className="relative flex justify-center lg:mt-0 mt-10">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-rose-50 rounded-full blur-3xl opacity-50 -z-10"></div>
+        <div className="relative flex justify-center lg:mt-0 mt-4">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-rose-50 rounded-full blur-3xl opacity-50 -z-10 hidden md:block"></div>
           <PhoneMockup />
 
           {/* Floating Badge */}

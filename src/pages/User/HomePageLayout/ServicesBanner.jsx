@@ -6,7 +6,7 @@ const ServicesBanner = () => {
   return (
     <div className="w-full px-4 py-8 bg-white">
       {/* Container with forced equal height for children */}
-      <div className="w-full mx-auto px-6 lg:px-12 grid md:grid-cols-2 gap-6 items-stretch">
+      <div className="w-full mx-auto px-4 md:px-8 lg:px-12 grid md:grid-cols-2 gap-6 items-stretch">
 
         {/* Left Section - Salon Owner */}
         <div

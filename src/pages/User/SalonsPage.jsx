@@ -64,7 +64,7 @@ const SalonsPage = () => {
 
   return (
     <div className="min-h-screen bg-[#FFF8F1] py-12 px-4">
-      <div className="w-full mx-auto px-6 lg:px-12">
+      <div className="w-full mx-auto px-4 md:px-8 lg:px-12">
         {/* Header Section */}
 
         <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">

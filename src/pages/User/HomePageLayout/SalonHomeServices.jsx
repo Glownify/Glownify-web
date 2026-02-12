@@ -39,7 +39,7 @@ const SalonHomeServices = ({ category, lat, lng }) => {
 
   if (loading) {
     return (
-      <div className="w-full mx-auto px-6 lg:px-12 py-12">
+      <div className="w-full mx-auto px-4 md:px-8 lg:px-12 py-12">
         <div className="h-8 w-48 bg-slate-200 animate-pulse rounded mb-6"></div>
         <div className="flex gap-6 overflow-hidden">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -53,7 +53,7 @@ const SalonHomeServices = ({ category, lat, lng }) => {
   if (!salonsforhomeServices?.length) return null;
 
   return (
-    <div className="w-full mx-auto px-4 md:px-6 lg:px-12">
+    <div className="px-4 md:px-8 lg:px-12 w-full mx-auto">
       <div className="flex items-end justify-between mb-8">
         <div>
           <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">

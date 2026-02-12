@@ -79,7 +79,7 @@ const ManageSalesExecutivePage = () => {
     <div className="min-h-screen bg-[#FBFBFE] p-4 lg:p-10 font-sans text-slate-900">
 
       {/* --- PAGE HEADER --- */}
-      <div className="w-full mx-auto px-6 lg:px-12 mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="w-full mx-auto px-4 md:px-8 lg:px-12 mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
 
           <h1 className="text-4xl font-black tracking-tight text-slate-900">Sales Executives</h1>
@@ -96,7 +96,7 @@ const ManageSalesExecutivePage = () => {
 
 
       {/* --- GRID OF CARDS --- */}
-      <div className="w-full mx-auto px-6 lg:px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="w-full mx-auto px-4 md:px-8 lg:px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading && salesExecutives.length === 0 ? (
           [...Array(6)].map((_, i) => (
             <div key={i} className="h-64 bg-slate-100 animate-pulse rounded-[32px]" />

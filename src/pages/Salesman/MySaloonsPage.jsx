@@ -50,7 +50,7 @@ const MySaloonsPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-4 md:p-8">
-      <div className="w-full mx-auto px-6 lg:px-12 space-y-6">
+      <div className="w-full mx-auto px-4 md:px-8 lg:px-12 space-y-6">
 
         {/* Header Area */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -88,8 +88,8 @@ const MySaloonsPage = () => {
                 />
                 <div className="absolute top-3 right-3">
                   <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${salon.status === 'Active'
-                      ? 'bg-emerald-500 text-white border-emerald-400'
-                      : 'bg-amber-400 text-white border-amber-300'
+                    ? 'bg-emerald-500 text-white border-emerald-400'
+                    : 'bg-amber-400 text-white border-amber-300'
                     }`}>
                     {salon.status}
                   </span>

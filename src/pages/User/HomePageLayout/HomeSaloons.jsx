@@ -34,7 +34,7 @@ const HomeSaloons = ({ category, lat, lng }) => {
   console.log("HomeSaloons - Category:", category, "Data:", homeSaloonsByCategory, "Loading:", loading);
   if (loading) {
     return (
-      <div className="w-full mx-auto px-6 lg:px-12 py-12">
+      <div className="w-full mx-auto px-4 md:px-8 lg:px-12 py-12">
         <div className="h-8 w-64 bg-slate-100 animate-pulse rounded mb-8" />
         <div className="flex gap-4 overflow-hidden">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -49,7 +49,7 @@ const HomeSaloons = ({ category, lat, lng }) => {
   if (!homeSaloonsByCategory?.length) return null;
 
   return (
-    <div className="px-4 lg:px-12 py-12 w-full mx-auto group">
+    <div className="px-4 md:px-8 lg:px-12 py-12 w-full mx-auto group">
       {/* Header Section */}
       <div className="flex items-end justify-between mb-8 px-2">
         <div>
@@ -92,10 +92,11 @@ const HomeSaloons = ({ category, lat, lng }) => {
           }}
           autoplay={{ delay: 3500, disableOnInteraction: false }}
           breakpoints={{
-            0: { slidesPerView: 1.3, spaceBetween: 15 },
-            640: { slidesPerView: 2.3 },
-            1024: { slidesPerView: 4 },
-            1280: { slidesPerView: 5 },
+            0: { slidesPerView: 1.2, spaceBetween: 12 },
+            480: { slidesPerView: 1.5, spaceBetween: 15 },
+            768: { slidesPerView: 2.3, spaceBetween: 20 },
+            1024: { slidesPerView: 4, spaceBetween: 20 },
+            1280: { slidesPerView: 5, spaceBetween: 20 },
           }}
           className="pb-10! pt-2!"
         >

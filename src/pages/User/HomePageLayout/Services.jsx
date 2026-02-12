@@ -25,8 +25,8 @@ const services = [
 
 export const Services = memo(() => {
   return (
-    <section id="services" className="w-full bg-[#FCF9F7] py-16 px-6">
-      <div className="w-full mx-auto px-6 lg:px-12">
+    <section id="services" className="w-full bg-[#FCF9F7] py-16 px-4 md:px-8 lg:px-12">
+      <div className="w-full mx-auto">
         {/* Header Section */}
         <div className="text-center mb-12">
           <span className="text-sm font-bold uppercase tracking-widest text-[#F7A97E] mb-3 block">
@@ -47,8 +47,10 @@ export const Services = memo(() => {
             slidesPerView={1}
             slidesPerGroup={1}
             breakpoints={{
-              640: { slidesPerView: 2 },
-              1024: { slidesPerView: 3 },
+              0: { slidesPerView: 1.1, spaceBetween: 16 },
+              480: { slidesPerView: 1.3, spaceBetween: 20 },
+              768: { slidesPerView: 2.3, spaceBetween: 24 },
+              1024: { slidesPerView: 3, spaceBetween: 24 },
             }}
             loop={true}
             autoplay={{

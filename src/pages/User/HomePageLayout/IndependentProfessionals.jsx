@@ -41,7 +41,7 @@ const IndependentProfessionals = () => {
 
   if (loading) {
     return (
-      <div className="w-full mx-auto px-6 lg:px-12 py-20">
+      <div className="w-full mx-auto px-4 md:px-8 lg:px-12 py-20">
         <div className="h-8 w-64 bg-slate-200 animate-pulse rounded mb-8"></div>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -55,7 +55,7 @@ const IndependentProfessionals = () => {
   if (!independentProfessionals?.length) return null;
 
   return (
-    <div className="w-full mx-auto px-4 md:px-6 lg:px-12">
+    <div className="w-full mx-auto px-4 md:px-8 lg:px-12">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -91,10 +91,11 @@ const IndependentProfessionals = () => {
           }}
           autoplay={{ delay: 4000, disableOnInteraction: false }}
           breakpoints={{
-            0: { slidesPerView: 1.2, spaceBetween: 16 },
-            640: { slidesPerView: 2.3 },
-            1024: { slidesPerView: 4 },
-            1280: { slidesPerView: 5 },
+            0: { slidesPerView: 1.1, spaceBetween: 12 },
+            480: { slidesPerView: 1.3, spaceBetween: 14 },
+            640: { slidesPerView: 2.3, spaceBetween: 16 },
+            1024: { slidesPerView: 4, spaceBetween: 16 },
+            1280: { slidesPerView: 5, spaceBetween: 20 },
           }}
           className="pb-10! pt-2!"
         >

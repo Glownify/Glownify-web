@@ -29,7 +29,7 @@ const Categories = ({ categories, gender }) => {
   };
 
   return (
-    <section className="py-12 px-6 lg:px-12 w-full mx-auto group/cat-section">
+    <section className="py-12 px-4 md:px-8 lg:px-12 w-full mx-auto group/cat-section">
       <div className="mb-8 flex justify-between items-center px-2">
         <div className="relative">
           <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight leading-none">
@@ -75,10 +75,11 @@ const Categories = ({ categories, gender }) => {
           spaceBetween={16}
           autoplay={{ delay: 1000, disableOnInteraction: false }}
           breakpoints={{
-            0: { slidesPerView: 4, },
-            640: { slidesPerView: 6 },
-            1024: { slidesPerView: 8 },
-            1280: { slidesPerView: 10 },
+            0: { slidesPerView: 3.5, spaceBetween: 12 },
+            480: { slidesPerView: 4.5, spaceBetween: 14 },
+            640: { slidesPerView: 6, spaceBetween: 16 },
+            1024: { slidesPerView: 8, spaceBetween: 16 },
+            1280: { slidesPerView: 10, spaceBetween: 16 },
           }}
           slidesPerView="auto"
           className="categories-swiper pb-4!"

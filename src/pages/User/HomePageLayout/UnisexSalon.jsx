@@ -31,7 +31,7 @@ const UnisexSalon = ({ lat, lng }) => {
 
   if (loading) {
     return (
-      <div className="w-full mx-auto px-6 lg:px-12 py-12">
+      <div className="px-4 md:px-8 lg:px-12 py-12 w-full mx-auto group">
         <div className="h-8 w-56 bg-slate-100 animate-pulse rounded mb-8" />
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -45,7 +45,7 @@ const UnisexSalon = ({ lat, lng }) => {
   if (!unisexSalonServices?.length) return null;
 
   return (
-    <div className="w-full mx-auto px-4 md:px-6 lg:px-12">
+    <div className="px-4 md:px-8 lg:px-12 w-full mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
 

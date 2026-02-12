@@ -78,7 +78,7 @@ const ManageSubscriptionPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-6 md:p-10">
-      <div className="w-full mx-auto px-6 lg:px-12">
+      <div className="w-full mx-auto px-4 md:px-8 lg:px-12">
         {/* HEADER */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
           <div>
@@ -126,8 +126,8 @@ const ManageSubscriptionPage = () => {
                   <h2 className="text-2xl font-bold">{plan.name}</h2>
                   <span
                     className={`px-3 py-1 text-xs rounded-full font-semibold ${plan.isActive
-                        ? "bg-emerald-100 text-emerald-600"
-                        : "bg-slate-200 text-slate-500"
+                      ? "bg-emerald-100 text-emerald-600"
+                      : "bg-slate-200 text-slate-500"
                       }`}
                   >
                     {plan.isActive ? "Active" : "Inactive"}

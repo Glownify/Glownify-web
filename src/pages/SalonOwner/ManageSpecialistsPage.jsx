@@ -180,7 +180,7 @@ const ManageSpecialistsPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-4 md:p-8">
-      <div className="w-full mx-auto px-6 lg:px-12 space-y-8">
+      <div className="w-full mx-auto px-4 md:px-8 lg:px-12 space-y-8">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
           <div>
@@ -355,8 +355,8 @@ const ManageSpecialistsPage = () => {
                           type="button"
                           onClick={() => toggleExpertise(e)}
                           className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all ${form.expertise.includes(e)
-                              ? "bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-100"
-                              : "bg-white border-slate-200 text-slate-600 hover:border-indigo-300"
+                            ? "bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-100"
+                            : "bg-white border-slate-200 text-slate-600 hover:border-indigo-300"
                             }`}
                         >
                           {e}

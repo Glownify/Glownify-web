@@ -70,7 +70,7 @@ const BookSubscriptionPage = () => {
   return (
     <div>
       <div className="bg-[#f4f6ff] min-h-screen px-4 py-10">
-        <div className="w-full mx-auto px-6 lg:px-12">
+        <div className="w-full mx-auto px-4 md:px-8 lg:px-12">
           {/* HEADER */}
           <div className="text-center">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
@@ -122,8 +122,8 @@ const BookSubscriptionPage = () => {
                 {/* HEADER */}
                 <div
                   className={`-mx-6 -mt-6 mb-5 py-4 text-center font-semibold text-white rounded-t-xl ${plan.highlight
-                      ? "bg-gradient-to-b from-[#0a4ab3] to-[#052861]"
-                      : "bg-gradient-to-b from-[#2f4574] to-[#1f2f52]"
+                    ? "bg-gradient-to-b from-[#0a4ab3] to-[#052861]"
+                    : "bg-gradient-to-b from-[#2f4574] to-[#1f2f52]"
                     }`}
                 >
                   {plan.name}
@@ -151,8 +151,8 @@ const BookSubscriptionPage = () => {
                 <button
                   onClick={(e) => navigate("/paymentsubscriptionpage")}
                   className={`mt-6 py-2 rounded-md text-sm font-medium text-white cursor-pointer ${plan.highlight
-                      ? "bg-gradient-to-r from-green-900 to-green-700"
-                      : "bg-gradient-to-b from-[#2f4574] to-[#1f2f52] text-white"
+                    ? "bg-gradient-to-r from-green-900 to-green-700"
+                    : "bg-gradient-to-b from-[#2f4574] to-[#1f2f52] text-white"
                     }`}
                 >
                   {plan.button}

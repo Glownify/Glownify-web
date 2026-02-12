@@ -144,7 +144,7 @@ const ManageServicesPage = () => {
   return (
     <div className="p-4 md:p-10 bg-[#F8FAFC] min-h-screen font-sans">
       {/* Header Section */}
-      <div className="w-full mx-auto px-6 lg:px-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
+      <div className="w-full mx-auto px-4 md:px-8 lg:px-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
         <div>
           <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">Services</h1>
           <p className="text-slate-500 mt-1 text-lg">Manage your salon menu</p>

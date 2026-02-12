@@ -81,7 +81,7 @@ const ManageAddOnPage = () => {
   };
 
   return (
-    <div className="w-full mx-auto p-4 sm:p-6 lg:p-8 lg:px-12 bg-gray-50 min-h-screen">
+    <div className="w-full mx-auto px-4 md:px-8 lg:px-12 bg-gray-50 min-h-screen">
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>

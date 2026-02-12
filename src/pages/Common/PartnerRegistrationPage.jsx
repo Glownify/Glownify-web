@@ -147,8 +147,8 @@ const PartnerRegistrationPage = () => {
               type="button"
               onClick={() => handleRoleChange("salon_owner")}
               className={`flex-1 py-2.5 text-sm font-semibold rounded-md transition-all duration-200 ${selectedRole === "salon_owner"
-                  ? "bg-white text-gray-800 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
+                ? "bg-white text-gray-800 shadow-sm"
+                : "text-gray-500 hover:text-gray-700"
                 }`}
             >
               Salon Owner
@@ -157,11 +157,11 @@ const PartnerRegistrationPage = () => {
               type="button"
               onClick={() => handleRoleChange("independent_pro")}
               className={`flex-1 py-2.5 text-sm font-semibold rounded-md transition-all duration-200 ${selectedRole === "independent_pro"
-                  ? "bg-white text-gray-800 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
+                ? "bg-white text-gray-800 shadow-sm"
+                : "text-gray-500 hover:text-gray-700"
                 }`}
             >
-              Independent Pro
+              Independent Professional
             </button>
           </div>
 
@@ -398,8 +398,8 @@ const PartnerRegistrationPage = () => {
                                 toggleSelection(day, selectedDays, setSelectedDays)
                               }
                               className={`h-12 w-16 flex items-center justify-center font-bold rounded-2xl border-2 transition-all ${selectedDays.includes(day)
-                                  ? "bg-pink-600 border-pink-600 text-white shadow-md shadow-pink-200"
-                                  : "border-gray-100 text-gray-400 hover:border-pink-200"
+                                ? "bg-pink-600 border-pink-600 text-white shadow-md shadow-pink-200"
+                                : "border-gray-100 text-gray-400 hover:border-pink-200"
                                 }`}
                             >
                               {day}
@@ -421,8 +421,8 @@ const PartnerRegistrationPage = () => {
                                 toggleSelection(slot, selectedSlots, setSelectedSlots)
                               }
                               className={`py-4 px-2 border-2 rounded-2xl font-bold transition-all ${selectedSlots.includes(slot)
-                                  ? "bg-pink-50 border-pink-500 text-pink-600"
-                                  : "border-gray-100 text-gray-400 hover:bg-gray-50"
+                                ? "bg-pink-50 border-pink-500 text-pink-600"
+                                : "border-gray-100 text-gray-400 hover:bg-gray-50"
                                 }`}
                             >
                               {slot}

@@ -5,6 +5,7 @@ import BasicInfoRegistrationForm from "../../components/SalonRegistrationForms/B
 import SalonAddressRegistrationForm from "../../components/SalonRegistrationForms/SalonAddressRegistrationForm.jsx";
 import SalonDocumentUploadForm from "../../components/SalonRegistrationForms/SalonDocumentUploadForm.jsx";
 import IndependentHeader from "./IndependentHeader";
+import SalonOwnerHeader from "./SalonOwnerHeader";
 
 const PartnerRegistrationPage = () => {
   // ── Role state ──
@@ -133,12 +134,12 @@ const PartnerRegistrationPage = () => {
     <div className="min-h-screen flex">
       {/* Left side — background image */}
       <div
-        className="hidden md:block md:w-[75%] bg-cover bg-center transition-all duration-500"
+        className="hidden md:block md:w-[70%] bg-cover bg-left sticky top-0 h-screen transition-all duration-500"
         style={{ backgroundImage: `url(${bgImage})` }}
       />
 
       {/* Right side — form panel */}
-      <div className="w-full md:w-[25%] flex flex-col bg-white border-l border-gray-100 overflow-y-auto">
+      <div className="w-full md:w-[30%] flex flex-col bg-white border-l border-gray-100 overflow-y-auto">
         <div className="w-full max-w-md px-6 py-8 mx-auto">
 
           {/* ── Role Selector ── */}
@@ -169,55 +170,58 @@ const PartnerRegistrationPage = () => {
           {/* SALON OWNER FLOW                       */}
           {/* ══════════════════════════════════════ */}
           {selectedRole === "salon_owner" && (
-            <>
-              {/* Step indicator */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-                  Step {salonStep} of {salonTotalSteps}
-                </div>
-                <div className="flex space-x-1">
-                  {[1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      className={`h-1 w-4 rounded-full ${salonStep >= i ? "bg-black" : "bg-gray-200"
-                        }`}
-                    />
-                  ))}
-                </div>
+            <div>
+              {/* Salon Owner Header with purple stepper */}
+              <div className="mb-6">
+                <SalonOwnerHeader
+                  green={salonStep > 1}
+                  icon1={salonStep > 1}
+                  green2={salonStep > 2}
+                  icon2={salonStep > 2}
+                />
               </div>
 
               {salonStep === 1 && (
-                <BasicInfoRegistrationForm
-                  onNext={() => setSalonStep(2)}
-                  data={salonFormData.basicInfo}
-                  onChange={(field, value) =>
-                    updateSalonData("basicInfo", field, value)
-                  }
-                />
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <BasicInfoRegistrationForm
+                    onNext={() => setSalonStep(2)}
+                    data={salonFormData.basicInfo}
+                    onChange={(field, value) =>
+                      updateSalonData("basicInfo", field, value)
+                    }
+                    theme="purple"
+                  />
+                </div>
               )}
 
               {salonStep === 2 && (
-                <SalonAddressRegistrationForm
-                  onNext={() => setSalonStep(3)}
-                  onBack={() => setSalonStep(1)}
-                  data={salonFormData.addressInfo}
-                  onChange={(field, value) =>
-                    updateSalonData("addressInfo", field, value)
-                  }
-                />
+                <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+                  <SalonAddressRegistrationForm
+                    onNext={() => setSalonStep(3)}
+                    onBack={() => setSalonStep(1)}
+                    data={salonFormData.addressInfo}
+                    onChange={(field, value) =>
+                      updateSalonData("addressInfo", field, value)
+                    }
+                    theme="purple"
+                  />
+                </div>
               )}
 
               {salonStep === 3 && (
-                <SalonDocumentUploadForm
-                  onBack={() => setSalonStep(2)}
-                  data={salonFormData.documents}
-                  onChange={(field, value) =>
-                    updateSalonData("documents", field, value)
-                  }
-                  onSubmit={handleSalonFinalSubmit}
-                />
+                <div className="animate-in fade-in zoom-in-95 duration-500">
+                  <SalonDocumentUploadForm
+                    onBack={() => setSalonStep(2)}
+                    data={salonFormData.documents}
+                    onChange={(field, value) =>
+                      updateSalonData("documents", field, value)
+                    }
+                    onSubmit={handleSalonFinalSubmit}
+                    theme="purple"
+                  />
+                </div>
               )}
-            </>
+            </div>
           )}
 
           {/* ══════════════════════════════════════ */}

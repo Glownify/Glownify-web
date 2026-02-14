@@ -1,29 +1,117 @@
 import React, { useState } from "react";
+import { ArrowRight } from 'lucide-react';
 
-const BasicInfoRegistrationForm = ({ onNext,data,onChange }) => {
-  // const [form, setForm] = useState({
-  //   salonname: "",
-  //   salonType: "Unisex",
-  //   mobileno: "",
-  //   watsupno: "",
-  //   email: "",
-  // });
+const BasicInfoRegistrationForm = ({ onNext, data, onChange, theme }) => {
+  const isPurple = theme === "purple";
 
+  // Themed styles
+  const inputStyle = isPurple
+    ? "w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all bg-gray-50/50 hover:bg-white"
+    : "mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500";
 
-  return (
-    <div className="w-full max-w-md sm:max-w-lg bg-white rounded-lg shadow-md px-4 sm:px-6 py-6">
-      
-      {/* Form Header */}
-      <div className="mt-6 sm:mt-8 mb-4">
-        {/* Progress bar */}
-        {/* <div className="w-full h-[3px] bg-gray-200 rounded-full mb-6">
-          <div className="h-[3px] w-1/3 bg-purple-600 rounded-full"></div>
+  const btnPrimary = isPurple
+    ? "flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-purple-200 active:scale-95"
+    : "w-full sm:w-40 py-2 rounded-md text-white font-medium text-sm bg-linear-to-r from-[#5F3DC4] via-[#6D4BCF] to-[#7B5DE8] shadow-lg hover:opacity-90 transition active:scale-95 tracking-wide";
+
+  if (isPurple) {
+    return (
+      <div className="w-full">
+        {/* Section header */}
+        <div className="flex flex-col items-center mb-10">
+          <h2 className="text-xl font-bold text-gray-800">Basic Salon Information</h2>
+          <p className="text-gray-400 text-sm">Enter your salon details to get started</p>
         </div>
 
-        <h2 className="text-center font-semibold text-gray-800 text-sm sm:text-base">
-          Step 1 of 3: Basic Salon Information
-        </h2> */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Salon Name */}
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-gray-500 ml-1 uppercase">Salon Name</label>
+            <input
+              name="salonname"
+              value={data.salonname}
+              onChange={(e) => onChange(e.target.name, e.target.value)}
+              type="text"
+              placeholder="Enter Salon Name"
+              className={inputStyle}
+            />
+          </div>
 
+          {/* Salon Type */}
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-gray-500 ml-1 uppercase">Salon Type</label>
+            <select
+              name="salonType"
+              value={data.salonType}
+              onChange={(e) => onChange(e.target.name, e.target.value)}
+              className={inputStyle}
+            >
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Unisex">Unisex</option>
+            </select>
+          </div>
+
+          {/* Mobile Number */}
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-gray-500 ml-1 uppercase">Mobile Number</label>
+            <input
+              name="mobileno"
+              value={data.mobileno}
+              onChange={(e) => onChange(e.target.name, e.target.value)}
+              type="text"
+              placeholder="Enter Mobile Number"
+              className={inputStyle}
+            />
+          </div>
+
+          {/* WhatsApp Number */}
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-gray-500 ml-1 uppercase">WhatsApp Number</label>
+            <input
+              name="watsupno"
+              value={data.watsupno}
+              onChange={(e) => onChange(e.target.name, e.target.value)}
+              type="text"
+              placeholder="Enter WhatsApp Number"
+              className={inputStyle}
+            />
+          </div>
+
+          {/* Email */}
+          <div className="space-y-1 md:col-span-2">
+            <label className="text-xs font-bold text-gray-500 ml-1 uppercase">
+              Email <span className="text-gray-400 normal-case">(Optional)</span>
+            </label>
+            <input
+              name="email"
+              value={data.email}
+              onChange={(e) => onChange(e.target.name, e.target.value)}
+              type="email"
+              placeholder="Enter Email Address"
+              className={inputStyle}
+            />
+          </div>
+        </div>
+
+        <div className="mt-12 flex justify-end">
+          <button
+            type="button"
+            onClick={() => onNext(data)}
+            className={btnPrimary}
+          >
+            Continue <ArrowRight size={18} />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Original (non-themed) layout ──
+  return (
+    <div className="w-full max-w-md sm:max-w-lg bg-white rounded-lg shadow-md px-4 sm:px-6 py-6">
+
+      {/* Form Header */}
+      <div className="mt-6 sm:mt-8 mb-4">
         <p className="text-center text-xs sm:text-sm text-gray-500 mt-2 mb-6">
           Enter your salon details to get started.
         </p>
@@ -37,7 +125,7 @@ const BasicInfoRegistrationForm = ({ onNext,data,onChange }) => {
           <input
             name="salonname"
             value={data.salonname}
-            onChange={(e)=>onChange(e.target.name, e.target.value)}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
             type="text"
             placeholder="Enter Salon Name"
             className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -57,7 +145,7 @@ const BasicInfoRegistrationForm = ({ onNext,data,onChange }) => {
                   name="salonType"
                   value={type}
                   checked={data.salonType === type}
-                  onChange={(e)=>onChange(e.target.name, e.target.value)}
+                  onChange={(e) => onChange(e.target.name, e.target.value)}
                   className="accent-purple-600"
                 />
                 {type}
@@ -76,7 +164,7 @@ const BasicInfoRegistrationForm = ({ onNext,data,onChange }) => {
             <input
               name="mobileno"
               value={data.mobileno}
-              onChange={(e)=>onChange(e.target.name, e.target.value)}
+              onChange={(e) => onChange(e.target.name, e.target.value)}
               type="text"
               placeholder="Enter Mobile Number"
               className="w-full border border-gray-300 rounded-r-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -95,7 +183,7 @@ const BasicInfoRegistrationForm = ({ onNext,data,onChange }) => {
             <input
               name="watsupno"
               value={data.watsupno}
-              onChange={(e)=>onChange(e.target.name, e.target.value)}
+              onChange={(e) => onChange(e.target.name, e.target.value)}
               type="text"
               placeholder="Enter Whatsapp Number"
               className="w-full border border-gray-300 rounded-r-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -112,7 +200,7 @@ const BasicInfoRegistrationForm = ({ onNext,data,onChange }) => {
           <input
             name="email"
             value={data.email}
-            onChange={(e)=>onChange(e.target.name, e.target.value)}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
             type="email"
             placeholder="Enter Email Address"
             className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -122,8 +210,8 @@ const BasicInfoRegistrationForm = ({ onNext,data,onChange }) => {
         {/* Submit Button */}
         <div className="flex justify-center">
           <button
-            onClick={() => onNext(data)} // Passing the form data back to parent
-            className="w-full sm:w-40 py-2 rounded-md text-white font-medium text-sm bg-linear-to-r from-[#5F3DC4] via-[#6D4BCF] to-[#7B5DE8] shadow-lg hover:opacity-90 transition active:scale-95 tracking-wide"
+            onClick={() => onNext(data)}
+            className={btnPrimary}
           >
             Next
           </button>

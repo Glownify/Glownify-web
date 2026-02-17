@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 const HomePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { salons, categories, loading } = useSelector((state) => state.user);
+  const { salons, featuredSalons, categories, loading } = useSelector((state) => state.user);
   const [gender, setGender] = useState('women');
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
@@ -34,69 +34,76 @@ const HomePage = () => {
     (salon) => salon.gender === gender || salon.gender === 'unisex'
   );
 
-  useEffect(() => {
-  const loadHomeData = async () => {
-    try {
-      const salonsPromise = dispatch(fetchAllFeaturedSaloons()).unwrap();
-      const categoriesPromise = dispatch(fetchAllCategories()).unwrap();
-
-      await toast.promise(
-        Promise.all([salonsPromise, categoriesPromise]),
-        {
-          loading: "Loading salons & categories...",
-          success: "Welcome 👋",
-          error: (err) =>
-            err?.message || "Failed to load homepage data",
-        }
-      );
-    } catch (error) {
-      console.error("Homepage data load failed:", error);
-    }
-  };
-
-  loadHomeData();
-}, [dispatch]);
-
-
-
- useEffect(() => {
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-
-      setLat(latitude);
-      setLng(longitude);
-
-      localStorage.setItem("lat", latitude);
-      localStorage.setItem("lng", longitude);
-
-      toast.success("Location detected 📍");
-    },
-    (error) => {
-      console.error("Geolocation error:", error);
-
-      if (error.code === error.PERMISSION_DENIED) {
-        toast.error("Location permission denied");
-      } else {
-        toast.error("Unable to detect location");
-      }
-    },
-    { enableHighAccuracy: true, timeout: 15000 }
+  const filteredFeaturedSalons = featuredSalons?.filter(
+    (salon) => salon.gender === gender || salon.gender === 'unisex'
   );
-}, []);
+
+  // Use gender-filtered featured salons, or all featured salons if filter returns empty
+  const fallbackSalons = filteredFeaturedSalons?.length > 0 ? filteredFeaturedSalons : (featuredSalons || []);
+
+  useEffect(() => {
+    const loadHomeData = async () => {
+      try {
+        const salonsPromise = dispatch(fetchAllFeaturedSaloons()).unwrap();
+        const categoriesPromise = dispatch(fetchAllCategories()).unwrap();
+
+        await toast.promise(
+          Promise.all([salonsPromise, categoriesPromise]),
+          {
+            loading: "Loading salons & categories...",
+            success: "Welcome 👋",
+            error: (err) =>
+              err?.message || "Failed to load homepage data",
+          }
+        );
+      } catch (error) {
+        console.error("Homepage data load failed:", error);
+      }
+    };
+
+    loadHomeData();
+  }, [dispatch]);
 
 
 
   useEffect(() => {
-  dispatch(setSelectedCategory(gender));
-}, [gender]);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
 
-useEffect(() => {
-  if (lat && lng) {
-    dispatch(setLocation({ lat, lng }));
-  }
-}, [lat, lng]);
+        setLat(latitude);
+        setLng(longitude);
+
+        localStorage.setItem("lat", latitude);
+        localStorage.setItem("lng", longitude);
+
+        toast.success("Location detected 📍");
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+
+        if (error.code === error.PERMISSION_DENIED) {
+          toast.error("Location permission denied");
+        } else {
+          toast.error("Unable to detect location");
+        }
+      },
+      { enableHighAccuracy: true, timeout: 15000 }
+    );
+  }, []);
+
+
+
+  useEffect(() => {
+    dispatch(setSelectedCategory(gender));
+  }, [gender]);
+
+  useEffect(() => {
+    if (lat && lng) {
+      dispatch(setLocation({ lat, lng }));
+    }
+  }, [lat, lng]);
 
 
 
@@ -108,7 +115,7 @@ useEffect(() => {
       <ServicesBanner />
       <GenderSwitch gender={gender} setGender={setGender} />
       <Categories categories={filteredCategories} gender={gender} />
-      <HomeSaloons category={gender} lat={lat} lng={lng} />
+      <HomeSaloons category={gender} lat={lat} lng={lng} fallbackSalons={fallbackSalons} />
       {/* <TopRatedSaloons salons={salons} categories={categories}/> */}
       <IndependentProfessionals />
       <SalonHomeServices category={gender} lat={lat} lng={lng} />

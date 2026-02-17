@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchHomeSaloonsByCategory } from "../../../redux/slice/userSlice";
 import { useNavigate } from "react-router-dom";
-import { MapPin, ArrowRight, ChevronLeft, ChevronRight, Star, Clock } from "lucide-react";
+import { MapPin, ArrowRight, ChevronLeft, ChevronRight, Star, Heart } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
@@ -11,7 +11,55 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-const HomeSaloons = ({ category, lat, lng }) => {
+const placeholderSalons = [
+  {
+    _id: "placeholder-1",
+    shopName: "Evita Beauty Parlour",
+    galleryImages: ["https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop"],
+    distance: "321.7",
+    rating: "4.8",
+    reviewCount: "200",
+    gender: "women",
+  },
+  {
+    _id: "placeholder-2",
+    shopName: "Refine Glow Salon",
+    galleryImages: ["https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=300&fit=crop"],
+    distance: "321.7",
+    rating: "4.8",
+    reviewCount: "200",
+    gender: "women",
+  },
+  {
+    _id: "placeholder-3",
+    shopName: "Glamour Studio",
+    galleryImages: ["https://images.unsplash.com/photo-1521590832167-7228fcb728e7?w=400&h=300&fit=crop"],
+    distance: "15.2",
+    rating: "4.6",
+    reviewCount: "150",
+    gender: "women",
+  },
+  {
+    _id: "placeholder-4",
+    shopName: "Royal Cuts",
+    galleryImages: ["https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=300&fit=crop"],
+    distance: "8.5",
+    rating: "4.9",
+    reviewCount: "320",
+    gender: "men",
+  },
+  {
+    _id: "placeholder-5",
+    shopName: "Urban Style Barbers",
+    galleryImages: ["https://images.unsplash.com/photo-1585747860019-8e8ef3f0e6c4?w=400&h=300&fit=crop"],
+    distance: "12.3",
+    rating: "4.7",
+    reviewCount: "180",
+    gender: "men",
+  },
+];
+
+const HomeSaloons = ({ category, lat, lng, fallbackSalons = [] }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const prevRef = useRef(null);
@@ -19,34 +67,17 @@ const HomeSaloons = ({ category, lat, lng }) => {
 
   const { homeSaloonsByCategory = [], loading } = useSelector((state) => state.user);
 
-  const mockServices = [
-    { name: "Haircut", price: 299 },
-    { name: "Facial", price: 599 },
-    { name: "Shaving", price: 199 },
-  ];
+  // Use API data first, then fallback salons, then placeholders
+  const apiOrFallback = homeSaloonsByCategory?.length > 0 ? homeSaloonsByCategory : fallbackSalons;
+  const salonsToShow = apiOrFallback?.length > 0
+    ? apiOrFallback
+    : placeholderSalons.filter((s) => s.gender === category || s.gender === "unisex");
 
   useEffect(() => {
-    if (category && lat && lng) {
+    if (category) {
       dispatch(fetchHomeSaloonsByCategory({ category, lat, lng }));
     }
   }, [dispatch, category, lat, lng]);
-
-  console.log("HomeSaloons - Category:", category, "Data:", homeSaloonsByCategory, "Loading:", loading);
-  if (loading) {
-    return (
-      <div className="w-full mx-auto px-4 md:px-8 lg:px-12 py-12">
-        <div className="h-8 w-64 bg-slate-100 animate-pulse rounded mb-8" />
-        <div className="flex gap-4 overflow-hidden">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="min-w-55 h-100 bg-slate-50 animate-pulse rounded-2xl border" />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  // Hide component if no data to keep the landing page clean
-  if (!homeSaloonsByCategory?.length) return null;
 
   return (
     <div className="px-4 md:px-8 lg:px-12 py-12 w-full mx-auto group">
@@ -85,81 +116,77 @@ const HomeSaloons = ({ category, lat, lng }) => {
 
         <Swiper
           modules={[Pagination, Autoplay, Navigation]}
-          spaceBetween={20}
+          spaceBetween={24}
           onBeforeInit={(swiper) => {
             swiper.params.navigation.prevEl = prevRef.current;
             swiper.params.navigation.nextEl = nextRef.current;
           }}
           autoplay={{ delay: 3500, disableOnInteraction: false }}
           breakpoints={{
-            0: { slidesPerView: 1.2, spaceBetween: 12 },
-            480: { slidesPerView: 1.5, spaceBetween: 15 },
-            768: { slidesPerView: 2.3, spaceBetween: 20 },
-            1024: { slidesPerView: 4, spaceBetween: 20 },
-            1280: { slidesPerView: 5, spaceBetween: 20 },
+            0: { slidesPerView: 1.1, spaceBetween: 12 },
+            480: { slidesPerView: 1.3, spaceBetween: 16 },
+            768: { slidesPerView: 2, spaceBetween: 20 },
+            1024: { slidesPerView: 3, spaceBetween: 24 },
+            1280: { slidesPerView: 3, spaceBetween: 28 },
           }}
           className="pb-10! pt-2!"
         >
-          {homeSaloonsByCategory.map((salon) => (
+          {salonsToShow.map((salon) => (
             <SwiperSlide key={salon._id}>
               <div
                 onClick={() => navigate(`/salon/${salon._id}`)}
-                className="flex flex-col h-87.5 group/card bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer"
+                className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer"
               >
                 {/* Image Section */}
-                <div className="relative h-44 overflow-hidden">
+                <div className="relative h-52 sm:h-56 md:h-60 lg:h-64 overflow-hidden">
                   {salon.galleryImages?.length > 0 ? (
                     <img
                       src={salon.galleryImages[0]}
                       alt={salon.shopName}
-                      className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700"
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="flex items-center justify-center h-full bg-slate-50 text-slate-300">
-                      <Star size={32} strokeWidth={1} />
+                    <div className="flex items-center justify-center h-full bg-slate-100 text-slate-300">
+                      <Star size={40} strokeWidth={1} />
                     </div>
                   )}
 
-                  {/* Rating Badge */}
-                  <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
-                    <Star size={10} className="text-amber-500 fill-amber-500" />
-                    <span className="text-[10px] font-bold text-slate-800">4.7</span>
-                  </div>
-
-                  <div className="absolute inset-0 bg-linear-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
-
-                  <div className="absolute bottom-3 left-4 right-4">
-                    <h3 className="font-bold text-white text-base leading-tight truncate">
-                      {salon.shopName}
-                    </h3>
-                    <div className="flex items-center gap-1 text-[10px] text-white/80 mt-1 uppercase font-medium tracking-wide">
-                      <MapPin size={10} className="text-indigo-400" />
-                      {salon.location?.city}
-                    </div>
-                  </div>
+                  {/* Heart / Favorite Icon */}
+                  <button
+                    onClick={(e) => e.stopPropagation()}
+                    className="absolute top-3 right-3 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
+                  >
+                    <Heart size={20} className="text-rose-400" />
+                  </button>
                 </div>
 
                 {/* Body Section */}
-                <div className="p-5 flex flex-col grow bg-white">
-                  <div className="space-y-2.5 grow">
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Service Menu</p>
-                    {mockServices.map((s, i) => (
-                      <div key={i} className="flex justify-between items-center text-xs group/item">
-                        <span className="text-slate-600">{s.name}</span>
-                        <div className="h-px grow mx-2 border-b border-dotted border-slate-200" />
-                        <span className="font-bold text-slate-900">₹{s.price}</span>
-                      </div>
-                    ))}
-                  </div>
+                <div className="p-5">
+                  {/* Category Label */}
+                  <p className="text-xs font-bold text-teal-500 uppercase tracking-wide mb-1.5">
+                    {category}
+                  </p>
 
-                  {/* Footer Section */}
-                  <div className="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center">
+                  {/* Salon Name */}
+                  <h3 className="font-bold text-slate-900 text-lg truncate">
+                    {salon.shopName}
+                  </h3>
+
+                  {/* Subtitle */}
+                  <p className="text-slate-400 text-sm mt-1">
+                    {salon.categories?.join(", ") || "No categories available"}
+                  </p>
+
+                  {/* Distance & Rating Row */}
+                  <div className="flex items-center gap-5 mt-4 text-sm text-slate-600">
                     <div className="flex items-center gap-1.5">
-                      <Clock size={12} className="text-emerald-500" />
-                      <span className="text-[10px] font-bold text-emerald-600 uppercase">Open Now</span>
+                      <MapPin size={15} className="text-teal-500" />
+                      <span>{salon.distance ? `${salon.distance} km` : "N/A"}</span>
                     </div>
-                    <div className="text-indigo-600 text-xs font-bold flex items-center gap-1 group-hover/card:translate-x-1 transition-transform">
-                      Book <ArrowRight size={12} />
+                    <div className="flex items-center gap-1.5">
+                      <Star size={15} className="text-amber-400 fill-amber-400" />
+                      <span className="font-semibold">{salon.rating || "4.8"}</span>
+                      <span className="text-slate-400">({salon.reviewCount || "200"})</span>
                     </div>
                   </div>
                 </div>

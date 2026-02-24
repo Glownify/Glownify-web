@@ -104,8 +104,12 @@ const HomeSaloonsDetails = () => {
   const [serviceMode, setServiceMode] = useState("home");    // "home" | "salon"
   const [activeCategory, setActiveCategory] = useState(null);
 
-  // Placeholder IDs are used on the home page for demo cards (no real API call needed)
-  const isPlaceholder = id?.startsWith("placeholder");
+  // Treat any dummy/demo ID as a placeholder — no real API call needed.
+  // "placeholder" prefix = home page cards; "d-w-" / "d-m-" = dummy salon IDs from SalonsPage.
+  const isPlaceholder =
+    id?.startsWith("placeholder") ||
+    id?.startsWith("d-w-") ||
+    id?.startsWith("d-m-");
 
   // ── Fetch salon data ──────────────────────────────────────
   useEffect(() => {
@@ -171,8 +175,8 @@ const HomeSaloonsDetails = () => {
           >
             <Heart
               className={`w-5 h-5 md:w-6 md:h-6 transition-colors ${isFavorited
-                  ? "text-rose-500 fill-rose-500"
-                  : "text-rose-400 fill-rose-400"
+                ? "text-rose-500 fill-rose-500"
+                : "text-rose-400 fill-rose-400"
                 }`}
             />
           </button>
@@ -281,8 +285,8 @@ const HomeSaloonsDetails = () => {
                     {/* Circle image with active ring */}
                     <div
                       className={`w-16 h-16 md:w-[4.5rem] md:h-[4.5rem] lg:w-20 lg:h-20 rounded-full overflow-hidden shadow-md transition-all duration-300 ${isActive
-                          ? "ring-[3px] ring-rose-400 ring-offset-2"
-                          : "ring-[2px] ring-gray-200"
+                        ? "ring-[3px] ring-rose-400 ring-offset-2"
+                        : "ring-[2px] ring-gray-200"
                         }`}
                     >
                       <img
@@ -323,8 +327,8 @@ const HomeSaloonsDetails = () => {
               <button
                 onClick={() => setServiceMode("home")}
                 className={`px-6 md:px-8 py-2.5 rounded-full text-sm md:text-base font-bold transition-all duration-300 ${serviceMode === "home"
-                    ? "bg-gradient-to-r from-rose-400 to-pink-400 text-white shadow-md"
-                    : "text-gray-500 hover:text-gray-700"
+                  ? "bg-gradient-to-r from-rose-400 to-pink-400 text-white shadow-md"
+                  : "text-gray-500 hover:text-gray-700"
                   }`}
               >
                 Salon at Home
@@ -335,8 +339,8 @@ const HomeSaloonsDetails = () => {
             <button
               onClick={() => setServiceMode("salon")}
               className={`px-6 md:px-8 py-2.5 rounded-full text-sm md:text-base font-bold transition-all duration-300 ${serviceMode === "salon"
-                  ? "bg-gradient-to-r from-rose-400 to-pink-400 text-white shadow-md"
-                  : "text-gray-500 hover:text-gray-700"
+                ? "bg-gradient-to-r from-rose-400 to-pink-400 text-white shadow-md"
+                : "text-gray-500 hover:text-gray-700"
                 }`}
             >
               Visit Salon

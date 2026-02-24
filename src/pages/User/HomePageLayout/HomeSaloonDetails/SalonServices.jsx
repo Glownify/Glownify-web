@@ -6,10 +6,6 @@ import {
   Clock,
   Plus,
   Minus,
-  Home,
-  Store,
-  Smartphone,
-  X,
   ShoppingCart,
   ChevronRight,
 } from "lucide-react";
@@ -81,16 +77,17 @@ const SalonServices = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const userId = useSelector((state) => state?.auth?.user?._id);
-  const { saloonDetails, activeCategory: ctxCategory, setActiveCategory } = useOutletContext();
+  // serviceMode comes from the parent toggle ("home" | "salon") in HomeSaloonsDetails
+  const { saloonDetails, activeCategory: ctxCategory, setActiveCategory, serviceMode } = useOutletContext();
 
-  const isPlaceholder = id?.startsWith("placeholder");
+  // Match all dummy ID formats: home-page placeholders, and SalonsPage dummy IDs (d-w-*, d-m-*)
+  const isPlaceholder =
+    id?.startsWith("placeholder") ||
+    id?.startsWith("d-w-") ||
+    id?.startsWith("d-m-");
 
   const [cartItems, setCartItems] = useState([]);
   const [demoItems, setDemoItems] = useState([]);
-
-  // Modal State
-  const [showModeModal, setShowModeModal] = useState(false);
-  const [pendingService, setPendingService] = useState(null);
 
   const categories = saloonDetails?.serviceCategories || [];
   const selectedSalonId = saloonDetails?._id;
@@ -122,12 +119,11 @@ const SalonServices = () => {
   }, [ctxCategory, selectedSalonId, dispatch, isPlaceholder]);
 
   const initiateAddToCart = (service) => {
-    if (service.serviceMode === "both") {
-      setPendingService(service);
-      setShowModeModal(true);
-    } else {
-      confirmAddToCart(service, service.serviceMode);
-    }
+    // Use the mode already selected by the toggle in the parent page.
+    // Map toggle value ("home" | "salon") to the cart's expected mode strings.
+    const modeMap = { home: "home", salon: "salon" };
+    const resolvedMode = modeMap[serviceMode] || "salon";
+    confirmAddToCart(service, resolvedMode);
   };
 
   const confirmAddToCart = (service, selectedMode) => {
@@ -162,58 +158,7 @@ const SalonServices = () => {
 
   return (
     <div className="w-full min-h-[400px] relative pb-24">
-      {/* Mode Selection Modal */}
-      {showModeModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowModeModal(false)} />
-          <div className="relative bg-white w-full max-w-sm rounded-3xl p-8 shadow-2xl animate-in fade-in zoom-in duration-200">
-            <button
-              onClick={() => setShowModeModal(false)}
-              className="absolute top-5 right-5 p-2 hover:bg-gray-100 rounded-full transition-colors"
-            >
-              <X className="w-5 h-5 text-gray-400" />
-            </button>
 
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-pink-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Smartphone className="w-8 h-8 text-rose-500" />
-              </div>
-              <h3 className="text-xl font-black text-gray-900">Choose Service Mode</h3>
-              <p className="text-gray-500 text-sm mt-2">Where would you like this service?</p>
-            </div>
-
-            <div className="grid gap-4">
-              <button
-                onClick={() => confirmAddToCart(pendingService, "salon")}
-                className="flex items-center justify-between p-5 border-2 border-gray-100 rounded-2xl hover:border-rose-300 hover:bg-pink-50/30 transition-all group"
-              >
-                <div className="flex items-center gap-4">
-                  <Store className="w-6 h-6 text-rose-500" />
-                  <span className="font-bold text-gray-800">At Salon</span>
-                </div>
-                <div className="w-6 h-6 rounded-full border-2 border-gray-200 group-hover:border-rose-400 flex items-center justify-center">
-                  <div className="w-2.5 h-2.5 bg-rose-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-              </button>
-
-              <button
-                onClick={() => confirmAddToCart(pendingService, "home")}
-                className="flex items-center justify-between p-5 border-2 border-gray-100 rounded-2xl hover:border-rose-300 hover:bg-pink-50/30 transition-all group"
-              >
-                <div className="flex items-center gap-4">
-                  <Home className="w-6 h-6 text-rose-500" />
-                  <span className="font-bold text-gray-800">At Home</span>
-                </div>
-                <div className="w-6 h-6 rounded-full border-2 border-gray-200 group-hover:border-rose-400 flex items-center justify-center">
-                  <div className="w-2.5 h-2.5 bg-rose-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Service List */}
       <div className="py-2 space-y-3">
         {isLoading ? (
           // Skeleton loading

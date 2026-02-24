@@ -69,7 +69,7 @@ import SalonSpecialists from "../pages/User/HomePageLayout/HomeSaloonDetails/Sal
 import LoginPage from "./../pages/Common/LoginPage";
 import RegisterPage from "../pages/Common/RegisterPage";
 import SalonsPage from "../pages/User/SalonsPage";
-import PartnerRegistrationPage from "../pages/Common/PartnerRegistrationPage";
+import PartnerWithUsPage from "../pages/Common/PartnerWithUsPage";
 import SalonOwnerRegisterPage from "../pages/Common/SalonOwnerRegisterPage";
 import IndependentProfessionalRegistrarionPage from "../pages/Common/IndependentProfessionalRegistrarionPage";
 import IndependentProfessionalDetailPage from "../pages/User/HomePageLayout/IndependentProfessionalDetailPage";
@@ -94,7 +94,7 @@ const AllRoutes = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/salons" element={<SalonsPage />} />
-            <Route path="/partner-with-us" element={<PartnerRegistrationPage />} />
+            <Route path="/partner-with-us" element={<PartnerWithUsPage />} />
             <Route
               path="/partner-with-us/salon-owner-register"
               element={<SalonOwnerRegisterPage />}
@@ -138,35 +138,35 @@ const AllRoutes = () => {
           {/* LOGIN ROUTE */}
 
           {/* SUPER ADMIN */}
-          <Route element={<ProtectedRoute allowedRoles={["super_admin"]} />}>
-            <Route path="/super-admin" element={<DashboardLayout />}>
-              <Route index element={<SuperAdminDashboard />} />
-              <Route path="dashboard" element={<SuperAdminDashboard />} />
-              <Route path="manage-salons" element={<ManageSalonsPage />} />
-              <Route
-                path="manage-categories"
-                element={<ManageCategoriesPage />}
-              />
-              <Route path="manage-users" element={<ManageUsersPage />} />
-              <Route
-                path="manage-cities-and-states"
-                element={<ManageCitiesAndStatesPage />}
-              />
-              <Route
-                path="manage-sales-executives"
-                element={<ManageSalesExecutivePage />}
-              />
-              <Route
-                path="manage-subscriptions"
-                element={<ManageSubscriptionPage />}
-              />
-              <Route
-                path="manage-reset-password"
-                element={<ManageResetPassword />}
-              />
-              <Route path="profile" element={<SuperAdminProfilePage />} />
-            </Route>
+          {/* <Route element={<ProtectedRoute allowedRoles={["super_admin"]} />}> */}
+          <Route path="/super-admin" element={<DashboardLayout />}>
+            <Route index element={<SuperAdminDashboard />} />
+            <Route path="dashboard" element={<SuperAdminDashboard />} />
+            <Route path="manage-salons" element={<ManageSalonsPage />} />
+            <Route
+              path="manage-categories"
+              element={<ManageCategoriesPage />}
+            />
+            <Route path="manage-users" element={<ManageUsersPage />} />
+            <Route
+              path="manage-cities-and-states"
+              element={<ManageCitiesAndStatesPage />}
+            />
+            <Route
+              path="manage-sales-executives"
+              element={<ManageSalesExecutivePage />}
+            />
+            <Route
+              path="manage-subscriptions"
+              element={<ManageSubscriptionPage />}
+            />
+            <Route
+              path="manage-reset-password"
+              element={<ManageResetPassword />}
+            />
+            <Route path="profile" element={<SuperAdminProfilePage />} />
           </Route>
+          {/* </Route> */}
 
           {/* SALES EXECUTIVE */}
           <Route
@@ -210,14 +210,14 @@ const AllRoutes = () => {
           </Route>
 
           {/* SALESMAN */}
-          <Route element={<ProtectedRoute allowedRoles={["salesman"]} />}>
-            <Route path="/salesman" element={<DashboardLayout />}>
-              <Route index element={<SalesmanDashboard />} />
-              <Route path="dashboard" element={<SalesmanDashboard />} />
-              <Route path="my-saloons" element={<MySaloonsPage />} />
-              <Route path="profile" element={<SalesmanProfilePage />} />
-            </Route>
+          {/* <Route element={<ProtectedRoute allowedRoles={["salesman"]} />}> */}
+          <Route path="/salesman" element={<DashboardLayout />}>
+            <Route index element={<SalesmanDashboard />} />
+            <Route path="dashboard" element={<SalesmanDashboard />} />
+            <Route path="my-saloons" element={<MySaloonsPage />} />
+            <Route path="profile" element={<SalesmanProfilePage />} />
           </Route>
+          {/* </Route> */}
 
           {/* TEAM LEAD */}
           <Route element={<ProtectedRoute allowedRoles={["team_lead"]} />}>

@@ -57,3 +57,24 @@ export const addToCart = (userId, salon, service, selectedMode) => {
   localStorage.setItem(getCartKey(userId), JSON.stringify(cart));
   return cart;
 };
+/**
+ * updateServiceMode
+ * Changes the bookedMode of an existing cart service without removing it.
+ * Called when the user switches the toggle after a service is already in cart.
+ */
+export const updateServiceMode = (userId, salonId, serviceId, newMode) => {
+  let cart = getCart(userId);
+  const salonIndex = cart.findIndex((item) => item.salonId === salonId);
+
+  if (salonIndex > -1) {
+    const serviceIndex = cart[salonIndex].services.findIndex(
+      (s) => s._id === serviceId
+    );
+    if (serviceIndex > -1) {
+      cart[salonIndex].services[serviceIndex].bookedMode = newMode;
+    }
+  }
+
+  localStorage.setItem(getCartKey(userId), JSON.stringify(cart));
+  return cart;
+};

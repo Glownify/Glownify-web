@@ -13,6 +13,7 @@ import {
   addToCart,
   removeFromCart,
   getCart,
+  updateServiceMode,
 } from "../../../../utils/CartStorage";
 
 // Placeholder images for service categories
@@ -118,30 +119,45 @@ const SalonServices = () => {
     }
   }, [ctxCategory, selectedSalonId, dispatch, isPlaceholder]);
 
+  // Called when user taps "+Add" or the "+" stepper button.
+  // Respects the current toggle (serviceMode) for the booking mode.
   const initiateAddToCart = (service) => {
-    // Use the mode already selected by the toggle in the parent page.
-    // Map toggle value ("home" | "salon") to the cart's expected mode strings.
-    const modeMap = { home: "home", salon: "salon" };
-    const resolvedMode = modeMap[serviceMode] || "salon";
-    confirmAddToCart(service, resolvedMode);
+    // Map toggle value ("home" | "salon") to cart's bookedMode strings
+    const resolvedMode = serviceMode === "home" ? "home" : "salon";
+
+    // Check if this service is already in cart
+    const currentSalonCart = cartItems.find((s) => s.salonId === selectedSalonId);
+    const existingEntry = currentSalonCart?.services.find((s) => s._id === service._id);
+
+    if (existingEntry) {
+      if (existingEntry.bookedMode !== resolvedMode) {
+        // Service is in cart but with a different mode — update its mode
+        const updated = updateServiceMode(userId, selectedSalonId, service._id, resolvedMode);
+        setCartItems(updated);
+      }
+      // If same mode, nothing to do (already in cart)
+    } else {
+      // New service — add it with the current mode
+      const updated = addToCart(userId, saloonDetails, service, resolvedMode);
+      setCartItems(updated);
+    }
   };
 
-  const confirmAddToCart = (service, selectedMode) => {
-    const updated = addToCart(userId, saloonDetails, service, selectedMode);
-    setCartItems(updated);
-    setShowModeModal(false);
-    setPendingService(null);
-  };
 
   const handleRemoveFromCart = (serviceId) => {
     const updated = removeFromCart(userId, selectedSalonId, serviceId);
     setCartItems(updated);
   };
 
+  // Returns 1 if this service is in cart AND its bookedMode matches the current toggle.
+  // Returns 0 otherwise — so switching the toggle shows "+ Add" again for mode-change.
   const getServiceQuantity = (serviceId) => {
-    const salon = cartItems.find((s) => s.salonId === selectedSalonId);
-    const service = salon?.services.find((s) => s._id === serviceId);
-    return service ? service.quantity || 1 : 0;
+    const resolvedMode = serviceMode === "home" ? "home" : "salon";
+    const salonCart = cartItems.find((s) => s.salonId === selectedSalonId);
+    const service = salonCart?.services.find(
+      (s) => s._id === serviceId && s.bookedMode === resolvedMode
+    );
+    return service ? 1 : 0;
   };
 
   // Calculate cart totals for this salon
@@ -294,9 +310,9 @@ const SalonServices = () => {
         </div>
       )}
 
-      {/* Sticky Bottom Cart Bar */}
+      {/* Sticky Bottom Cart Bar — sits above the mobile tab nav */}
       {cartServiceCount > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-pink-100 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+        <div className="fixed bottom-10 md:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-pink-100 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
           <div className="flex items-center justify-between px-5 md:px-10 py-3.5 max-w-6xl mx-auto">
             <div className="flex items-center gap-2 text-gray-800">
               <ShoppingCart className="w-5 h-5 text-gray-600" />

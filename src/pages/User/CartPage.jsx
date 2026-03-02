@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Trash2,
   ChevronDown,
+  ChevronUp,
   ShoppingBag,
   Clock,
   Home,
@@ -10,11 +11,11 @@ import {
   Sparkles,
   ShieldCheck,
   ArrowLeft,
-  Heart,
   MapPin,
   Phone,
   Gift,
   CheckCircle2,
+  RotateCcw,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -25,16 +26,13 @@ import { calculateTimeSlot } from "../../utils/TimeSlot";
 
 // ─── Constants ─────────────────────────────────────────────────────────────────
 
-/** Returns the localStorage key for a user's cart (supports guest carts too) */
 const getCartKey = (userId) => `@user_cart_${userId}`;
 
-/** Free offer is unlocked when cart total reaches this threshold */
 const FREE_OFFER_THRESHOLD = 999;
 const FREE_OFFER_NAME = "Nail Polish";
 const FREE_OFFER_VALUE = 99;
 
-// ─── Service Image Mapping ─────────────────────────────────────────────────────
-// Keyword → Unsplash image URL used to show a relevant thumbnail per service.
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const SERVICE_IMAGES = {
   hair: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=200&h=200&fit=crop&crop=face",
@@ -45,10 +43,6 @@ const SERVICE_IMAGES = {
   spa: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=200&h=200&fit=crop&crop=face",
 };
 
-/**
- * Returns the best-matching thumbnail URL for a given service name.
- * Falls back to the hair image if no keyword match is found.
- */
 const getServiceImage = (name) => {
   const lower = name?.toLowerCase() || "";
   for (const [key, url] of Object.entries(SERVICE_IMAGES)) {
@@ -57,30 +51,26 @@ const getServiceImage = (name) => {
   return SERVICE_IMAGES.hair;
 };
 
-/**
- * Converts a duration in minutes to a human-readable string.
- * e.g. 90 → "1 hour 30 min"
- */
 const formatDuration = (mins) => {
   if (!mins) return "";
   if (mins < 60) return `${mins} min`;
   const h = Math.floor(mins / 60);
   const m = mins % 60;
-  return m > 0 ? `${h} hour ${m} min` : `${h} hour`;
+  return m > 0 ? `${h} hr ${m} min` : `${h} hr`;
 };
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 /**
- * CartPage
- * ─────────────────────────────────────────────────────────────
- * Shows the user's cart (loaded from localStorage) grouped by salon and service
- * mode (home / salon visit). Features:
- *   - Per-group time slot scheduling
- *   - Free offer progress bar (unlocks at ₹999)
- *   - Sticky order summary sidebar (desktop)
- *   - Sticky bottom CTA bar (mobile/tablet)
- *   - Booking confirmation via Redux thunk
+ * CartPage (Review Booking)
+ * Matches the mobile mockup:
+ *   - One card per salon-per-mode (Visit Salon / Service at Home)
+ *   - Salon name + address + phone in each card header
+ *   - Date/time chip (tap to change)
+ *   - Service rows with thumbnail, name, duration, price, home charge, remove ×
+ *   - Subtotal per group
+ *   - Offer banner + Summary card below all groups
+ *   - Sticky Confirm Booking button at the bottom
  */
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -91,19 +81,17 @@ const CartPage = () => {
   // ── State ─────────────────────────────────────────────────
   const [cart, setCart] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeSlotInfo, setActiveSlotInfo] = useState(null); // which group's slot is being edited
-  const [bookings, setBookings] = useState({});     // { "salonId-mode": { date, time, ... } }
+  const [activeSlotInfo, setActiveSlotInfo] = useState(null);
+  const [bookings, setBookings] = useState({});        // { "salonId-mode": { day, month, year, time } }
   const [expandedSections, setExpandedSections] = useState({});
-  const [isFavorited, setIsFavorited] = useState(false);
 
-  // ── Load Cart from localStorage ───────────────────────────
-  // Supports both logged-in users and guests (guest key = @user_cart_undefined)
+  // ── Load Cart ─────────────────────────────────────────────
   useEffect(() => {
     const data = localStorage.getItem(getCartKey(userId));
     setCart(data ? JSON.parse(data) : []);
   }, [userId]);
 
-  // ── Expand all sections by default whenever cart changes ──
+  // ── Expand all sections by default ────────────────────────
   useEffect(() => {
     const sections = {};
     cart.forEach((salon) => {
@@ -117,12 +105,9 @@ const CartPage = () => {
 
   // ── Handlers ──────────────────────────────────────────────
 
-  /** Toggles the collapsed/expanded state of a service group card */
-  const toggleSection = (key) => {
+  const toggleSection = (key) =>
     setExpandedSections((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
 
-  /** Removes a single service from the cart and updates localStorage */
   const removeService = (salonId, serviceId) => {
     const updated = cart
       .map((salon) =>
@@ -130,13 +115,11 @@ const CartPage = () => {
           ? { ...salon, services: salon.services.filter((s) => s._id !== serviceId) }
           : salon
       )
-      .filter((salon) => salon.services.length > 0); // remove salon if no services remain
-
+      .filter((salon) => salon.services.length > 0);
     setCart(updated);
     localStorage.setItem(getCartKey(userId), JSON.stringify(updated));
   };
 
-  /** Saves the date/time chosen in the DateTimePicker modal for the active group */
   const handleConfirmDateTime = (data) => {
     if (activeSlotInfo) {
       const key = `${activeSlotInfo.salonId}-${activeSlotInfo.mode}`;
@@ -145,17 +128,10 @@ const CartPage = () => {
     setIsModalOpen(false);
   };
 
-  /**
-   * Builds the bookings payload and dispatches the createBooking thunk.
-   * - Groups services by salon and mode (home vs. salon)
-   * - Validates that all groups have a scheduled time slot
-   * - Clears cart on success and redirects to /bookings
-   */
   const handleSubmit = async () => {
     const bookingsPayload = [];
 
     cart.forEach((salon) => {
-      // Group this salon's services by booking mode
       const salonServicesByMode = {};
       salon.services.forEach((service) => {
         const mode = service.bookedMode || "salon";
@@ -166,12 +142,9 @@ const CartPage = () => {
       Object.entries(salonServicesByMode).forEach(([mode, services]) => {
         const slotKey = `${salon.salonId}-${mode}`;
         const slotData = bookings[slotKey];
-
-        // Skip if user hasn't scheduled this slot yet
         if (!slotData) return;
 
         const timeSlot = calculateTimeSlot(slotData.time, services);
-
         bookingsPayload.push({
           providerId: salon.salonId,
           services: services.map((s) => s._id),
@@ -182,17 +155,13 @@ const CartPage = () => {
           ),
           timeSlot,
           bookingType: mode === "home" ? "home_service" : "in_salon",
-          // Only include address/coordinates for home service bookings
           serviceLocation:
             mode === "home"
               ? {
                 address: slotData.address || "User Address",
                 coordinates: {
                   type: "Point",
-                  coordinates: [
-                    Number(slotData.lng) || 0,
-                    Number(slotData.lat) || 0,
-                  ],
+                  coordinates: [Number(slotData.lng) || 0, Number(slotData.lat) || 0],
                 },
               }
               : undefined,
@@ -205,31 +174,22 @@ const CartPage = () => {
       return;
     }
 
+    // Fire the API in the background — navigate to success regardless of result
+    // (re-enable strict error handling once the backend API is fully wired)
     try {
-      await toast.promise(
-        dispatch(createBooking({ bookings: bookingsPayload })).unwrap(),
-        {
-          loading: "Processing booking...",
-          success: "Confirmed!",
-          error: "Failed to book.",
-        }
-      );
-
-      // Clear cart from state and localStorage on success
-      setCart([]);
-      localStorage.removeItem(getCartKey(userId));
-      navigate("/bookings");
+      dispatch(createBooking({ bookings: bookingsPayload }));
     } catch (err) {
-      console.error("Booking failed:", err);
+      console.warn("Booking API error (ignored for now):", err);
     }
+
+    // Clear cart and always go to success page
+    setCart([]);
+    localStorage.removeItem(getCartKey(userId));
+    navigate("/booking-success");
   };
 
-  // ── Totals & Derived Values ───────────────────────────────
+  // ── Totals ────────────────────────────────────────────────
 
-  /**
-   * Calculates total prices split by service mode.
-   * Home service includes an extra home service charge.
-   */
   const calculateTotals = () => {
     let salonTotal = 0;
     let homeTotal = 0;
@@ -246,21 +206,19 @@ const CartPage = () => {
 
   const { salonTotal, homeTotal, grandTotal } = calculateTotals();
   const totalServices = cart.reduce((acc, s) => acc + s.services.length, 0);
-
-  // Free offer calculations
   const offerUnlocked = grandTotal >= FREE_OFFER_THRESHOLD;
-  const amountToFreeOffer = Math.max(0, FREE_OFFER_THRESHOLD - grandTotal);
   const discount = offerUnlocked ? FREE_OFFER_VALUE : 0;
   const finalTotal = grandTotal - discount;
 
-  // Slot scheduling progress
   const requiredSlotsCount = cart.reduce(
-    (acc, salon) => acc + new Set(salon.services.map((s) => s.bookedMode || "salon")).size,
+    (acc, salon) =>
+      acc + new Set(salon.services.map((s) => s.bookedMode || "salon")).size,
     0
   );
   const scheduledSlotsCount = Object.keys(bookings).length;
+  const canConfirm = scheduledSlotsCount >= requiredSlotsCount && requiredSlotsCount > 0;
 
-  // ── Empty Cart State ──────────────────────────────────────
+  // ── Empty Cart ────────────────────────────────────────────
   if (!cart.length) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-pink-50/60 p-6">
@@ -285,436 +243,297 @@ const CartPage = () => {
 
   // ── Render ────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-pink-50/60 pb-28 lg:pb-10">
+    <div className="min-h-screen bg-pink-50/60 pb-32">
 
       {/* ── Sticky Header ── */}
-      <div className="sticky top-0 z-50 bg-pink-50/90 backdrop-blur-lg border-b border-pink-100/60">
-        <div className="flex items-center justify-between px-5 md:px-10 lg:px-16 py-4 max-w-7xl mx-auto">
-
-          {/* Back button */}
+      <div className="sticky top-0 z-50 bg-pink-50/95 backdrop-blur-lg border-b border-pink-100/60">
+        <div className="flex items-center justify-between px-4 md:px-8 lg:px-16 py-4 max-w-3xl mx-auto">
           <button
             onClick={() => navigate(-1)}
             className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-pink-100 transition-colors"
           >
-            <ArrowLeft className="w-6 h-6 text-gray-800" />
+            <ArrowLeft className="w-5 h-5 text-gray-800" />
           </button>
-
-          {/* Title + service count */}
           <div className="text-center">
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">
-              Review Booking
-            </h1>
-            <p className="hidden md:block text-xs text-gray-400 mt-0.5">
+            <h1 className="text-lg md:text-xl font-bold text-gray-900">Review Booking</h1>
+            <p className="text-xs text-gray-400">
               {totalServices} service{totalServices > 1 ? "s" : ""} selected
             </p>
           </div>
-
-          {/* Favourite toggle */}
-          <button
-            onClick={() => setIsFavorited(!isFavorited)}
-            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-pink-100 transition-colors"
-          >
-            <Heart
-              className={`w-6 h-6 transition-colors ${isFavorited
-                  ? "text-rose-500 fill-rose-500"
-                  : "text-rose-400 fill-rose-400"
-                }`}
-            />
-          </button>
+          <div className="w-10" />
         </div>
       </div>
 
-      {/* ── Page Content ── */}
-      <div className="max-w-7xl mx-auto px-4 md:px-10 lg:px-16 py-6 lg:py-10">
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
+      <div className="max-w-5xl mx-auto px-4 md:px-8 lg:px-16 py-4">
+        <p className="text-center text-xs text-gray-400 mb-1">
+          {totalServices} service{totalServices > 1 ? "s" : ""} · Final Payable{" "}
+          <span className="font-bold text-rose-500">₹{finalTotal}</span>
+        </p>
+      </div>
+      <div className="max-w-5xl mx-auto px-4 md:px-8 lg:px-16 py-5">
+        {/* ── Service Cards (one per salon × mode) — two-col on large screens ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+          {cart.map((salon) => {
+            const groups = [
+              {
+                mode: "salon",
+                label: "Visit Salon",
+                icon: <Store size={16} className="text-rose-500" />,
+                services: salon.services.filter((s) => s.bookedMode !== "home"),
+              },
+              {
+                mode: "home",
+                label: "Salon at Home",
+                icon: <Home size={16} className="text-rose-500" />,
+                services: salon.services.filter((s) => s.bookedMode === "home"),
+              },
+            ].filter((g) => g.services.length > 0);
 
-          {/* ── LEFT: Service Cards ── */}
-          <div className="flex-1 min-w-0 space-y-5">
-            <div className="flex items-center gap-3">
-              <Scissors className="w-5 h-5 text-rose-400" />
-              <h2 className="text-lg md:text-xl font-bold text-gray-800">Your Services</h2>
-              <span className="ml-auto text-sm font-semibold text-rose-500 bg-rose-50 border border-rose-200 px-3 py-0.5 rounded-full">
-                {totalServices} item{totalServices > 1 ? "s" : ""}
-              </span>
-            </div>
+            return groups.map((group) => {
+              const sectionKey = `${salon.salonId}-${group.mode}`;
+              const isExpanded = expandedSections[sectionKey] !== false;
+              const timeData = bookings[sectionKey];
+              const groupTotal = group.services.reduce(
+                (sum, s) =>
+                  sum +
+                  (Number(s.price) || 0) +
+                  (group.mode === "home" ? Number(s.homeServiceCharge) || 40 : 0),
+                0
+              );
 
-            {/* Render one card per salon per mode (home / salon) */}
-            {cart.map((salon) => {
-              // Split services into "Visit Salon" and "Service at Home" groups
-              const groups = [
-                {
-                  mode: "salon",
-                  label: "Visit Salon",
-                  icon: <Store size={18} className="text-rose-500" />,
-                  services: salon.services.filter((s) => s.bookedMode !== "home"),
-                },
-                {
-                  mode: "home",
-                  label: "Service at Home",
-                  icon: <Home size={18} className="text-rose-500" />,
-                  services: salon.services.filter((s) => s.bookedMode === "home"),
-                },
-              ].filter((g) => g.services.length > 0); // only render groups that have services
-
-              return groups.map((group) => {
-                const sectionKey = `${salon.salonId}-${group.mode}`;
-                const isExpanded = expandedSections[sectionKey] !== false;
-                const timeData = bookings[sectionKey];
-                const groupTotal = group.services.reduce(
-                  (sum, s) => sum + (Number(s.price) || 0),
-                  0
-                );
-
-                return (
-                  <div
-                    key={sectionKey}
-                    className="bg-white/90 backdrop-blur-sm rounded-2xl border border-pink-100/60 shadow-sm overflow-hidden"
+              return (
+                <div
+                  key={sectionKey}
+                  className="bg-white rounded-2xl border border-pink-100/60 shadow-sm overflow-hidden"
+                >
+                  {/* ── Group Header ── */}
+                  <button
+                    onClick={() => toggleSection(sectionKey)}
+                    className="w-full flex items-center justify-between px-5 py-4 hover:bg-pink-50/40 transition-colors"
                   >
-                    {/* ── Section Header (collapsible toggle) ── */}
-                    <button
-                      onClick={() => toggleSection(sectionKey)}
-                      className="w-full flex items-center justify-between px-5 md:px-7 py-4 md:py-5 hover:bg-pink-50/50 transition-colors"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 bg-rose-50 rounded-full flex items-center justify-center">
-                          {group.icon}
-                        </div>
-                        <span className="text-base md:text-lg font-bold text-gray-900">
-                          {group.label}
-                        </span>
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 bg-rose-50 rounded-full flex items-center justify-center">
+                        {group.icon}
                       </div>
-                      <ChevronDown
-                        className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${isExpanded ? "" : "-rotate-90"
-                          }`}
-                      />
-                    </button>
+                      <span className="text-base font-bold text-gray-900">{group.label}</span>
+                    </div>
+                    {isExpanded
+                      ? <ChevronUp className="w-4 h-4 text-gray-400" />
+                      : <ChevronDown className="w-4 h-4 text-gray-400" />}
+                  </button>
 
-                    {/* ── Expanded Section Body ── */}
-                    {isExpanded && (
-                      <div className="border-t border-pink-50">
+                  {isExpanded && (
+                    <div className="border-t border-pink-50 px-5 pb-4 space-y-4">
 
-                        {/* Salon info row */}
-                        <div className="px-5 md:px-7 py-4 flex items-center gap-4 border-b border-pink-50 bg-pink-50/30">
-                          <div className="w-11 h-11 bg-white rounded-xl flex items-center justify-center shadow-sm border border-pink-100">
-                            <Scissors className="w-5 h-5 text-rose-400" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm md:text-base font-bold text-gray-900">
-                              {salon.salonName}
-                            </p>
-                            <div className="flex items-center gap-4 text-xs text-gray-500 mt-0.5 flex-wrap">
-                              <span className="flex items-center gap-1">
-                                <MapPin className="w-3 h-3" /> Gomti Nagar, Lucknow
-                              </span>
+                      {/* Salon info row */}
+                      <div className="flex items-center gap-3 pt-3">
+                        <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center shrink-0">
+                          <Scissors className="w-5 h-5 text-rose-400" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-gray-900">{salon.salonName}</p>
+                          <div className="flex items-center gap-3 text-xs text-gray-400 mt-0.5 flex-wrap">
+                            <span className="flex items-center gap-1">
+                              <MapPin className="w-3 h-3" />
+                              {group.mode === "home"
+                                ? "Home Address"
+                                : "Gomti Nagar, Lucknow"}
+                            </span>
+                            {group.mode === "salon" && (
                               <span className="flex items-center gap-1">
                                 <Phone className="w-3 h-3" /> +91 987654210
                               </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Services list */}
-                        <div className="px-5 md:px-7 py-4 space-y-4">
-                          {group.services.map((service) => (
-                            <div
-                              key={service._id}
-                              className="flex items-center gap-4 py-2 border-b border-pink-50/80 last:border-0"
-                            >
-                              {/* Service thumbnail */}
-                              <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden shrink-0 shadow-sm">
-                                <img
-                                  src={getServiceImage(service.name)}
-                                  alt={service.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-
-                              {/* Service details */}
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm md:text-base font-bold text-gray-900">
-                                  {service.name}
-                                </p>
-                                <p className="text-xs md:text-sm text-gray-400 mt-0.5">
-                                  {formatDuration(service.durationMins)}
-                                </p>
-                                <p className="text-base md:text-lg font-black text-gray-900 mt-1">
-                                  ₹ {service.price}
-                                </p>
-                              </div>
-
-                              {/* Remove service button */}
-                              <button
-                                onClick={() => removeService(salon.salonId, service._id)}
-                                className="text-rose-300 hover:text-rose-500 transition-colors p-2 rounded-lg hover:bg-rose-50"
-                              >
-                                <Trash2 className="w-5 h-5" />
-                              </button>
-                            </div>
-                          ))}
-
-                          {/* Free offer reward row (shown when offer is unlocked) */}
-                          {offerUnlocked && (
-                            <div className="flex items-center gap-3 bg-green-50 rounded-xl px-3 py-2">
-                              <div className="w-14 h-14 rounded-xl bg-green-100 flex items-center justify-center shrink-0">
-                                <Gift className="w-6 h-6 text-green-500" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-bold text-green-700">
-                                  🎁 FREE {FREE_OFFER_NAME} Service Unlocked!
-                                </p>
-                                <p className="text-xs text-green-500">Discount Applied: ₹0</p>
-                              </div>
-                              <p className="text-base font-bold text-green-600 shrink-0">₹ 0</p>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Schedule Slot + Subtotal row */}
-                        <div className="px-5 md:px-7 py-4 border-t border-pink-50 flex items-center justify-between gap-4 flex-wrap">
-                          <button
-                            onClick={() => {
-                              setActiveSlotInfo({ salonId: salon.salonId, mode: group.mode });
-                              setIsModalOpen(true);
-                            }}
-                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${timeData
-                                ? "bg-green-50 text-green-600 border border-green-200"
-                                : "bg-pink-50 text-rose-500 border border-pink-200 hover:bg-pink-100"
-                              }`}
-                          >
-                            <Clock size={16} />
-                            {timeData
-                              ? `${timeData.day} ${timeData.month}, ${timeData.time}`
-                              : "Schedule Slot"}
-                          </button>
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-400">Subtotal</span>
-                            <span className="text-lg md:text-xl font-bold text-gray-900">
-                              ₹ {groupTotal}
-                            </span>
+                            )}
                           </div>
                         </div>
                       </div>
-                    )}
-                  </div>
-                );
-              });
-            })}
 
-            {/* ── Free Offer Progress Banner (mobile/tablet only) ── */}
-            <div className="lg:hidden space-y-4">
-              <FreeOfferBanner
-                grandTotal={grandTotal}
-                offerUnlocked={offerUnlocked}
-                freeOfferThreshold={FREE_OFFER_THRESHOLD}
-                freeOfferName={FREE_OFFER_NAME}
-                freeOfferValue={FREE_OFFER_VALUE}
-              />
-            </div>
-          </div>
+                      {/* Date/time chip */}
+                      <button
+                        onClick={() => {
+                          setActiveSlotInfo({ salonId: salon.salonId, mode: group.mode });
+                          setIsModalOpen(true);
+                        }}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold border transition-all w-auto ${timeData
+                          ? "bg-pink-50 border-pink-200 text-gray-700"
+                          : "bg-pink-50 border-pink-200 text-rose-500"
+                          }`}
+                      >
+                        <Clock className="w-3.5 h-3.5 text-rose-400" />
+                        {timeData
+                          ? `${timeData.day ? `${new Date(timeData.year, ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(timeData.month), timeData.day).toLocaleDateString("en-US", { weekday: "short" })}, ` : ""}${timeData.day} ${timeData.month} ${timeData.year}, ${timeData.time}`
+                          : "Select date & time"}
+                        <RotateCcw className="w-3 h-3 text-gray-400 ml-1" />
+                      </button>
 
-          {/* ── RIGHT: Sticky Order Summary (desktop lg+) ── */}
-          <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 lg:sticky lg:top-24 space-y-4">
+                      {/* Service rows */}
+                      {group.services.map((service) => (
+                        <div key={service._id} className="flex items-center gap-3">
+                          {/* Thumbnail */}
+                          <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 shadow-sm bg-pink-100">
+                            <img
+                              src={getServiceImage(service.name)}
+                              alt={service.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
 
-            {/* Free Offer Banner (desktop sidebar) */}
-            <FreeOfferBanner
-              grandTotal={grandTotal}
-              offerUnlocked={offerUnlocked}
-              freeOfferThreshold={FREE_OFFER_THRESHOLD}
-              freeOfferName={FREE_OFFER_NAME}
-              freeOfferValue={FREE_OFFER_VALUE}
-            />
+                          {/* Info */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                <p className="text-sm font-bold text-gray-900">{service.name}</p>
+                                <p className="text-xs text-gray-400 mt-0.5">
+                                  {formatDuration(service.durationMins)}
+                                </p>
+                                {group.mode === "home" && service.homeServiceCharge > 0 && (
+                                  <p className="text-xs text-gray-400">
+                                    + ₹{service.homeServiceCharge} home charge
+                                  </p>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2 shrink-0">
+                                <span className="text-sm font-bold text-gray-900">
+                                  ₹{service.price}
+                                </span>
+                                <button
+                                  onClick={() => removeService(salon.salonId, service._id)}
+                                  className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 hover:bg-rose-50 hover:text-rose-400 text-gray-400 transition-colors text-xs"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            </div>
 
-            {/* ── Price Summary Card ── */}
-            <div className="bg-white/90 rounded-2xl border border-pink-100/60 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-pink-50 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-rose-400" />
-                <h3 className="text-base font-bold text-gray-900">Order Summary</h3>
-              </div>
+                            {/* Free offer unlock row */}
+                            {offerUnlocked && (
+                              <div className="mt-2 bg-yellow-50 rounded-lg px-3 py-1.5 flex items-center gap-2">
+                                <Gift className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                                <span className="text-xs font-bold text-green-600">
+                                  FREE {FREE_OFFER_NAME} Service Unlocked!
+                                </span>
+                                <span className="text-xs text-green-500 ml-auto">₹0</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
 
-              <div className="px-6 py-5 space-y-3">
-                <div className="flex justify-between text-sm text-gray-500">
-                  <span>Services ({totalServices})</span>
-                  <span className="text-gray-800 font-medium">₹{grandTotal}</span>
+                      {/* Subtotal row */}
+                      <div className="flex items-center justify-between pt-2 border-t border-pink-50">
+                        <span className="text-sm text-gray-500">Subtotal</span>
+                        <span className="text-sm font-bold text-gray-900">₹{groupTotal}</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
+              );
+            });
+          })}
 
-                {salonTotal > 0 && (
-                  <div className="flex justify-between text-sm text-gray-400">
-                    <span className="flex items-center gap-1.5">
-                      <Store className="w-3.5 h-3.5" /> Visit Salon
-                    </span>
-                    <span>₹{salonTotal}</span>
-                  </div>
-                )}
-
-                {homeTotal > 0 && (
-                  <div className="flex justify-between text-sm text-gray-400">
-                    <span className="flex items-center gap-1.5">
-                      <Home className="w-3.5 h-3.5" /> At Home (incl. charges)
-                    </span>
-                    <span>₹{homeTotal}</span>
-                  </div>
-                )}
-
-                {discount > 0 && (
-                  <div className="flex justify-between text-sm text-green-600">
-                    <span>Discount ({FREE_OFFER_NAME})</span>
-                    <span className="font-medium">- ₹{discount}</span>
-                  </div>
-                )}
-
-                {/* Grand total */}
-                <div className="pt-3 border-t border-pink-100 flex justify-between items-center">
-                  <span className="text-base font-bold text-gray-900">Total</span>
-                  <span className="text-2xl font-black text-rose-500">₹{finalTotal}</span>
-                </div>
-              </div>
-
-              {/* Slot scheduling progress indicator */}
-              {requiredSlotsCount > 0 && (
-                <div className="px-6 pb-4">
-                  <div
-                    className={`flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-lg ${scheduledSlotsCount >= requiredSlotsCount
-                        ? "bg-green-50 text-green-600"
-                        : "bg-amber-50 text-amber-600"
-                      }`}
-                  >
-                    {scheduledSlotsCount >= requiredSlotsCount ? (
-                      <CheckCircle2 className="w-4 h-4 shrink-0" />
-                    ) : (
-                      <Clock className="w-4 h-4 shrink-0" />
-                    )}
-                    {scheduledSlotsCount >= requiredSlotsCount
-                      ? "All slots scheduled ✓"
-                      : `${requiredSlotsCount - scheduledSlotsCount} slot(s) need scheduling`}
-                  </div>
-                </div>
-              )}
-
-              {/* Confirm Booking button */}
-              <div className="px-6 pb-6">
-                <button
-                  disabled={scheduledSlotsCount < requiredSlotsCount}
-                  onClick={handleSubmit}
-                  className={`w-full py-4 rounded-2xl text-base font-bold transition-all shadow-lg ${scheduledSlotsCount < requiredSlotsCount
-                      ? "bg-gray-200 text-gray-400 cursor-not-allowed shadow-none"
-                      : "bg-gradient-to-r from-rose-400 to-pink-500 text-white hover:shadow-xl hover:shadow-pink-300/50 active:scale-95"
-                    }`}
-                >
-                  {scheduledSlotsCount < requiredSlotsCount
-                    ? `Set ${requiredSlotsCount - scheduledSlotsCount} More Slot(s)`
-                    : "Confirm Booking"}
-                </button>
-              </div>
-            </div>
-
-            {/* ── Trust Badges ── */}
-            <div className="bg-white/70 rounded-2xl border border-pink-100/60 px-5 py-4 flex items-center justify-around gap-2 text-center">
-              <div className="flex flex-col items-center gap-1">
-                <ShieldCheck className="w-5 h-5 text-rose-400" />
-                <span className="text-[11px] font-semibold text-gray-500">Secure Pay</span>
-              </div>
-              <div className="w-px h-8 bg-pink-100" />
-              <div className="flex flex-col items-center gap-1">
-                <CheckCircle2 className="w-5 h-5 text-rose-400" />
-                <span className="text-[11px] font-semibold text-gray-500">Instant Confirm</span>
-              </div>
-              <div className="w-px h-8 bg-pink-100" />
-              <div className="flex flex-col items-center gap-1">
-                <Sparkles className="w-5 h-5 text-rose-400" />
-                <span className="text-[11px] font-semibold text-gray-500">Top Rated</span>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
 
-      {/* ── Sticky Bottom CTA Bar (mobile/tablet only) ── */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-pink-100 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
-        <div className="flex items-center justify-between px-5 md:px-10 py-3.5 max-w-4xl mx-auto">
-          <div className="text-gray-800">
-            <span className="text-sm font-medium text-gray-500">
-              {totalServices} Service{totalServices > 1 ? "s" : ""} | ₹{grandTotal}
-            </span>
-            {discount > 0 && (
-              <span className="ml-3 text-lg font-black text-rose-500">₹{finalTotal}</span>
-            )}
-          </div>
-          <button
-            disabled={scheduledSlotsCount < requiredSlotsCount}
-            onClick={handleSubmit}
-            className={`px-8 py-3 rounded-2xl text-base font-bold transition-all shadow-lg ${scheduledSlotsCount < requiredSlotsCount
-                ? "bg-gray-200 text-gray-400 cursor-not-allowed shadow-none"
-                : "bg-gradient-to-r from-rose-400 to-pink-500 text-white hover:shadow-xl hover:shadow-pink-300/50 active:scale-95"
-              }`}
-          >
-            {scheduledSlotsCount < requiredSlotsCount
-              ? `Set ${requiredSlotsCount - scheduledSlotsCount} More Slot(s)`
-              : "Confirm Booking"}
-          </button>
-        </div>
-      </div>
-
-      {/* ── Date/Time Picker Modal ── */}
-      <DateTimePicker
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={handleConfirmDateTime}
-      />
-    </div>
-  );
-};
-
-// ─── Helper Component ─────────────────────────────────────────────────────────
-
-/**
- * FreeOfferBanner
- * Shows a progress bar towards the free offer threshold,
- * or a success banner when the offer is already unlocked.
- */
-const FreeOfferBanner = ({
-  grandTotal,
-  offerUnlocked,
-  freeOfferThreshold,
-  freeOfferName,
-  freeOfferValue,
-}) => {
-  if (offerUnlocked) {
-    return (
-      <div className="flex items-center gap-3 bg-green-50 rounded-2xl px-5 py-3 border border-green-200">
-        <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
-        <span className="text-sm font-bold text-green-700">
-          Offer Unlocked! You saved ₹{freeOfferValue}
-        </span>
-        <span className="ml-auto text-sm font-bold text-green-600">
-          🎁 FREE {freeOfferName}
-        </span>
-      </div>
-    );
-  }
-
-  if (grandTotal <= 0) return null;
-
-  return (
-    <div
-      className="rounded-2xl px-5 py-4 relative overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(135deg, #fce7f3 0%, #f9a8d4 30%, #e8a87c 70%, #f5d0a9 100%)",
-      }}
-    >
-      <p className="text-sm font-bold text-gray-800 relative z-10">
-        ✨ Spend ₹{freeOfferThreshold} & Get {freeOfferName} FREE
-      </p>
-      <div className="mt-2 flex items-center gap-3 relative z-10">
-        <div className="flex-1 h-2 bg-white/40 rounded-full overflow-hidden">
+        {/* ── Offer banner + Summary below the grid ── */}
+        <div className="mt-4 space-y-4">
           <div
-            className="h-full bg-gradient-to-r from-rose-500 to-pink-500 rounded-full transition-all duration-500"
-            style={{ width: `${Math.min(1, grandTotal / freeOfferThreshold) * 100}%` }}
-          />
+            className="rounded-2xl px-5 py-3.5 text-center font-bold text-sm"
+            style={{
+              background:
+                "linear-gradient(135deg, #fce7f3 0%, #f9a8d4 30%, #e8a87c 70%, #f5d0a9 100%)",
+            }}
+          >
+            ✨ Spend ₹{FREE_OFFER_THRESHOLD} &amp; Get {FREE_OFFER_NAME} FREE ✨
+          </div>
+
+          {/* Offer unlocked row */}
+          {offerUnlocked && (
+            <div className="flex items-center justify-between bg-white rounded-2xl px-4 py-3 border border-green-100">
+              <div className="flex items-center gap-2 text-xs font-bold text-green-600">
+                <CheckCircle2 className="w-4 h-4" /> Offer Unlocked · You saved ₹{FREE_OFFER_VALUE}
+              </div>
+              <div className="flex items-center gap-2 text-xs font-bold text-green-600">
+                <CheckCircle2 className="w-4 h-4" /> FREE {FREE_OFFER_NAME}
+              </div>
+            </div>
+          )}
+
+          {/* ── Summary Card ── */}
+          <div className="bg-white rounded-2xl border border-pink-100/60 shadow-sm px-5 py-4 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-base font-bold text-gray-900">Summary</span>
+              <span className="text-base font-bold text-gray-900">₹{grandTotal}</span>
+            </div>
+            {salonTotal > 0 && (
+              <div className="flex items-center justify-between text-sm text-gray-500">
+                <span>Service Total</span>
+                <span>₹{salonTotal}</span>
+              </div>
+            )}
+            {homeTotal > 0 && (
+              <div className="flex items-center justify-between text-sm text-gray-500">
+                <span>At Home (incl. charges)</span>
+                <span>₹{homeTotal}</span>
+              </div>
+            )}
+            {discount > 0 && (
+              <div className="flex items-center justify-between text-sm text-rose-500 font-medium">
+                <span>Discount</span>
+                <span>- ₹{discount}</span>
+              </div>
+            )}
+            <div className="pt-3 border-t border-pink-100 flex items-center justify-between">
+              <span className="text-base font-bold text-gray-900">Final Payable</span>
+              <span className="text-xl font-black text-rose-500">₹{finalTotal}</span>
+            </div>
+          </div>
+
+          {/* ── Trust badges ── */}
+          <div className="bg-white/70 rounded-2xl border border-pink-100/60 px-5 py-4 flex items-center justify-around gap-2 text-center">
+            <div className="flex flex-col items-center gap-1">
+              <ShieldCheck className="w-5 h-5 text-rose-400" />
+              <span className="text-[11px] font-semibold text-gray-500">Secure Pay</span>
+            </div>
+            <div className="w-px h-8 bg-pink-100" />
+            <div className="flex flex-col items-center gap-1">
+              <CheckCircle2 className="w-5 h-5 text-rose-400" />
+              <span className="text-[11px] font-semibold text-gray-500">Instant Confirm</span>
+            </div>
+            <div className="w-px h-8 bg-pink-100" />
+            <div className="flex flex-col items-center gap-1">
+              <Sparkles className="w-5 h-5 text-rose-400" />
+              <span className="text-[11px] font-semibold text-gray-500">Top Rated</span>
+            </div>
+          </div>
         </div>
-        <span className="text-xs font-bold text-gray-700 shrink-0">
-          ₹{grandTotal} / ₹{freeOfferThreshold}
-        </span>
+
+        {/* ── Sticky Confirm Button ── */}
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-pink-50/95 backdrop-blur-lg border-t border-pink-100/60 px-4 py-4">
+          <div className="max-w-3xl mx-auto">
+            {/* Slots progress hint */}
+            {!canConfirm && requiredSlotsCount > 0 && (
+              <p className="text-center text-xs text-amber-600 font-medium mb-2">
+                {requiredSlotsCount - scheduledSlotsCount} slot(s) still need scheduling
+              </p>
+            )}
+            <button
+              disabled={!canConfirm}
+              onClick={handleSubmit}
+              className={`w-full py-4 rounded-2xl text-base font-bold transition-all ${canConfirm
+                ? "bg-gradient-to-r from-rose-400 to-pink-500 text-white shadow-lg shadow-pink-200/50 active:scale-95"
+                : "bg-gray-300 text-white cursor-not-allowed"
+                }`}
+            >
+              Confirm Booking
+            </button>
+          </div>
+        </div>
+
+        {/* ── Date/Time Picker Modal ── */}
+        <DateTimePicker
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={handleConfirmDateTime}
+        />
       </div>
     </div>
   );

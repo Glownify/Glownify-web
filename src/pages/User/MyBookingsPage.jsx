@@ -128,8 +128,8 @@ const MyBookingsPage = () => {
           >
             <Heart
               className={`w-6 h-6 transition-colors ${isFavorited
-                  ? "text-rose-500 fill-rose-500"
-                  : "text-rose-400 fill-rose-400"
+                ? "text-rose-500 fill-rose-500"
+                : "text-rose-400 fill-rose-400"
                 }`}
             />
           </button>
@@ -147,8 +147,8 @@ const MyBookingsPage = () => {
                 setExpandedBooking(null);
               }}
               className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all duration-300 border ${activeTab === tab.id
-                  ? "bg-gradient-to-r from-rose-400 to-pink-400 text-white border-transparent shadow-md shadow-pink-200/50"
-                  : "bg-white text-gray-600 border-pink-200 hover:border-pink-300"
+                ? "bg-gradient-to-r from-rose-400 to-pink-400 text-white border-transparent shadow-md shadow-pink-200/50"
+                : "bg-white text-gray-600 border-pink-200 hover:border-pink-300"
                 }`}
             >
               {tab.label}

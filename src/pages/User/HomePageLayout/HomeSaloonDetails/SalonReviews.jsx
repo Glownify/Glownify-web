@@ -66,8 +66,8 @@ const SalonReviews = () => {
               <Star
                 key={star}
                 className={`w-5 h-5 ${star <= Math.round(Number(avgRating))
-                    ? "text-amber-400 fill-amber-400"
-                    : "text-gray-200 fill-gray-200"
+                  ? "text-amber-400 fill-amber-400"
+                  : "text-gray-200 fill-gray-200"
                   }`}
               />
             ))}

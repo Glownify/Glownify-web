@@ -69,6 +69,9 @@ import SalonSpecialists from "../pages/User/HomePageLayout/HomeSaloonDetails/Sal
 import LoginPage from "./../pages/Common/LoginPage";
 import RegisterPage from "../pages/Common/RegisterPage";
 import SalonsPage from "../pages/User/SalonsPage";
+import OffersPage from "../pages/User/OffersPage";
+import MobileBookingsPage from "../pages/User/MobileBookingsPage";
+import MobileProfilePage from "../pages/User/MobileProfilePage";
 import PartnerRegistrationPage from "../pages/Common/PartnerRegistrationPage";
 import SalonOwnerRegisterPage from "../pages/Common/SalonOwnerRegisterPage";
 import IndependentProfessionalRegistrarionPage from "../pages/Common/IndependentProfessionalRegistrarionPage";
@@ -77,6 +80,7 @@ import BlogPage from "../pages/Common/BlogPage";
 import AboutPage from "../pages/Common/AboutPage";
 import ContactPage from "../pages/Common/ContactPage";
 import CartPage from "../pages/User/CartPage";
+import BookingSuccessPage from "../pages/User/BookingSuccessPage";
 import BookSubscriptionPage from "../pages/BookSubscriptionPage";
 import PaymentSubscriptionPage from "../pages/PaymentSubscriptionPage";
 // import CareersPage from "../pages/Common/CareersPage"; // TODO: enable when page is ready
@@ -118,6 +122,9 @@ const AllRoutes = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/salons" element={<SalonsPage />} />
+            <Route path="/offers" element={<OffersPage />} />
+            <Route path="/bookings" element={<MobileBookingsPage />} />
+            <Route path="/profile" element={<MobileProfilePage />} />
 
             {/* Partner registration flow */}
             <Route path="/partner-with-us" element={<PartnerRegistrationPage />} />
@@ -161,6 +168,7 @@ const AllRoutes = () => {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/blogs" element={<BlogPage />} />
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/booking-success" element={<BookingSuccessPage />} />
             {/* <Route path="/careers" element={<CareersPage />} /> */}
           </Route>
 

@@ -5,7 +5,7 @@ import { getSaloonDetailsById } from "../../../redux/slice/userSlice";
 import { addToCart, removeFromCart, getCart } from "../../../utils/CartStorage";
 import {
   ArrowLeft, Heart, Star, MapPin, ChevronDown, ChevronUp,
-  Sparkles, Clock, ShoppingCart, ChevronRight, Plus, Minus, Search, SlidersHorizontal,
+  Sparkles, Clock, ShoppingCart, ChevronRight, Plus, Minus, Search, SlidersHorizontal, X,
 } from "lucide-react";
 import salonImgLocal from "../../../assets/salon.png";
 import haircutImgLocal from "../../../assets/haircut.png";
@@ -109,6 +109,47 @@ const MOBILE_DEMO_SERVICES = {
   ],
 };
 
+// ─── Sub-service options (shown in bottom sheet when Add is tapped) ───────────
+// Keyed by parent service _id. Each sub-service has its own price, duration, image.
+const SUB_SERVICES = {
+  "m-h1": [
+    { _id: "m-h1-a", name: "Women Cut", duration: "20 mins", price: 250, image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=200&h=200&fit=crop&crop=face" },
+    { _id: "m-h1-b", name: "Men Cut", duration: "15 mins", price: 200, image: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=200&h=200&fit=crop&crop=face" },
+    { _id: "m-h1-c", name: "Blow Dry", duration: "20 mins", price: 300, image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=200&h=200&fit=crop" },
+    { _id: "m-h1-d", name: "Trim & Style", duration: "15 mins", price: 150, image: null },
+  ],
+  "m-h2": [
+    { _id: "m-h2-a", name: "Spa Treatment", duration: "30 mins", price: 400, image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=200&h=200&fit=crop" },
+    { _id: "m-h2-b", name: "Deep Conditioning", duration: "20 mins", price: 350, image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=200&h=200&fit=crop&crop=face" },
+  ],
+  "m-f1": [
+    { _id: "m-f1-a", name: "Basic Facial", duration: "30 mins", price: 500, image: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=200&h=200&fit=crop&crop=face" },
+    { _id: "m-f1-b", name: "Gold Facial", duration: "45 mins", price: 800, image: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=200&h=200&fit=crop" },
+    { _id: "m-f1-c", name: "Anti-Ageing Facial", duration: "60 mins", price: 1200, image: "https://images.unsplash.com/photo-1591343395082-e120087004b4?w=200&h=200&fit=crop" },
+  ],
+  "m-f2": [
+    { _id: "m-f2-a", name: "Normal Clean Up", duration: "20 mins", price: 300, image: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=200&h=200&fit=crop" },
+    { _id: "m-f2-b", name: "D-Tan Clean Up", duration: "30 mins", price: 400, image: "https://images.unsplash.com/photo-1591343395082-e120087004b4?w=200&h=200&fit=crop" },
+  ],
+  "m-w1": [
+    { _id: "m-w1-a", name: "Half Arms", duration: "10 mins", price: 150, image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=200&h=200&fit=crop" },
+    { _id: "m-w1-b", name: "Full Arms", duration: "20 mins", price: 300, image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=200&h=200&fit=crop" },
+  ],
+  "m-w2": [
+    { _id: "m-w2-a", name: "Half Legs", duration: "20 mins", price: 199, image: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=200&h=200&fit=crop" },
+    { _id: "m-w2-b", name: "Full Legs", duration: "40 mins", price: 299, image: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=200&h=200&fit=crop" },
+  ],
+  "m-m1": [
+    { _id: "m-m1-a", name: "Bridal (Basic)", duration: "90 mins", price: 2500, image: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=200&h=200&fit=crop" },
+    { _id: "m-m1-b", name: "Bridal (Premium)", duration: "2 hours", price: 4000, image: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=200&h=200&fit=crop" },
+  ],
+  "m-m2": [
+    { _id: "m-m2-a", name: "Day Makeup", duration: "45 mins", price: 999, image: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=200&h=200&fit=crop" },
+    { _id: "m-m2-b", name: "Party Makeup", duration: "1 hour", price: 1499, image: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=200&h=200&fit=crop" },
+    { _id: "m-m2-c", name: "HD Makeup", duration: "75 mins", price: 1999, image: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=200&h=200&fit=crop" },
+  ],
+};
+
 /**
  * Returns the best-matching image URL for a given service category name.
  * Falls back to the hair image if no keyword match is found.
@@ -159,6 +200,9 @@ const HomeSaloonsDetails = () => {
   const [carouselIndex, setCarouselIndex] = useState(0);     // Mobile image carousel
   const [cartItems, setCartItems] = useState([]);             // Mobile cart state
   const [serviceSearch, setServiceSearch] = useState("");    // Mobile service search
+  // Sub-service bottom sheet state
+  const [subSheet, setSubSheet] = useState(null);             // { service, subServices } | null
+  const [selectedSubs, setSelectedSubs] = useState({});       // { subId: true }
 
   // Auth user id (needed for CartStorage)
   const userId = useSelector((state) => state?.auth?.user?._id);
@@ -188,9 +232,36 @@ const HomeSaloonsDetails = () => {
     }
   }, [categories]);
 
-  // Load cart from storage on mount / userId change
+  // Load cart from storage on mount / userId change — deduplicate stale data
   useEffect(() => {
-    if (userId) setCartItems(getCart(userId));
+    if (!userId) return;
+    let raw = getCart(userId);
+    // Deduplicate: if a sub-service (e.g. "m-h1-a") exists, remove the bare
+    // parent ID ("m-h1") that may have been added before sub-service sheet existed.
+    raw = raw.map((salonEntry) => {
+      const services = salonEntry.services;
+      const subIds = services.map((s) => s._id);
+      // Find parent IDs that have at least one sub-service already in cart
+      const dedupedServices = services.filter((s) => {
+        // Keep sub-services and normal services; drop bare parent IDs that
+        // have sub-service duplicates (e.g. keep "m-h1-a", drop "m-h1" if "m-h1-a" exists)
+        const hasSubInCart = subIds.some(
+          (id) => id !== s._id && id.startsWith(s._id + "-")
+        );
+        return !hasSubInCart;
+      });
+      // Also deduplicate by _id (keep first occurrence only)
+      const seen = new Set();
+      const uniqueServices = dedupedServices.filter((s) => {
+        if (seen.has(s._id)) return false;
+        seen.add(s._id);
+        return true;
+      });
+      return { ...salonEntry, services: uniqueServices };
+    }).filter((e) => e.services.length > 0);
+    // Write deduplicated cart back to localStorage
+    localStorage.setItem(getCartKey(userId), JSON.stringify(raw));
+    setCartItems(raw);
   }, [userId]);
 
   // Derived values for the services heading
@@ -224,12 +295,41 @@ const HomeSaloonsDetails = () => {
     setCartItems(updated);
   };
   const mobileRemoveFromCart = (serviceId) => {
-    const updated = removeFromCart(userId, selectedSalonId, serviceId);
+    const resolvedMode = serviceMode === "home" ? "home" : "salon";
+    const updated = removeFromCart(userId, selectedSalonId, serviceId, resolvedMode);
     setCartItems(updated);
   };
   const isMobileServiceInCart = (serviceId) => {
     const salonCart = cartItems.find(s => s.salonId === selectedSalonId);
-    return salonCart?.services?.some(s => s._id === serviceId) || false;
+    if (!salonCart) return false;
+    const resolvedMode = serviceMode === "home" ? "home" : "salon";
+    // Match exact ID OR any sub-service ID that starts with "parentId-"
+    // AND must match the current bookedMode
+    return salonCart.services.some(
+      s => (s._id === serviceId || s._id.startsWith(serviceId + "-")) && s.bookedMode === resolvedMode
+    );
+  };
+  // Removes the parent service OR all its sub-services from the cart for the CURRENT mode
+  const mobileRemoveParentAndSubs = (serviceId) => {
+    const salonCart = cartItems.find(s => s.salonId === selectedSalonId);
+    if (!salonCart) return;
+    const resolvedMode = serviceMode === "home" ? "home" : "salon";
+    // Find all IDs to remove (exact match + sub-service matches) for THIS mode
+    const toRemove = salonCart.services
+      .filter(s => (s._id === serviceId || s._id.startsWith(serviceId + "-")) && s.bookedMode === resolvedMode)
+      .map(s => s._id);
+    let updated = cartItems;
+    toRemove.forEach(id => {
+      updated = removeFromCart(userId, selectedSalonId, id, resolvedMode);
+    });
+    setCartItems(updated);
+  };
+  // Clear the entire cart for this salon
+  const mobileClearCart = () => {
+    const key = `@user_cart_${userId}`;
+    const updated = getCart(userId).filter((s) => s.salonId !== selectedSalonId);
+    localStorage.setItem(key, JSON.stringify(updated));
+    setCartItems(updated);
   };
   const currentSalonCart = cartItems.find(s => s.salonId === selectedSalonId);
   const mobileCartCount = currentSalonCart?.services?.length || 0;
@@ -344,7 +444,7 @@ const HomeSaloonsDetails = () => {
         </div>
 
         {/* 3 — Address Card */}
-        <div className="mx-4 mt-4 border border-pink-200 rounded-2xl overflow-hidden">
+        <div className="mx-4 mt-4 border border-pink-200 rounded-2xl overflow-hidden bg-white">
           <div className="px-4 pt-3 pb-1">
             <span className="text-[10px] font-semibold tracking-widest text-gray-400 uppercase">Your Address</span>
           </div>
@@ -360,7 +460,7 @@ const HomeSaloonsDetails = () => {
         </div>
 
         {/* 4 — About Us Accordion */}
-        <div className="mx-4 mt-3 border border-pink-200 rounded-2xl overflow-hidden">
+        <div className="mx-4 mt-3 border border-pink-200 rounded-2xl overflow-hidden bg-white">
           <button onClick={() => setAboutOpen(!aboutOpen)} className="w-full flex items-center justify-between px-4 py-3.5">
             <div className="flex items-center gap-3">
               <span className="w-7 h-7 flex items-center justify-center bg-pink-100 rounded-full text-pink-500 font-bold text-sm">?</span>
@@ -375,15 +475,13 @@ const HomeSaloonsDetails = () => {
           )}
         </div>
 
-        {/* 5 — Gallery */}
-        <div className="mx-4 mt-4">
+        {/* 5 — Gallery (commented out for now) */}
+        {/* <div className="mx-4 mt-4">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-base font-bold text-gray-900">Gallery</h2>
             <span className="text-[#EA8491] text-xs font-semibold">{salonImages.length} photos</span>
           </div>
-          {/* White card with pink top border, matching reference */}
           <div className="bg-white rounded-2xl overflow-hidden border border-pink-100" style={{ borderTopWidth: 2, borderTopColor: "#EA8491" }}>
-            {/* Top row: 2 equal images */}
             <div className="flex gap-1 p-2 pb-1">
               <div className="relative flex-1 rounded-xl overflow-hidden" style={{ height: 160 }}>
                 <img src={salonImages[0]} alt="featured" className="w-full h-full object-cover" />
@@ -393,7 +491,6 @@ const HomeSaloonsDetails = () => {
                 <img src={salonImages[1] || salonImages[0]} alt="gallery" className="w-full h-full object-cover" />
               </div>
             </div>
-            {/* Bottom row: up to 3 smaller images */}
             {salonImages.length > 2 && (
               <div className="flex gap-1 px-2 pb-2">
                 {salonImages.slice(2, 5).map((img, i) => (
@@ -404,12 +501,12 @@ const HomeSaloonsDetails = () => {
               </div>
             )}
           </div>
-        </div>
+        </div> */}
 
         {/* 5 — Our Services (category circles) */}
         <div className="mx-4 mt-5">
           <h2 className="text-sm font-bold text-gray-900 mb-3">Our Services</h2>
-          <div className="flex gap-4 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+          <div className="flex gap-4 overflow-x-auto pb-2 px-1 pt-1" style={{ scrollbarWidth: "none" }}>
             {categories.map((cat) => {
               const isActive = activeCategory === cat._id;
               return (
@@ -497,7 +594,20 @@ const HomeSaloonsDetails = () => {
                   {/* CTA */}
                   {!unavailable ? (
                     <button
-                      onClick={() => inCart ? mobileRemoveFromCart(service._id) : mobileAddToCart(service)}
+                      onClick={() => {
+                        if (inCart) {
+                          mobileRemoveParentAndSubs(service._id);
+                        } else {
+                          // Open sub-service bottom sheet if sub-services exist
+                          const subs = SUB_SERVICES[service._id];
+                          if (subs && subs.length > 0) {
+                            setSubSheet({ service, subServices: subs });
+                            setSelectedSubs({});
+                          } else {
+                            mobileAddToCart(service);
+                          }
+                        }
+                      }}
                       className={`shrink-0 px-4 py-2 rounded-xl border text-xs font-bold transition-all active:scale-95 ${inCart ? "bg-[#EA8491] border-[#EA8491] text-white" : "bg-white border-[#EA8491] text-[#EA8491]"
                         }`}
                     >
@@ -572,23 +682,32 @@ const HomeSaloonsDetails = () => {
         </div>
 
         {/* 9 — Fixed Bottom Cart Bar */}
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white px-4 pt-3 pb-8 border-t border-gray-100 shadow-lg">
+        <div className="fixed bottom-16 left-0 right-0 z-40 bg-white px-4 pt-3 pb-3 border-t border-gray-100 shadow-lg">
           {mobileCartCount > 0 ? (
-            <button
-              onClick={() => navigate("/cart")}
-              className="w-full bg-[#EA8491] rounded-2xl flex items-center justify-between px-5 py-4 active:opacity-90 transition-opacity"
-            >
-              <div className="flex items-center gap-2">
-                <div className="bg-white/20 rounded-lg px-2 py-0.5">
-                  <span className="text-white text-xs font-bold">{mobileCartCount} {mobileCartCount === 1 ? "service" : "services"}</span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => navigate("/cart")}
+                className="flex-1 bg-[#EA8491] rounded-2xl flex items-center justify-between px-5 py-4 active:opacity-90 transition-opacity"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="bg-white/20 rounded-lg px-2 py-0.5">
+                    <span className="text-white text-xs font-bold">{mobileCartCount} {mobileCartCount === 1 ? "service" : "services"}</span>
+                  </div>
+                  <span className="text-white text-base font-semibold">₹{mobileCartTotal.toLocaleString("en-IN")}</span>
                 </div>
-                <span className="text-white text-base font-semibold">₹{mobileCartTotal.toLocaleString("en-IN")}</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-white font-bold text-base">Continue</span>
-                <ChevronRight className="w-4 h-4 text-white" />
-              </div>
-            </button>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-white font-bold text-base">Continue</span>
+                  <ChevronRight className="w-4 h-4 text-white" />
+                </div>
+              </button>
+              {/* Clear cart button */}
+              <button
+                onClick={mobileClearCart}
+                className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center shrink-0"
+              >
+                <X className="w-4 h-4 text-gray-500" />
+              </button>
+            </div>
           ) : (
             <div className="rounded-2xl border-2 border-dashed border-gray-200 py-4 flex items-center justify-center gap-2">
               <ShoppingCart className="w-5 h-5 text-gray-300" />
@@ -596,6 +715,140 @@ const HomeSaloonsDetails = () => {
             </div>
           )}
         </div>
+
+        {/* ── Sub-Service Bottom Sheet ── */}
+        {subSheet && (
+          <div
+            className="fixed inset-0 z-50 flex items-end justify-center"
+            style={{ background: "rgba(0,0,0,0.45)" }}
+            onClick={() => setSubSheet(null)}
+          >
+            <div
+              className="w-full bg-white rounded-t-3xl overflow-hidden shadow-2xl"
+              style={{ maxHeight: "82vh" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Drag handle */}
+              <div className="flex justify-center pt-3 pb-1">
+                <div className="w-10 h-1 rounded-full bg-gray-200" />
+              </div>
+
+              {/* Header */}
+              <div className="flex items-start justify-between px-5 pt-2 pb-3">
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">{subSheet.service.name}</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {subSheet.subServices.length} options • {subSheet.service.duration}
+                  </p>
+                  <p className="text-xs text-gray-400">Select one or more sub-services to add</p>
+                </div>
+                <button
+                  onClick={() => setSubSheet(null)}
+                  className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mt-1 shrink-0"
+                >
+                  <X className="w-4 h-4 text-gray-500" />
+                </button>
+              </div>
+
+              {/* Sub-service list */}
+              <div className="overflow-y-auto px-4 pb-4" style={{ maxHeight: "52vh" }}>
+                {subSheet.subServices.map((sub) => {
+                  const checked = !!selectedSubs[sub._id];
+                  return (
+                    <button
+                      key={sub._id}
+                      onClick={() =>
+                        setSelectedSubs((prev) => ({ ...prev, [sub._id]: !prev[sub._id] }))
+                      }
+                      className={`w-full flex items-center gap-3 rounded-2xl px-3 py-3 mb-2 border transition-all ${checked
+                        ? "bg-pink-50 border-[#EA8491]"
+                        : "bg-white border-gray-100"
+                        }`}
+                    >
+                      {/* Thumbnail */}
+                      <div className="w-14 h-14 rounded-xl overflow-hidden bg-pink-100 shrink-0">
+                        {sub.image ? (
+                          <img src={sub.image} alt={sub.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <span className="text-2xl">✂️</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Info */}
+                      <div className="flex-1 text-left">
+                        <p className="text-sm font-semibold text-gray-900">{sub.name}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">{sub.duration}</p>
+                      </div>
+
+                      {/* Price + checkbox */}
+                      <div className="flex flex-col items-end gap-2 shrink-0">
+                        <span className="text-sm font-bold text-gray-900">₹{sub.price}</span>
+                        <div
+                          className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${checked
+                            ? "bg-[#EA8491] border-[#EA8491]"
+                            : "border-gray-300 bg-white"
+                            }`}
+                        >
+                          {checked && (
+                            <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+                              <path d="M1 4L4 7.5L10 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Footer — selected count + Add to Cart */}
+              {(() => {
+                const selectedList = subSheet.subServices.filter((s) => selectedSubs[s._id]);
+                const total = selectedList.reduce((sum, s) => sum + s.price, 0);
+                return (
+                  <div className="px-4 pt-2 pb-24 border-t border-gray-100">
+                    {selectedList.length > 0 && (
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-xs text-gray-500 font-medium">
+                          {selectedList.length} selected
+                        </span>
+                        <span className="text-sm font-bold text-gray-900">₹{total}</span>
+                      </div>
+                    )}
+                    <button
+                      disabled={selectedList.length === 0}
+                      onClick={() => {
+                        // Add each selected sub-service as a separate cart item
+                        selectedList.forEach((sub) => {
+                          mobileAddToCart({
+                            ...subSheet.service,
+                            _id: sub._id,
+                            name: `${subSheet.service.name} – ${sub.name}`,
+                            salonPrice: sub.price,
+                            homePrice: sub.price + 100,
+                            duration: sub.duration,
+                          });
+                        });
+                        setSubSheet(null);
+                        setSelectedSubs({});
+                      }}
+                      className={`w-full py-4 rounded-2xl text-base font-bold transition-all ${selectedList.length > 0
+                        ? "bg-[#EA8491] text-white active:scale-95"
+                        : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        }`}
+                    >
+                      {selectedList.length > 0
+                        ? `Add ${selectedList.length} to Cart`
+                        : "Select services to add"}
+                    </button>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ══════════════════════════════════════════════════════════

@@ -209,21 +209,21 @@ const AllRoutes = () => {
           {/* </Route> */}
 
           {/* ── 5. Salon Owner ── */}
-          <Route element={<ProtectedRoute allowedRoles={["salon_owner"]} />}>
-            <Route path="/salon-owner" element={<DashboardLayout />}>
-              <Route index element={<SalonOwnerDashboard />} />
-              <Route path="dashboard" element={<SalonOwnerDashboard />} />
-              <Route path="manage-services" element={<ManageServicesPage />} />
-              <Route path="manage-specialists" element={<ManageSpecialistsPage />} />
-              <Route path="manage-analytics" element={<ManageAnalyticsPage />} />
-              <Route path="manage-bookings" element={<ManageBookingsPage />} />
-              <Route path="ai-poster-creator" element={<AIPosterCreatorPage />} />
-              <Route path="ai-hairstyle-scanner" element={<AIHairstyleScannerPage />} />
-              <Route path="manage-add-ons" element={<ManageAddOnPage />} />
-              <Route path="profile" element={<SalonOwnerProfilePage />} />
-            </Route>
-            <Route path="subscription" element={<SubscriptionPage />} />
+          {/* <Route element={<ProtectedRoute allowedRoles={["salon_owner"]} />}> */}
+          <Route path="/salon-owner" element={<DashboardLayout />}>
+            <Route index element={<SalonOwnerDashboard />} />
+            <Route path="dashboard" element={<SalonOwnerDashboard />} />
+            <Route path="manage-services" element={<ManageServicesPage />} />
+            <Route path="manage-specialists" element={<ManageSpecialistsPage />} />
+            <Route path="manage-analytics" element={<ManageAnalyticsPage />} />
+            <Route path="manage-bookings" element={<ManageBookingsPage />} />
+            <Route path="ai-poster-creator" element={<AIPosterCreatorPage />} />
+            <Route path="ai-hairstyle-scanner" element={<AIHairstyleScannerPage />} />
+            <Route path="manage-add-ons" element={<ManageAddOnPage />} />
+            <Route path="profile" element={<SalonOwnerProfilePage />} />
           </Route>
+          <Route path="subscription" element={<SubscriptionPage />} />
+          {/* </Route> */}
 
           {/* ── 6. Salesman ── */}
           {/* TODO: Re-enable ProtectedRoute before production deployment */}

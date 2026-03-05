@@ -5,13 +5,13 @@ export const getCart = (userId) => {
   return data ? JSON.parse(data) : [];
 };
 
-export const removeFromCart = (userId, salonId, serviceId) => {
+export const removeFromCart = (userId, salonId, serviceId, bookedMode) => {
   let cart = getCart(userId);
   const salonIndex = cart.findIndex((item) => item.salonId === salonId);
 
   if (salonIndex > -1) {
     cart[salonIndex].services = cart[salonIndex].services.filter(
-      (s) => s._id !== serviceId
+      (s) => !(s._id === serviceId && (bookedMode ? s.bookedMode === bookedMode : true))
     );
     if (cart[salonIndex].services.length === 0) {
       cart.splice(salonIndex, 1);
@@ -39,7 +39,7 @@ export const addToCart = (userId, salon, service, selectedMode) => {
 
   if (salonIndex > -1) {
     const exists = cart[salonIndex].services.some(
-      (s) => s._id === service._id
+      (s) => s._id === service._id && s.bookedMode === selectedMode
     );
 
     if (!exists) {

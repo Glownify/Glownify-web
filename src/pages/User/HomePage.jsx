@@ -138,12 +138,12 @@ const HomePage = () => {
       {/* ═══════════════════════════════════════════════════
           MOBILE LAYOUT — below md, exact mobile app clone
           ═══════════════════════════════════════════════════ */}
-      <div className="block md:hidden min-h-screen pb-20" style={{ backgroundColor: "#f5f5f5" }}>
+      <div className="block md:hidden min-h-screen pb-20 bg-white">
 
         {/* 1. Teal header */}
         <MobileHero />
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col">
           {/* 2. Book at Home banner */}
           <BookAtHomeBanner />
 

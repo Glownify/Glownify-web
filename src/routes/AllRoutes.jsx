@@ -45,6 +45,7 @@ import MobileManageCategoriesScreen from "../pages/SalonOwner/Mobile/MobileManag
 import MobileComboPackagesScreen from "../pages/SalonOwner/Mobile/MobileComboPackagesScreen";
 import MobileSalonNotificationsScreen from "../pages/SalonOwner/Mobile/MobileSalonNotificationsScreen";
 import MobileMyViewScreen from "../pages/SalonOwner/Mobile/MobileMyViewScreen";
+import SalonReportsPage from "../pages/SalonOwner/SalonReportsPage";
 // ─── Salesman Pages ────────────────────────────────────────────────────────────
 import SalesmanDashboard from "../pages/Salesman/SalesmanDashboard";
 import MySaloonsPage from "../pages/Salesman/MySaloonsPage";
@@ -219,7 +220,7 @@ const AllRoutes = () => {
 
           {/* ── 5. Salon Owner ── */}
           {/* <Route element={<ProtectedRoute allowedRoles={["salon_owner"]} />}> */}
-          <Route path="/salon-owner" element={<DashboardLayout />}>
+          <Route path="/salon-owner" element={<SalonOwnerLayout />}>
             <Route index element={<SalonOwnerDashboard />} />
             <Route path="dashboard" element={<SalonOwnerDashboard />} />
             <Route path="manage-services" element={<ManageServicesPage />} />
@@ -238,6 +239,7 @@ const AllRoutes = () => {
             <Route path="combo-packages" element={<MobileComboPackagesScreen />} />
             <Route path="notifications" element={<MobileSalonNotificationsScreen />} />
             <Route path="my-view" element={<MobileMyViewScreen />} />
+            <Route path="reports" element={<SalonReportsPage />} />
           </Route>
           <Route path="subscription" element={<SubscriptionPage />} />
           {/* </Route> */}

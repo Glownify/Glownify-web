@@ -11,6 +11,11 @@ import SalonOwnerSidebar from "./SalonOwnerSidebar";
  */
 const SalonOwnerLayout = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const isMobile = window.innerWidth < 1024; // Simple mobile check or use hook
+
+    if (isMobile) {
+        return <Outlet />;
+    }
 
     return (
         <div className="flex h-screen overflow-hidden bg-[#F5F2FE]">

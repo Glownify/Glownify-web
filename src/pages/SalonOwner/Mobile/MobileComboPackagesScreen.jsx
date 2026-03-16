@@ -249,7 +249,7 @@ export default function MobileComboPackagesScreen() {
         <div style={{ minHeight: "100vh", backgroundColor: "#f5f5f5", paddingBottom: "30px" }}>
             {/* Header */}
             <div style={{ backgroundColor: "#156778", padding: "12px 16px", display: "flex", alignItems: "flex-start", gap: "12px" }}>
-                <button onClick={() => navigate("/salon-owner")} style={{ background: "transparent", border: "none", padding: 0, marginTop: "2px", cursor: "pointer" }}>
+                <button onClick={() => navigate(-1)} style={{ background: "transparent", border: "none", padding: 0, marginTop: "2px", cursor: "pointer" }}>
                     <ChevronLeft size={26} color="#ffffff" />
                 </button>
                 <div style={{ flex: 1 }}>

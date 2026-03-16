@@ -11,6 +11,7 @@ import {
     Clock,
     ChevronRight,
     Star,
+    Eye,
 } from 'lucide-react';
 import MobileBottomNav from './MobileBottomNav';
 
@@ -77,11 +78,11 @@ const QUICK_ACTIONS_ROW1 = [
         navigateTo: '/salon-owner/manage-services',
     },
     {
-        icon: Users,
-        label: 'Add Staff',
-        iconColor: '#f97316',
-        bg: '#ffedd5',
-        navigateTo: '/salon-owner/manage-specialists',
+        icon: Eye,
+        label: 'Salon View',
+        iconColor: '#0ea5e9',
+        bg: '#e0f2fe',
+        navigateTo: '/salon-owner/my-view',
     },
     {
         icon: Gift,
@@ -95,25 +96,25 @@ const QUICK_ACTIONS_ROW1 = [
         label: 'View Reports',
         iconColor: '#10b981',
         bg: '#d1fae5',
-        navigateTo: '/salon-owner/manage-analytics',
+        navigateTo: '/salon-owner/reports',
     },
 ];
 
 // Row 2 — 2 wide actions
 const QUICK_ACTIONS_ROW2 = [
     {
-        icon: Gift,
-        label: 'Combo Packs',
+        icon: Share2,
+        label: 'Share',
         iconColor: '#f97316',
         bg: '#ffedd5',
-        navigateTo: '/salon-owner/combo-packages',
+        navigateTo: '#', // Add valid path later
     },
     {
         icon: BookOpen,
-        label: 'Categories',
+        label: 'Courses',
         iconColor: '#ec4899',
         bg: '#fbcfe8',
-        navigateTo: '/salon-owner/manage-categories-mobile',
+        navigateTo: '#', // Add valid path later
     },
 ];
 

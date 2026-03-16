@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, SlidersHorizontal, Calendar, User } from "lucide-react";
+import { ChevronLeft, SlidersHorizontal, Calendar, User, Clock, MapPin, Home } from "lucide-react";
+import MobileBottomNav from "./MobileBottomNav";
 
 // ─── Colors ────────────────────────────────────────────────────────────────────
 const PINK = "#e91e63";
 const TEAL = "#14b8a6";
-const BG = "#fce4ec";
+const BG = "#fdf2f8"; // Updated to lighter pink
 
 // ─── Mock Data ─────────────────────────────────────────────────────────────────
 const MOCK_BOOKINGS = [
-    { id: 1, customerName: "Rahul P.", service: "BRIDAL MAKEUP", tier: "PREMIUM SERVICE", specialist: "Pooja S.", date: "May 13, 1:00 PM", status: "pending", amount: 5000, initials: "RP", avatarColor: "#9e9e9e" },
-    { id: 2, customerName: "Priya K.", service: "HAIR STYLING", tier: "REGULAR", specialist: "Pooja S.", date: "May 14, 10:30 AM", status: "pending", amount: 1200, initials: "PK", avatarColor: "#fecdd3" },
-    { id: 3, customerName: "Amit R.", service: "GROOM STYLING", tier: "PREMIUM", specialist: "Ravi M.", date: "May 13, 3:00 PM", status: "pending", amount: 3500, initials: "AR", avatarColor: "#9e9e9e" },
-    { id: 4, customerName: "Anjali V.", service: "SPA TREATMENT", tier: "REGULAR", specialist: "Priya", date: "May 16, 11:00 AM", status: "accepted", amount: 2200, initials: "AV", avatarColor: "#fef3c7" },
-    { id: 5, customerName: "Vikram S.", service: "BEARD TRIM", tier: "REGULAR", specialist: "Arjun", date: "May 10, 3:00 PM", status: "completed", amount: 800, initials: "VS", avatarColor: "#dbeafe" },
+    { id: 1, customerName: "Rahul P.", service: "Bridal Makeup", tier: "PREMIUM SERVICE", specialist: "Pooja S.", date: "May 13, 1:00 PM", status: "pending", type: "salon", amount: 5000, initials: "RP", avatarColor: "#9e9e9e" },
+    { id: 2, customerName: "Sunil", service: "Hair Cut + Shave", tier: "REGULAR", specialist: "Ajay", date: "May 13, 11:00 AM", status: "pending", type: "salon", amount: 900, initials: "S", avatarColor: "#fecdd3" },
+    { id: 3, customerName: "Amit K.", service: "Full Grooming", tier: "PREMIUM", specialist: "Rohit", date: "May 13, 10:00 AM", status: "pending", type: "home", amount: 1500, initials: "AK", avatarColor: "#9e9e9e" },
+    { id: 4, customerName: "Vikram Singh", service: "Beard Trim", tier: "REGULAR", specialist: "Arjun", date: "May 10, 3:00 PM", status: "accepted", type: "home", amount: 800, initials: "VS", avatarColor: "#dbeafe" },
 ];
 
 const STATUS_TABS = ["All", "Ongoing", "Completed", "Cancelled"];
@@ -28,10 +28,12 @@ const getStatusFilter = (tab) => {
 };
 
 // ─── Avatar ───────────────────────────────────────────────────────────────────
-const Avatar = ({ initials, color, size = 52 }) => (
-    <div className="rounded-full flex items-center justify-center shrink-0 font-bold"
-        style={{ width: size, height: size, backgroundColor: color, fontSize: size * 0.3, color: "#fff" }}>
-        {initials}
+const Avatar = ({ initials, color, size = 52, isNew }) => (
+    <div className="relative">
+        <div className="rounded-full flex items-center justify-center shrink-0 font-bold"
+            style={{ width: size, height: size, backgroundColor: color, fontSize: size * 0.3, color: "#fff" }}>
+            {initials}
+        </div>
     </div>
 );
 
@@ -48,75 +50,97 @@ const BookingCard = ({ booking, onAccept, onDecline, onPress }) => {
     return (
         <div
             onClick={onPress}
-            className="bg-white rounded-2xl mb-3 overflow-hidden cursor-pointer"
-            style={{ boxShadow: "0 2px 12px rgba(244,63,94,0.10)", border: "1px solid #fce7f3" }}
+            className="bg-white rounded-[24px] mb-4 overflow-hidden cursor-pointer p-4 pb-5 shadow-sm"
         >
             {/* ── Top section ── */}
-            <div className="px-4 pt-4 pb-3">
-                {/* Row 1: Avatar + Name + Service + Amount */}
-                <div className="flex items-start gap-3">
-                    <Avatar initials={booking.initials} color={booking.avatarColor} size={52} />
-                    <div className="flex-1 min-w-0">
-                        <p className="font-bold text-[16px] text-gray-900 leading-tight">{booking.customerName}</p>
-                        <p className="text-[13px] font-bold mt-0.5" style={{ color: TEAL }}>{booking.service}</p>
+            <div className="flex items-start gap-4 mb-2">
+                <img src={`https://i.pravatar.cc/150?u=${booking.id}`} className="w-14 h-14 rounded-full object-cover" alt="avatar" />
+                <div className="flex-1 min-w-0 pt-0.5">
+                    <div className="flex items-center justify-between">
+                        <p className="font-bold text-[18px] text-gray-800 leading-tight">{booking.customerName}</p>
+                        {isPending && <span className="bg-[#ffedd5] text-[#d97706] text-[11px] font-bold px-3 py-0.5 rounded-full">New</span>}
                     </div>
-                    <div className="text-right shrink-0">
-                        <p className="font-extrabold text-[16px] text-gray-900">₹{booking.amount.toLocaleString("en-IN")}</p>
-                        <p className="text-[10px] font-semibold text-gray-400 mt-0.5">{booking.tier}</p>
-                    </div>
-                </div>
-
-                {/* Row 2: Date & Time + Provider */}
-                <div className="grid grid-cols-2 gap-2 mt-3">
-                    <div>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Date &amp; Time</p>
-                        <div className="flex items-center gap-1.5">
-                            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#fff1f2" }}>
-                                <Calendar size={14} color={PINK} />
-                            </div>
-                            <p className="text-[12px] font-semibold text-gray-700">{booking.date}</p>
-                        </div>
-                    </div>
-                    <div>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Provider</p>
-                        <div className="flex items-center gap-1.5">
-                            <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-gray-100">
-                                <User size={14} color="#9ca3af" />
-                            </div>
-                            <p className="text-[12px] font-semibold text-gray-700">{booking.specialist}</p>
-                        </div>
-                    </div>
+                    <p className="text-[14px] text-gray-500 mt-1">{booking.service}</p>
+                    {booking.service.includes("Grooming") && <p className="text-[12px] text-gray-400 mt-0.5">(Haircut, Shave, &amp; Massage)</p>}
                 </div>
             </div>
 
+            {/* Row 2: Date & Time + Provider */}
+            <div className="flex items-center justify-between text-gray-500 mt-4 mb-5 ml-[72px]">
+                <div className="flex items-center gap-1.5">
+                    <Calendar size={13} color="#9ca3af" />
+                    <p className="text-[12.5px]">{booking.date}</p>
+                </div>
+                <div className="flex items-center gap-1.5 ml-2">
+                    <User size={13} color="#9ca3af" />
+                    <p className="text-[12.5px]">{booking.specialist}</p>
+                </div>
+                <p className="font-extrabold text-[17px] text-gray-900 ml-auto">₹ {booking.amount.toLocaleString("en-IN")}</p>
+            </div>
+
             {/* ── Divider + Actions ── */}
-            {isPending ? (
-                <div className="flex gap-3 px-4 pb-4">
-                    {/* Decline — outlined */}
-                    <button
-                        onClick={(e) => { e.stopPropagation(); onDecline(booking.id); }}
-                        className="flex-1 py-3 rounded-full font-bold text-[14px] border-2 transition-all"
-                        style={{ borderColor: PINK, color: PINK, backgroundColor: "#fff" }}
-                    >
-                        Decline
-                    </button>
-                    {/* Accept Request — filled teal */}
-                    <button
-                        onClick={(e) => { e.stopPropagation(); onAccept(booking.id); }}
-                        className="flex-[2] py-3 rounded-full font-bold text-[14px] text-white transition-all"
-                        style={{ backgroundColor: TEAL }}
-                    >
-                        Accept Request
-                    </button>
+            <div className="border-t border-gray-100 flex items-center justify-between pt-4 mt-1">
+                <div className="flex items-center gap-1.5">
+                    <span className="text-[13px] text-gray-400">Total</span>
+                    <span className="text-[15px] font-bold text-gray-700">₹{(booking.amount).toLocaleString("en-IN")}</span>
+                    <span className="text-[12px] text-gray-300 mx-1">|</span>
+                    <span className="text-[12px] text-gray-400">2 hrs</span>
                 </div>
-            ) : (
-                <div className="px-4 pb-4">
-                    <span className="inline-flex text-[12px] font-bold px-3 py-1.5 rounded-full"
-                        style={{ backgroundColor: statusCfg?.bg, color: statusCfg?.color }}>
-                        {statusCfg?.label ?? booking.status}
-                    </span>
-                </div>
-            )}
+                {isPending ? (
+                    <div className="flex gap-2.5">
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onAccept(booking.id); }}
+                            className="px-5 py-2 rounded-full font-bold text-[14px] text-white transition-all shadow-sm"
+                            style={{ backgroundColor: TEAL }}
+                        >
+                            Accept
+                        </button>
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onDecline(booking.id); }}
+                            className="px-5 py-2 rounded-full font-bold text-[14px] text-white transition-all shadow-sm"
+                            style={{ backgroundColor: "#ef4444" }}
+                        >
+                            Decline
+                        </button>
+                    </div>
+                ) : (
+                    <div>
+                        <span className="inline-flex text-[12px] font-bold px-3 py-1.5 rounded-full"
+                            style={{ backgroundColor: statusCfg?.bg, color: statusCfg?.color }}>
+                            {statusCfg?.label ?? booking.status}
+                        </span>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+// ─── Animated Type Toggle ─────────────────────────────────────────────────────
+const TypeToggle = ({ value, onChange }) => {
+    const OPTS = [
+        { key: "salon", icon: MapPin, label: "Salon Visit" },
+        { key: "home", icon: Home, label: "Home Service" },
+    ];
+
+    return (
+        <div className="flex bg-white rounded-full border border-gray-100 p-1 mx-4 relative mb-4 shadow-sm">
+            {OPTS.map((opt) => {
+                const active = value === opt.key;
+                const IconComponent = opt.icon;
+                return (
+                    <button
+                        key={opt.key}
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 z-10 transition-colors rounded-full ${active ? "bg-[#ffe4e6]" : ""}`}
+                        onClick={() => onChange(opt.key)}
+                    >
+                         <IconComponent size={15} color={active ? PINK : "#9ca3af"} />
+                         <span className={`text-[15px] font-bold ${active ? "text-pink-600" : "text-gray-400"}`}>
+                            {opt.label}
+                        </span>
+                    </button>
+                );
+            })}
         </div>
     );
 };
@@ -126,9 +150,15 @@ const SalonBookingsPage = () => {
     const navigate = useNavigate();
     const [bookings, setBookings] = useState(MOCK_BOOKINGS);
     const [activeTab, setActiveTab] = useState("All");
+    const [bookingType, setBookingType] = useState("salon");
 
-    const pendingCount = bookings.filter((b) => b.status === "pending").length;
-    const filtered = bookings.filter((b) => getStatusFilter(activeTab).includes(b.status));
+    const pendingCount = bookings.filter((b) => b.status === "pending" && b.type === bookingType).length;
+    const allowedStatuses = getStatusFilter(activeTab);
+    const filtered = bookings.filter((b) => {
+        const statusMatch = allowedStatuses.includes(b.status);
+        const typeMatch = b.type === bookingType;
+        return statusMatch && typeMatch;
+    });
 
     const handleAccept = (id) => setBookings((p) => p.map((b) => b.id === id ? { ...b, status: "accepted" } : b));
     const handleDecline = (id) => setBookings((p) => p.map((b) => b.id === id ? { ...b, status: "declined" } : b));
@@ -144,8 +174,7 @@ const SalonBookingsPage = () => {
                 <p className="font-bold text-[17px] text-gray-900">New Booking Requests</p>
                 {/* Avatar + badge */}
                 <div className="relative">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-[13px]"
-                        style={{ backgroundColor: "#fecdd3", color: "#9f1239" }}>GS</div>
+                    <img src="https://i.pravatar.cc/150?img=11" alt="avatar" className="w-10 h-10 rounded-full object-cover" />
                     <div className="absolute -top-0.5 -right-0.5 w-[17px] h-[17px] rounded-full flex items-center justify-center border-2"
                         style={{ backgroundColor: PINK, borderColor: BG }}>
                         <span className="text-white text-[9px] font-bold">3</span>
@@ -153,31 +182,29 @@ const SalonBookingsPage = () => {
                 </div>
             </div>
 
-            {/* ── Pending Count Card ── */}
-            <div className="mx-4 mb-4 rounded-2xl px-5 py-4 flex items-center justify-between"
-                style={{ backgroundColor: "#fce4ec" }}>
-                <div>
-                    <p className="text-[12px] font-semibold" style={{ color: PINK }}>Current Status</p>
-                    <p className="font-extrabold text-[28px] leading-tight text-gray-900">
-                        {pendingCount} Pending<br />Requests
-                    </p>
+            {/* ── Service Type Toggle ── */}
+            <TypeToggle value={bookingType} onChange={setBookingType} />
+
+            {/* ── Pending Count Card (Simple style matching new image) ── */}
+            <div className="mx-4 mb-5 rounded-2xl px-5 py-3 flex items-center bg-white shadow-sm border border-gray-100 gap-2">
+                <div className="w-6 h-6 flex items-center justify-center">
+                    <Clock size={18} color="#f59e0b" />
                 </div>
-                <button className="flex items-center gap-2 bg-white rounded-xl px-4 py-2.5 font-semibold text-[14px] text-gray-700"
-                    style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}>
-                    <SlidersHorizontal size={15} color="#374151" />Filter
-                </button>
+                <p className="text-[15px] font-medium text-gray-700">
+                     <span className="font-extrabold text-gray-900">{pendingCount}</span> Pending Requests
+                </p>
             </div>
 
-            {/* ── Status Tabs — underline style ── */}
-            <div className="flex px-4 mb-4" style={{ borderBottom: "1px solid #e5e7eb" }}>
+            {/* ── Status Tabs — Pill Style ── */}
+            <div className="flex px-4 mb-6 gap-2 overflow-x-auto scrollbar-hide py-1">
                 {STATUS_TABS.map((tab) => {
                     const active = activeTab === tab;
                     return (
                         <button key={tab} onClick={() => setActiveTab(tab)}
-                            className="mr-5 pb-2 text-[14px] font-semibold transition-all"
+                            className={`px-5 py-2 rounded-full text-[14px] font-bold transition-all whitespace-nowrap`}
                             style={active
-                                ? { color: PINK, borderBottom: `2px solid ${PINK}` }
-                                : { color: "#9ca3af", borderBottom: "2px solid transparent" }}>
+                                ? { backgroundColor: "#fb7185", color: "#fff", boxShadow: "0 2px 8px rgba(251, 113, 133, 0.4)" }
+                                : { backgroundColor: "#fff", color: "#9ca3af", border: "1px solid #e5e7eb" }}>
                             {tab}
                         </button>
                     );
@@ -207,8 +234,9 @@ const SalonBookingsPage = () => {
                 )}
             </div>
 
+            <MobileBottomNav />
         </div>
     );
-};
+}
 
 export default SalonBookingsPage;

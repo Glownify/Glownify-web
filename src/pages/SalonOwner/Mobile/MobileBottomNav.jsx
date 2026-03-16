@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LayoutGrid, Eye, Calendar, UserPlus, Scissors, User } from "lucide-react";
+import { LayoutGrid, CalendarDays, BarChart2, User } from "lucide-react";
 
 export default function MobileBottomNav() {
     const navigate = useNavigate();
@@ -14,28 +14,16 @@ export default function MobileBottomNav() {
             match: ["/salon-owner"],
         },
         {
-            label: "MyView",
-            icon: Eye,
-            path: "/salon-owner/my-view",
-            match: ["/salon-owner/my-view"],
-        },
-        {
-            label: "Bookings",
-            icon: Calendar,
+            label: "Booking",
+            icon: CalendarDays,
             path: "/salon-owner/bookings",
             match: ["/salon-owner/bookings", "/salon-owner/booking-detail", "/salon-owner/create-bill"],
         },
         {
-            label: "Specialist",
-            icon: UserPlus,
-            path: "/salon-owner/manage-specialists",
-            match: ["/salon-owner/manage-specialists"],
-        },
-        {
-            label: "Services",
-            icon: Scissors,
-            path: "/salon-owner/manage-services",
-            match: ["/salon-owner/manage-services", "/salon-owner/manage-categories-mobile", "/salon-owner/manage-add-ons", "/salon-owner/combo-packages"],
+            label: "View Reports",
+            icon: BarChart2,
+            path: "/salon-owner/reports",
+            match: ["/salon-owner/reports"],
         },
         {
             label: "Profile",

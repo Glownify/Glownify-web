@@ -22,6 +22,7 @@ import {
     LogOut,
     ChevronRight
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import MobileBottomNav from './MobileBottomNav';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -128,14 +129,15 @@ export default function MobileSalonProfileScreen() {
         subscription?.paymentStatus?.toLowerCase() === 'paid' ||
         subscription?.paymentStatus?.toLowerCase() === 'active';
 
+    const navigate = useNavigate();
     const handleLogout = () => {
         if (window.confirm('Are you sure you want to logout?')) {
             dispatch(logout());
         }
     };
 
-    const handleEdit = () => alert('Edit functionality coming soon!');
-    const handleUpgrade = () => alert('Subscription upgrade coming soon!');
+    const handleEdit = () => navigate('/salon-owner/my-view');
+    const handleUpgrade = () => navigate('/subscription');
 
     return (
         <div style={{ flex: 1, backgroundColor: BG, minHeight: '100vh', paddingBottom: '50px' }}>

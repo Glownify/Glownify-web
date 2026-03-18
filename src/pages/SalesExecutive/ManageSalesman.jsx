@@ -89,7 +89,7 @@ const ManageSalesman = () => {
   }
 
   return (
-    <div className="p-6 lg:p-10 bg-[#FBFBFE] min-h-screen">
+    <div className="p-6 lg:p-10">
       <div className="w-full mx-auto px-4 md:px-8 lg:px-12">
         {/* --- HEADER --- */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
@@ -101,11 +101,11 @@ const ManageSalesman = () => {
           <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
             {/* Search */}
             <div className="relative group w-full md:w-72">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#8B5CF6] transition-colors" size={18} />
               <input
                 type="text"
                 placeholder="Search by name or ID..."
-                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all shadow-sm"
+                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#8B5CF6]/10 focus:border-[#8B5CF6] transition-all shadow-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -115,8 +115,8 @@ const ManageSalesman = () => {
             <button
               onClick={() => setOpenCreate(true)}
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl
-                bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-600/20
-                hover:bg-indigo-700 hover:shadow-xl transition-all"
+                bg-[#8B5CF6] text-white font-bold shadow-lg shadow-[#8B5CF6]/20
+                hover:bg-[#7C3AED] hover:shadow-xl transition-all"
             >
               <Plus size={18} />
               Create Salesman
@@ -131,7 +131,7 @@ const ManageSalesman = () => {
               {/* Top Row: Profile & Actions */}
               <div className="flex justify-between items-start mb-6">
                 <div className="flex items-center gap-4">
-                  <div className="h-14 w-14 rounded-2xl bg-indigo-50 flex items-center justify-center font-bold text-indigo-600 text-xl group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                  <div className="h-14 w-14 rounded-2xl bg-purple-50 flex items-center justify-center font-bold text-[#8B5CF6] text-xl group-hover:bg-[#8B5CF6] group-hover:text-white transition-all duration-300">
                     {item.user?.name?.charAt(0)}
                   </div>
                   <div>
@@ -154,7 +154,7 @@ const ManageSalesman = () => {
                 </div>
                 <div className="bg-slate-50 rounded-2xl p-4">
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Commission</p>
-                  <p className="text-lg font-black text-indigo-600">{(item.commissionRate)}%</p>
+                  <p className="text-lg font-black text-[#8B5CF6]">{(item.commissionRate)}%</p>
                 </div>
               </div>
 
@@ -166,7 +166,7 @@ const ManageSalesman = () => {
                 </div>
                 <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-indigo-500 rounded-full transition-all duration-500"
+                    className="h-full bg-[#8B5CF6] rounded-full transition-all duration-500"
                     style={{ width: `${(item.commissionRate)}%` }}
                   />
                 </div>
@@ -176,7 +176,7 @@ const ManageSalesman = () => {
               <div className="flex items-center justify-between pt-4 border-t border-slate-50">
                 <div className="flex items-center gap-2">
                   <Award size={14} className="text-indigo-400" />
-                  <span className="text-xs font-mono font-bold text-indigo-500">{item.referralId}</span>
+                  <span className="text-xs font-mono font-bold text-[#8B5CF6]">{item.referralId}</span>
                 </div>
                 <div className="flex items-center gap-2 text-slate-400">
                   <Calendar size={14} />

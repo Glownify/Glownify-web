@@ -20,12 +20,13 @@ import ManageResetPassword from "./../pages/SuperAdmin/ManageResetPassword";
 import SuperAdminProfilePage from "../pages/SuperAdmin/SuperAdminProfilePage";
 
 // ─── Sales Executive Pages ─────────────────────────────────────────────────────
-import SalesExecitiveDashboard from "./../pages/SalesExecutive/SalesExecitiveDashboard";
+import SalesExecutiveDashboard from "./../pages/SalesExecutive/SalesExecutiveDashboard";
 import ManageSalesman from "./../pages/SalesExecutive/ManageSalesman";
 import SalesExecutiveProfilePage from "../pages/SalesExecutive/SalesExecutiveProfilePage";
 
 // ─── Protected Layouts ───────────────────────────────────────────────────────
 import SalonOwnerLayout from "../components/layout/SalonOwnerLayout";
+import SalesExecutiveLayout from "../components/layout/SalesExecutiveLayout";
 
 // ─── Salon Owner Pages ─────────────────────────────────────────────────────────
 import SalonOwnerDashboard from "../pages/SalonOwner/SalonOwnerDashboard";
@@ -210,9 +211,9 @@ const AllRoutes = () => {
           {/* ── 4. Sales Executive ── */}
           {/* TODO: Re-enable ProtectedRoute before production deployment */}
           {/* <Route element={<ProtectedRoute allowedRoles={["sales_executive"]} />}> */}
-          <Route path="/sales-executive" element={<DashboardLayout />}>
-            <Route index element={<SalesExecitiveDashboard />} />
-            <Route path="dashboard" element={<SalesExecitiveDashboard />} />
+          <Route path="/sales-executive" element={<SalesExecutiveLayout />}>
+            <Route index element={<SalesExecutiveDashboard />} />
+            <Route path="dashboard" element={<SalesExecutiveDashboard />} />
             <Route path="manage-salesman" element={<ManageSalesman />} />
             <Route path="profile" element={<SalesExecutiveProfilePage />} />
           </Route>

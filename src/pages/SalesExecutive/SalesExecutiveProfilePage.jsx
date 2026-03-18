@@ -40,7 +40,7 @@ const SalesExecutiveProfilePage = () => {
   const { roleDetails: details } = user;
 
   return (
-    <div className="min-h-screen bg-slate-50/50 py-12 px-4 md:px-8">
+    <div className="py-12 px-4 md:px-8">
       <div className="max-w-5xl mx-auto space-y-6">
         
         {/* Executive Header Card */}
@@ -48,8 +48,8 @@ const SalesExecutiveProfilePage = () => {
           <div className="absolute top-0 right-0 w-48 h-48 bg-slate-50 rounded-full -mr-20 -mt-20 z-0"></div>
           
           <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-            <div className="h-28 w-28 bg-slate-900 rounded-3xl flex items-center justify-center text-white text-4xl font-black shadow-xl">
-              {user.name.charAt(0).toUpperCase()}
+            <div className="h-28 w-28 bg-[#2D1B4E] rounded-3xl flex items-center justify-center text-white text-4xl font-black shadow-xl uppercase">
+              {user.name.charAt(0)}
             </div>
             
             <div className="flex-1 text-center md:text-left space-y-2">
@@ -61,12 +61,12 @@ const SalesExecutiveProfilePage = () => {
               </div>
               <div className="flex flex-wrap justify-center md:justify-start gap-4 text-slate-500 text-sm font-medium">
                 <span className="flex items-center gap-1.5"><ShieldCheck size={16} className="text-emerald-500"/> Account {user.status}</span>
-                <span className="flex items-center gap-1.5"><Briefcase size={16} className="text-indigo-500"/> Executive Grade</span>
+                <span className="flex items-center gap-1.5"><Briefcase size={16} className="text-[#8B5CF6]"/> Executive Grade</span>
               </div>
             </div>
 
             <div className="flex flex-col gap-2">
-               <button className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center gap-2">
+               <button className="px-6 py-3 bg-[#8B5CF6] text-white rounded-xl font-bold text-sm hover:bg-[#7C3AED] transition-all shadow-lg shadow-[#8B5CF6]/10 flex items-center gap-2">
                   Edit Profile
                </button>
             </div>
@@ -78,13 +78,13 @@ const SalesExecutiveProfilePage = () => {
           {/* Left Column: ID & Contact */}
           <div className="space-y-6">
             {/* Referral Card */}
-            <div className="bg-slate-900 rounded-[2rem] p-6 text-white shadow-xl">
+           <div className="bg-[#2D1B4E] rounded-[2rem] p-6 text-white shadow-xl">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Executive Referral ID</p>
-                <QrCode size={18} className="text-indigo-400"/>
+                <p className="text-[10px] font-black text-white/40 uppercase tracking-widest">Executive Referral ID</p>
+                <QrCode size={18} className="text-[#8B5CF6]"/>
               </div>
               <div className="flex items-center justify-between bg-white/10 rounded-2xl p-4 border border-white/10">
-                <code className="font-mono font-bold text-lg text-indigo-300">{details?.referralId}</code>
+                <code className="font-mono font-bold text-lg text-white">{details?.referralId}</code>
                 <button 
                   onClick={() => handleCopy(details?.referralId)}
                   className="p-2 hover:bg-white/10 rounded-xl transition-colors"
@@ -149,7 +149,7 @@ const SalesExecutiveProfilePage = () => {
                 <div className="relative z-10">
                   <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Commission Rate</p>
                   <h4 className="text-4xl font-black text-slate-900">{details?.commissionRate || 0}%</h4>
-                  <div className="mt-4 flex items-center gap-2 text-indigo-600 text-xs font-bold">
+                  <div className="mt-4 flex items-center gap-2 text-[#8B5CF6] text-xs font-bold">
                     <Check size={14}/> Standard Executive Rate
                   </div>
                 </div>

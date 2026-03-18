@@ -18,6 +18,12 @@ import {
   BarChart3,
   Clock,
   HelpCircle,
+  Plus,
+  Eye,
+  Gift,
+  FileText,
+  Share2,
+  BookOpen,
 } from "lucide-react";
 import {
   ComposedChart,
@@ -89,6 +95,51 @@ const SalonOwnerDashboard = () => {
     checkSubscription(navigate);
   }, [navigate, location]);
 
+  const quickActions = [
+    {
+      icon: Plus,
+      label: 'Add Service',
+      iconColor: '#f43f5e',
+      bg: '#fecdd3',
+      navigateTo: '/salon-owner/manage-services',
+    },
+    {
+      icon: Eye,
+      label: 'Salon View',
+      iconColor: '#0ea5e9',
+      bg: '#e0f2fe',
+      navigateTo: '/salon-owner/my-view',
+    },
+    {
+      icon: Gift,
+      label: 'Create Offer',
+      iconColor: '#ec4899',
+      bg: '#fbcfe8',
+      navigateTo: '/salon-owner/manage-add-ons',
+    },
+    {
+      icon: FileText,
+      label: 'View Reports',
+      iconColor: '#10b981',
+      bg: '#d1fae5',
+      navigateTo: '/salon-owner/reports',
+    },
+    {
+      icon: Share2,
+      label: 'Share',
+      iconColor: '#f97316',
+      bg: '#ffedd5',
+      navigateTo: '#',
+    },
+    {
+      icon: BookOpen,
+      label: 'Courses',
+      iconColor: '#ec4899',
+      bg: '#fbcfe8',
+      navigateTo: '#',
+    },
+  ];
+
   if (isMobile) {
     return <MobileSalonAdminDashboard />;
   }
@@ -142,7 +193,28 @@ const SalonOwnerDashboard = () => {
         </div>
       </header>
 
-      {/* 2. Stats Cards Row */}
+      {/* 2. Quick Actions Row */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4 mb-8">
+        {quickActions.map((action, index) => (
+          <button
+            key={index}
+            onClick={() => navigate(action.navigateTo)}
+            className={`flex items-center justify-center gap-3 p-4 rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm border border-white/50 group ${action.label === 'Courses' ? 'lg:col-span-2 py-6 px-8 ring-2 ring-purple-100' : ''}`}
+            style={{ backgroundColor: action.bg }}
+          >
+            <action.icon 
+              size={action.label === 'Courses' ? 26 : 20} 
+              color={action.iconColor} 
+              className="transition-transform group-hover:scale-110" 
+            />
+            <span className={`${action.label === 'Courses' ? 'text-[17px]' : 'text-[14px]'} font-bold text-gray-700 whitespace-nowrap`}>
+              {action.label}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {/* 3. Stats Cards Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         {/* Card 1: Total Salons */}
         <div className="bg-white/40 backdrop-blur-xl p-6 rounded-[20px] border border-white/60 shadow-sm flex items-center justify-between group hover:translate-y-[-2px] transition-all">
@@ -201,7 +273,7 @@ const SalonOwnerDashboard = () => {
         </div>
       </div>
 
-      {/* 3. Main Body Grid */}
+      {/* 4. Main Body Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
         {/* --- Left 8 Columns (Charts & Table) --- */}
@@ -331,25 +403,48 @@ const SalonOwnerDashboard = () => {
               </button>
             </div>
 
-            <div className="flex items-center relative gap-4 mb-2">
-              <div className="flex-1 space-y-4 text-[13px] font-semibold text-[#4f208a]">
-                <div className="flex justify-between border-b border-white/40 pb-2.5">
-                  <span className="text-[#6b479e]">Total Registration</span>
-                  <span className="text-[#32135d]">312</span>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex-1 space-y-4 text-[13px] font-semibold text-[#4f208a]">
+                  <div className="flex justify-between border-b border-white/40 pb-2.5">
+                    <span className="text-[#6b479e]">Total Registration</span>
+                    <span className="text-[#32135d]">312</span>
+                  </div>
+                  <div className="flex justify-between border-b border-white/40 pb-2.5">
+                    <span className="text-[#6b479e]">Active Subscriptions</span>
+                    <span className="text-[#32135d]">214</span>
+                  </div>
+                  <div className="flex justify-between border-b border-white/40 pb-2.5">
+                    <span className="text-[#6b479e] text-[11px]">Commission per ActiveSubs</span>
+                    <span className="text-[#32135d] text-[11px]">₹500</span>
+                  </div>
                 </div>
-                <div className="flex justify-between border-b border-white/40 pb-2.5">
-                  <span className="text-[#6b479e]">Active Subscriptions</span>
-                  <span className="text-[#32135d]">214</span>
+
+                <div className="w-[130px] h-[130px] relative shrink-0">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie data={pieData} innerRadius={42} outerRadius={58} paddingAngle={4} dataKey="value" stroke="none">
+                        {pieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} style={{ filter: `drop-shadow(0 4px 6px rgba(0,0,0,0.1))` }} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                  {/* Center Text */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                    <span className="text-[22px] font-bold text-purple-700 tracking-tight leading-none">43%</span>
+                    <span className="text-[9px] font-semibold text-[#6b479e] mt-0.5">₹ 10,500</span>
+                  </div>
                 </div>
-                <div className="flex justify-between border-b border-white/40 pb-2.5">
-                  <span className="text-[#6b479e] text-[11px]">Commission per ActiveSubs</span>
-                  <span className="text-[#32135d] text-[11px]">₹500</span>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex justify-between items-end pt-2 border-t border-purple-200">
+                  <span className="text-purple-700 font-bold">Total Earned</span>
+                  <span className="text-[28px] font-bold text-[#32135d] tracking-tight">₹ 18,500</span>
                 </div>
-                <div className="flex justify-between pt-2 border-t border-purple-200">
-                  <span className="text-purple-700">Total Earned</span>
-                  <span className="text-[22px] font-bold text-[#32135d] tracking-tight">₹ 18,500</span>
-                </div>
-                <div className="flex gap-4 pt-2">
+                
+                <div className="flex gap-4">
                   <div className="flex-1 p-3 rounded-2xl bg-white/40 border border-white/60 group/item transition-all hover:bg-white/60 shadow-sm">
                     <p className="text-[10px] text-[#6b479e] font-semibold tracking-wider mb-1">PAID</p>
                     <p className="text-[15px] text-[#32135d] font-bold">₹ 1,80,000</p>
@@ -364,23 +459,6 @@ const SalonOwnerDashboard = () => {
                       <div className="h-full bg-red-400 w-[30%]" />
                     </div>
                   </div>
-                </div>
-              </div>
-
-              <div className="w-[120px] h-[120px] absolute -right-4 -top-6">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={pieData} innerRadius={42} outerRadius={58} paddingAngle={4} dataKey="value" stroke="none">
-                      {pieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} style={{ filter: `drop-shadow(0 4px 6px rgba(0,0,0,0.1))` }} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-                {/* Center Text */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <span className="text-[22px] font-bold text-purple-700 tracking-tight leading-none">43%</span>
-                  <span className="text-[9px] font-semibold text-[#6b479e] mt-0.5">₹ 10,500</span>
                 </div>
               </div>
             </div>

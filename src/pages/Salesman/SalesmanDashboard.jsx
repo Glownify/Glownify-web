@@ -61,20 +61,22 @@ const SalesmanDashboard = () => {
   const percentage = Math.min(Math.round((achieved / target) * 100), 100);
 
   return (
-    <div className="min-h-screen bg-slate-50/50 p-4 md:p-8">
-      <div className="w-full mx-auto px-4 md:px-8 lg:px-12 space-y-8">
+    <div className="min-h-screen p-4 md:p-8">
+      <div className="w-full mx-auto px-4 md:px-8 lg:px-12 space-y-10 animate-in fade-in duration-700">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">
-              Welcome Back, Sales Partner!
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
+               <span>Sales Partner Dashboard</span>
+               <span className="w-1 h-1 rounded-full bg-slate-200"></span>
+               <span>Analytics</span>
+            </div>
+            <h1 className="text-4xl font-black tracking-tight text-slate-900">
+              Welcome Back! <span className="animate-pulse">👋</span>
             </h1>
-            <p className="text-slate-500">
-              Here's an overview of your performance and earnings.
-            </p>
           </div>
-          <button className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold transition-all shadow-lg shadow-indigo-100">
-            <Plus size={18} />
+          <button className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#D946EF] to-[#8B5CF6] text-white px-8 py-3.5 rounded-2xl font-bold text-[15px] transition-all shadow-xl shadow-purple-200 hover:-translate-y-1 active:scale-95">
+            <Plus size={20} className="stroke-[3]" />
             <span>New Referral</span>
           </button>
         </div>
@@ -84,25 +86,25 @@ const SalesmanDashboard = () => {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-white/70 backdrop-blur-xl p-8 rounded-[40px] border border-purple-100/20 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all group cursor-pointer"
             >
-              <div className="flex justify-between items-start mb-4">
-                <div className={`${stat.bgColor} p-3 rounded-xl`}>
-                  {stat.icon}
+              <div className="flex justify-between items-start mb-6">
+                <div className={`p-4 rounded-2xl bg-white shadow-sm ring-1 ring-slate-50 group-hover:scale-110 transition-transform`}>
+                  {React.cloneElement(stat.icon, { className: "text-[#8B5CF6]", size: 24 })}
                 </div>
-                <button className="text-slate-400 hover:text-slate-600">
+                <button className="text-slate-300 hover:text-[#8B5CF6]">
                   <MoreHorizontal size={20} />
                 </button>
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">
+                <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1 leading-tight">
                   {stat.title}
                 </p>
-                <h3 className="text-2xl font-bold text-slate-900 mt-1">
+                <h3 className="text-3xl font-black text-slate-800 tracking-tight">
                   {stat.value}
                 </h3>
                 <p
-                  className={`text-xs mt-2 font-medium ${index === 2 ? "text-emerald-600" : "text-slate-400"
+                  className={`text-[11px] mt-2 font-black uppercase tracking-tighter ${index === 2 ? "text-emerald-500" : "text-[#8B5CF6]"
                     }`}
                 >
                   {stat.change}

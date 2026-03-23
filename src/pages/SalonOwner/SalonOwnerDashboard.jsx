@@ -5,25 +5,20 @@ import MobileSalonAdminDashboard from "./Mobile/MobileSalonAdminDashboard";
 import {
   Search,
   Bell,
-  Store,
-  CheckCircle,
   MapPin,
   ChevronDown,
-  Check,
   ChevronLeft,
   ChevronRight,
-  TrendingUp,
-  MessageSquare,
-  ClipboardList,
-  BarChart3,
-  Clock,
-  HelpCircle,
-  Plus,
+  Store,
+  Check,
+  Mail,
   Eye,
+  Plus,
   Gift,
   FileText,
   Share2,
   BookOpen,
+  Wallet,
 } from "lucide-react";
 import {
   ComposedChart,
@@ -37,47 +32,61 @@ import {
   PieChart,
   Pie,
   Cell,
-  Legend
 } from "recharts";
 
-// --- Mock Data ---
-
-const activityData = [
-  { name: "Jan", salons: 15, subs: 10 },
-  { name: "Feb", salons: 20, subs: 18 },
-  { name: "Mar", salons: 30, subs: 25 },
-  { name: "Apr", salons: 40, subs: 32 },
-  { name: "May", salons: 50, subs: 38 },
-  { name: "Jun", salons: 30, subs: 42 },
-  { name: "Jul", salons: 40, subs: 48 },
-  { name: "Aug", salons: 60, subs: 55 },
+const actionCards = [
+  { label: "Add Service", icon: Plus, bg: "#f4c9d5", text: "#a63b61" },
+  { label: "Salon View", icon: Eye, bg: "#c8e5f6", text: "#2f7ea3" },
+  { label: "Create Offer", icon: Gift, bg: "#f3cad9", text: "#b84879" },
+  { label: "View Reports", icon: FileText, bg: "#caead1", text: "#2a8a57" },
+  { label: "Share", icon: Share2, bg: "#f7dfab", text: "#b87814" },
+  { label: "Courses", icon: BookOpen, bg: "#f1c9dc", text: "#ba4c7f" },
 ];
 
-const salonsData = [
-  { id: "1", name: "Style Elegante", subId: "SP-JPM-005", area: "Jayanagar", subArea: "Ayanagar", serviceType: "In-Salon", typeColor: "bg-green-100 text-green-700", plan: "Premium", status: "Active", statusColor: "bg-emerald-500 text-white", date: "25 Mar, 201" },
-  { id: "2", name: "Spaxpress Salon", subId: "SP-SLR-034", area: "Jayanagar", subArea: "Jayanagar", serviceType: "Premium", typeColor: "bg-purple-100 text-purple-700", plan: "Premium", status: "Active", statusColor: "bg-emerald-500 text-white", date: "26 Mar, 201" },
-  { id: "3", name: "Golden Mirror", subId: "SP-BLR-031", area: "Indiranagar", subArea: "Jayanagar", serviceType: "In-Salon", typeColor: "bg-green-100 text-green-700", plan: "Basic", status: "Pro", statusColor: "bg-purple-600 text-white", date: "25 Mar, 201" },
-  { id: "4", name: "Glamour Touch Spa", subId: "SP-SAL-215", area: "Jayanagar", subArea: "Jayanagar", serviceType: "In-Salon", typeColor: "bg-green-100 text-green-700", plan: "Pro", status: "Trial", statusColor: "bg-blue-500 text-white", date: "21 Mar, 201" },
-  { id: "5", name: "StyleLight Salon", subId: "SP-MAL-179", area: "Malleswaram", subArea: "Bangalore", serviceType: "In-Salon", typeColor: "bg-green-100 text-green-700", plan: "Pro", status: "Pro", statusColor: "bg-purple-600 text-white", date: "21 Mar, 201" },
+const metricCards = [
+  { title: "Total Salons Registered", subtitle: "", value: "48", icon: Store, iconWrap: "bg-[#e2d2ff] text-[#744de0]" },
+  { title: "Active Subscriptions", subtitle: "\u20B9 2,60,000 Earning", value: "32", icon: Check, iconWrap: "bg-[#d7f0e1] text-[#4ba57f]" },
+  { title: "Pending Followups", subtitle: "", value: "11", icon: Check, iconWrap: "bg-[#ffe5c8] text-[#da8e48]" },
+  { title: "This Month Commission", subtitle: "Earnings", value: "\u20B9 18,500", icon: Wallet, iconWrap: "bg-[#e0d4ff] text-[#7452df]" },
+];
+
+const activityData = [
+  { name: "Jan", salons: 18, subs: 16 },
+  { name: "Feb", salons: 26, subs: 22 },
+  { name: "Mar", salons: 34, subs: 28 },
+  { name: "Apr", salons: 38, subs: 33 },
+  { name: "May", salons: 45, subs: 39 },
+  { name: "Jun", salons: 40, subs: 45 },
+  { name: "Aug", salons: 50, subs: 58 },
+];
+
+const pieData = [
+  { name: "Used", value: 43, color: "#9b5cf6" },
+  { name: "Left", value: 57, color: "#eadcff" },
 ];
 
 const alertsData = [
   { id: "SP-SAL-331", name: "Golden Mirror Salon", location: "Jayanagar", score: 42 },
-  { id: "SP-MAL-215", name: "StyleLight Salon", location: "Malleswaram, Bangalore", score: 37 },
-  { id: "SP-SAL-235", name: "SimplyStrands Unisex", location: "Banaswadi, Bangalore", score: 37 },
-  { id: "SP-SAL-175", name: "Starlight Spa", location: "Benson Town, Bangalore", score: 37 },
+  { id: "SP-MAL-215", name: "StyleLight Salon", location: "Malleswaram", score: 37 },
+  { id: "SP-SAL-235", name: "SimplyStrands Unisex", location: "Banaswadi", score: 31 },
 ];
 
-const pieData = [
-  { name: "Remaining", value: 57, color: "#d8b4fe" },
-  { name: "Achieved", value: 43, color: "#9333ea" },
+const salonsData = [
+  { name: "Style Elegante", id: "SP JPM 005", area: "Jayanagar", subArea: "Ayanagar", serviceType: "In-Salon", plan: "Premium", status: "Active", regDate: "25 Mar, 201", statusClass: "bg-[#9bc5ba] text-white" },
+  { name: "SpaXpress Salon", id: "SP-SLR 034", area: "Jayanagar", subArea: "Jayanagar", serviceType: "Premium", plan: "Premium", status: "Active", regDate: "26 Mar, 201", statusClass: "bg-[#9bc5ba] text-white" },
+  { name: "Golden Mirror", id: "SP-BLR G31", area: "Indiranagar", subArea: "Jayanagar", serviceType: "In-Salon", plan: "Basic", status: "Pro", regDate: "25 Mar, 201", statusClass: "bg-[#9b63e4] text-white" },
+  { name: "Glamour Touch Spa", id: "SP-SAL 215", area: "Jayanagar", subArea: "Jayanagar", serviceType: "In-Salon", plan: "Pro", status: "Trial", regDate: "21 Mar, 201", statusClass: "bg-[#7f8fdc] text-white" },
+  { name: "StyleLight Salon", id: "SP-SAL 179", area: "Malleswaram", subArea: "Bangalore", serviceType: "In-Salon", plan: "Pro", status: "Pro", regDate: "21 Mar, 201", statusClass: "bg-[#7d75d6] text-white" },
 ];
 
-const visitPieData = [
-  { name: "Pending", value: 54, color: "#a855f7" },
-  { name: "Completed", value: 46, color: "#f3e8ff" },
+const quickActions = [
+  { icon: Plus, label: "Add Service", bg: "#fecdd3", color: "#ef476f", path: "/salon-owner/manage-services" },
+  { icon: Eye, label: "Salon View", bg: "#dbeefe", color: "#1d9bf0", path: "/salon-owner/my-view" },
+  { icon: Gift, label: "Create Offer", bg: "#fce7f3", color: "#ec4899", path: "/salon-owner/manage-add-ons" },
+  { icon: FileText, label: "View Reports", bg: "#dcfce7", color: "#22c55e", path: "/salon-owner/reports" },
+  { icon: Share2, label: "Share", bg: "#ffedd5", color: "#f97316", path: "#" },
+  { icon: BookOpen, label: "Courses", bg: "#f8d3e0", color: "#c54f82", path: "#" },
 ];
-
 
 const SalonOwnerDashboard = () => {
   const navigate = useNavigate();
@@ -95,474 +104,242 @@ const SalonOwnerDashboard = () => {
     checkSubscription(navigate);
   }, [navigate, location]);
 
-  const quickActions = [
-    {
-      icon: Plus,
-      label: 'Add Service',
-      iconColor: '#f43f5e',
-      bg: '#fecdd3',
-      navigateTo: '/salon-owner/manage-services',
-    },
-    {
-      icon: Eye,
-      label: 'Salon View',
-      iconColor: '#0ea5e9',
-      bg: '#e0f2fe',
-      navigateTo: '/salon-owner/my-view',
-    },
-    {
-      icon: Gift,
-      label: 'Create Offer',
-      iconColor: '#ec4899',
-      bg: '#fbcfe8',
-      navigateTo: '/salon-owner/manage-add-ons',
-    },
-    {
-      icon: FileText,
-      label: 'View Reports',
-      iconColor: '#10b981',
-      bg: '#d1fae5',
-      navigateTo: '/salon-owner/reports',
-    },
-    {
-      icon: Share2,
-      label: 'Share',
-      iconColor: '#f97316',
-      bg: '#ffedd5',
-      navigateTo: '#',
-    },
-    {
-      icon: BookOpen,
-      label: 'Courses',
-      iconColor: '#ec4899',
-      bg: '#fbcfe8',
-      navigateTo: '#',
-    },
-  ];
-
-  if (isMobile) {
-    return <MobileSalonAdminDashboard />;
-  }
+  if (isMobile) return <MobileSalonAdminDashboard />;
+  const PINK_BRAND = "#D946EF";
+  const PURPLE_BRAND = "#8B5CF6";
 
   return (
-    <div className="p-6 w-full max-w-[1600px] mx-auto min-h-screen" style={{ background: 'linear-gradient(135deg, #eaddf8 0%, #f3ebf9 50%, #faf8fc 100%)' }}>
-
-      {/* 1. Top Header Bar */}
-      <header className="flex flex-col xl:flex-row justify-between items-center mb-8 gap-6 bg-white/30 backdrop-blur-lg p-4 rounded-[20px] border border-white/40 shadow-sm">
-        {/* Left: Search Bar */}
-        <div className="relative w-full xl:w-[400px]">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-600/70 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Search anything..."
-            className="w-full pl-12 pr-4 py-3 bg-white/50 backdrop-blur-md border border-white/60 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-400 text-[15px] font-medium text-purple-900 placeholder-purple-500/70 shadow-sm"
-          />
-        </div>
-
-        {/* Center: Location indicator */}
-        <div className="flex items-center gap-2 px-3 py-3 rounded-full text-purple-900">
-          <MapPin size={18} className="text-purple-600" />
-          <span className="font-semibold text-[15px] whitespace-nowrap">Jayanagar, Bangalore</span>
-          <ChevronRight size={16} className="text-purple-400 ml-0.5" />
-        </div>
-
-        {/* Right side actions */}
-        <div className="flex items-center gap-4 w-full xl:w-auto justify-center xl:justify-end">
-          <div className="bg-[#8b5cf6] text-white px-6 py-2.5 rounded-xl font-bold text-[15px] flex items-center gap-2 shadow-lg shadow-purple-500/30 cursor-pointer">
-             <span className="opacity-80 font-normal">₹</span> 25,000
+    <div className="p-7 w-full max-w-[1600px] mx-auto min-h-screen">
+      <div className="space-y-7">
+        <header className="bg-white/70 backdrop-blur-xl border border-purple-100/50 rounded-[26px] px-6 py-5 flex flex-col xl:flex-row gap-5 xl:items-center xl:justify-between shadow-2xl shadow-purple-500/5">
+          <div className="flex items-center gap-4 flex-1">
+            <div className="relative w-full max-w-[310px]">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input type="text" placeholder="Search ..." className="w-full h-12 rounded-full border border-slate-100 bg-white/95 px-11 pr-4 text-[14px] text-slate-700 shadow-sm outline-none placeholder:text-slate-400" />
+            </div>
+            <div className="hidden xl:flex items-center gap-2 text-[14px] font-semibold text-slate-600">
+              <MapPin size={14} className="text-[#8B5CF6]" />
+              Jeperags, Aegaihters
+              <ChevronDown size={14} />
+            </div>
           </div>
+          <div className="flex items-center justify-between xl:justify-end gap-3">
+            <button className="px-6 h-11 rounded-xl bg-gradient-to-r from-[#D946EF] to-[#8B5CF6] text-white text-[14px] font-bold shadow-lg shadow-purple-200">E 3 Leidp</button>
+            <button className="relative w-11 h-11 rounded-xl border border-slate-100 bg-white/95 text-slate-500"><Bell size={18} className="mx-auto" /><span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-[#f06286] text-[9px] text-white flex items-center justify-center font-bold border-2 border-white">4</span></button>
+            <button className="relative w-11 h-11 rounded-xl border border-slate-100 bg-white/95 text-slate-500"><Mail size={18} className="mx-auto" /><span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-[#f06286] text-[9px] text-white flex items-center justify-center font-bold border-2 border-white">3</span></button>
+            <div className="flex items-center gap-2 pl-2">
+              <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-[12px] font-black text-[#8B5CF6] ring-2 ring-white shadow-sm font-black">??</div>
+              <img src="https://flagcdn.com/w40/in.png" alt="IN" className="w-5 h-3.5 rounded-sm shadow-sm" />
+            </div>
+          </div>
+        </header>
 
-          <div className="flex items-center gap-3">
-            <button className="relative p-2.5 bg-white/50 backdrop-blur-md hover:bg-white/80 rounded-xl border border-white text-purple-700 transition-colors shadow-sm">
-              <Bell size={20} />
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#EF4444] text-white text-[9px] font-bold flex items-center justify-center rounded-full border border-white">4</span>
+        <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+          {actionCards.map((item) => (
+            <button key={item.label + item.bg} className="h-[62px] rounded-[22px] border border-white/50 bg-white/40 backdrop-blur-md shadow-sm flex items-center justify-center gap-3 px-4 font-bold text-[14px] text-slate-600 hover:scale-105 transition-all hover:bg-white hover:shadow-xl hover:shadow-purple-500/5">
+              <item.icon size={16} className="text-[#8B5CF6]" />
+              <span>{item.label}</span>
             </button>
-            <button className="relative p-2.5 bg-white/50 backdrop-blur-md hover:bg-white/80 rounded-xl border border-white text-purple-700 transition-colors shadow-sm">
-              <MessageSquare size={20} />
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#EF4444] text-white text-[9px] font-bold flex items-center justify-center rounded-full border border-white">3</span>
-            </button>
-            <div className="flex items-center gap-3 ml-2 border-l border-purple-200/50 pl-4">
-              <img
-                src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aditya"
-                alt="Profile"
-                className="w-10 h-10 rounded-full border border-white bg-purple-100 shadow-sm"
-              />
-              <img src="https://flagcdn.com/w40/in.png" alt="IN" className="w-[18px] h-[13px] rounded-sm shadow-sm" />
-            </div>
-          </div>
-        </div>
-      </header>
+          ))}
+        </section>
 
-      {/* 2. Quick Actions Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4 mb-8">
-        {quickActions.map((action, index) => (
-          <button
-            key={index}
-            onClick={() => navigate(action.navigateTo)}
-            className={`flex items-center justify-center gap-3 p-4 rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm border border-white/50 group ${action.label === 'Courses' ? 'lg:col-span-2 py-6 px-8 ring-2 ring-purple-100' : ''}`}
-            style={{ backgroundColor: action.bg }}
-          >
-            <action.icon 
-              size={action.label === 'Courses' ? 26 : 20} 
-              color={action.iconColor} 
-              className="transition-transform group-hover:scale-110" 
-            />
-            <span className={`${action.label === 'Courses' ? 'text-[17px]' : 'text-[14px]'} font-bold text-gray-700 whitespace-nowrap`}>
-              {action.label}
-            </span>
-          </button>
-        ))}
-      </div>
-
-      {/* 3. Stats Cards Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-        {/* Card 1: Total Salons */}
-        <div className="bg-white/40 backdrop-blur-xl p-6 rounded-[20px] border border-white/60 shadow-sm flex items-center justify-between group hover:translate-y-[-2px] transition-all">
-          <div>
-            <p className="text-[13px] text-[#4f208a] font-semibold mb-2 leading-tight">Total Salons<br/>Registered</p>
-            <h3 className="text-[32px] font-bold text-[#32135d] tracking-tight leading-none mt-1">48</h3>
-          </div>
-          <div className="w-12 h-12 bg-[#D1C4EF] text-[#6b21a8] rounded-xl flex items-center justify-center border border-white/50 shadow-sm">
-            <Store size={22} strokeWidth={2.5} />
-          </div>
-        </div>
-
-        {/* Card 2: Active Subscriptions */}
-        <div className="bg-white/40 backdrop-blur-xl p-6 rounded-[20px] border border-white/60 shadow-sm flex items-center justify-between group hover:translate-y-[-2px] transition-all">
-          <div>
-            <p className="text-[13px] text-[#4f208a] font-semibold mb-2 leading-tight">Active<br/>Subscriptions</p>
-            <div className="flex flex-col gap-1">
-              <h3 className="text-[32px] font-bold text-[#32135d] tracking-tight leading-none">32</h3>
-              <p className="text-[11px] text-[#4f208a] font-medium flex items-center gap-1">₹ 2,60,000 <span className="opacity-70">Earning</span></p>
-            </div>
-          </div>
-          <div className="w-12 h-12 bg-[#bbf7d0] text-[#16a34a] rounded-full flex items-center justify-center border-4 border-white/50 shadow-sm">
-            <Check size={20} strokeWidth={3} />
-          </div>
-        </div>
-
-        {/* Card 3: Pending Followups */}
-        <div className="bg-white/40 backdrop-blur-xl p-6 rounded-[20px] border border-white/60 shadow-sm flex items-center justify-between group hover:translate-y-[-2px] transition-all">
-          <div>
-            <p className="text-[13px] text-[#4f208a] font-semibold mb-2 leading-tight">Pending<br/>Followups</p>
-            <h3 className="text-[32px] font-bold text-[#32135d] tracking-tight leading-none mt-1">11</h3>
-          </div>
-          <div className="w-12 h-12 bg-[#fed7aa] text-[#ea580c] rounded-full flex items-center justify-center border-4 border-white/50 shadow-sm">
-            <Check size={20} strokeWidth={3} />
-          </div>
-        </div>
-
-        {/* Card 4: This Month Commission */}
-        <div className="bg-white/40 backdrop-blur-xl p-6 rounded-[20px] border border-white/60 shadow-sm flex items-center justify-between group hover:translate-y-[-2px] transition-all relative overflow-hidden">
-          <div className="relative z-10 w-full">
-            <p className="text-[13px] text-[#4f208a] font-semibold mb-2 leading-tight">This Month<br/>Commission</p>
-            <div className="flex flex-col gap-1">
-              <h3 className="text-[28px] font-bold text-[#32135d] tracking-tight leading-none">₹ 18,500</h3>
-              <p className="text-[11px] text-[#4f208a] font-medium"><span className="opacity-70">Earnings</span></p>
-            </div>
-          </div>
-          <div className="w-16 h-16 absolute right-4 bottom-4 opacity-70">
-            {/* Coins illustration mock */}
-            <div className="w-8 h-4 bg-purple-200 border-2 border-[#8B5CF6] rounded-full absolute bottom-0 right-2"></div>
-            <div className="w-8 h-4 bg-purple-300 border-2 border-[#8B5CF6] rounded-full absolute bottom-2 right-2"></div>
-            <div className="w-8 h-4 bg-purple-100 border-2 border-[#8B5CF6] rounded-full absolute bottom-4 right-2"></div>
-            <div className="w-8 h-4 bg-purple-400 border-2 border-[#8B5CF6] rounded-full absolute bottom-1 right-6"></div>
-            <div className="w-8 h-4 bg-purple-200 border-2 border-[#8B5CF6] rounded-full absolute bottom-3 right-6"></div>
-            <div className="w-8 h-4 bg-[#8B5CF6] border-2 border-purple-200 rounded-full absolute bottom-5 right-6 flex items-center justify-center"><span className="text-[8px] text-white">₹</span></div>
-          </div>
-        </div>
-      </div>
-
-      {/* 4. Main Body Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-        {/* --- Left 8 Columns (Charts & Table) --- */}
-        <div className="lg:col-span-8 space-y-8">
-
-          {/* Registration Activity Section */}
-          <div className="bg-white/50 backdrop-blur-xl rounded-[20px] border border-white/60 shadow-sm p-6 h-[420px] flex flex-col relative overflow-hidden">
-            <div className="flex justify-between items-center mb-10 relative z-10">
-              <h3 className="text-[17px] font-bold text-[#32135d] tracking-tight">Registration Activity</h3>
-              <div className="flex bg-[#e8dbf4]/50 p-1 rounded-lg border border-white/50">
-                <button className="text-[11px] font-bold px-4 py-1.5 text-[#6b479e] hover:text-purple-700 transition-colors">This Week</button>
-                <button className="text-[11px] font-bold px-4 py-1.5 bg-white/70 text-purple-700 rounded-md shadow-sm border border-white/60">This Month</button>
+        <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          {metricCards.map((card) => (
+            <div key={card.title} className="bg-white/70 backdrop-blur-xl rounded-[30px] border border-purple-100/50 px-8 py-8 shadow-sm flex items-center justify-between min-h-[140px] hover:shadow-xl hover:-translate-y-1 transition-all group">
+              <div>
+                <p className="text-[12px] font-bold text-slate-400 uppercase tracking-widest mb-1">{card.title}</p>
+                <p className="text-[11px] text-[#8B5CF6] font-bold">{card.subtitle}</p>
+                <h3 className="text-3xl font-black text-slate-800 mt-2 tracking-tight">{card.value}</h3>
+              </div>
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-transform group-hover:scale-110 ${card.iconWrap} bg-white ring-1 ring-slate-50`}>
+                <card.icon size={24} />
               </div>
             </div>
+          ))}
+        </section>
 
-            <div className="flex-1 w-full min-h-0 relative z-10">
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          <div className="lg:col-span-12 xl:col-span-6 bg-white/70 border border-purple-100/20 rounded-[40px] p-8 shadow-sm min-h-[400px]">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-xl font-black text-slate-800 tracking-tight">Registration Activity</h3>
+              <div className="flex items-center gap-3 bg-purple-50 p-1 rounded-xl">
+                 <button className="px-4 py-1.5 rounded-lg bg-white text-[#8B5CF6] font-bold text-xs shadow-sm">Monthly</button>
+                 <button className="px-4 py-1.5 rounded-lg text-slate-400 font-bold text-xs">Yearly</button>
+              </div>
+            </div>
+            <div className="h-[260px]">
               <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={activityData} margin={{ top: 0, right: 30, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: '#9CA3AF', fontWeight: 'bold' }} dy={15} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: '#9CA3AF', fontWeight: 'bold' }} />
-                  <Tooltip
-                    cursor={{ fill: '#F5F3FF' }}
-                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)', fontWeight: 'bold' }}
-                  />
-                  <Legend verticalAlign="bottom" align="left" iconType="circle" wrapperStyle={{ paddingTop: '30px', paddingLeft: '20px', fontSize: '12px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em' }} />
-
-                  <Bar name="Salons Registered" dataKey="salons" fill="#34D399" radius={[6, 6, 0, 0]} maxBarSize={35} opacity={0.6} />
-                  <Line name="Subscriptions Activated" type="monotone" dataKey="subs" stroke="#8B5CF6" strokeWidth={4} dot={{ r: 5, strokeWidth: 3, fill: '#fff', stroke: '#8B5CF6' }} activeDot={{ r: 8 }} />
+                <ComposedChart data={activityData} margin={{ top: 10, right: 5, left: -20, bottom: 10 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: "#94a3b8", fontWeight: 700 }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: "#94a3b8", fontWeight: 700 }} />
+                  <Tooltip contentStyle={{borderRadius: '20px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)'}} />
+                  <Bar dataKey="salons" fill="#8B5CF6" radius={[6, 6, 0, 0]} maxBarSize={32} />
+                  <Line dataKey="subs" type="monotone" stroke="#D946EF" strokeWidth={4} dot={{ r: 6, fill: "#fff", stroke: "#D946EF", strokeWidth: 3 }} />
                 </ComposedChart>
               </ResponsiveContainer>
             </div>
-            {/* Soft decorative blur */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-purple-50 rounded-full blur-[80px] -mt-32 -mr-32 opacity-40"></div>
+            <div className="flex items-center gap-6 text-[11px] font-black uppercase tracking-widest text-slate-400 mt-6">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]" /> Registered Salons
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#D946EF]" /> Subscriptions
+              </div>
+            </div>
           </div>
 
-          {/* My Registered Salons Table Area */}
-          <div className="bg-white/50 backdrop-blur-xl rounded-[20px] border border-white/60 shadow-sm overflow-hidden flex flex-col">
-            <div className="p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-white/40 gap-4">
-              <h3 className="text-[17px] font-bold text-[#32135d] tracking-tight">My Registered Salons</h3>
-              <div className="flex bg-[#e8dbf4]/50 p-1 rounded-xl border border-white/40">
-                <button className="text-[11px] font-semibold px-4 py-2 text-purple-700">Active Only</button>
-                <div className="w-[1px] h-4 bg-[#c8b7df] self-center"></div>
-                <button className="text-[11px] font-semibold px-4 py-2 text-[#6b479e] hover:text-purple-700">This Month</button>
-                <div className="w-[1px] h-4 bg-[#c8b7df] self-center"></div>
-                <button className="text-[11px] font-semibold px-4 py-2 text-purple-700 bg-white/70 rounded-lg shadow-sm border border-white/50 flex items-center gap-2">
-                  By Area <ChevronDown size={14} />
-                </button>
+          <div className="lg:col-span-5 xl:col-span-3 bg-white/70 border border-purple-100/20 rounded-[40px] p-8 shadow-sm min-h-[400px]">
+            <h3 className="text-xl font-black text-slate-800 tracking-tight mb-8">Commission Overview</h3>
+            <div className="space-y-8 text-[12px] text-[#6c588f]">
+              <div className="flex items-center justify-between gap-6 border-b border-purple-50 pb-8">
+                <div className="space-y-4">
+                   <div>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Commission Rate</p>
+                      <h4 className="text-2xl font-black text-[#8B5CF6]">45%</h4>
+                   </div>
+                   <div>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Conversion Rate</p>
+                      <h4 className="text-2xl font-black text-[#D946EF]">40%</h4>
+                   </div>
+                </div>
+                <div className="w-32 h-32 relative shrink-0">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie data={pieData} innerRadius={35} outerRadius={50} dataKey="value" stroke="none">
+                        {pieData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-[#8B5CF6]">
+                    <span className="text-xl font-black">43%</span>
+                    <span className="text-[8px] font-bold uppercase tracking-tighter opacity-60">Payout</span>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between text-[14px] font-black text-slate-700"><span>Paid</span><span>₹1,80,000</span></div>
+                <div className="flex items-center justify-between text-[14px] font-black text-slate-700"><span>Pending</span><span>₹85,000</span></div>
+                <div className="pt-6 border-t border-purple-50">
+                  <div className="flex justify-between items-end mb-2">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Progress</p>
+                    <p className="text-[12px] font-black text-[#8B5CF6]">62%</p>
+                  </div>
+                  <div className="h-2 rounded-full bg-slate-100 overflow-hidden shadow-inner">
+                    <div className="h-full w-[62%] bg-gradient-to-r from-[#D946EF] to-[#8B5CF6] rounded-full shadow-lg transition-all duration-1000" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-7 xl:col-span-3 space-y-4">
+            <div className="bg-white/84 border border-[#dacaf4] rounded-[22px] px-5 py-4 shadow-sm flex items-center justify-between">
+              <h3 className="text-[16px] font-bold text-[#2c1e4c]">Advertisements</h3>
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-[#b7afcf]" />
+                <span className="w-3 h-3 rounded-full bg-[#d8d0ee]" />
+                <span className="w-3 h-3 rounded-full bg-[#d8d0ee]" />
+              </div>
+            </div>
+            <div className="relative overflow-hidden rounded-[24px] border border-[#f5d29b] bg-gradient-to-br from-[#ffcf3b] via-[#ffb324] to-[#ff7a1b] min-h-[288px] shadow-[0_20px_50px_rgba(255,166,0,0.22)] p-6">
+              <div className="relative z-10 max-w-[62%] xl:max-w-[68%]">
+                <p className="text-[18px] md:text-[24px] italic font-extrabold text-[#212145]">Special Offer!</p>
+                <h4 className="text-[24px] lg:text-[28px] xl:text-[34px] font-extrabold leading-[1.1] text-[#24315d] mt-4">Get 30% OFF on Website Design</h4>
+                <p className="text-[14px] font-semibold text-[#6b3d00] mt-4">Valid till: 30 March</p>
+                <div className="flex flex-wrap gap-3 mt-6">
+                  <button className="px-5 h-11 rounded-xl bg-[#3554b8] text-white font-semibold">View Details</button>
+                  <button className="px-5 h-11 rounded-xl bg-[#ff7a1b] border border-white/40 text-white font-semibold">Contact Now</button>
+                </div>
+              </div>
+              <div className="absolute right-2 bottom-2 w-[150px] h-[120px] rounded-[24px] bg-white/30 blur-2xl" />
+              <div className="absolute right-4 bottom-4 text-[56px] lg:text-[68px] xl:text-[84px]">??</div>
+              <button className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-11 h-11 rounded-xl bg-white text-[#7b6ca9] shadow-lg flex items-center justify-center"><ChevronLeft size={20} /></button>
+              <button className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-11 h-11 rounded-xl bg-white text-[#7b6ca9] shadow-lg flex items-center justify-center"><ChevronRight size={20} /></button>
+            </div>
+          </div>
+        </section>
+
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div className="lg:col-span-8 bg-white/84 border border-[#dacaf4] rounded-[22px] px-5 py-5 shadow-sm overflow-hidden">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
+              <h4 className="text-[15px] font-bold text-[#2c1e4c]">My Registered Salons</h4>
+              <div className="flex flex-wrap gap-2">
+                <button className="px-4 h-9 rounded-xl border border-[#d8c7f4] bg-white/95 text-[#654f8d] text-[13px] font-medium">Active Only</button>
+                <button className="px-4 h-9 rounded-xl border border-[#d8c7f4] bg-white/95 text-[#654f8d] text-[13px] font-medium">This Month</button>
+                <button className="px-4 h-9 rounded-xl border border-[#d8c7f4] bg-white/95 text-[#654f8d] text-[13px] font-medium flex items-center gap-2">By Area <ChevronDown size={14} /></button>
               </div>
             </div>
 
-            <div className="overflow-x-auto p-4 pt-1">
-              <table className="w-full text-left border-separate border-spacing-y-0 min-w-[800px]">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[760px]">
                 <thead>
-                  <tr className="text-[#6b479e] text-[12px] font-semibold text-left">
-                    <th className="px-5 py-4 font-semibold pb-3">Salon Name <ChevronDown size={14} className="inline ml-1" /></th>
-                    <th className="px-5 py-4 font-semibold pb-3">Area <ChevronDown size={14} className="inline ml-1" /></th>
-                    <th className="px-5 py-4 font-semibold pb-3 text-center">Service Type <ChevronDown size={14} className="inline ml-1" /></th>
-                    <th className="px-5 py-4 font-semibold pb-3 text-center">Plan <ChevronDown size={14} className="inline ml-1" /></th>
-                    <th className="px-5 py-4 font-semibold pb-3 text-center">Status <ChevronDown size={14} className="inline ml-1" /></th>
-                    <th className="px-5 py-4 font-semibold pb-3">Reg Date <ChevronDown size={14} className="inline ml-1" /></th>
+                  <tr className="text-left text-[13px] text-[#715c99] border-b border-[#ece1f8]">
+                    <th className="pb-4 font-semibold">Salon Name</th>
+                    <th className="pb-4 font-semibold">Area</th>
+                    <th className="pb-4 font-semibold">Service Type</th>
+                    <th className="pb-4 font-semibold">Plan</th>
+                    <th className="pb-4 font-semibold">Status</th>
+                    <th className="pb-4 font-semibold">Reg Date</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/40">
+                <tbody>
                   {salonsData.map((salon) => (
-                    <tr key={salon.id} className="text-[13px] hover:bg-white/30 transition-all cursor-pointer group">
-                      <td className="px-5 py-4">
-                        <div className="font-semibold text-[#32135d] group-hover:text-purple-800 transition-colors">{salon.name}</div>
-                        <div className="text-[11px] text-[#6b479e] mt-0.5">{salon.subId}</div>
+                    <tr key={salon.id} className="border-b border-[#f1e9fb] text-[14px] text-[#2f2450]">
+                      <td className="py-4">
+                        <div className="font-semibold">{salon.name}</div>
+                        <div className="text-[11px] text-[#9181b4] mt-1">{salon.id}</div>
                       </td>
-                      <td className="px-5 py-4">
-                        <div className="text-[#4f208a]">{salon.area}</div>
-                        <div className="text-[11px] text-[#8e6db9] mt-0.5">{salon.subArea}</div>
+                      <td className="py-4">
+                        <div>{salon.area}</div>
+                        <div className="text-[11px] text-[#9181b4] mt-1">{salon.subArea}</div>
                       </td>
-                      <td className="px-5 py-5 text-center">
-                        <span className={`inline-block px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-wider ${salon.typeColor} ring-1 ring-inset ring-black/5 shadow-sm`}>
-                          {salon.serviceType}
-                        </span>
+                      <td className="py-4">
+                        <span className="inline-flex px-3 py-1 rounded-xl bg-[#edf4f5] text-[#5f6778] text-[13px]">{salon.serviceType}</span>
                       </td>
-                      <td className="px-5 py-4 text-center">
-                        <div className="flex items-center justify-center gap-2">
-                          <span className="text-[#4f208a]">{salon.plan}</span>
-                          <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-inner">
-                            <Check size={10} strokeWidth={3} />
-                          </span>
-                        </div>
+                      <td className="py-4">{salon.plan}</td>
+                      <td className="py-4">
+                        <span className={`inline-flex px-4 py-1 rounded-xl text-[13px] font-medium ${salon.statusClass}`}>{salon.status}</span>
                       </td>
-                      <td className="px-5 py-4 text-center">
-                        <span className={`inline-block px-3 py-1 rounded-full text-[11px] font-semibold ${salon.statusColor} shadow-sm bg-opacity-90`}>
-                          {salon.status}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 text-[#4f208a] tabular-nums">{salon.date}</td>
+                      <td className="py-4">{salon.regDate}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
 
-            {/* Pagination Controls */}
-            <div className="px-6 py-4 border-t border-white/40 flex items-center justify-between text-[12px] text-[#6b479e] bg-[#f0ebf8]/30">
+            <div className="flex items-center justify-between pt-4 text-[13px] text-[#7f70a6]">
               <p>Showing 1 - 6 of 48</p>
-              <div className="flex gap-1.5 items-center">
-                <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/60 hover:text-purple-700 transition-colors"><ChevronLeft size={16} /></button>
-                <div className="flex gap-1">
-                  <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#8B5CF6] text-white shadow-sm font-medium">1</button>
-                  <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/60 hover:text-purple-700 transition-colors">2</button>
-                  <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/60 hover:text-purple-700 transition-colors">3</button>
-                  <span className="flex items-center px-1 font-medium">...</span>
-                  <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/60 hover:text-purple-700 transition-colors">79</button>
-                </div>
-                <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/60 hover:text-purple-700 transition-colors"><ChevronRight size={16} /></button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* --- Right 4 Columns (Right Panel) --- */}
-        <div className="lg:col-span-4 space-y-8">
-
-          {/* Card 1: My Commission Overview */}
-          <div className="bg-white/50 backdrop-blur-xl rounded-[20px] border border-white/60 shadow-sm p-6 relative group">
-            <div className="flex justify-between items-center mb-8">
-              <h3 className="text-[17px] font-bold text-[#32135d] tracking-tight">My Commission Overview</h3>
-              <button className="bg-white/50 p-2 rounded-lg text-purple-700 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm">
-                <HelpCircle size={18} />
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 space-y-4 text-[13px] font-semibold text-[#4f208a]">
-                  <div className="flex justify-between border-b border-white/40 pb-2.5">
-                    <span className="text-[#6b479e]">Total Registration</span>
-                    <span className="text-[#32135d]">312</span>
-                  </div>
-                  <div className="flex justify-between border-b border-white/40 pb-2.5">
-                    <span className="text-[#6b479e]">Active Subscriptions</span>
-                    <span className="text-[#32135d]">214</span>
-                  </div>
-                  <div className="flex justify-between border-b border-white/40 pb-2.5">
-                    <span className="text-[#6b479e] text-[11px]">Commission per ActiveSubs</span>
-                    <span className="text-[#32135d] text-[11px]">₹500</span>
-                  </div>
-                </div>
-
-                <div className="w-[130px] h-[130px] relative shrink-0">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie data={pieData} innerRadius={42} outerRadius={58} paddingAngle={4} dataKey="value" stroke="none">
-                        {pieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} style={{ filter: `drop-shadow(0 4px 6px rgba(0,0,0,0.1))` }} />
-                        ))}
-                      </Pie>
-                    </PieChart>
-                  </ResponsiveContainer>
-                  {/* Center Text */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                    <span className="text-[22px] font-bold text-purple-700 tracking-tight leading-none">43%</span>
-                    <span className="text-[9px] font-semibold text-[#6b479e] mt-0.5">₹ 10,500</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex justify-between items-end pt-2 border-t border-purple-200">
-                  <span className="text-purple-700 font-bold">Total Earned</span>
-                  <span className="text-[28px] font-bold text-[#32135d] tracking-tight">₹ 18,500</span>
-                </div>
-                
-                <div className="flex gap-4">
-                  <div className="flex-1 p-3 rounded-2xl bg-white/40 border border-white/60 group/item transition-all hover:bg-white/60 shadow-sm">
-                    <p className="text-[10px] text-[#6b479e] font-semibold tracking-wider mb-1">PAID</p>
-                    <p className="text-[15px] text-[#32135d] font-bold">₹ 1,80,000</p>
-                    <div className="mt-2 h-1 bg-white/50 rounded-full overflow-hidden w-full ring-1 ring-black/5">
-                      <div className="h-full bg-emerald-400 w-[70%]" />
-                    </div>
-                  </div>
-                  <div className="flex-1 p-3 rounded-2xl bg-white/40 border border-white/60 group/item transition-all hover:bg-white/60 shadow-sm">
-                    <p className="text-[10px] text-[#6b479e] font-semibold tracking-wider mb-1">PENDING</p>
-                    <p className="text-[15px] font-bold text-red-500">₹ 85,000</p>
-                    <div className="mt-2 h-1 bg-white/50 rounded-full overflow-hidden w-full ring-1 ring-black/5">
-                      <div className="h-full bg-red-400 w-[30%]" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Legend for donut */}
-            <div className="flex justify-end gap-3 text-[9px] font-semibold tracking-wider text-[#6b479e] mt-4 pr-1">
-              <span className="flex items-center gap-1.5 before:w-1.5 before:h-1.5 before:bg-purple-600 before:rounded-full">Remaining: 97%</span>
-              <span className="flex items-center gap-1.5 before:w-1.5 before:h-1.5 before:bg-purple-300 before:rounded-full">Felemring (19-4Q)</span>
-            </div>
-          </div>
-
-          {/* Card 2: Visit Log Summary */}
-          <div className="bg-white/50 backdrop-blur-xl rounded-[20px] border border-white/60 shadow-sm p-6 relative">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-[17px] font-bold text-[#32135d] tracking-tight">Visit Log Summary</h3>
-              <div className="bg-white/50 p-2 rounded-lg text-purple-700 shadow-sm hover:bg-white/80 transition-colors cursor-pointer">
-                <ChevronRight size={18} />
-              </div>
-            </div>
-
-            <div className="flex items-center gap-6">
-              <div className="flex-1 space-y-3">
-                <div className="bg-[#f0e8f9]/50 p-3 rounded-2xl border border-white/60 flex items-center justify-between group transition-all hover:translate-x-1 shadow-sm">
-                  <div className="flex items-center gap-2 text-[11px] text-purple-700 font-semibold tracking-wider">
-                    <ClipboardList size={16} /> Total Visits
-                  </div>
-                  <span className="font-bold text-[#32135d] text-[17px] tabular-nums">8,125</span>
-                </div>
-                <div className="bg-white/40 p-3 rounded-2xl border border-white/60 flex items-center justify-between group transition-all hover:translate-x-1 shadow-sm">
-                  <div className="flex items-center gap-2 text-[11px] text-[#6b479e] font-semibold tracking-wider">
-                    <Check size={16} className="text-emerald-500" /> Cold wees
-                  </div>
-                  <span className="font-bold text-[#4f208a] text-[15px] tabular-nums">2 16,730</span>
-                </div>
-                <div className="pt-2 pl-4 border-l-4 border-[#8B5CF6]">
-                  <p className="text-[10px] font-semibold tracking-wide text-purple-700">Converted to Subscription</p>
-                  <p className="text-[24px] font-bold text-[#32135d] mt-0.5 tabular-nums tracking-tighter">6</p>
-                </div>
-              </div>
-
-              <div className="w-[110px] h-[110px] relative">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={visitPieData} innerRadius={35} outerRadius={50} paddingAngle={4} dataKey="value" stroke="none" startAngle={90} endAngle={-270}>
-                      {visitPieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-                {/* Center Text */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center mt-1">
-                  <span className="text-[20px] font-bold text-purple-700 tracking-tight leading-none">54%</span>
-                  <span className="text-[9px] font-semibold text-[#6b479e]">pending</span>
-                </div>
+              <div className="flex items-center gap-2">
+                <button className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6]">{`<`}</button>
+                <button className="w-8 h-8 rounded-lg bg-[#8a63f7] text-white">1</button>
+                <button className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6]">2</button>
+                <button className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6]">3</button>
+                <button className="w-10 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6]">79</button>
+                <button className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6]">{`>`}</button>
               </div>
             </div>
           </div>
 
-          {/* Card 3: Low Performance Alert */}
-          <div className="bg-white/50 backdrop-blur-xl rounded-[20px] border border-white/60 shadow-sm overflow-hidden flex flex-col relative">
-            <div className="p-5 border-b border-white/40 flex items-center justify-between bg-white/20">
-              <h3 className="text-[14px] font-bold text-[#32135d]">Low Performance Alert</h3>
-              <div className="w-8 h-8 rounded-full bg-red-100/80 text-red-500 flex items-center justify-center shadow-inner">
-                <TrendingUp size={16} className="rotate-180" />
-              </div>
-            </div>
-            <div className="p-2 space-y-1">
-              {alertsData.map((alert, index) => (
-                <div key={index} className="flex items-center justify-between p-3 py-3.5 hover:bg-white/50 rounded-2xl transition-all cursor-pointer group">
-                  <div className="flex items-center gap-4">
-                    <div className="relative">
-                      <img
-                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${alert.name}`}
-                        alt={alert.name}
-                        className="w-10 h-10 rounded-[14px] bg-purple-100/50 border border-white shadow-sm"
-                      />
-                      <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-[#10b981] rounded-full border-[2px] border-white flex items-center justify-center">
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <p className="text-[14px] font-semibold text-[#32135d] group-hover:text-purple-800 transition-colors tracking-tight">{alert.name}</p>
-                        <span className="text-[9px] text-[#6b479e] font-semibold tracking-wide">{alert.id}</span>
-                      </div>
-                      <p className="text-[11px] text-[#4f208a] mt-0.5">{alert.location}</p>
-                    </div>
+          <div className="lg:col-span-4 bg-white/84 border border-[#dacaf4] rounded-[22px] px-5 py-5 shadow-sm">
+            <h4 className="text-[15px] font-bold text-[#2c1e4c] mb-3">Low Performance Alert</h4>
+            <div className="space-y-3">
+              {alertsData.map((alert) => (
+                <div key={alert.id} className="flex items-center justify-between rounded-2xl bg-[#f6efff] px-4 py-3.5">
+                  <div>
+                    <p className="text-[14px] font-semibold text-[#2f2450]">{alert.name}</p>
+                    <p className="text-[11px] text-[#9181b4]">{alert.location}</p>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1.5 text-[#6b479e] py-1.5 px-3 bg-white/60 rounded-xl font-bold text-[13px] transition-all group-hover:bg-purple-100 group-hover:text-purple-700 border border-white/50 shadow-sm">
-                      <Store size={14} />
-                      <span className="tabular-nums">{alert.score}</span>
-                    </div>
-                  </div>
+                  <div className="px-3 py-1.5 rounded-xl bg-white/95 text-[#5e4b86] text-[12px] font-bold shadow-sm">{alert.score}</div>
                 </div>
               ))}
             </div>
-            {/* Omit the "View Detailed Report" button since it's not strongly featured in Image 2 or simplify it */}
           </div>
-
-        </div>
+        </section>
       </div>
     </div>
   );
 };
 
 export default memo(SalonOwnerDashboard);
+

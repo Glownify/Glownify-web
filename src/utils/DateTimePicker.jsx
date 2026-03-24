@@ -29,13 +29,29 @@ const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 /**
  * DateTimePicker
  * Full-page modal (bottom-sheet style) matching the mobile mockup:
- *   - Service mode hint at top
+ *   - Salon name + location at top
+ *   - Mode toggle (Visit Salon / Salon at Home) driven by `mode` prop
  *   - Monthly calendar with pink selected-day circle
  *   - 3-column time-slot grid
  *   - Legend: Available / Selected / Booked
- *   - Disabled "Confirm Booking" button until date + time selected
+ *   - Confirm Booking button (enabled only when date + time selected)
+ *
+ * Props:
+ *   isOpen    {boolean}  – whether the picker is visible
+ *   onClose   {fn}       – called when user taps back / close
+ *   onConfirm {fn}       – called with { day, month, year, time } on confirm
+ *   mode      {string}   – "home" | "salon"  (controls which toggle pill is active)
+ *   salonName {string}   – salon name to display in the header
+ *   salonLocation {string} – e.g. "Gomti Nagar, Lucknow"
  */
-const DateTimePicker = ({ isOpen, onClose, onConfirm }) => {
+const DateTimePicker = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  mode = "salon",
+  salonName = "",
+  salonLocation = "",
+}) => {
   const today = new Date();
   const [viewDate, setViewDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
   const [selectedDay, setSelectedDay] = useState(today.getDate());
@@ -73,6 +89,9 @@ const DateTimePicker = ({ isOpen, onClose, onConfirm }) => {
 
   const canConfirm = !!selectedDay && !!selectedTime;
 
+  // Mode-based labels — matches the React Native app toggle
+  const isHome = mode === "home";
+
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50">
       {/* Modal panel */}
@@ -93,18 +112,44 @@ const DateTimePicker = ({ isOpen, onClose, onConfirm }) => {
         {/* ── Scrollable Body ── */}
         <div className="overflow-y-auto flex-1 px-4 pb-4 space-y-4">
 
-          {/* ── Service Mode Chip Row (visual hint) ── */}
-          <div className="flex gap-2">
-            <div className="flex-1 bg-rose-400 text-white text-xs font-bold py-2.5 rounded-2xl text-center">
-              Salon at Home
+          {/* ── Salon name + city under the header ── */}
+          {salonName && (
+            <div className="text-center -mt-1 mb-1">
+              <p className="text-base font-bold text-gray-900">{salonName}</p>
+              {salonLocation && (
+                <p className="text-xs text-gray-500 mt-0.5">{salonLocation}</p>
+              )}
             </div>
-            <div className="flex-1 bg-white text-gray-400 text-xs font-semibold py-2.5 rounded-2xl text-center border border-gray-100">
-              Visit Salon
+          )}
+
+          {/* ── Mode Toggle — Visit Salon / Salon at Home ── */}
+          <div className="bg-white rounded-2xl p-3 border border-gray-100 shadow-sm space-y-2">
+            <div className="flex gap-2">
+              {/* Visit Salon pill */}
+              <div
+                className={`flex-1 py-2.5 rounded-2xl text-xs font-bold text-center transition-all ${!isHome
+                  ? "bg-[#EA8491] text-white shadow"
+                  : "bg-white text-gray-400 border border-gray-100"
+                  }`}
+              >
+                Visit Salon
+              </div>
+              {/* Salon at Home pill */}
+              <div
+                className={`flex-1 py-2.5 rounded-2xl text-xs font-bold text-center transition-all ${isHome
+                  ? "bg-[#EA8491] text-white shadow"
+                  : "bg-white text-gray-400 border border-gray-100"
+                  }`}
+              >
+                Service at Home
+              </div>
             </div>
+            <p className="text-center text-xs text-gray-400">
+              {isHome
+                ? "A professional will visit you at your home."
+                : "You will visit the salon at selected time."}
+            </p>
           </div>
-          <p className="text-center text-xs text-gray-400 -mt-2">
-            You will visit the salon at selected time.
-          </p>
 
           {/* ── Select Date ── */}
           <div>
@@ -160,10 +205,10 @@ const DateTimePicker = ({ isOpen, onClose, onConfirm }) => {
                       key={day}
                       onClick={() => setSelectedDay(day)}
                       className={`aspect-square flex items-center justify-center text-sm rounded-full transition-all mx-auto w-9 h-9 ${isSelected
-                          ? "bg-rose-400 text-white font-bold shadow-sm"
-                          : isToday
-                            ? "text-rose-400 font-bold"
-                            : "text-gray-700 hover:bg-pink-50"
+                        ? "bg-[#EA8491] text-white font-bold shadow-sm"
+                        : isToday
+                          ? "text-[#EA8491] font-bold"
+                          : "text-gray-700 hover:bg-pink-50"
                         }`}
                     >
                       {day}
@@ -195,10 +240,10 @@ const DateTimePicker = ({ isOpen, onClose, onConfirm }) => {
                     disabled={slot.booked}
                     onClick={() => setSelectedTime(slot.time)}
                     className={`py-3 rounded-xl text-xs font-semibold border text-center transition-all ${slot.booked
-                        ? "text-gray-300 border-gray-100 bg-white cursor-not-allowed"
-                        : isSelected
-                          ? "text-rose-500 border-rose-400 bg-white font-bold"
-                          : "text-gray-700 border-gray-200 bg-white hover:border-rose-200"
+                      ? "text-gray-300 border-gray-100 bg-white cursor-not-allowed"
+                      : isSelected
+                        ? "text-[#EA8491] border-[#EA8491] bg-white font-bold"
+                        : "text-gray-700 border-gray-200 bg-white hover:border-pink-200"
                       }`}
                   >
                     {slot.time}
@@ -214,7 +259,7 @@ const DateTimePicker = ({ isOpen, onClose, onConfirm }) => {
                 <span className="text-[11px] text-gray-400">Available</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full border-2 border-rose-400 inline-block" />
+                <span className="w-3 h-3 rounded-full border-2 border-[#EA8491] inline-block" />
                 <span className="text-[11px] text-gray-400">Selected</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -226,13 +271,13 @@ const DateTimePicker = ({ isOpen, onClose, onConfirm }) => {
         </div>
 
         {/* ── Sticky Confirm Button ── */}
-        <div className="px-4 pt-3 pb-5 bg-pink-50 border-t border-pink-100/60">
+        <div className="px-4 pt-3 pb-24 sm:pb-5 bg-pink-50 border-t border-pink-100/60">
           <button
             disabled={!canConfirm}
             onClick={handleConfirm}
             className={`w-full py-4 rounded-2xl text-base font-bold transition-all ${canConfirm
-                ? "bg-gradient-to-r from-rose-400 to-pink-500 text-white shadow-lg shadow-pink-200/50 active:scale-95"
-                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+              ? "bg-[#EA8491] text-white shadow-lg active:scale-95"
+              : "bg-gray-200 text-gray-400 cursor-not-allowed"
               }`}
           >
             Confirm Booking

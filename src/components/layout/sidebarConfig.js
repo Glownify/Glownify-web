@@ -8,7 +8,10 @@ import {
   Sparkles, // Added for AI features
   Users,
   CalendarCheck,
-  BarChart3
+  BarChart3,
+  Zap,
+  Target,
+  Wallet
 } from "lucide-react";
 
 export const SIDEBAR_CONFIG = {
@@ -37,8 +40,12 @@ export const SIDEBAR_CONFIG = {
     menu: [
       { name: "MAIN MENU", isHeader: true },
       { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-      { name: "Manage Salesman", icon: Users, path: "/manage-salesman" },
+      { name: "Lead Pipeline", icon: Zap, path: "/lead-pipeline" },
+      { name: "My Targets", icon: Target, path: "/my-targets" },
+      { name: "Sales Persons", icon: Users, path: "/manage-salesman" },
+      { name: "My Commissions", icon: Wallet, path: "/my-commissions" },
       { isSeparator: true },
+      { name: "SETTINGS", isHeader: true },
       { name: "Profile", icon: User, path: "/profile" },
     ],
   },

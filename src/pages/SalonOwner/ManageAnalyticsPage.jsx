@@ -1,9 +1,22 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import MobileSalonReportScreen from './Mobile/MobileSalonReportScreen';
 
 const ManageAnalyticsPage = () => {
-  return (
-    <div>ManageAnalyticsPage</div>
-  )
-}
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
 
-export default ManageAnalyticsPage
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  if (isMobile) {
+    return <MobileSalonReportScreen />;
+  }
+
+  return (
+    <div>ManageAnalyticsPage (Desktop)</div>
+  );
+};
+
+export default ManageAnalyticsPage;

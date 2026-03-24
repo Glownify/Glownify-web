@@ -351,7 +351,12 @@ const CartPage = () => {
                       {/* Date/time chip */}
                       <button
                         onClick={() => {
-                          setActiveSlotInfo({ salonId: salon.salonId, mode: group.mode });
+                          setActiveSlotInfo({
+                            salonId: salon.salonId,
+                            mode: group.mode,
+                            salonName: salon.salonName,
+                            salonLocation: group.mode === "home" ? "Home Address" : "Gomti Nagar, Lucknow",
+                          });
                           setIsModalOpen(true);
                         }}
                         className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold border transition-all w-auto ${timeData
@@ -507,7 +512,7 @@ const CartPage = () => {
         </div>
 
         {/* ── Sticky Confirm Button ── */}
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-pink-50/95 backdrop-blur-lg border-t border-pink-100/60 px-4 py-4">
+        <div className="fixed bottom-16 left-0 right-0 z-40 bg-pink-50/95 backdrop-blur-lg border-t border-pink-100/60 px-4 py-4">
           <div className="max-w-3xl mx-auto">
             {/* Slots progress hint */}
             {!canConfirm && requiredSlotsCount > 0 && (
@@ -533,6 +538,9 @@ const CartPage = () => {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onConfirm={handleConfirmDateTime}
+          mode={activeSlotInfo?.mode || "salon"}
+          salonName={activeSlotInfo?.salonName || ""}
+          salonLocation={activeSlotInfo?.salonLocation || ""}
         />
       </div>
     </div>

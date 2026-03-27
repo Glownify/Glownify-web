@@ -598,7 +598,11 @@ export function DesktopHomeService({ lat, lng, gender }) {
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
                 {prosToShow?.map((pro) => (
-                    <DesktopProCard key={pro._id} pro={pro} onPress={() => goToDetail(pro)} />
+                    <DesktopProCard
+                        key={pro._id}
+                        pro={pro}
+                        onPress={() => goToDetail(pro)}
+                    />
                 ))}
             </div>
         </div>

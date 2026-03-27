@@ -512,7 +512,9 @@ function DesktopProCard({ pro, onPress }) {
     const exp = pro.experienceYears ? `${pro.experienceYears} yrs Exp` : "N/A";
     const spec = pro.specializations?.length > 0 ? pro.specializations[0] : "General";
     const rating = pro.avgRating || "0.0";
-    const distanceKm = (pro.distanceInMeters / 1000).toFixed(1);
+    const distanceKm = pro.distanceInMeters
+        ? (pro.distanceInMeters / 1000).toFixed(1)
+        : "N/A";
 
     return (
         <div
@@ -530,7 +532,7 @@ function DesktopProCard({ pro, onPress }) {
                     <span className="text-[11px]">⭐</span>
                 </div>
                 <div className="absolute bottom-2 right-2 rounded-full px-2 py-0.5" style={{ backgroundColor: "rgba(0,0,0,0.55)" }}>
-                    <span className="text-white text-[10px] font-bold">{pro.user.gender}</span>
+                    <span className="text-white text-[10px] font-bold">pro.user?.gender || "N/A"</span>
                 </div>
             </div>
             <div className="px-4 pt-3 pb-4">
@@ -584,7 +586,7 @@ export function DesktopHomeService({ lat, lng, gender }) {
             <div className="flex items-center justify-between px-10 lg:px-16 pt-6 pb-1">
                 <div>
                     <h2 className="text-[18px] font-extrabold text-gray-900 uppercase tracking-wide">HOME SERVICEs</h2>
-                    <p className="text-[12px] text-gray-400 mt-0.5">{prosToShow.length} professionals nearby</p>
+                    <p className="text-[12px] text-gray-400 mt-0.5">{prosToShow?.length || 0} professionals nearby</p>
                 </div>
                 <button
                     className="text-[14px] font-semibold border rounded-full px-4 py-1.5"
@@ -598,7 +600,7 @@ export function DesktopHomeService({ lat, lng, gender }) {
                 className="flex gap-4 px-10 lg:px-16 pt-4 overflow-x-auto"
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
-                {prosToShow.map((pro) => (
+                {prosToShow?.map((pro) => (
                     <DesktopProCard key={pro._id} pro={pro} onPress={() => goToDetail(pro)} />
                 ))}
             </div>

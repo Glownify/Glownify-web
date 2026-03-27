@@ -532,7 +532,7 @@ function DesktopProCard({ pro, onPress }) {
                     <span className="text-[11px]">⭐</span>
                 </div>
                 <div className="absolute bottom-2 right-2 rounded-full px-2 py-0.5" style={{ backgroundColor: "rgba(0,0,0,0.55)" }}>
-                    <span className="text-white text-[10px] font-bold">pro.user?.gender || "N/A"</span>
+                    <span className="text-white text-[10px] font-bold">{pro.user?.gender || "N/A"}</span>
                 </div>
             </div>
             <div className="px-4 pt-3 pb-4">

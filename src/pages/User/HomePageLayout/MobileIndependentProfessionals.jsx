@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchIndependentProfessionals } from "../../../redux/slice/userSlice";
+import { fetchHomeIndependentProfessionals } from "../../../redux/slice/userSlice";
 import { useNavigate } from "react-router-dom";
 import aishaImg from "../../../assets/aisha.jpg";
 import gitaImg from "../../../assets/gita.jpg";
@@ -88,7 +88,7 @@ const MobileIndependentProfessionals = () => {
     const navigate = useNavigate();
     const { independentProfessionals, loading } = useSelector((state) => state.user);
 
-    useEffect(() => { dispatch(fetchIndependentProfessionals()); }, [dispatch]);
+    useEffect(() => { dispatch(fetchHomeIndependentProfessionals()); }, [dispatch]);
 
     const goToDetail = (pro) => {
         localStorage.setItem("selectedSalon", JSON.stringify(pro));

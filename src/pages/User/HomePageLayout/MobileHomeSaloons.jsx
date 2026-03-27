@@ -4,7 +4,7 @@ import haircutImg from "../../../assets/haircut.png";
 import facialImg from "../../../assets/facial.png";
 import makeupImg from "../../../assets/makeup.png";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchHomeSaloonsByCategory } from "../../../redux/slice/userSlice";
+import { fetchNearbySalons } from "../../../redux/slice/userSlice";
 import { useNavigate } from "react-router-dom";
 
 const placeholderSalons = [
@@ -95,7 +95,7 @@ const MobileHomeSaloons = ({ category, lat, lng, fallbackSalons = [] }) => {
         : placeholderSalons.filter((s) => s.gender === category || s.gender === "unisex");
 
     useEffect(() => {
-        if (category) dispatch(fetchHomeSaloonsByCategory({ category, lat, lng }));
+        if (category) dispatch(fetchNearbySalons({ category, lat, lng }));
     }, [dispatch, category, lat, lng]);
 
     return (

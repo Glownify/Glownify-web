@@ -27,7 +27,7 @@ import {
  * ✅ To edit desktop home UI, ONLY edit this file.
  * ❌ Do NOT add data-fetching here — keep all API calls in HomePage.jsx.
  */
-const DesktopHomePage = ({ gender, setGender, filteredCategories, fallbackSalons, lat, lng }) => {
+const DesktopHomePage = ({ gender, setGender, filteredCategories, lat, lng }) => {
     return (
         <div className="min-h-screen bg-linear-to-r from-[#FFF7F1] to-[#FFEDE2] pb-20">
             <Hero />
@@ -72,11 +72,14 @@ const DesktopHomePage = ({ gender, setGender, filteredCategories, fallbackSalons
                     category={gender}
                     lat={lat}
                     lng={lng}
-                    fallbackSalons={fallbackSalons}
                 />
 
                 {/* Home Service — desktop (horizontal scroll, larger cards) */}
-                <DesktopHomeService />
+                <DesktopHomeService
+                    lat={lat}
+                    lng={lng}
+                    gender={gender}
+                />
 
                 {/* Unisex Salons — desktop (3-col grid) */}
                 <DesktopUnisexSalons lat={lat} lng={lng} />

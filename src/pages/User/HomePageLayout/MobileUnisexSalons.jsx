@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllUnisexSalonServices } from "../../../redux/slice/userSlice";
+import { fetchUnisexNearbySalons } from "../../../redux/slice/userSlice";
 import { useNavigate } from "react-router-dom";
 import salonImg from "../../../assets/salon.png";
 import haircutImg from "../../../assets/haircut.png";

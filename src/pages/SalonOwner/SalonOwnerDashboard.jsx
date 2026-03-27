@@ -109,30 +109,7 @@ const SalonOwnerDashboard = () => {
   const PURPLE_BRAND = "#8B5CF6";
 
   return (
-    <div className="p-7 w-full max-w-[1600px] mx-auto min-h-screen">
-      <div className="space-y-7">
-        <header className="bg-white/70 backdrop-blur-xl border border-purple-100/50 rounded-[26px] px-6 py-5 flex flex-col xl:flex-row gap-5 xl:items-center xl:justify-between shadow-2xl shadow-purple-500/5">
-          <div className="flex items-center gap-4 flex-1">
-            <div className="relative w-full max-w-[310px]">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input type="text" placeholder="Search ..." className="w-full h-12 rounded-full border border-slate-100 bg-white/95 px-11 pr-4 text-[14px] text-slate-700 shadow-sm outline-none placeholder:text-slate-400" />
-            </div>
-            <div className="hidden xl:flex items-center gap-2 text-[14px] font-semibold text-slate-600">
-              <MapPin size={14} className="text-[#8B5CF6]" />
-              Jeperags, Aegaihters
-              <ChevronDown size={14} />
-            </div>
-          </div>
-          <div className="flex items-center justify-between xl:justify-end gap-3">
-            <button className="px-6 h-11 rounded-xl bg-gradient-to-r from-[#D946EF] to-[#8B5CF6] text-white text-[14px] font-bold shadow-lg shadow-purple-200">E 3 Leidp</button>
-            <button className="relative w-11 h-11 rounded-xl border border-slate-100 bg-white/95 text-slate-500"><Bell size={18} className="mx-auto" /><span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-[#f06286] text-[9px] text-white flex items-center justify-center font-bold border-2 border-white">4</span></button>
-            <button className="relative w-11 h-11 rounded-xl border border-slate-100 bg-white/95 text-slate-500"><Mail size={18} className="mx-auto" /><span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-[#f06286] text-[9px] text-white flex items-center justify-center font-bold border-2 border-white">3</span></button>
-            <div className="flex items-center gap-2 pl-2">
-              <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-[12px] font-black text-[#8B5CF6] ring-2 ring-white shadow-sm font-black">??</div>
-              <img src="https://flagcdn.com/w40/in.png" alt="IN" className="w-5 h-3.5 rounded-sm shadow-sm" />
-            </div>
-          </div>
-        </header>
+    <div className="space-y-12 animate-in fade-in duration-1000">
 
         <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
           {actionCards.map((item) => (
@@ -336,7 +313,6 @@ const SalonOwnerDashboard = () => {
             </div>
           </div>
         </section>
-      </div>
     </div>
   );
 };

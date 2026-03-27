@@ -17,6 +17,7 @@ import ManageCitiesAndStatesPage from "./../pages/SuperAdmin/ManageCitiesAndStat
 import ManageCategoriesPage from "./../pages/SuperAdmin/ManageCategoriesPage";
 import ManageSalesExecutivePage from "./../pages/SuperAdmin/ManageSalesExecutivePage";
 import ManageSubscriptionPage from "./../pages/SuperAdmin/ManageSubscriptionPage";
+import ManageSystemLogsPage from "./../pages/SuperAdmin/ManageSystemLogsPage";
 import ManageResetPassword from "./../pages/SuperAdmin/ManageResetPassword";
 import SuperAdminProfilePage from "../pages/SuperAdmin/SuperAdminProfilePage";
 
@@ -156,6 +157,7 @@ const AllRoutes = () => {
             <Route path="manage-cities-and-states" element={<ManageCitiesAndStatesPage />} />
             <Route path="manage-sales-executives" element={<ManageSalesExecutivePage />} />
             <Route path="manage-subscriptions" element={<ManageSubscriptionPage />} />
+            <Route path="manage-system-logs" element={<ManageSystemLogsPage />} />
             <Route path="manage-reset-password" element={<ManageResetPassword />} />
             <Route path="profile" element={<SuperAdminProfilePage />} />
           </Route>

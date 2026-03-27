@@ -4,14 +4,15 @@ import { fetchAllSalons } from '../../redux/slice/superadminSlice';
 import { 
   User, Phone, Mail, CheckCircle, Clock, Users, 
   Scissors, Image as ImageIcon, X, MapPin, ShieldCheck, 
-  CreditCard, ChevronLeft, ChevronRight 
+  CreditCard, ChevronLeft, ChevronRight, FileText, Check,
+  AlertCircle, Trash2, ArrowRight, ExternalLink
 } from 'lucide-react';
+import useMobile from '../../hooks/useMobile';
 
 const ManageSalonsPage = () => {
   const dispatch = useDispatch();
   const { salons = [], loading, error } = useSelector((state) => state.superadmin);
-  
-  // States
+  const isMobile = useMobile();
   const [selectedSalon, setSelectedSalon] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
@@ -32,13 +33,155 @@ const ManageSalonsPage = () => {
   };
 
   if (loading) return (
-    <div className="flex h-screen items-center justify-center bg-slate-50">
-      <div className="h-10 w-10 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent"></div>
+    <div className="flex h-[60vh] items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-rose-600 border-t-transparent"></div>
     </div>
   );
 
+  // ── DESKTOP VIEW: SALON VERIFICATION & AUDIT ─────────────────────────────────
+  if (!isMobile) {
+    return (
+      <div className="space-y-8 animate-in fade-in duration-500">
+        {/* Verification Header */}
+        <div className="flex items-center justify-between">
+           <div className="space-y-1">
+              <h1 className="text-4xl font-black text-slate-800 tracking-tight">Salon Verification & Audit</h1>
+              <div className="flex items-center gap-4">
+                 <span className="bg-rose-50 text-rose-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border border-rose-100">
+                    14 PENDING APPLICATIONS
+                 </span>
+                 <span className="text-slate-400 text-xs font-bold flex items-center gap-1.5">
+                    <Clock size={12} /> Last audit: 2 hours ago
+                 </span>
+              </div>
+           </div>
+        </div>
+
+        <div className="grid grid-cols-12 gap-8">
+           {/* Main Audit Panel */}
+           <div className="col-span-8 space-y-8">
+              <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm relative overflow-hidden group">
+                 <div className="absolute top-0 right-0 w-32 h-32 bg-rose-50 rounded-bl-[5rem] -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                 
+                 <div className="relative flex justify-between items-start mb-10">
+                    <div className="space-y-2">
+                       <h2 className="text-3xl font-black text-slate-800 tracking-tight">L'Artiste Hair Collective</h2>
+                       <div className="flex items-center gap-3">
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Submitted 14 hours ago by</span>
+                          <span className="text-slate-800 font-bold text-xs ring-1 ring-slate-100 px-2 py-0.5 rounded-md">Julian Marc</span>
+                          <span className="bg-rose-600 text-white px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-tighter shadow-sm shadow-rose-100">High Priority</span>
+                       </div>
+                    </div>
+                    <div className="flex gap-3">
+                       <button className="bg-rose-600 hover:bg-rose-700 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-lg shadow-rose-200 active:scale-95">
+                          Approve Salon
+                       </button>
+                       <button className="bg-slate-50 hover:bg-slate-100 text-slate-600 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all border border-slate-100">
+                          Request Info
+                       </button>
+                    </div>
+                 </div>
+
+                 <div className="grid grid-cols-3 gap-8 mb-10">
+                    <AuditInfo label="Category" value="Premium Boutique" />
+                    <AuditInfo label="Location" value="West Hollywood, CA" />
+                    <AuditInfo label="Tax ID" value="XX-XXXX901" />
+                 </div>
+
+                 {/* Studio Gallery */}
+                 <div className="grid grid-cols-2 gap-4 mb-10">
+                    <div className="relative group overflow-hidden rounded-3xl h-48">
+                       <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=1000&auto=format&fit=crop" alt="Studio" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                       <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
+                       <span className="absolute bottom-4 left-4 text-[10px] font-black text-white uppercase tracking-widest px-3 py-1 bg-black/40 backdrop-blur-md rounded-lg">Main Studio Floor</span>
+                    </div>
+                    <div className="relative group overflow-hidden rounded-3xl h-48">
+                       <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?q=80&w=1000&auto=format&fit=crop" alt="Entrance" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                       <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
+                       <span className="absolute bottom-4 left-4 text-[10px] font-black text-white uppercase tracking-widest px-3 py-1 bg-black/40 backdrop-blur-md rounded-lg">Storefront / Entrance</span>
+                    </div>
+                 </div>
+
+                 {/* Services List */}
+                 <div className="space-y-6 pt-10 border-t border-slate-50">
+                    <div className="flex items-center gap-2 mb-4">
+                       <FileText size={18} className="text-rose-500" />
+                       <h3 className="font-black text-slate-800 uppercase tracking-widest text-[11px]">Service Menu & Pricing</h3>
+                    </div>
+                    <div className="space-y-4">
+                       <ServiceRow name="Couture Cut & Style" time="30 Min • Master Stylist" price="$185.00" />
+                       <ServiceRow name="Balayage Signature" time="150 Min • Includes Gloss" price="$350.00" />
+                       <ServiceRow name="Botanical Scalp Therapy" time="45 Min • Organic Products" price="$95.00" />
+                    </div>
+                 </div>
+              </div>
+           </div>
+
+           {/* Side Audit Controls */}
+           <div className="col-span-4 space-y-8">
+              {/* Checklist */}
+              <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm">
+                 <h3 className="font-black text-slate-800 uppercase tracking-widest text-[11px] mb-6">Audit Checklist</h3>
+                 <div className="space-y-5">
+                    <CheckItem label="Business License Verified" isDone />
+                    <CheckItem label="Insurance Documents Valid" isDone />
+                    <CheckItem label="Health Inspection PDF" isDone />
+                    <CheckItem label="On-site Audit Required" />
+                 </div>
+              </div>
+
+              {/* Owner Info */}
+              <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm">
+                 <h3 className="font-black text-slate-800 uppercase tracking-widest text-[11px] mb-6">Owner Background</h3>
+                 <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 rounded-2xl overflow-hidden ring-2 ring-slate-100 shadow-lg">
+                       <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Elona" alt="Owner" />
+                    </div>
+                    <div>
+                       <h4 className="font-black text-slate-800 text-sm">Elona Moretti</h4>
+                       <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">ELITE PARTNER CANDIDATE</span>
+                    </div>
+                 </div>
+                 <p className="text-[12px] font-medium text-slate-500 leading-relaxed mb-6">
+                    12+ years in salon management. Previous owner of "The Mane" in NYC. Clean credit history and no prior registration violations.
+                 </p>
+                 <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Internal Note</span>
+                    <p className="text-[11px] font-bold text-slate-600 italic leading-relaxed">
+                       "High potential for platform growth. Verify the health certificate and push to final approval."
+                    </p>
+                 </div>
+              </div>
+
+              {/* Denial Actions */}
+              <div className="bg-rose-50/10 rounded-[2.5rem] p-8 border border-rose-100/30">
+                 <div className="flex items-center gap-2 mb-6">
+                    <AlertCircle size={14} className="text-rose-600" />
+                    <h3 className="font-black text-slate-800 uppercase tracking-widest text-[11px]">Denial Action</h3>
+                 </div>
+                 <div className="space-y-4">
+                    <select className="w-full bg-white border border-slate-100 rounded-xl px-4 py-3 text-[12px] font-bold text-slate-600 outline-none">
+                       <option>Incomplete Documentation</option>
+                       <option>Safety Concerns</option>
+                       <option>Licensing Issue</option>
+                    </select>
+                    <textarea 
+                       placeholder="Provide specific reason for rejection..."
+                       className="w-full h-24 bg-white border border-slate-100 rounded-xl px-4 py-3 text-[12px] font-bold text-slate-600 outline-none resize-none placeholder:text-slate-300"
+                    ></textarea>
+                    <button className="w-full py-4 bg-white border border-rose-100 text-rose-600 rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-rose-100/50 transition-colors">
+                       Reject Application
+                    </button>
+                 </div>
+              </div>
+           </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-slate-50 p-6 lg:p-10">
+    <div className="space-y-10">
       {/* Header */}
       <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
@@ -224,5 +367,33 @@ const ManageSalonsPage = () => {
     </div>
   );
 };
+
+// ── DESKTOP SUB-COMPONENTS ───────────────────────────────────────────────────
+
+const AuditInfo = ({ label, value }) => (
+  <div>
+     <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-1">{label}</span>
+     <span className="text-sm font-black text-slate-800">{value}</span>
+  </div>
+);
+
+const ServiceRow = ({ name, time, price }) => (
+  <div className="flex items-center justify-between group cursor-default">
+     <div className="flex flex-col">
+        <span className="text-[13px] font-black text-slate-800 group-hover:text-rose-600 transition-colors">{name}</span>
+        <span className="text-[11px] font-medium text-slate-400">{time}</span>
+     </div>
+     <span className="text-sm font-black text-slate-800">{price}</span>
+  </div>
+);
+
+const CheckItem = ({ label, isDone }) => (
+  <div className="flex items-center gap-4 group">
+     <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${isDone ? "bg-emerald-500 text-white" : "bg-slate-50 border border-slate-200 text-transparent"}`}>
+        <Check size={12} strokeWidth={4} />
+     </div>
+     <span className={`text-[12px] font-bold transition-colors ${isDone ? "text-slate-700" : "text-slate-400"}`}>{label}</span>
+  </div>
+);
 
 export default ManageSalonsPage;

@@ -76,7 +76,7 @@ const ManageSalesExecutivePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FBFBFE] p-4 lg:p-10 font-sans text-slate-900">
+    <div className="space-y-10">
 
       {/* --- PAGE HEADER --- */}
       <div className="w-full mx-auto px-4 md:px-8 lg:px-12 mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">

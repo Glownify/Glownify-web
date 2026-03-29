@@ -55,7 +55,7 @@ const ServiceCategories = ({ categories }) => {
                     <button key={cat.id || cat._id} className="flex flex-col items-center gap-1.5 shrink-0" onClick={() => navigate("/categories")}>
                         <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ backgroundColor: "#e0f7f5" }}>
                             <img
-                                src={CATEGORY_ICONS[cat.name] || DEFAULT_ICON}
+                                src={cat.icon}
                                 alt={cat.name}
                                 className="w-8 h-8 object-contain"
                             />

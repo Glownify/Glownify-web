@@ -1,7 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchAllSalonsByCategory,
-  fetchAllFeaturedSaloons,
   setSelectedCategory,
 } from "../../redux/slice/userSlice";
 import { useEffect, useState, useMemo } from "react";
@@ -460,8 +459,8 @@ const SalonsPage = () => {
               key={tab.value}
               onClick={() => handleCategoryChange(tab.value)}
               className={`flex items-center gap-1.5 px-5 py-2 rounded-full text-sm font-bold border transition-all duration-200 ${selectedCategory === tab.value
-                  ? "bg-indigo-600 text-white border-indigo-600 shadow-md"
-                  : "bg-white text-gray-600 border-gray-200 hover:bg-indigo-50 hover:border-indigo-300"
+                ? "bg-indigo-600 text-white border-indigo-600 shadow-md"
+                : "bg-white text-gray-600 border-gray-200 hover:bg-indigo-50 hover:border-indigo-300"
                 }`}
             >
               <span>{tab.emoji}</span>

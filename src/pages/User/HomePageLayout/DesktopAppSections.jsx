@@ -320,23 +320,9 @@ import {
     fetchHomeIndependentProfessionals,
     fetchUnisexNearbySalons,
 } from "../../../redux/slice/userSlice";
-
+import { formatSalonData } from "../../../utils/formatSalonData";
 import salonImg from "../../../assets/salon.png";
 
-// COMMON HELPER (REUSABLE)
-const formatSalonData = (salons = []) => {
-    return salons.map((salon) => ({
-        _id: salon._id,
-        shopName: salon.shopName,
-        galleryImages: [salon.image],
-        rating: salon.avgRating,
-        reviewCount: salon.totalRatings,
-        distance: salon.distanceInMeters
-            ? (salon.distanceInMeters / 1000).toFixed(1)
-            : null,
-        categories: salon.popularServices?.map((s) => s.name) || [],
-    }));
-};
 
 // ────────────────────────────────────────────────────────────
 // 1. CATEGORIES
@@ -589,11 +575,11 @@ export function DesktopHomeService({ lat, lng, gender }) {
                     <p className="text-[12px] text-gray-400 mt-0.5">{prosToShow?.length || 0} professionals nearby</p>
                 </div>
                 <button
-                    className="text-[14px] font-semibold border rounded-full px-4 py-1.5"
+                    className="text-[14px] font-semibold py-1.5"
                     style={{ color: "#0d9488", borderColor: "#0d9488" }}
                     onClick={() => navigate("/independentprofessionaldetailspage")}
                 >
-                    View all &gt;
+                    View all
                 </button>
             </div>
             <div

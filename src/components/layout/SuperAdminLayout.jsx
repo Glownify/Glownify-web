@@ -11,18 +11,18 @@ import {
   ChevronRight,
   Target,
   FileText,
-  Workflow
+  Workflow,
+  MapPin,
+  Mail,
+  Store,
+  CreditCard,
+  Briefcase,
+  Layers
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../redux/slice/authSlice";
 import useMobile from "../../hooks/useMobile";
 
-/**
- * SuperAdminLayout
- * ─────────────────────────────────────────────────────────────
- * Custom premium layout for Super Admin role on Desktop.
- * Modern purple-themed design with sidebar and header.
- */
 const SuperAdminLayout = () => {
   const isMobile = useMobile();
   const location = useLocation();
@@ -35,170 +35,115 @@ const SuperAdminLayout = () => {
     navigate("/");
   };
 
-  // If mobile, just render the outlet (the child page handles mobile layout)
   if (isMobile) {
     return <Outlet />;
   }
 
   const menuItems = [
-    { name: "Analytics", icon: BarChart3, path: "/super-admin/dashboard" },
-    { name: "Manage Users", icon: Users, path: "/super-admin/manage-users" },
-    { name: "Manage Subscriptions", icon: Settings, path: "/super-admin/manage-subscriptions" },
-    { name: "Commission Reports", icon: PieChart, path: "/super-admin/manage-sales-executives" },
-    { name: "Manage Reports", icon: FileText, path: "#" },
-    { name: "Settings", icon: Settings, path: "/super-admin/profile", hasSubmenu: true },
-    { name: "Integrations", icon: Workflow, path: "#", hasSubmenu: true },
+    { name: "Dashboard", icon: BarChart3, path: "/super-admin/dashboard" },
+    { name: "Users", icon: Users, path: "/super-admin/manage-users" },
+    { name: "Salons", icon: Store, path: "/super-admin/manage-salons" },
+    { name: "Categories", icon: Layers, path: "/super-admin/manage-categories" },
+    { name: "Territories", icon: MapPin, path: "/super-admin/manage-cities-and-states" },
+    { name: "Finance", icon: CreditCard, path: "/super-admin/manage-sales-executives" },
+    { name: "Plans", icon: Settings, path: "/super-admin/manage-subscriptions" },
+    { name: "System Logs", icon: FileText, path: "/super-admin/manage-system-logs" },
   ];
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#F8F7FF]">
+    <div className="flex h-screen overflow-hidden bg-[#F8FAFC]">
       {/* ── Sidebar ── */}
-      <aside className="w-72 h-screen flex flex-col bg-white/50 backdrop-blur-xl border-r border-purple-100/50 sticky top-0 shadow-2xl shadow-purple-500/5">
-        
-        {/* Logo Section */}
-        <div className="p-8 mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#8B5CF6] to-[#D946EF] rounded-xl flex items-center justify-center shadow-lg shadow-purple-200">
-               <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-white" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="m12 19 7-7 3 3-7 7-3-3Z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5Z"/><path d="m2 2 5 3"/><path d="m9 7 5 3"/>
-               </svg>
+      <aside className="w-80 h-screen flex flex-col bg-white border-r border-slate-100 sticky top-0 z-50">
+        <div className="p-8 mb-4 border-b border-slate-50">
+            <div className="flex items-center gap-3">
+               <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white">
+                  <span className="font-black text-xs">FE</span>
+               </div>
+               <div className="flex flex-col">
+                  <span className="text-sm font-black text-slate-800 tracking-tight uppercase leading-none">The Fluid Executive</span>
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1 opacity-80 decoration-slate-300">Super Admin Terminal</span>
+               </div>
             </div>
-            <span className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-purple-900 to-indigo-900 tracking-tight">
-              Glownify
-            </span>
-          </div>
         </div>
 
-        {/* Navigation Section */}
-        <nav className="flex-1 px-4 mb-4 overflow-y-auto space-y-2">
-          {menuItems.map((item) => (
-            <NavLink
-              key={item.name}
-              to={item.path}
-              className={({ isActive }) =>
-                `flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-300 group
-                ${isActive || location.pathname === item.path
-                  ? "bg-[#8B5CF6] text-white shadow-xl shadow-purple-200 translate-x-1" 
-                  : "text-slate-500 hover:bg-purple-50 hover:text-[#8B5CF6] hover:translate-x-1"}`
-              }
-            >
-              <div className="flex items-center gap-4">
-                <item.icon className="w-5 h-5 transition-transform group-hover:scale-110" />
-                <span className="font-semibold text-[15px]">{item.name}</span>
-              </div>
-              {item.hasSubmenu && (
-                <ChevronRight className={`w-4 h-4 transition-transform ${location.pathname === item.path ? "rotate-90" : ""}`} />
-              )}
-            </NavLink>
-          ))}
+        <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto no-scrollbar pt-4">
+          {menuItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <button
+                key={item.name}
+                onClick={() => navigate(item.path)}
+                className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all duration-300 group relative ${
+                  isActive 
+                  ? "bg-rose-50 text-rose-600 shadow-sm" 
+                  : "text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors"
+                }`}
+              >
+                <item.icon size={18} strokeWidth={isActive ? 2.5 : 2} className={isActive ? "text-rose-600" : "text-slate-400 group-hover:text-slate-600"} />
+                <span className={`text-[14px] font-bold tracking-tight whitespace-nowrap ${isActive ? "text-rose-600" : "text-slate-500 group-hover:text-slate-800"}`}>
+                  {item.name}
+                </span>
+                {isActive && <div className="absolute right-4 w-1.5 h-6 rounded-full bg-rose-500 shadow-[0_0_12px_rgba(225,29,72,0.4)]" />}
+              </button>
+            );
+          })}
         </nav>
 
-        {/* Bottom Profile Section */}
-        <div className="p-6 mt-auto">
-          <div className="bg-white/80 p-4 rounded-3xl border border-purple-50 shadow-sm flex items-center gap-3 hover:shadow-md transition-shadow cursor-pointer">
-            <div className="w-11 h-11 rounded-2xl overflow-hidden border-2 border-purple-200 p-0.5">
-              <img 
-                src="https://api.dicebear.com/7.x/avataaars/svg?seed=Rohit" 
-                alt="Admin" 
-                className="w-full h-full object-cover rounded-xl"
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h4 className="font-bold text-slate-800 text-[14px] truncate">Admin User</h4>
-              <p className="text-[12px] text-slate-500 font-medium">Super Admin</p>
-            </div>
-            <button onClick={logout} className="text-slate-400 hover:text-red-500 transition-colors p-1.5 hover:bg-red-50 rounded-lg">
-              <LogOut size={18} />
-            </button>
+        <div className="p-4 space-y-4">
+          <button className="w-full py-4 rounded-2xl bg-rose-600 text-white text-[13px] font-black shadow-lg shadow-rose-200 hover:bg-rose-700 hover:-translate-y-0.5 transition-all active:scale-95">
+             GENERATE REPORT
+          </button>
+          
+          <div className="px-4 space-y-4 pt-4 border-t border-slate-50">
+             <button className="flex items-center gap-3 text-slate-400 font-bold text-sm hover:text-slate-800 transition-colors">
+                <Settings size={18} /> Support
+             </button>
+             <button onClick={logout} className="flex items-center gap-3 text-slate-400 font-bold text-sm hover:text-rose-600 transition-colors">
+                <LogOut size={18} /> Logout
+             </button>
           </div>
         </div>
       </aside>
 
-      {/* ── Main Content Area ── */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden">
-        
-        {/* Top Header */}
-        <header className="h-24 px-10 flex items-center justify-between border-b border-purple-50/50 bg-white/70 backdrop-blur-md sticky top-0 z-10 shrink-0">
-          
-          {/* Left Side: Tabs */}
-          <div className="flex items-center gap-1 bg-purple-50/50 p-1.5 rounded-[22px] border border-purple-100/50">
-             <button className="px-6 py-2.5 rounded-[18px] bg-white text-[#8B5CF6] font-bold text-[14px] shadow-sm ring-1 ring-purple-100/50">
-               Sales Dashboard
-             </button>
-             <button className="px-6 py-2.5 rounded-[18px] text-slate-500 font-semibold text-[14px] hover:text-[#8B5CF6] transition-colors">
-               Manage Users
-             </button>
-             <button className="px-6 py-2.5 rounded-[18px] text-slate-500 font-semibold text-[14px] hover:text-[#8B5CF6] transition-colors">
-               Manage Subscriptions
-             </button>
-          </div>
-
-          {/* Right Side: Search, Create, Notis, Profile */}
-          <div className="flex items-center gap-6">
-            
-            {/* Search Bar */}
-            <div className="relative group w-80">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#8B5CF6] transition-colors" />
-              <input 
-                type="text" 
-                placeholder="Search analytics..." 
-                className="w-full h-11 bg-slate-50/50 border border-slate-100 rounded-[18px] pl-11 pr-4 text-[14px] focus:outline-none focus:ring-2 focus:ring-purple-200/50 focus:bg-white transition-all transition-duration-300"
-              />
-            </div>
-
-            {/* Create Button */}
-            <button className="flex items-center gap-2 h-11 px-6 rounded-[18px] bg-gradient-to-r from-[#D946EF] to-[#8B5CF6] text-white font-bold text-[14px] shadow-lg shadow-purple-200 hover:shadow-xl hover:-translate-y-0.5 transition-all">
-              <Plus size={18} strokeWidth={3} />
-              Create Plan
-            </button>
-
-            {/* Notification Badge */}
-            <div className="relative cursor-pointer transition-transform hover:scale-110 active:scale-95">
-              <div className="w-11 h-11 bg-slate-50/50 border border-slate-100 rounded-[18px] flex items-center justify-center">
-                <Bell className="w-5 h-5 text-slate-500" />
-              </div>
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white border-2 border-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                6
+      {/* ── Main Content ── */}
+      <main className="flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth no-scrollbar flex flex-col">
+        {/* Premium Header */}
+        <header className="h-20 sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-100 flex items-center justify-between px-10 shrink-0">
+           <div className="flex items-center gap-8 flex-1">
+              <span className="text-lg font-black text-slate-800 tracking-tight">
+                 {menuItems.find(m => location.pathname === m.path)?.name === "Users" ? "User Management Hub" : "SalonEcosystem Admin"}
               </span>
-            </div>
+              <div className="relative group w-full max-w-[380px]">
+                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-rose-500 transition-colors" />
+                 <input type="text" placeholder="Search ecosystem data..." className="w-full h-11 rounded-xl bg-slate-50/50 px-10 pr-6 text-[13px] font-bold text-slate-700 outline-none focus:ring-4 focus:ring-rose-500/5 transition-all placeholder:text-slate-300 border border-transparent focus:border-slate-100" />
+              </div>
+           </div>
 
-            {/* Profile Dropdown */}
-            <div className="flex items-center gap-3 pl-2 border-l border-slate-100">
-               <div className="w-11 h-11 rounded-[16px] overflow-hidden border border-purple-100">
-                 <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Rohit" alt="Rohit" className="w-full h-full object-cover" />
-               </div>
-               <div className="flex flex-col">
-                 <span className="text-[14px] font-bold text-slate-800 leading-tight">Rohit Sharma</span>
-                 <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Super Admin</span>
-               </div>
-            </div>
-
-          </div>
+           <div className="flex items-center gap-4">
+              <button className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all relative">
+                 <Bell size={18} />
+                 <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-rose-500 rounded-full border-2 border-white"></span>
+              </button>
+              <button className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all">
+                 <Settings size={18} />
+              </button>
+              <button className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all">
+                 <Briefcase size={18} />
+              </button>
+              <div className="w-10 h-10 rounded-xl overflow-hidden ring-2 ring-slate-100 ml-2">
+                 <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Julian" alt="User" className="w-full h-full object-cover" />
+              </div>
+           </div>
         </header>
 
-        {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-10 custom-scrollbar">
-          <div className="max-w-[1600px] mx-auto">
-            <Outlet />
-          </div>
-        </main>
-
-      </div>
+        <div className="p-10 max-w-[1600px] mx-auto w-full">
+          <Outlet />
+        </div>
+      </main>
 
       <style>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #E2E8F0;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #CBD5E1;
-        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
     </div>
   );

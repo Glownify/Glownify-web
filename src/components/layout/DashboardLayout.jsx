@@ -41,7 +41,7 @@ const DashboardLayout = () => {
 
   // ── Desktop: Premium Unified Layout ──
   return (
-    <div className="flex h-screen overflow-hidden bg-[#F8F7FF]">
+    <div className="flex h-screen overflow-hidden bg-[#E2DFFF]">
       
       {/* Sidebar - Integrated Glass Design */}
       <div

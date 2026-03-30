@@ -45,7 +45,7 @@ const SuperAdminLayout = () => {
     { name: "Salons", icon: Store, path: "/super-admin/manage-salons" },
     { name: "Categories", icon: Layers, path: "/super-admin/manage-categories" },
     { name: "Territories", icon: MapPin, path: "/super-admin/manage-cities-and-states" },
-    { name: "Finance", icon: CreditCard, path: "/super-admin/manage-sales-executives" },
+    { name: "Finance", icon: CreditCard, path: "/super-admin/manage-finance" },
     { name: "Plans", icon: Settings, path: "/super-admin/manage-subscriptions" },
     { name: "System Logs", icon: FileText, path: "/super-admin/manage-system-logs" },
   ];

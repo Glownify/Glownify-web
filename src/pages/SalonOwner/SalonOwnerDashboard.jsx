@@ -1,5 +1,6 @@
 import React, { memo, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import { checkSubscription } from "../../utils/checkSubscription";
 import MobileSalonAdminDashboard from "./Mobile/MobileSalonAdminDashboard";
 import {
@@ -18,7 +19,9 @@ import {
   FileText,
   Share2,
   BookOpen,
+  Clock,
   Wallet,
+  Users,
 } from "lucide-react";
 import {
   ComposedChart,
@@ -35,29 +38,29 @@ import {
 } from "recharts";
 
 const actionCards = [
-  { label: "Add Service", icon: Plus, bg: "#f4c9d5", text: "#a63b61" },
-  { label: "Salon View", icon: Eye, bg: "#c8e5f6", text: "#2f7ea3" },
-  { label: "Create Offer", icon: Gift, bg: "#f3cad9", text: "#b84879" },
-  { label: "View Reports", icon: FileText, bg: "#caead1", text: "#2a8a57" },
-  { label: "Share", icon: Share2, bg: "#f7dfab", text: "#b87814" },
-  { label: "Courses", icon: BookOpen, bg: "#f1c9dc", text: "#ba4c7f" },
+  { label: "Add Service", icon: Plus, bg: "#f4c9d5", text: "#a63b61", path: "/salon-owner/manage-services", active: true },
+  { label: "Salon View", icon: Eye, bg: "#c8e5f6", text: "#2f7ea3", path: "/salon-owner/my-view", active: true },
+  { label: "Create Offer", icon: Gift, bg: "#f3cad9", text: "#b84879", path: "/salon-owner/manage-add-ons", active: true },
+  { label: "View Reports", icon: FileText, bg: "#caead1", text: "#2a8a57", path: "/salon-owner/reports", active: true },
+  { label: "Share", icon: Share2, bg: "#f7dfab", text: "#b87814", path: "/salon-owner/marketing", active: true },
+  { label: "Courses", icon: BookOpen, bg: "#f1c9dc", text: "#ba4c7f", path: "#", disabled: true },
 ];
 
 const metricCards = [
-  { title: "Total Salons Registered", subtitle: "", value: "48", icon: Store, iconWrap: "bg-[#e2d2ff] text-[#744de0]" },
-  { title: "Active Subscriptions", subtitle: "\u20B9 2,60,000 Earning", value: "32", icon: Check, iconWrap: "bg-[#d7f0e1] text-[#4ba57f]" },
-  { title: "Pending Followups", subtitle: "", value: "11", icon: Check, iconWrap: "bg-[#ffe5c8] text-[#da8e48]" },
-  { title: "This Month Commission", subtitle: "Earnings", value: "\u20B9 18,500", icon: Wallet, iconWrap: "bg-[#e0d4ff] text-[#7452df]" },
+  { title: "Today's Earnings", subtitle: "+12% vs yesterday", value: "₹ 5,700", icon: Wallet, iconWrap: "bg-[#e2d2ff] text-[#744de0]" },
+  { title: "Booked Today", subtitle: "4 upcoming slots", value: "23", icon: BookOpen, iconWrap: "bg-[#d7f0e1] text-[#4ba57f]" },
+  { title: "Pending Requests", subtitle: "Requires attention", value: "05", icon: Check, iconWrap: "bg-[#ffe5c8] text-[#da8e48]" },
+  { title: "Total Customers", subtitle: "Lifetime reach", value: "863", icon: Users, iconWrap: "bg-[#e0d4ff] text-[#7452df]" },
 ];
 
 const activityData = [
-  { name: "Jan", salons: 18, subs: 16 },
-  { name: "Feb", salons: 26, subs: 22 },
-  { name: "Mar", salons: 34, subs: 28 },
-  { name: "Apr", salons: 38, subs: 33 },
-  { name: "May", salons: 45, subs: 39 },
-  { name: "Jun", salons: 40, subs: 45 },
-  { name: "Aug", salons: 50, subs: 58 },
+  { name: "Mon", revenue: 1800, bookings: 12 },
+  { name: "Tue", revenue: 2600, bookings: 18 },
+  { name: "Wed", revenue: 3400, bookings: 24 },
+  { name: "Thu", revenue: 3800, bookings: 20 },
+  { name: "Fri", revenue: 4500, bookings: 32 },
+  { name: "Sat", revenue: 6000, bookings: 45 },
+  { name: "Sun", revenue: 5000, bookings: 38 },
 ];
 
 const pieData = [
@@ -71,12 +74,12 @@ const alertsData = [
   { id: "SP-SAL-235", name: "SimplyStrands Unisex", location: "Banaswadi", score: 31 },
 ];
 
-const salonsData = [
-  { name: "Style Elegante", id: "SP JPM 005", area: "Jayanagar", subArea: "Ayanagar", serviceType: "In-Salon", plan: "Premium", status: "Active", regDate: "25 Mar, 201", statusClass: "bg-[#9bc5ba] text-white" },
-  { name: "SpaXpress Salon", id: "SP-SLR 034", area: "Jayanagar", subArea: "Jayanagar", serviceType: "Premium", plan: "Premium", status: "Active", regDate: "26 Mar, 201", statusClass: "bg-[#9bc5ba] text-white" },
-  { name: "Golden Mirror", id: "SP-BLR G31", area: "Indiranagar", subArea: "Jayanagar", serviceType: "In-Salon", plan: "Basic", status: "Pro", regDate: "25 Mar, 201", statusClass: "bg-[#9b63e4] text-white" },
-  { name: "Glamour Touch Spa", id: "SP-SAL 215", area: "Jayanagar", subArea: "Jayanagar", serviceType: "In-Salon", plan: "Pro", status: "Trial", regDate: "21 Mar, 201", statusClass: "bg-[#7f8fdc] text-white" },
-  { name: "StyleLight Salon", id: "SP-SAL 179", area: "Malleswaram", subArea: "Bangalore", serviceType: "In-Salon", plan: "Pro", status: "Pro", regDate: "21 Mar, 201", statusClass: "bg-[#7d75d6] text-white" },
+const recentBookingsData = [
+  { name: "Amit K.", id: "BK-HRC-001", service: "Hair Color", duration: "1 hr", amount: "₹ 2,500", status: "Pending", time: "11:30 AM", statusClass: "bg-[#fcd34d] text-slate-800" },
+  { name: "Mehak S.", id: "BK-MSC-002", service: "Full Body Massage", duration: "1.5 hr", amount: "₹ 2,000", status: "Confirmed", time: "12:45 PM", statusClass: "bg-[#9bc5ba] text-white" },
+  { name: "Riya", id: "BK-MKP-003", service: "Bridal Makeup", duration: "2 hr", amount: "₹ 5,000", status: "Pending", time: "02:15 PM", statusClass: "bg-[#fcd34d] text-slate-800" },
+  { name: "Sneha T.", id: "BK-PKT-004", service: "Facial Care", duration: "45 mins", amount: "₹ 1,200", status: "Completed", time: "09:30 AM", statusClass: "bg-[#9bc5ba] text-white" },
+  { name: "Vikram P.", id: "BK-CUT-005", service: "Signature Haircut", duration: "30 mins", amount: "₹ 800", status: "Cancelled", time: "04:00 PM", statusClass: "bg-rose-500 text-white" },
 ];
 
 const quickActions = [
@@ -99,10 +102,21 @@ const SalonOwnerDashboard = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const [filterActive, setFilterActive] = useState(false);
+  const [filterMonth, setFilterMonth] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [bookings, setBookings] = useState(recentBookingsData);
+
   useEffect(() => {
-    if (location.state?.skipSubscriptionCheck) return;
-    checkSubscription(navigate);
-  }, [navigate, location]);
+    let filtered = [...recentBookingsData];
+    if (filterActive) {
+      filtered = filtered.filter(b => b.status === "Accepted" || b.status === "In Service");
+    }
+    if (filterMonth) {
+      filtered = filtered.slice(0, 3);
+    }
+    setBookings(filtered);
+  }, [filterActive, filterMonth]);
 
   if (isMobile) return <MobileSalonAdminDashboard />;
   const PINK_BRAND = "#D946EF";
@@ -113,7 +127,11 @@ const SalonOwnerDashboard = () => {
 
         <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
           {actionCards.map((item) => (
-            <button key={item.label + item.bg} className="h-[62px] rounded-[22px] border border-white/50 bg-white/40 backdrop-blur-md shadow-sm flex items-center justify-center gap-3 px-4 font-bold text-[14px] text-slate-600 hover:scale-105 transition-all hover:bg-white hover:shadow-xl hover:shadow-purple-500/5">
+            <button 
+              key={item.label + item.bg} 
+              onClick={() => item.path !== "#" && navigate(item.path)}
+              className="h-[62px] rounded-[22px] border border-white/50 bg-white/40 backdrop-blur-md shadow-sm flex items-center justify-center gap-3 px-4 font-bold text-[14px] text-slate-600 hover:scale-105 transition-all hover:bg-white hover:shadow-xl hover:shadow-purple-500/5"
+            >
               <item.icon size={16} className="text-[#8B5CF6]" />
               <span>{item.label}</span>
             </button>
@@ -138,7 +156,7 @@ const SalonOwnerDashboard = () => {
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           <div className="lg:col-span-12 xl:col-span-6 bg-white/70 border border-purple-100/20 rounded-[40px] p-8 shadow-sm min-h-[400px]">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-black text-slate-800 tracking-tight">Registration Activity</h3>
+              <h3 className="text-xl font-black text-slate-800 tracking-tight">Revenue Overview</h3>
               <div className="flex items-center gap-3 bg-purple-50 p-1 rounded-xl">
                  <button className="px-4 py-1.5 rounded-lg bg-white text-[#8B5CF6] font-bold text-xs shadow-sm">Monthly</button>
                  <button className="px-4 py-1.5 rounded-lg text-slate-400 font-bold text-xs">Yearly</button>
@@ -151,33 +169,33 @@ const SalonOwnerDashboard = () => {
                   <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: "#94a3b8", fontWeight: 700 }} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: "#94a3b8", fontWeight: 700 }} />
                   <Tooltip contentStyle={{borderRadius: '20px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)'}} />
-                  <Bar dataKey="salons" fill="#8B5CF6" radius={[6, 6, 0, 0]} maxBarSize={32} />
-                  <Line dataKey="subs" type="monotone" stroke="#D946EF" strokeWidth={4} dot={{ r: 6, fill: "#fff", stroke: "#D946EF", strokeWidth: 3 }} />
+                  <Bar dataKey="revenue" fill="#8B5CF6" radius={[6, 6, 0, 0]} maxBarSize={32} />
+                  <Line dataKey="bookings" type="monotone" stroke="#D946EF" strokeWidth={4} dot={{ r: 6, fill: "#fff", stroke: "#D946EF", strokeWidth: 3 }} />
                 </ComposedChart>
               </ResponsiveContainer>
             </div>
             <div className="flex items-center gap-6 text-[11px] font-black uppercase tracking-widest text-slate-400 mt-6">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]" /> Registered Salons
+                <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]" /> Total Revenue
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#D946EF]" /> Subscriptions
+                <span className="w-2.5 h-2.5 rounded-full bg-[#D946EF]" /> Bookings
               </div>
             </div>
           </div>
 
           <div className="lg:col-span-5 xl:col-span-3 bg-white/70 border border-purple-100/20 rounded-[40px] p-8 shadow-sm min-h-[400px]">
-            <h3 className="text-xl font-black text-slate-800 tracking-tight mb-8">Commission Overview</h3>
+            <h3 className="text-xl font-black text-slate-800 tracking-tight mb-8">Service Mix</h3>
             <div className="space-y-8 text-[12px] text-[#6c588f]">
               <div className="flex items-center justify-between gap-6 border-b border-purple-50 pb-8">
                 <div className="space-y-4">
                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Commission Rate</p>
-                      <h4 className="text-2xl font-black text-[#8B5CF6]">45%</h4>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Total Payout</p>
+                      <h4 className="text-2xl font-black text-[#8B5CF6]">₹ 1,85,000</h4>
                    </div>
                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Conversion Rate</p>
-                      <h4 className="text-2xl font-black text-[#D946EF]">40%</h4>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Platform Fee</p>
+                      <h4 className="text-2xl font-black text-[#D946EF]">10%</h4>
                    </div>
                 </div>
                 <div className="w-32 h-32 relative shrink-0">
@@ -239,61 +257,107 @@ const SalonOwnerDashboard = () => {
 
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-4">
           <div className="lg:col-span-8 bg-white/84 border border-[#dacaf4] rounded-[22px] px-5 py-5 shadow-sm overflow-hidden">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
-              <h4 className="text-[15px] font-bold text-[#2c1e4c]">My Registered Salons</h4>
-              <div className="flex flex-wrap gap-2">
-                <button className="px-4 h-9 rounded-xl border border-[#d8c7f4] bg-white/95 text-[#654f8d] text-[13px] font-medium">Active Only</button>
-                <button className="px-4 h-9 rounded-xl border border-[#d8c7f4] bg-white/95 text-[#654f8d] text-[13px] font-medium">This Month</button>
-                <button className="px-4 h-9 rounded-xl border border-[#d8c7f4] bg-white/95 text-[#654f8d] text-[13px] font-medium flex items-center gap-2">By Area <ChevronDown size={14} /></button>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+              <div className="space-y-1">
+                <h4 className="text-[18px] font-black text-[#2c1e4c] tracking-tight">Recent Bookings</h4>
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest leading-none">Awaiting Management</p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <button 
+                  onClick={() => setFilterActive(!filterActive)}
+                  className={`px-5 h-10 rounded-2xl border border-purple-100 text-[12px] font-black uppercase tracking-widest transition-all ${filterActive ? 'bg-[#8B5CF6] text-white shadow-lg shadow-purple-500/20' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
+                >
+                  Active Only
+                </button>
+                <button 
+                  onClick={() => setFilterMonth(!filterMonth)}
+                  className={`px-5 h-10 rounded-2xl border border-purple-100 text-[12px] font-black uppercase tracking-widest transition-all ${filterMonth ? 'bg-[#8B5CF6] text-white shadow-lg shadow-purple-500/20' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
+                >
+                  This Month
+                </button>
+                <button className="px-5 h-10 rounded-2xl border border-purple-100 bg-white text-slate-400 text-[12px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50">By Area <ChevronDown size={14} /></button>
               </div>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px]">
-                <thead>
-                  <tr className="text-left text-[13px] text-[#715c99] border-b border-[#ece1f8]">
-                    <th className="pb-4 font-semibold">Salon Name</th>
-                    <th className="pb-4 font-semibold">Area</th>
-                    <th className="pb-4 font-semibold">Service Type</th>
-                    <th className="pb-4 font-semibold">Plan</th>
-                    <th className="pb-4 font-semibold">Status</th>
-                    <th className="pb-4 font-semibold">Reg Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {salonsData.map((salon) => (
-                    <tr key={salon.id} className="border-b border-[#f1e9fb] text-[14px] text-[#2f2450]">
-                      <td className="py-4">
-                        <div className="font-semibold">{salon.name}</div>
-                        <div className="text-[11px] text-[#9181b4] mt-1">{salon.id}</div>
-                      </td>
-                      <td className="py-4">
-                        <div>{salon.area}</div>
-                        <div className="text-[11px] text-[#9181b4] mt-1">{salon.subArea}</div>
-                      </td>
-                      <td className="py-4">
-                        <span className="inline-flex px-3 py-1 rounded-xl bg-[#edf4f5] text-[#5f6778] text-[13px]">{salon.serviceType}</span>
-                      </td>
-                      <td className="py-4">{salon.plan}</td>
-                      <td className="py-4">
-                        <span className={`inline-flex px-4 py-1 rounded-xl text-[13px] font-medium ${salon.statusClass}`}>{salon.status}</span>
-                      </td>
-                      <td className="py-4">{salon.regDate}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="space-y-4">
+              {bookings.map((booking) => (
+                <div key={booking.id} className="group flex flex-col xl:flex-row xl:items-center justify-between gap-6 p-6 rounded-[32px] bg-slate-50/50 border border-slate-100 transition-all hover:bg-white hover:shadow-xl hover:shadow-purple-500/5 hover:-translate-y-1">
+                  <div className="flex items-center gap-5 flex-1">
+                    <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-lg shadow-purple-500/10 border-2 border-white grayscale-[0.2] group-hover:grayscale-0 transition-all">
+                       <img src={`https://i.pravatar.cc/150?u=${booking.id}`} alt="customer" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="space-y-1">
+                       <div className="flex items-center gap-2">
+                          <h5 className="text-[15px] font-black text-slate-800">{booking.name}</h5>
+                          <span className="px-2 py-0.5 rounded-lg bg-white border border-slate-100 text-[9px] font-black uppercase text-slate-400 tracking-tighter">Verified</span>
+                       </div>
+                       <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{booking.id}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-10 xl:gap-14 flex-[2]">
+                    <div className="space-y-1">
+                       <p className="text-[9px] font-black uppercase tracking-widest text-[#8B5CF6]/60">Treatment</p>
+                       <p className="text-[14px] font-black text-[#8B5CF6] truncate max-w-[150px]">{booking.service}</p>
+                    </div>
+                    <div className="space-y-1">
+                       <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Schedule</p>
+                       <div className="flex items-center gap-2">
+                          <Clock size={12} className="text-[#D946EF]" />
+                          <p className="text-[13px] font-bold text-slate-700">{booking.time}</p>
+                       </div>
+                    </div>
+                    <div className="space-y-1">
+                       <p className="text-[9px] font-black uppercase tracking-widest text-rose-500/60">Revenue</p>
+                       <p className="text-[15px] font-black text-slate-900">{booking.amount}</p>
+                    </div>
+                    <div className="space-y-1 min-w-[100px]">
+                       <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Current Status</p>
+                       <div className={`text-[11px] font-black uppercase tracking-widest ${booking.status === 'Cancelled' ? 'text-rose-500' : 'text-emerald-500'}`}>
+                          {booking.status}
+                       </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                     <button className="px-6 py-3 rounded-2xl bg-emerald-500 text-white font-black text-[12px] uppercase tracking-widest shadow-lg shadow-emerald-500/20 hover:scale-105 active:scale-95 transition-all">Accept</button>
+                     <button className="px-6 py-3 rounded-2xl bg-rose-50 text-rose-500 border border-rose-100 font-black text-[12px] uppercase tracking-widest hover:bg-rose-500 hover:text-white transition-all">Decline</button>
+                  </div>
+                </div>
+              ))}
             </div>
 
             <div className="flex items-center justify-between pt-4 text-[13px] text-[#7f70a6]">
-              <p>Showing 1 - 6 of 48</p>
+              <p>Showing {(currentPage-1)*6+1} - {Math.min(currentPage*6, 48)} of 48</p>
               <div className="flex items-center gap-2">
-                <button className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6]">{`<`}</button>
-                <button className="w-8 h-8 rounded-lg bg-[#8a63f7] text-white">1</button>
-                <button className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6]">2</button>
-                <button className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6]">3</button>
-                <button className="w-10 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6]">79</button>
-                <button className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6]">{`>`}</button>
+                <button 
+                  onClick={() => setCurrentPage(Math.max(1, currentPage-1))}
+                  className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50 transition-all font-bold"
+                >
+                  {`<`}
+                </button>
+                {[1, 2, 3].map(page => (
+                  <button 
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`w-8 h-8 rounded-lg transition-all font-bold ${currentPage === page ? 'bg-[#8a63f7] text-white shadow-lg' : 'border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50'}`}
+                  >
+                    {page}
+                  </button>
+                ))}
+                <span className="px-1 text-slate-300">...</span>
+                <button 
+                   onClick={() => setCurrentPage(79)}
+                   className={`w-10 h-8 rounded-lg transition-all font-bold ${currentPage === 79 ? 'bg-[#8a63f7] text-white shadow-lg' : 'border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50'}`}
+                >
+                  79
+                </button>
+                <button 
+                  onClick={() => setCurrentPage(Math.min(79, currentPage+1))}
+                  className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50 transition-all font-bold"
+                >
+                  {`>`}
+                </button>
               </div>
             </div>
           </div>

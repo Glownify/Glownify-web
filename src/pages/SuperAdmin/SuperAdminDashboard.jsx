@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import useMobile from "../../hooks/useMobile";
 import MobileSuperAdminDashboard from "./MobileSuperAdminDashboard";
 import { 
@@ -66,6 +67,7 @@ const growthRateData = [
 
 const SuperAdminDashboard = () => {
   const isMobile = useMobile();
+  const navigate = useNavigate();
   
   if (isMobile) {
     return <MobileSuperAdminDashboard />;
@@ -171,7 +173,10 @@ const SuperAdminDashboard = () => {
               <GrowthStat label="Subscription Growth" value="+18%" />
               <GrowthStat label="Service Commission" value="+7.2%" />
               <GrowthStat label="Marketplace Ads" value="+3.4%" />
-              <button className="w-full py-3 rounded-xl bg-slate-50 text-slate-600 font-bold text-[11px] uppercase tracking-wider mt-2 border border-slate-100 hover:bg-slate-100 transition-colors">
+              <button 
+                onClick={() => navigate("/super-admin/manage-finance")}
+                className="w-full py-3 rounded-xl bg-slate-50 text-slate-600 font-bold text-[11px] uppercase tracking-wider mt-2 border border-slate-100 hover:bg-slate-100 transition-colors"
+              >
                 Full Analytics Suite
               </button>
            </div>
@@ -185,7 +190,10 @@ const SuperAdminDashboard = () => {
                <span className="text-[10px] uppercase font-black tracking-widest text-slate-400">Transparency</span>
                <h2 className="text-2xl font-black text-slate-800 tracking-tight">Recent Ecosystem Events</h2>
             </div>
-            <button className="flex items-center gap-2 text-[11px] font-black text-rose-600 uppercase tracking-widest bg-rose-50 px-5 py-2.5 rounded-xl border border-rose-100 hover:bg-rose-100 transition-colors">
+            <button 
+               onClick={() => navigate("/super-admin/manage-system-logs")}
+               className="flex items-center gap-2 text-[11px] font-black text-rose-600 uppercase tracking-widest bg-rose-50 px-5 py-2.5 rounded-xl border border-rose-100 hover:bg-rose-100 transition-colors"
+            >
                View All Logs <ChevronRight size={14} />
             </button>
          </div>

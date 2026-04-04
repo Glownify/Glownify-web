@@ -36,21 +36,26 @@ import SalonOwnerDashboard from "../pages/SalonOwner/SalonOwnerDashboard";
 import ManageServicesPage from "../pages/SalonOwner/ManageServicesPage";
 import ManageSpecialistsPage from "../pages/SalonOwner/ManageSpecialistsPage";
 import ManageAnalyticsPage from "../pages/SalonOwner/ManageAnalyticsPage";
-import ManageBookingsPage from "../pages/SalonOwner/ManageBookingsPage";
 import AIHairstyleScannerPage from "../pages/SalonOwner/AIHairstyleScannerPage";
 import AIPosterCreatorPage from "../pages/SalonOwner/AIPosterCreatorPage";
 import SalonOwnerProfilePage from "../pages/SalonOwner/SalonOwnerProfilePage";
 import ManageAddOnPage from "../pages/SalonOwner/ManageAddOnPage";
 import SubscriptionPage from "../pages/SalonOwner/SubscriptionPage";
-import SalonBookingsPage from "../pages/SalonOwner/Mobile/SalonBookingsPage";
-import BookingDetailPage from "../pages/SalonOwner/Mobile/BookingDetailPage";
-import BillingDetailPage from "../pages/SalonOwner/Mobile/BillingDetailPage";
+import SalonBookingsPage from "../pages/SalonOwner/SalonBookingsPage";
+import BookingDetailPage from "../pages/SalonOwner/BookingDetailPage";
+import BillingDetailPage from "../pages/SalonOwner/BillingDetailPage";
 import MobileManageCategoriesScreen from "../pages/SalonOwner/Mobile/MobileManageCategoriesScreen";
 import MobileComboPackagesScreen from "../pages/SalonOwner/Mobile/MobileComboPackagesScreen";
 import MobileSalonNotificationsScreen from "../pages/SalonOwner/Mobile/MobileSalonNotificationsScreen";
 import MobileMyViewScreen from "../pages/SalonOwner/Mobile/MobileMyViewScreen";
+import MobileAddServiceScreen from "../pages/SalonOwner/Mobile/MobileAddServiceScreen";
 import SalonReportsPage from "../pages/SalonOwner/SalonReportsPage";
+import SalonMyViewPage from "../pages/SalonOwner/SalonMyViewPage";
+import SalonCategoriesPage from "../pages/SalonOwner/ManageCategoriesPage";
+import ComboPackagesPage from "../pages/SalonOwner/ComboPackagesPage";
+import SalonNotificationsPage from "../pages/SalonOwner/SalonNotificationsPage";
 
+import MarketingSuitePage from "../pages/SalonOwner/MarketingSuitePage";
 // ─── Salesman Pages ────────────────────────────────────────────────────────────
 import SalesmanDashboard from "../pages/Salesman/SalesmanDashboard";
 import MySaloonsPage from "../pages/Salesman/MySaloonsPage";
@@ -179,7 +184,8 @@ const AllRoutes = () => {
             <Route path="manage-services" element={<ManageServicesPage />} />
             <Route path="manage-specialists" element={<ManageSpecialistsPage />} />
             <Route path="manage-analytics" element={<ManageAnalyticsPage />} />
-            <Route path="manage-bookings" element={<ManageBookingsPage />} />
+            <Route path="manage-bookings" element={<SalonBookingsPage />} />
+            <Route path="marketing" element={<MarketingSuitePage />} />
             <Route path="ai-poster-creator" element={<AIPosterCreatorPage />} />
             <Route path="ai-hairstyle-scanner" element={<AIHairstyleScannerPage />} />
             <Route path="manage-add-ons" element={<ManageAddOnPage />} />
@@ -187,11 +193,12 @@ const AllRoutes = () => {
             <Route path="bookings" element={<SalonBookingsPage />} />
             <Route path="booking-detail" element={<BookingDetailPage />} />
             <Route path="create-bill" element={<BillingDetailPage />} />
-            <Route path="manage-categories-mobile" element={<MobileManageCategoriesScreen />} />
-            <Route path="combo-packages" element={<MobileComboPackagesScreen />} />
-            <Route path="notifications" element={<MobileSalonNotificationsScreen />} />
-            <Route path="my-view" element={<MobileMyViewScreen />} />
+            <Route path="manage-categories" element={<SalonCategoriesPage />} />
+            <Route path="combo-packages" element={<ComboPackagesPage />} />
+            <Route path="notifications" element={<SalonNotificationsPage />} />
+            <Route path="my-view" element={<SalonMyViewPage />} />
             <Route path="reports" element={<SalonReportsPage />} />
+            <Route path="manage-services-mobile" element={<MobileAddServiceScreen />} />
           </Route>
           <Route path="subscription" element={<SubscriptionPage />} />
 

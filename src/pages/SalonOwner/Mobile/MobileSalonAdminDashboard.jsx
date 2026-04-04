@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import {
     Plus,
     Users,
@@ -75,7 +76,7 @@ const QUICK_ACTIONS_ROW1 = [
         label: 'Add Service',
         iconColor: '#f43f5e',
         bg: '#fecdd3',
-        navigateTo: '/salon-owner/manage-services',
+        navigateTo: '/salon-owner/manage-services-mobile',
     },
     {
         icon: Eye,
@@ -294,15 +295,19 @@ export default function MobileSalonAdminDashboard() {
     const navigate = useNavigate();
     const [bookings, setBookings] = useState(MOCK_RECENT_BOOKINGS);
 
-    const handleAccept = (id) =>
+    const handleAccept = (id) => {
         setBookings((prev) =>
             prev.map((b) => (b.id === id ? { ...b, status: 'accepted' } : b))
         );
+        toast.success("Booking accepted!");
+    };
 
-    const handleDecline = (id) =>
+    const handleDecline = (id) => {
         setBookings((prev) =>
             prev.map((b) => (b.id === id ? { ...b, status: 'declined' } : b))
         );
+        toast.error("Booking declined.");
+    };
 
     return (
         <div style={{ flex: 1, backgroundColor: '#fff1f2', minHeight: '100vh', paddingBottom: '100px' }}>

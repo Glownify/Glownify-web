@@ -30,7 +30,7 @@ const SalonOwnerSidebar = () => {
     };
 
     return (
-        <aside className="w-88 h-screen bg-white flex flex-col border-r border-slate-100 sticky top-0 z-50 overflow-hidden shrink-0 shadow-[20px_0_60px_rgba(0,0,0,0.02)]">
+        <aside className="w-80 h-screen bg-white flex flex-col border-r border-slate-100 sticky top-0 z-50 overflow-hidden shrink-0 shadow-[20px_0_60px_rgba(0,0,0,0.02)]">
             {/* 1. Logo / Header - Matching "The Fluid Executive" */}
             <div className="p-10 mb-2 flex flex-col gap-1">
                 <div className="flex flex-col">

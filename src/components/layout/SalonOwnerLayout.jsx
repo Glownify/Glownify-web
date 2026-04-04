@@ -16,9 +16,7 @@ const SalonOwnerLayout = () => {
     return (
         <div className="flex h-screen overflow-hidden bg-white">
             {/* ── Sidebar ── */}
-            <aside className="w-88 h-screen flex flex-col bg-white border-r border-slate-100 sticky top-0 shadow-[20px_0_60px_rgba(0,0,0,0.02)] z-50 shrink-0">
-               <SalonOwnerSidebar />
-            </aside>
+            <SalonOwnerSidebar />
 
             {/* ── Main Content Area ── */}
             <main className="flex-1 flex flex-col h-full overflow-hidden relative bg-[#FFF5F6]">

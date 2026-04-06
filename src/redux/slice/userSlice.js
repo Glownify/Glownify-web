@@ -23,18 +23,62 @@ export const fetchAllCategories = createAsyncThunk(
 
 
 //new code 
+// export const fetchNearbySalons = createAsyncThunk(
+//   "user/fetchNearbySalons",
+//   async ({ lat, lng, category, radius = 50, page = 1, limit = 10 }, { rejectWithValue }) => {
+//     try {
+//       const res = await getNearbySalons({ lat, lng, category, radius, page, limit });
+//       // return res.data; // 👈 only salons array
+//       return res;
+//     } catch (err) {
+//       return rejectWithValue(err.response?.data || "Failed");
+//     }
+//   }
+// );
+// export const fetchNearbySalons = createAsyncThunk(
+//   "user/fetchNearbySalons",
+//   async (
+//     { lat, lng, category, radius = 50, page = 1, limit = 10 },
+//     { rejectWithValue }
+//   ) => {
+//     try {
+//       const res = await getNearbySalons({
+//         lat,
+//         lng,
+//         category,
+//         radius,
+//         page,
+//         limit,
+//       });
+
+//       return res.data; // ✅ pura response
+//     } catch (err) {
+//       return rejectWithValue(err.response?.data || "Failed");
+//     }
+//   }
+// );
 export const fetchNearbySalons = createAsyncThunk(
   "user/fetchNearbySalons",
-  async ({ lat, lng, category }, { rejectWithValue }) => {
+  async (params, { rejectWithValue }) => {
     try {
-      const res = await getNearbySalons({ lat, lng, category });
-      return res.data; // 👈 only salons array
+
+      // console.log("API PARAMS:", params);
+
+      const res = await getNearbySalons(params);
+
+      // console.log("API res:", res);
+
+      return {
+        salons: res.data || [],
+        page: res.page || 1,
+        totalPages: res.totalPages || 1,
+      };
+
     } catch (err) {
       return rejectWithValue(err.response?.data || "Failed");
     }
   }
 );
-
 
 import { getHomeIndependentProfessionals } from "../../api/independentProApi";
 // new code
@@ -308,6 +352,12 @@ const userSlice = createSlice({
     unisexSalons: [], // ✅ NEW
     unisexLoading: false,
 
+    // ✅ NEW
+    page: 1,
+    totalPages: 1,
+    hasMore: true,
+
+
     featuredSalons: [],
     homeSaloonsByCategory: [],
     salons: [],
@@ -330,6 +380,12 @@ const userSlice = createSlice({
       state.lng = action.payload.lng;
     },
 
+    clearSalons: (state) => {
+      state.nearbySalons = [];
+      state.page = 1;
+      state.hasMore = true;
+    }
+
   },
   extraReducers: (builder) => {
     builder
@@ -345,11 +401,22 @@ const userSlice = createSlice({
       })
       .addCase(fetchNearbySalons.pending, (state) => {
         state.salonsLoading = true;
-        state.nearbySalons = [];   // ✅ always array
+        // state.nearbySalons = [];   // ✅ always array
       })
+      // 
       .addCase(fetchNearbySalons.fulfilled, (state, action) => {
+        const { salons = [], page = 1, totalPages = 1 } = action.payload;
+
+        if (page === 1) {
+          state.nearbySalons = salons;
+        } else {
+          state.nearbySalons = [...state.nearbySalons, ...salons];
+        }
+
+        state.page = page;
+        state.totalPages = totalPages;
+        state.hasMore = page < totalPages;
         state.salonsLoading = false;
-        state.nearbySalons = action.payload;
       })
       .addCase(fetchNearbySalons.rejected, (state) => {
         state.salonsLoading = false;
@@ -493,5 +560,5 @@ const userSlice = createSlice({
       })
   },
 });
-export const { setSelectedCategory, setLocation } = userSlice.actions;
+export const { setSelectedCategory, setLocation, clearSalons } = userSlice.actions;
 export default userSlice.reducer;

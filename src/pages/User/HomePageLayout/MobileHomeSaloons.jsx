@@ -142,10 +142,10 @@ import { formatSalonData } from "../../../utils/formatSalonData";
 function MobileSalonCard({ salon, onClick }) {
     const [fav, setFav] = useState(false);
     const img = salon.galleryImages?.[0] || salonImg;
-    const tags = salon.categories?.length > 0 ? salon.categories : ["Haircut", "Massage", "Facial"];
     const distance = salon.distance ? `${salon.distance} km` : "N/A";
     const rating = salon.rating || "4.8";
     const reviews = salon.reviewCount || "200";
+    const services = salon.popularServices || [];
 
     return (
         <div
@@ -183,19 +183,21 @@ function MobileSalonCard({ salon, onClick }) {
             {/* Info section below image */}
             <div className="px-3 pt-2.5 pb-3">
                 <p className="font-bold text-[14px] text-gray-900 leading-tight truncate">{salon.shopName}</p>
-                <p className="text-[11px] text-gray-400 mt-0.5 mb-2">
-                    {salon.salonCategory || "No categories available"}
-                </p>
-                <div className="flex flex-wrap gap-1">
-                    {tags.slice(0, 3).map((tag, i) => (
-                        <span
-                            key={i}
-                            className="text-[11px] text-gray-600 bg-gray-100 rounded-full px-2 py-0.5 font-medium"
-                        >
-                            {tag}
-                        </span>
-                    ))}
-                </div>
+                {services.length > 0 && (
+                    <div className="mt-3 space-y-1.5">
+                        {services.slice(0, 3).map((service, i) => (
+                            <div
+                                key={i}
+                                className="flex justify-between items-center text-sm"
+                            >
+                                <span className="text-gray-600">{service.name}</span>
+                                <span className="font-bold text-indigo-600">
+                                    ₹{service.price}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );

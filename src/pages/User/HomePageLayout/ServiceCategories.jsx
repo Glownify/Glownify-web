@@ -1,43 +1,10 @@
-import React from "react";
+
 import { useNavigate } from "react-router-dom";
-
-// Category icon imports from assets/categoryIcons
-import haircutIcon from "../../../assets/categoryIcons/haircut.svg";
-import facialIcon from "../../../assets/categoryIcons/facial.svg";
-import makeupIcon from "../../../assets/categoryIcons/makeup.svg";
-import nailsIcon from "../../../assets/categoryIcons/nails.svg";
-import waxingIcon from "../../../assets/categoryIcons/waxing.svg";
-import spaIcon from "../../../assets/categoryIcons/spa.svg";
-import coloringIcon from "../../../assets/categoryIcons/coloring.svg";
-import massageIcon from "../../../assets/categoryIcons/massage.svg";
-
-// Map category names to local SVG icons
-const CATEGORY_ICONS = {
-    Hairs: haircutIcon,
-    Haircut: haircutIcon,
-    Spa: spaIcon,
-    Nails: nailsIcon,
-    Coloring: coloringIcon,
-    Wax: waxingIcon,
-    Waxing: waxingIcon,
-    Makeup: makeupIcon,
-    "Make Up": makeupIcon,
-    Facial: facialIcon,
-    Massage: massageIcon,
-};
-
-const DEFAULT_ICON = haircutIcon; // fallback icon
-
-const DEFAULT_CATEGORIES = [
-    { id: 1, name: "Hairs" }, { id: 2, name: "Spa" },
-    { id: 3, name: "Nails" }, { id: 4, name: "Coloring" },
-    { id: 5, name: "Wax" }, { id: 6, name: "Makeup" },
-];
 
 // Service Categories — mobile only (horizontal icon scroll)
 const ServiceCategories = ({ categories }) => {
     const navigate = useNavigate();
-    const cats = categories?.length > 0 ? categories : DEFAULT_CATEGORIES;
+    const cats = categories?.length > 0 ? categories : " ";
 
     return (
         <div className="bg-white pb-3">

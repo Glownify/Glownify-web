@@ -23,6 +23,7 @@ import {
     ChevronRight
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Avatar from '../../../components/common/Avatar';
 import MobileBottomNav from './MobileBottomNav';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -114,6 +115,8 @@ const MenuRow = ({ icon: IconComponent, iconBg, iconColor, label, value, onPress
     </button>
 );
 
+
+
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 export default function MobileSalonProfileScreen() {
     const dispatch = useDispatch();
@@ -177,16 +180,12 @@ export default function MobileSalonProfileScreen() {
                     {/* Avatar + name + rating */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div style={{ position: 'relative', marginBottom: '12px' }}>
-                            <img
-                                src={galleryImages[0] || 'https://i.pravatar.cc/150?u=salon_glamour'}
-                                alt="Salon logo"
-                                style={{
-                                    width: '100px',
-                                    height: '100px',
-                                    borderRadius: '50%',
-                                    border: '3px solid #fecdd3',
-                                    objectFit: 'cover'
-                                }}
+                            <Avatar 
+                              src={galleryImages[0] || 'https://i.pravatar.cc/150?u=salon_glamour'} 
+                              initials={roleDetails?.shopName?.[0] || user?.name?.[0] || 'G'} 
+                              size={100} 
+                              color="#fecdd3" 
+                              textColor="#9f1239" 
                             />
                             {/* Verified badge */}
                             <div

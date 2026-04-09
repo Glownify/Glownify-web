@@ -275,8 +275,7 @@
 //         }
 //     }, [dispatch, lat, lng]);
 
-//     const salonsToShow = Array.isArray(unisexSalons)
-//         ? unisexSalons.map((salon) => ({
+//     const salonsToShow = (Array.isArray(unisexSalons) ? unisexSalons : []).map((salon) => ({
 //             _id: salon._id,
 //             shopName: salon.shopName,
 //             galleryImages: [salon.image],
@@ -322,26 +321,64 @@ import {
 } from "../../../redux/slice/userSlice";
 import { formatSalonData } from "../../../utils/formatSalonData";
 import salonImg from "../../../assets/salon.png";
+import haircutIcon from "../../../assets/categoryIcons/haircut.svg";
+import facialIcon from "../../../assets/categoryIcons/facial.svg";
+import makeupIcon from "../../../assets/categoryIcons/makeup.svg";
+import nailsIcon from "../../../assets/categoryIcons/nails.svg";
+import waxingIcon from "../../../assets/categoryIcons/waxing.svg";
+import spaIcon from "../../../assets/categoryIcons/spa.svg";
+import coloringIcon from "../../../assets/categoryIcons/coloring.svg";
+import massageIcon from "../../../assets/categoryIcons/massage.svg";
+import skinIcon from "../../../assets/categoryIcons/skin.svg";
+
+const CATEGORY_ICONS = {
+    coloring: coloringIcon,
+    massage: massageIcon,
+    spa: spaIcon,
+    waxing: waxingIcon,
+    nails: nailsIcon,
+    makeup: makeupIcon,
+    facial: facialIcon,
+    skin: skinIcon,
+    hair: haircutIcon,
+    // legacy mappings for safety
+    Hairs: haircutIcon,
+    Haircut: haircutIcon,
+    Spa: spaIcon,
+    Nails: nailsIcon,
+    Coloring: coloringIcon,
+    Wax: waxingIcon,
+    Waxing: waxingIcon,
+    Makeup: makeupIcon,
+    "Make Up": makeupIcon,
+    Facial: facialIcon,
+    Massage: massageIcon,
+    Skin: skinIcon,
+};
+
+const DEFAULT_CATEGORIES = [
+    { id: 1, name: "coloring" },
+    { id: 2, name: "massage" },
+    { id: 3, name: "spa" },
+    { id: 4, name: "waxing" },
+    { id: 5, name: "nails" },
+    { id: 6, name: "makeup" },
+    { id: 7, name: "facial" },
+    { id: 8, name: "skin" },
+    { id: 9, name: "hair" },
+];
+
+const DEFAULT_ICON = haircutIcon;
+
+
 
 
 // ────────────────────────────────────────────────────────────
 // 1. CATEGORIES
 // ────────────────────────────────────────────────────────────
-export function DesktopServiceCategories({ categories }) {
+export function DesktopServiceCategories({ activeCategory, setActiveCategory }) {
     const navigate = useNavigate();
-    const { categoriesLoading } = useSelector((state) => state.user);
-
-    if (categoriesLoading) {
-        return <div className="px-10 py-6"><p className="text-gray-400">Loading categories...</p></div>;
-    }
-
-    if (!categories?.length) {
-        return (
-            <div className="bg-white pb-4 border-b border-gray-100 px-10 lg:px-16 py-6">
-                <p className="text-gray-400 text-sm">No categories found</p>
-            </div>
-        );
-    }
+    const cats = DEFAULT_CATEGORIES;
 
     return (
         <div className="bg-white pb-4 border-b border-gray-100">
@@ -361,26 +398,33 @@ export function DesktopServiceCategories({ categories }) {
             <div className="flex justify-center gap-10 lg:gap-14 overflow-x-auto px-10 lg:px-16 pb-2"
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
 
-                {categories.map((cat) => (
-                    <button
-                        key={cat.id || cat._id}
-                        className="flex flex-col items-center gap-2 shrink-0"
-                        onClick={() => navigate("/categories")}
-                    >
-                        <div className="w-20 h-20 rounded-full flex items-center justify-center"
-                            style={{ backgroundColor: "#e0f7f5" }}>
+                {cats.map((cat) => {
+                    const isActive = activeCategory === cat.name;
+                    return (
+                        <button
+                            key={cat.id || cat._id}
+                            className="flex flex-col items-center gap-2 shrink-0 transition-transform active:scale-95"
+                            onClick={() => setActiveCategory(isActive ? null : cat.name)}
+                        >
 
-                            <img
-                                src={cat.icon}
-                                alt={cat.name}
-                                className="w-11 h-11 object-contain"
-                            />
-                        </div>
-                        <span className="text-[14px] text-teal-600 font-semibold">
-                            {cat.name}
-                        </span>
-                    </button>
-                ))}
+                            <div 
+                                className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 ${isActive ? 'ring-4 ring-teal-500 ring-offset-2' : ''}`}
+                                style={{ backgroundColor: isActive ? "#0d9488" : "#e0f7f5" }}
+                            >
+
+                                <img
+                                    src={CATEGORY_ICONS[cat.name] || DEFAULT_ICON}
+                                    alt={cat.name}
+                                    className={`w-11 h-11 object-contain transition-all duration-300 ${isActive ? 'brightness-0 invert' : ''}`}
+                                />
+
+                            </div>
+                            <span className={`text-[14px] font-bold transition-colors duration-300 ${isActive ? 'text-teal-700' : 'text-teal-600'}`}>
+                                {cat.name}
+                            </span>
+                        </button>
+                    );
+                })}
             </div>
         </div>
     );
@@ -454,7 +498,7 @@ export function DesktopNearbySalons({ category }) {
     const navigate = useNavigate();
     const { nearbySalons = [], salonsLoading } = useSelector((state) => state.user);
 
-    const salonsToShow = useMemo(() => formatSalonData(nearbySalons), [nearbySalons]);
+    const salonsToShow = useMemo(() => formatSalonData(Array.isArray(nearbySalons) ? nearbySalons : []), [nearbySalons]);
 
     if (salonsLoading) {
         return <div className="px-10 py-6"><p className="text-gray-400">Loading salons...</p></div>;
@@ -577,7 +621,7 @@ export function DesktopHomeService({ lat, lng, gender }) {
                 <button
                     className="text-[14px] font-semibold py-1.5"
                     style={{ color: "#0d9488", borderColor: "#0d9488" }}
-                    onClick={() => navigate("/independentprofessionaldetailspage")}
+                    onClick={() => navigate("/home-services")}
                 >
                     View all
                 </button>

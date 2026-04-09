@@ -18,6 +18,8 @@ import {
   ShieldCheck,
   Star,
 } from "lucide-react";
+import useMobile from "../../hooks/useMobile";
+import Avatar from "../../components/common/Avatar";
 import { logout } from "../../redux/slice/authSlice";
 import MobileSalonProfileScreen from "./Mobile/MobileSalonProfileScreen";
 
@@ -25,13 +27,7 @@ const SalonOwnerProfilePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const isMobile = useMobile(1024);
 
   if (isMobile) {
     return <MobileSalonProfileScreen />;
@@ -101,13 +97,13 @@ const SalonOwnerProfilePage = () => {
         <div className="border-b border-rose-100/60 px-6 py-8 sm:px-8 sm:py-10 lg:px-12">
           <div className="flex flex-col items-center text-center">
             <div className="relative mb-5">
-              <div className="h-32 w-32 rounded-full border-2 border-rose-200 p-1 lg:h-36 lg:w-36">
-                <img
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=Glamour"
-                  className="h-full w-full rounded-full bg-slate-50 object-cover"
-                  alt="Avatar"
-                />
-              </div>
+              <Avatar 
+                src="https://api.dicebear.com/7.x/avataaars/svg?seed=Glamour" 
+                initials="GS" 
+                size={144} 
+                color="#fff1f2" 
+                textColor="#f43f5e" 
+              />
               <div className="absolute bottom-1 right-1 flex h-7 w-7 items-center justify-center rounded-full border-4 border-white bg-emerald-500 text-white shadow-lg">
                 <CheckCircle2 size={14} />
               </div>

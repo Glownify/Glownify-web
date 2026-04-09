@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   ChevronLeft, 
@@ -23,37 +23,35 @@ import {
 } from 'lucide-react';
 import MobileBillingDetailPage from './Mobile/BillingDetailPage';
 
-const INITIAL_SERVICES = [
-  { id: 1, name: 'Full Arm Waxing', price: 600, qty: 1, category: 'Waxing' },
-  { id: 2, name: 'Leg Waxing', price: 700, qty: 1, category: 'Waxing' },
-  { id: 3, name: 'Acne Facial', price: 500, qty: 1, category: 'Facial' },
-];
-
-const TIP_OPTIONS = [20, 50, 100, 200];
+import { useBilling } from '../../hooks/useBilling';
+import { TIP_OPTIONS, MOCK_CUSTOMER } from '../../utils/constants';
+import Avatar from '../../components/common/Avatar';
 
 const BillingDetailPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
-    const [services, setServices] = useState(INITIAL_SERVICES);
-    const [selectedTip, setSelectedTip] = useState(100);
     const booking = location.state?.booking;
 
-    useState(() => {
+    const {
+        services,
+        selectedTip,
+        setSelectedTip,
+        increment,
+        decrement,
+        removeService,
+        subtotal,
+        grandTotal,
+        discount
+    } = useBilling(booking?.services);
+
+    useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 1024);
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
     if (isMobile) return <MobileBillingDetailPage />;
-
-    const increment = (id) => setServices(prev => prev.map(s => s.id === id ? { ...s, qty: s.qty + 1 } : s));
-    const decrement = (id) => setServices(prev => prev.map(s => s.id === id ? { ...s, qty: Math.max(1, s.qty - 1) } : s));
-    const removeService = (id) => setServices(prev => prev.filter(s => s.id !== id));
-
-    const subtotal = services.reduce((sum, s) => sum + (s.price * s.qty), 0);
-    const discount = 280;
-    const grandTotal = subtotal + selectedTip - discount;
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500 pb-20">
@@ -92,14 +90,17 @@ const BillingDetailPage = () => {
                     {/* CUSTOMER BANNER */}
                     <div className="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm flex items-center justify-between">
                          <div className="flex items-center gap-6">
-                             <div className="w-16 h-16 rounded-[1.5rem] bg-pink-50 flex items-center justify-center text-[#E91E63] font-black text-xl">
-                                {booking?.customerName ? booking.customerName[0] : 'A'}
-                             </div>
+                             <Avatar 
+                                initials={booking?.customerName ? booking.customerName[0] : MOCK_CUSTOMER.initials} 
+                                color={MOCK_CUSTOMER.avatarColor} 
+                                size={64} 
+                                textColor="#E91E63"
+                             />
                              <div>
-                                 <h4 className="text-2xl font-black text-slate-800 tracking-tight">{booking?.customerName || 'Ayesha Khan'}</h4>
+                                 <h4 className="text-2xl font-black text-slate-800 tracking-tight">{booking?.customerName || MOCK_CUSTOMER.name}</h4>
                                  <div className="flex gap-4 mt-1">
-                                      <span className="text-xs font-bold text-slate-400 flex items-center gap-1"><Calendar size={12} className="text-pink-500" /> Oct 24, 2023</span>
-                                      <span className="text-xs font-bold text-slate-400 flex items-center gap-1"><Clock size={12} className="text-purple-500" /> 10:30 AM</span>
+                                      <span className="text-xs font-bold text-slate-400 flex items-center gap-1"><Calendar size={12} className="text-pink-500" /> {MOCK_CUSTOMER.date}</span>
+                                      <span className="text-xs font-bold text-slate-400 flex items-center gap-1"><Clock size={12} className="text-purple-500" /> {MOCK_CUSTOMER.time}</span>
                                  </div>
                              </div>
                          </div>

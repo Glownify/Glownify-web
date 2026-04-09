@@ -30,38 +30,7 @@ import {
   Cell
 } from "recharts";
 
-// ── Mock Data for Charts ──────────────────────────────────────────────────────
-
-const mainChartData = [
-  { name: "Jan", revenue: 20000, subscriptions: 12000 },
-  { name: "Feb", revenue: 25000, subscriptions: 15000 },
-  { name: "Mar", revenue: 22000, subscriptions: 14000 },
-  { name: "Apr", revenue: 30000, subscriptions: 18000 },
-  { name: "May", revenue: 35000, subscriptions: 21000 },
-  { name: "Jun", revenue: 45000, subscriptions: 25000 },
-  { name: "Jul", revenue: 42000, subscriptions: 23000 },
-  { name: "Aug", revenue: 48000, subscriptions: 26000 },
-  { name: "Sep", revenue: 55000, subscriptions: 30000 },
-  { name: "Oct", revenue: 60000, subscriptions: 32000 },
-  { name: "Nov", revenue: 75000, subscriptions: 38000 },
-  { name: "Dec", revenue: 85000, subscriptions: 42000 },
-];
-
-const stateRevenueData = [
-  { name: "Maharashtra", value: 320480, color: "#8B5CF6" },
-  { name: "Karnataka", value: 240000, color: "#D946EF" },
-  { name: "Uttar Pradesh", value: 281620, color: "#6366F1" },
-  { name: "Gujarat", value: 180000, color: "#10B981" },
-];
-
-const growthRateData = [
-  { name: "Jan", value: 10 },
-  { name: "Feb", value: 15 },
-  { name: "Mar", value: 12 },
-  { name: "Apr", value: 20 },
-  { name: "May", value: 25 },
-  { name: "Jun", value: 22 },
-];
+import { SUPERADMIN_CHART_DATA as mainChartData, STATE_REVENUE_DATA as stateRevenueData, GROWTH_RATE_DATA as growthData } from "../../utils/constants";
 
 // ── Main Component ────────────────────────────────────────────────────────────
 
@@ -72,14 +41,6 @@ const SuperAdminDashboard = () => {
   if (isMobile) {
     return <MobileSuperAdminDashboard />;
   }
-
-  const growthData = [
-    { day: 'Mon', value: 40 },
-    { day: 'Tue', value: 30 },
-    { day: 'Wed', value: 50 },
-    { day: 'Thu', value: 70 },
-    { day: 'Fri', value: 90 },
-  ];
 
   return (
     <div className="space-y-8 pb-10">

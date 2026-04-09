@@ -31,6 +31,8 @@ import MobileManageServicesScreen from "./Mobile/MobileManageServicesScreen";
 
 import AddServiceConfig from "./AddServiceConfig";
 
+import { MOCK_SERVICES } from "../../utils/constants";
+
 const ManageServicesPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -45,54 +47,6 @@ const ManageServicesPage = () => {
   }, [dispatch]);
 
   const tabs = ["All Services", "Hair Care", "Nail Care", "Skin Therapy", "Bridal Packages"];
-
-  // Existing mock data as fallback
-  const MOCK_SERVICES = [
-    {
-      id: 1,
-      name: "Classic Haircut",
-      description: "A clean, classic haircut styled to your preference.",
-      duration: "30 mins",
-      price: "350",
-      status: "ACTIVE",
-      category: { name: "Hair Care" },
-      gender: "UNISEX",
-      serviceMode: "Salon",
-      discountPercent: 10,
-      addOns: [
-        { id: "a1", name: "Hair Wash", price: 100, isRecommended: true },
-        { id: "a2", name: "Blow Dry", price: 150, isRecommended: false },
-      ],
-    },
-    {
-      id: 2,
-      name: "Botanical Scalp Therapy",
-      description: "A restorative treatment using organic oils to rejuvenate follicles.",
-      duration: "60 mins",
-      price: "1200",
-      status: "ACTIVE",
-      category: { name: "Skin Therapy" },
-      gender: "WOMEN",
-      serviceMode: "Both",
-      discountPercent: 15,
-      addOns: [
-        { id: "a3", name: "Extra Massage", price: 200, isRecommended: true },
-      ],
-    },
-    {
-      id: 3,
-      name: "Beard Shaping",
-      description: "Precision beard trim and shaping with hot towel finish.",
-      duration: "20 mins",
-      price: "200",
-      status: "INACTIVE",
-      category: { name: "Beard Grooming" },
-      gender: "MEN",
-      serviceMode: "Salon",
-      discountPercent: 0,
-      addOns: [],
-    },
-  ];
 
   const displayServices = serviceItems.length > 0 ? serviceItems : MOCK_SERVICES;
 

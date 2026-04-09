@@ -16,39 +16,9 @@ import {
     EllipsisVertical
 } from "lucide-react";
 
-// ─── Colors ────────────────────────────────────────────────────────────────────
-const PINK = "#f43f5e";
-const TEAL = "#14b8a6";
-
-// ─── Mock Data ─────────────────────────────────────────────────────────────────
-const INITIAL_SERVICES = [
-    { id: 1, name: 'Full Arm Waxing', price: 600, qty: 1, icon: Scissors, iconColor: '#f43f5e', iconBg: '#fff1f2' },
-    { id: 2, name: 'Leg Waxing',      price: 700, qty: 1, icon: Leaf,     iconColor: '#f43f5e', iconBg: '#fff1f2' },
-    { id: 3, name: 'Acne Facial',     price: 500, qty: 1, icon: Smile,    iconColor: '#f43f5e', iconBg: '#fff1f2' },
-];
-
-const TIP_OPTIONS = [20, 50, 100, 200];
-const DISCOUNT_LABEL = 'First Visit';
-const DISCOUNT_AMOUNT = 280;
-
-const CUSTOMER = {
-    name: 'Ayesha',
-    invoiceNo: 'INV-8829',
-    date: 'Oct 24, 2023',
-    time: '10:30 AM',
-    initials: 'AY',
-    avatarColor: '#fecdd3',
-};
-
-// ─── Avatar ───────────────────────────────────────────────────────────────────
-const Avatar = ({ initials, color, size = 56 }) => (
-    <div 
-        className="rounded-full flex items-center justify-center shrink-0 font-bold"
-        style={{ width: size, height: size, backgroundColor: color, fontSize: size * 0.33, color: '#9f1239' }}
-    >
-        {initials}
-    </div>
-);
+import { useBilling } from '../../../hooks/useBilling';
+import { TIP_OPTIONS, DISCOUNT_LABEL, MOCK_CUSTOMER as CUSTOMER } from '../../../utils/constants';
+import Avatar from '../../../components/common/Avatar';
 
 // ─── Service Row ──────────────────────────────────────────────────────────────
 const ServiceRow = ({ service, onIncrement, onDecrement, onDelete }) => (
@@ -57,8 +27,8 @@ const ServiceRow = ({ service, onIncrement, onDecrement, onDelete }) => (
         style={{ boxShadow: '0 2px 8px rgba(244,63,94,0.06)' }}
     >
         {/* Icon */}
-        <div className="w-12 h-12 rounded-2xl flex items-center justify-center mr-3 shrink-0" style={{ backgroundColor: service.iconBg }}>
-            <service.icon size={22} color={service.iconColor} />
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center mr-3 shrink-0" style={{ backgroundColor: service.iconBg || '#fff1f2' }}>
+            {service.icon ? <service.icon size={22} color={service.iconColor || '#f43f5e'} /> : <Scissors size={22} color='#f43f5e' />}
         </div>
 
         {/* Name + Price */}
@@ -99,19 +69,23 @@ const ServiceRow = ({ service, onIncrement, onDecrement, onDelete }) => (
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 const BillingDetailPage = () => {
     const navigate = useNavigate();
-    const [services, setServices] = useState(INITIAL_SERVICES);
-    const [selectedTip, setSelectedTip] = useState(100);
+    const {
+        services,
+        selectedTip,
+        setSelectedTip,
+        increment,
+        decrement,
+        removeService,
+        subtotal,
+        grandTotal,
+        discount
+    } = useBilling();
 
-    const increment = (id) => setServices(prev => prev.map(s => s.id === id ? { ...s, qty: s.qty + 1 } : s));
-    const decrement = (id) => setServices(prev => prev.map(s => s.id === id ? { ...s, qty: Math.max(1, s.qty - 1) } : s));
     const deleteService = (id) => {
         if(window.confirm("Remove this service from the bill?")) {
-            setServices(prev => prev.filter(s => s.id !== id));
+            removeService(id);
         }
     };
-
-    const subtotal   = services.reduce((sum, s) => sum + s.price * s.qty, 0);
-    const grandTotal = subtotal + selectedTip - DISCOUNT_AMOUNT;
 
     return (
         <div className="min-h-screen bg-white pb-40 font-sans select-none overflow-y-auto no-scrollbar">
@@ -208,7 +182,7 @@ const BillingDetailPage = () => {
                                 <span className="text-[#f43f5e] font-bold text-[10px]">{DISCOUNT_LABEL}</span>
                             </div>
                         </div>
-                        <span className="font-bold text-[#f43f5e] text-[14px]">- ₹{DISCOUNT_AMOUNT}</span>
+                        <span className="font-bold text-[#f43f5e] text-[14px]">- ₹{discount}</span>
                     </div>
 
                     <div className="flex justify-between items-center pt-4">

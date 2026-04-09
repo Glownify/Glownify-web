@@ -26,6 +26,10 @@ import SuperAdminProfilePage from "../pages/SuperAdmin/SuperAdminProfilePage";
 import SalesExecutiveDashboard from "./../pages/SalesExecutive/SalesExecutiveDashboard";
 import ManageSalesman from "./../pages/SalesExecutive/ManageSalesman";
 import SalesExecutiveProfilePage from "../pages/SalesExecutive/SalesExecutiveProfilePage";
+import LeadPipeline from "../pages/SalesExecutive/LeadPipeline";
+import MyCommissions from "../pages/SalesExecutive/MyCommissions";
+import SalesReportPage from "../pages/SalesExecutive/SalesReportPage";
+import MyTargetsPage from "../pages/SalesExecutive/MyTargetsPage";
 
 // ─── Protected Layouts ───────────────────────────────────────────────────────
 import SalonOwnerLayout from "../components/layout/SalonOwnerLayout";
@@ -101,6 +105,7 @@ import AboutPage from "../pages/Common/AboutPage";
 import ContactPage from "../pages/Common/ContactPage";
 import CartPage from "../pages/User/CartPage";
 import BookingSuccessPage from "../pages/User/BookingSuccessPage";
+import HomeServicesPage from "../pages/User/HomeServicesPage";
 import BookSubscriptionPage from "../pages/BookSubscriptionPage";
 import PaymentSubscriptionPage from "../pages/PaymentSubscriptionPage";
 
@@ -120,6 +125,7 @@ const AllRoutes = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/salons" element={<SalonsPage />} />
+            <Route path="/home-services" element={<HomeServicesPage />} />
             <Route path="/offers" element={<OffersPage />} />
             <Route path="/bookings" element={<MobileBookingsPage />} />
             <Route path="/profile" element={<MobileProfilePage />} />
@@ -174,6 +180,10 @@ const AllRoutes = () => {
             <Route index element={<SalesExecutiveDashboard />} />
             <Route path="dashboard" element={<SalesExecutiveDashboard />} />
             <Route path="manage-salesman" element={<ManageSalesman />} />
+            <Route path="lead-pipeline" element={<LeadPipeline />} />
+            <Route path="my-targets" element={<MyTargetsPage />} />
+            <Route path="my-commissions" element={<MyCommissions />} />
+            <Route path="reports" element={<SalesReportPage />} />
             <Route path="profile" element={<SalesExecutiveProfilePage />} />
           </Route>
 

@@ -105,7 +105,8 @@ import MobileUnisexSalons from "../HomePageLayout/MobileUnisexSalons";
  * ✅ To edit mobile home UI, ONLY edit this file.
  * ❌ Do NOT add data-fetching here — keep all API calls in HomePage.jsx.
  */
-const MobileHomePage = ({ gender, setGender, filteredCategories, fallbackSalons, lat, lng }) => {
+const MobileHomePage = ({ gender, setGender, activeCategory, setActiveCategory, filteredCategories, fallbackSalons, lat, lng }) => {
+
     return (
         <div className="block min-h-screen pb-20 bg-white">
 
@@ -122,7 +123,11 @@ const MobileHomePage = ({ gender, setGender, filteredCategories, fallbackSalons,
                         {["women", "men"].map((g) => (
                             <button
                                 key={g}
-                                onClick={() => setGender(g)}
+                                onClick={() => {
+                                    setGender(g);
+                                    setActiveCategory(null);
+                                }}
+
                                 className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full font-semibold text-sm transition-all duration-200"
                                 style={
                                     gender === g
@@ -141,11 +146,15 @@ const MobileHomePage = ({ gender, setGender, filteredCategories, fallbackSalons,
                     </div>
                 </div>
 
-                {/* 4. Service categories */}
-                <ServiceCategories categories={filteredCategories} />
+                <ServiceCategories 
+                    categories={filteredCategories} 
+                    activeCategory={activeCategory}
+                    setActiveCategory={setActiveCategory}
+                />
 
                 {/* 5. Nearby Salons */}
-                <MobileHomeSaloons category={gender} lat={lat} lng={lng} fallbackSalons={fallbackSalons} />
+                <MobileHomeSaloons category={activeCategory || gender} lat={lat} lng={lng} fallbackSalons={fallbackSalons} />
+
 
                 <MobileIndependentProfessionals
                     lat={lat}

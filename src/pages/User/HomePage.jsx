@@ -57,35 +57,6 @@ const HomePage = () => {
     }
   }, [gender, activeCategory, lat, lng]);
 
-<<<<<<< HEAD
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        setLat(latitude);
-        setLng(longitude);
-      },
-      () => {
-        setLat(12.9716);
-        setLng(77.5454);
-      }
-    );
-=======
-  // ── Geolocation ──
-  // useEffect(() => {
-  //   navigator.geolocation.getCurrentPosition(
-  //     (pos) => {
-  //       const { latitude, longitude } = pos.coords;
-  //       setLat(latitude);
-  //       setLng(longitude);
-  //     },
-  //     () => {
-  //       // ✅ fallback location (important)
-  //       setLat(12.9716);
-  //       setLng(77.5454);
-  //     }
-  //   );
-  // }, []);
   useEffect(() => {
     const loadLocation = async () => {
       const { lat, lng } = await getUserLocation();
@@ -97,7 +68,7 @@ const HomePage = () => {
     };
 
     loadLocation();
->>>>>>> 950bafbb85d9aa9da4728eb94ee0fea36ea64ea1
+
   }, []);
 
   useEffect(() => { dispatch(setSelectedCategory(gender)); }, [gender, dispatch]);

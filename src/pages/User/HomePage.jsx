@@ -68,8 +68,7 @@ const HomePage = () => {
     };
 
     loadLocation();
-
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => { dispatch(setSelectedCategory(gender)); }, [gender, dispatch]);
   useEffect(() => { if (lat && lng) dispatch(setLocation({ lat, lng })); }, [lat, lng, dispatch]);

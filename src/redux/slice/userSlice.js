@@ -183,38 +183,25 @@ export const fetchNearbySalons = createAsyncThunk(
   "user/fetchNearbySalons",
   async (params, { rejectWithValue }) => {
     try {
-<<<<<<< HEAD
-      const res = await getNearbySalons({ lat, lng, category });
-      const salons = Array.isArray(res) ? res : (res?.salons || []); 
-      // Force merge for a full grid
-      return [...salons, ...DUMMY_SALONS].slice(0, 10);
-=======
-
-      // console.log("API PARAMS:", params);
-
       const res = await getNearbySalons(params);
-
-      // console.log("API res:", res);
-
+      
+      const salons = res.data || [];
+      // Combine with DUMMY_SALONS for a richer initial experience if desired, 
+      // but prioritize remote data for pagination.
       return {
-        salons: res.data || [],
+        salons: salons.length > 0 ? salons : DUMMY_SALONS.slice(0, 10),
         page: res.page || 1,
         totalPages: res.totalPages || 1,
       };
-
->>>>>>> 950bafbb85d9aa9da4728eb94ee0fea36ea64ea1
     } catch (err) {
-      return DUMMY_SALONS;
+      return { salons: DUMMY_SALONS, page: 1, totalPages: 1 };
     }
   }
 );
 
-<<<<<<< HEAD
 
-
-=======
 import { getHomeIndependentProfessionals } from "../../api/independentProApi";
->>>>>>> 950bafbb85d9aa9da4728eb94ee0fea36ea64ea1
+
 // new code
 export const fetchHomeIndependentProfessionals = createAsyncThunk(
   "user/fetchIndependentProfessionals",
@@ -533,11 +520,8 @@ const userSlice = createSlice({
       })
       .addCase(fetchNearbySalons.pending, (state) => {
         state.salonsLoading = true;
-<<<<<<< HEAD
-=======
-        // state.nearbySalons = [];   // ✅ always array
->>>>>>> 950bafbb85d9aa9da4728eb94ee0fea36ea64ea1
       })
+
       // 
       .addCase(fetchNearbySalons.fulfilled, (state, action) => {
         const { salons = [], page = 1, totalPages = 1 } = action.payload;

@@ -200,8 +200,6 @@ export const fetchNearbySalons = createAsyncThunk(
 );
 
 
-import { getHomeIndependentProfessionals } from "../../api/independentProApi";
-
 // new code
 export const fetchHomeIndependentProfessionals = createAsyncThunk(
   "user/fetchIndependentProfessionals",

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchServiceItemByCategory } from "../../../../redux/slice/userSlice";
 import { useOutletContext, useNavigate, useParams } from "react-router-dom";
+import { fetchSalonServiceItems } from "../../../../redux/slice/userSlice";
 import {
   Clock,
   Plus,
@@ -115,9 +115,9 @@ const SalonServices = () => {
     if (isPlaceholder) {
       setDemoItems(DEMO_SERVICES[ctxCategory] || []);
     } else if (selectedSalonId) {
-      dispatch(fetchServiceItemByCategory({ salonId: selectedSalonId, categoryId: ctxCategory }));
+      dispatch(fetchSalonServiceItems({ salonId: selectedSalonId, categoryId: ctxCategory, serviceMode }));
     }
-  }, [ctxCategory, selectedSalonId, dispatch, isPlaceholder]);
+  }, [ctxCategory, selectedSalonId, dispatch, isPlaceholder, serviceMode]);
 
   // Called when user taps "+Add" or the "+" stepper button.
   // Respects the current toggle (serviceMode) for the booking mode.

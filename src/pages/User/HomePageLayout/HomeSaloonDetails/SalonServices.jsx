@@ -191,87 +191,85 @@ const SalonServices = () => {
             ))}
           </div>
         ) : (
-          <>
-            {displayItems?.map((service) => {
+          <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden" style={{ borderTopWidth: 4, borderTopColor: "#EA8491" }}>
+            {displayItems?.length > 0 ? displayItems?.map((service, idx) => {
               const qty = getServiceQuantity(service._id);
               return (
                 <div
                   key={service._id}
-                  className="bg-white rounded-2xl p-4 border border-pink-100/60 shadow-sm hover:shadow-md transition-all duration-300"
+                  className={`flex items-center gap-5 p-6 transition-colors hover:bg-gray-50/50 ${idx < displayItems.length - 1 ? "border-b border-gray-50" : ""}`}
                 >
-                  <div className="flex gap-4 items-center">
-                    {/* Service Thumbnail */}
-                    <div className="w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden shrink-0 shadow-sm bg-gray-100">
-                      <img
-                        src={getServiceImage(service.name)}
-                        alt={service.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+                  {/* Service Thumbnail */}
+                  <div className="w-20 h-20 md:w-24 md:h-24 rounded-[1.5rem] overflow-hidden shrink-0 shadow-sm bg-gray-100">
+                    <img
+                      src={getServiceImage(service.name)}
+                      alt={service.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
 
-                    {/* Service Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                        <h4 className="text-sm md:text-base font-bold text-gray-900 leading-tight">
-                          {service.name}
-                        </h4>
-                        {service.tag && (
-                          <span className="text-[10px] font-bold text-rose-500 border border-rose-300 rounded px-1.5 py-0.5 leading-none">
-                            *{service.tag}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs md:text-sm text-gray-400 mt-0.5 flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {formatDuration(service.durationMins)}
-                      </p>
-                      <p className="text-base md:text-lg font-black text-gray-900 mt-1">
-                        ₹{service.price?.toLocaleString?.() || service.price}
-                      </p>
-                    </div>
-
-                    {/* Add / Qty Controls */}
-                    <div className="shrink-0">
-                      {qty > 0 ? (
-                        <div className="flex items-center gap-0 border border-pink-200 rounded-full overflow-hidden">
-                          <button
-                            onClick={() => handleRemoveFromCart(service._id)}
-                            className="w-9 h-9 flex items-center justify-center bg-pink-50 hover:bg-pink-100 transition-colors text-rose-500"
-                          >
-                            <Minus className="w-4 h-4" />
-                          </button>
-                          <span className="w-9 h-9 flex items-center justify-center text-sm font-bold text-gray-800 bg-white">
-                            {qty}
-                          </span>
-                          <button
-                            onClick={() => initiateAddToCart(service)}
-                            className="w-9 h-9 flex items-center justify-center bg-pink-50 hover:bg-pink-100 transition-colors text-rose-500"
-                          >
-                            <Plus className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => initiateAddToCart(service)}
-                          className="flex items-center gap-1 px-4 py-2 rounded-full text-sm font-bold border-2 border-rose-300 text-rose-500 bg-white hover:bg-rose-50 transition-all active:scale-95"
-                        >
-                          + Add
-                        </button>
+                  {/* Service Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <h4 className="text-base md:text-lg font-bold text-gray-900 leading-tight">
+                        {service.name}
+                      </h4>
+                      {service.tag && (
+                        <span className="text-[10px] font-bold text-rose-500 border border-rose-200 bg-rose-50 rounded px-2 py-0.5 leading-none">
+                          *{service.tag}
+                        </span>
                       )}
                     </div>
+                    <div className="flex items-center gap-1.5 text-gray-400 mb-1.5">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span className="text-xs md:text-sm">{formatDuration(service.durationMins)}</span>
+                    </div>
+                    <p className="text-lg md:text-xl font-black text-gray-900">
+                      ₹{service.price?.toLocaleString?.() || service.price}
+                    </p>
+                  </div>
+
+                  {/* Add / Qty Controls */}
+                  <div className="shrink-0">
+                    {qty > 0 ? (
+                      <div className="flex items-center gap-0 border-2 border-[#EA8491] rounded-2xl overflow-hidden bg-white">
+                        <button
+                          onClick={() => handleRemoveFromCart(service._id)}
+                          className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center hover:bg-rose-50 transition-colors text-[#EA8491]"
+                        >
+                          <Minus className="w-5 h-5" />
+                        </button>
+                        <span className="w-10 md:w-12 text-center text-sm md:text-base font-black text-gray-900">
+                          {qty}
+                        </span>
+                        <button
+                          onClick={() => initiateAddToCart(service)}
+                          className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center hover:bg-rose-50 transition-colors text-[#EA8491]"
+                        >
+                          <Plus className="w-5 h-5" />
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => initiateAddToCart(service)}
+                        className="flex items-center gap-1.5 px-6 py-2.5 rounded-2xl text-sm md:text-base font-bold border-2 border-[#EA8491] text-[#EA8491] bg-white hover:bg-[#EA8491]/5 transition-all active:scale-95 shadow-sm"
+                      >
+                        + Add
+                      </button>
+                    )}
                   </div>
                 </div>
               );
-            })}
-
-            {/* No services message */}
-            {(!displayItems || displayItems.length === 0) && !isLoading && ctxCategory && (
-              <div className="text-center py-12 bg-white rounded-2xl border border-pink-100/60">
-                <span className="text-4xl text-gray-300 block mb-3">✂</span>
-                <p className="text-gray-400 font-medium text-sm">No services in this category</p>
+            }) : (
+              <div className="text-center py-20 bg-white">
+                <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-5xl text-gray-200">✂</span>
+                </div>
+                <p className="text-gray-400 font-bold text-lg">No services in this category</p>
+                <p className="text-gray-300 text-sm mt-1">Try selecting a different category from above</p>
               </div>
             )}
-          </>
+          </div>
         )}
       </div>
 

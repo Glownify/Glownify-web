@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import useMobile from "../../hooks/useMobile";
 import MobileSuperAdminDashboard from "./MobileSuperAdminDashboard";
 import { 
@@ -29,55 +30,17 @@ import {
   Cell
 } from "recharts";
 
-// ── Mock Data for Charts ──────────────────────────────────────────────────────
-
-const mainChartData = [
-  { name: "Jan", revenue: 20000, subscriptions: 12000 },
-  { name: "Feb", revenue: 25000, subscriptions: 15000 },
-  { name: "Mar", revenue: 22000, subscriptions: 14000 },
-  { name: "Apr", revenue: 30000, subscriptions: 18000 },
-  { name: "May", revenue: 35000, subscriptions: 21000 },
-  { name: "Jun", revenue: 45000, subscriptions: 25000 },
-  { name: "Jul", revenue: 42000, subscriptions: 23000 },
-  { name: "Aug", revenue: 48000, subscriptions: 26000 },
-  { name: "Sep", revenue: 55000, subscriptions: 30000 },
-  { name: "Oct", revenue: 60000, subscriptions: 32000 },
-  { name: "Nov", revenue: 75000, subscriptions: 38000 },
-  { name: "Dec", revenue: 85000, subscriptions: 42000 },
-];
-
-const stateRevenueData = [
-  { name: "Maharashtra", value: 320480, color: "#8B5CF6" },
-  { name: "Karnataka", value: 240000, color: "#D946EF" },
-  { name: "Uttar Pradesh", value: 281620, color: "#6366F1" },
-  { name: "Gujarat", value: 180000, color: "#10B981" },
-];
-
-const growthRateData = [
-  { name: "Jan", value: 10 },
-  { name: "Feb", value: 15 },
-  { name: "Mar", value: 12 },
-  { name: "Apr", value: 20 },
-  { name: "May", value: 25 },
-  { name: "Jun", value: 22 },
-];
+import { SUPERADMIN_CHART_DATA as mainChartData, STATE_REVENUE_DATA as stateRevenueData, GROWTH_RATE_DATA as growthData } from "../../utils/constants";
 
 // ── Main Component ────────────────────────────────────────────────────────────
 
 const SuperAdminDashboard = () => {
   const isMobile = useMobile();
+  const navigate = useNavigate();
   
   if (isMobile) {
     return <MobileSuperAdminDashboard />;
   }
-
-  const growthData = [
-    { day: 'Mon', value: 40 },
-    { day: 'Tue', value: 30 },
-    { day: 'Wed', value: 50 },
-    { day: 'Thu', value: 70 },
-    { day: 'Fri', value: 90 },
-  ];
 
   return (
     <div className="space-y-8 pb-10">
@@ -171,7 +134,10 @@ const SuperAdminDashboard = () => {
               <GrowthStat label="Subscription Growth" value="+18%" />
               <GrowthStat label="Service Commission" value="+7.2%" />
               <GrowthStat label="Marketplace Ads" value="+3.4%" />
-              <button className="w-full py-3 rounded-xl bg-slate-50 text-slate-600 font-bold text-[11px] uppercase tracking-wider mt-2 border border-slate-100 hover:bg-slate-100 transition-colors">
+              <button 
+                onClick={() => navigate("/super-admin/manage-finance")}
+                className="w-full py-3 rounded-xl bg-slate-50 text-slate-600 font-bold text-[11px] uppercase tracking-wider mt-2 border border-slate-100 hover:bg-slate-100 transition-colors"
+              >
                 Full Analytics Suite
               </button>
            </div>
@@ -185,7 +151,10 @@ const SuperAdminDashboard = () => {
                <span className="text-[10px] uppercase font-black tracking-widest text-slate-400">Transparency</span>
                <h2 className="text-2xl font-black text-slate-800 tracking-tight">Recent Ecosystem Events</h2>
             </div>
-            <button className="flex items-center gap-2 text-[11px] font-black text-rose-600 uppercase tracking-widest bg-rose-50 px-5 py-2.5 rounded-xl border border-rose-100 hover:bg-rose-100 transition-colors">
+            <button 
+               onClick={() => navigate("/super-admin/manage-system-logs")}
+               className="flex items-center gap-2 text-[11px] font-black text-rose-600 uppercase tracking-widest bg-rose-50 px-5 py-2.5 rounded-xl border border-rose-100 hover:bg-rose-100 transition-colors"
+            >
                View All Logs <ChevronRight size={14} />
             </button>
          </div>

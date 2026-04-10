@@ -16,14 +16,12 @@ const SalonOwnerLayout = () => {
     return (
         <div className="flex h-screen overflow-hidden bg-white">
             {/* ── Sidebar ── */}
-            <aside className="w-88 h-screen flex flex-col bg-white border-r border-slate-100 sticky top-0 shadow-[20px_0_60px_rgba(0,0,0,0.02)] z-50 shrink-0">
-               <SalonOwnerSidebar />
-            </aside>
+            <SalonOwnerSidebar />
 
             {/* ── Main Content Area ── */}
-            <main className="flex-1 flex flex-col h-full overflow-hidden relative">
+            <main className="flex-1 flex flex-col h-full overflow-hidden relative bg-[#FFF5F6]">
                 {/* Image Exact Header Style */}
-                <header className="h-16 sticky top-0 z-40 bg-white/70 backdrop-blur-3xl flex items-center justify-between px-12 shrink-0 border-b border-slate-50">
+                <header className="h-16 sticky top-0 z-40 bg-white/40 backdrop-blur-3xl flex items-center justify-between px-12 shrink-0 border-b border-slate-100/50">
                    <div className="flex items-center gap-8 flex-1">
                       <div className="relative group w-full max-w-[420px]">
                          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-300 group-focus-within:text-[#D81159] transition-colors" />

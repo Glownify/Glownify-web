@@ -887,54 +887,56 @@ const HomeSaloonsDetails = () => {
           </div>
         </div>
 
-        {/* ── Hero Image ── */}
-        <div className="relative w-full h-52 sm:h-60 md:h-72 lg:h-80 xl:h-[24rem] overflow-hidden">
-          <img
-            className="w-full h-full object-cover"
-            src={
-              salon.coverImage ||
-              salon.galleryImages?.[0] ||
-              "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop"
-            }
-            alt={salon.shopName}
-          />
+        {/* 1 — Image Carousel (Desktop version of mobile carousel) */}
+        <div className="relative w-full overflow-hidden" style={{ height: "calc(100vh - 400px)", minHeight: "350px", maxHeight: "500px" }}>
+          <div
+            className="flex h-full overflow-x-auto snap-x snap-mandatory no-scrollbar"
+            onScroll={(e) => {
+              const el = e.currentTarget;
+              setCarouselIndex(Math.round(el.scrollLeft / el.offsetWidth));
+            }}
+          >
+            {salonImages.map((img, i) => (
+              <img
+                key={i}
+                src={img}
+                alt={salon.shopName}
+                className="object-cover flex-shrink-0 snap-center w-full h-full"
+              />
+            ))}
+          </div>
 
-          {/* Gradient overlay to make text readable */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />
 
-          {/* Rating · Distance · View on Map — overlaid at the bottom of the image */}
-          <div className={`absolute bottom-0 left-0 right-0 ${PX} pb-4 md:pb-5`}>
-            <div className="flex items-center gap-2 md:gap-3 text-white text-xs md:text-sm lg:text-base font-medium flex-wrap">
+          {/* Dot indicators */}
+          {salonImages.length > 1 && (
+            <div className={`absolute bottom-16 left-0 right-0 flex justify-center gap-1.5 z-20`}>
+              {salonImages.map((_, i) => (
+                <div
+                  key={i}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${i === carouselIndex ? "bg-white w-8" : "bg-white/40 w-1.5"}`}
+                />
+              ))}
+            </div>
+          )}
 
-              {/* Rating badge */}
-              <div className="flex items-center gap-1.5">
-                <span className="bg-amber-500 text-white text-[11px] md:text-xs px-2 py-0.5 md:px-2.5 md:py-1 rounded-full font-bold flex items-center gap-1">
-                  <Star className="w-3 h-3 fill-white" />
-                  {salon.rating || "4.5"}
-                </span>
-                <span className="text-white/90">
-                  ({salon.reviewCount || "120"} Reviews)
-                </span>
+          {/* Info Pills (Rating, Distance, Map) — Match mobile layout */}
+          <div className={`absolute bottom-6 left-0 right-0 ${PX} flex items-center justify-between z-20`}>
+            <div className="flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-2xl px-4 py-2">
+              <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+              <span className="text-white text-sm font-bold">{salon.rating || "4.8"}</span>
+              <span className="text-white/70 text-sm">({salon.reviewCount || "120"})</span>
+            </div>
+            <div className="flex gap-3">
+              <div className="flex items-center bg-black/40 backdrop-blur-sm rounded-2xl px-4 py-2 gap-2">
+                <MapPin className="w-4 h-4 text-white" />
+                <span className="text-white text-sm font-medium">{salon.distance || "2.5"} km away</span>
               </div>
-
-              <span className="text-white/40">|</span>
-
-              {/* Distance */}
-              <div className="flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5" />
-                <span>{salon.distance || "2.3"} km away</span>
-              </div>
-
-              <span className="text-white/40">|</span>
-
-              {/* Map link */}
-              <NavLink
-                to="map"
-                className="flex items-center gap-1 text-white/95 hover:text-white hover:underline"
-              >
-                <MapPin className="w-3.5 h-3.5" />
-                <span>View on Map</span>
-              </NavLink>
+              <button className="flex items-center bg-[#EA8491] hover:bg-[#d67380] transition-colors rounded-2xl px-5 py-2 gap-2 shadow-lg">
+                <MapPin className="w-4 h-4 text-white" />
+                <span className="text-white text-sm font-bold">View on Map</span>
+              </button>
             </div>
           </div>
         </div>
@@ -1068,8 +1070,8 @@ const HomeSaloonsDetails = () => {
                   );
                 })}
 
-                {/* "More" circle — image-based to match other category circles */}
-                <button className="flex flex-col items-center gap-1.5 shrink-0 focus:outline-none">
+                {/* "More" circle — commented out to match mobile */}
+                {/* <button className="flex flex-col items-center gap-1.5 shrink-0 focus:outline-none">
                   <div className="w-16 h-16 md:w-[4.5rem] md:h-[4.5rem] lg:w-20 lg:h-20 rounded-full overflow-hidden shadow-md ring-[2px] ring-gray-200">
                     <img
                       src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=200&h=200&fit=crop&crop=face"
@@ -1080,7 +1082,7 @@ const HomeSaloonsDetails = () => {
                   <span className="text-[11px] md:text-xs lg:text-sm font-semibold text-gray-600 text-center">
                     More
                   </span>
-                </button>
+                </button> */}
               </div>
             )}
           </div>
@@ -1115,8 +1117,8 @@ const HomeSaloonsDetails = () => {
             </div>
           </div>
 
-          {/* ── Navigation Tabs ── */}
-          <div className="sticky top-[57px] z-40 bg-white/95 backdrop-blur-md border-y border-gray-100">
+          {/* ── Navigation Tabs — Commented out to match mobile ── */}
+          {/* <div className="sticky top-[57px] z-40 bg-white/95 backdrop-blur-md border-y border-gray-100">
             <div className={`flex overflow-x-auto no-scrollbar ${PX} gap-1`}>
               {[
                 { to: "services", label: "Services" },
@@ -1139,22 +1141,42 @@ const HomeSaloonsDetails = () => {
                 </NavLink>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* ── All Services Heading Row ── */}
-          <div className={`${PX} pt-5 pb-2 flex items-center justify-between`}>
-            <h2 className="text-base md:text-lg font-bold text-gray-900">
-              All Services
-            </h2>
-            {/* Shows active category name + item count */}
-            <button className="flex items-center gap-1 text-xs md:text-sm text-gray-500 font-medium">
-              {activeCatName} {itemCount} Items
-              <ChevronDown className="w-4 h-4" />
-            </button>
+          <div className={`${PX} pt-8 pb-4`}>
+            {/* Search bar — Match mobile */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex-1 flex items-center gap-3 bg-white border border-gray-200 rounded-[1.5rem] px-5 py-3 shadow-sm">
+                <Search size={18} color="#9ca3af" />
+                <input
+                  type="text"
+                  placeholder="Search for a service..."
+                  value={serviceSearch}
+                  onChange={(e) => setServiceSearch(e.target.value)}
+                  className="flex-1 text-sm md:text-base outline-none bg-transparent text-gray-700 placeholder-gray-400 font-medium"
+                />
+              </div>
+              <button className="w-12 h-12 bg-white border border-gray-200 rounded-[1.5rem] flex items-center justify-center shadow-sm hover:border-[#EA8491] hover:bg-rose-50 transition-all">
+                <SlidersHorizontal size={20} color="#EA8491" />
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl md:text-2xl font-black text-gray-900">
+                All Services
+              </h2>
+              <div className="bg-gray-100 rounded-full px-4 py-1.5 shadow-inner">
+                <span className="text-gray-500 text-xs md:text-sm font-bold uppercase tracking-wider">
+                  {activeCatName} • {itemCount} Items
+                </span>
+              </div>
+            </div>
           </div>
 
+
           {/* ── Tab Content Area (child routes rendered here) ── */}
-          <div className={`${PX} pb-6 md:pb-8 min-h-[400px]`}>
+          <div className={`${PX} pb-6 md:pb-8`}>
             <Outlet
               context={{
                 saloonDetails: salon,
@@ -1163,6 +1185,56 @@ const HomeSaloonsDetails = () => {
                 setActiveCategory,
               }}
             />
+
+            {/* Customer Reviews Section — Directly below services like mobile */}
+            <div className="mt-12">
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden" style={{ borderTopWidth: 2, borderTopColor: "#EA8491" }}>
+                <div className="px-6 pt-6 pb-4 flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-gray-900">Customer Reviews</h3>
+                  <button className="text-[#EA8491] text-sm font-semibold flex items-center gap-1">
+                    See all <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="mx-6 mb-6 bg-amber-50 rounded-2xl px-6 py-4 flex items-center gap-6">
+                  <span className="text-5xl font-black text-amber-500 leading-none">{mobileAvgRating}</span>
+                  <div className="flex flex-col gap-1.5 flex-1">
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4, 5].map(s => (
+                        <Star key={s} className={`w-5 h-5 ${s <= mobileFullStars ? "text-amber-400 fill-amber-400" : "text-gray-200 fill-gray-200"}`} />
+                      ))}
+                    </div>
+                    <span className="text-sm text-amber-700 font-bold">
+                      Based on {mobileReviews.length} review{mobileReviews.length !== 1 ? "s" : ""} from our customers
+                    </span>
+                  </div>
+                </div>
+
+                <div className="h-px bg-gray-50 mx-6" />
+
+                {mobileReviews.map((review, i) => (
+                  <div key={review.id || i} className={`flex items-start px-6 py-6 gap-4 ${i < mobileReviews.length - 1 ? "border-b border-gray-50" : ""}`}>
+                    <div className="w-12 h-12 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center shrink-0 shadow-inner">
+                      {review.userAvatar
+                        ? <img src={review.userAvatar} alt={review.userName} className="w-full h-full object-cover" />
+                        : <span className="text-base font-bold text-gray-500">{(review.userName || review.name)?.charAt(0)?.toUpperCase()}</span>
+                      }
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-base font-bold text-gray-800">{review.userName || review.name}</span>
+                        <div className="flex gap-px">
+                          {[1, 2, 3, 4, 5].map(s => (
+                            <Star key={s} className={`w-3 h-3 ${s <= review.rating ? "text-amber-400 fill-amber-400" : "text-gray-200 fill-gray-200"}`} />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-500 leading-relaxed">{review.comment}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

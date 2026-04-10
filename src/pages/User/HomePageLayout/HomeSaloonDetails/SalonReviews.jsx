@@ -12,28 +12,30 @@ import { Star, ChevronRight } from "lucide-react";
  * Receives `saloonDetails` via Outlet context from HomeSaloonsDetails.
  */
 const SalonReviews = () => {
-  const { saloonDetails } = useOutletContext();
+  const { saloonDetails, salonReviews, reviewSummary } = useOutletContext();
+
+  const isPlaceholder = saloonDetails?._id === "demo" || saloonDetails?._id?.startsWith("placeholder");
 
   // Use real reviews from API; show sample reviews as fallback
-  const reviews = saloonDetails?.reviews || [
+  const reviews = isPlaceholder || !salonReviews?.length ? [
     {
-      name: "Pooja S",
+      user: { name: "Pooja S" },
       rating: 5,
       comment: "Great service and very clean!",
       avatar: null,
     },
     {
-      name: "Amit K",
+      user: { name: "Amit K" },
       rating: 4,
       comment: "Loved the facial, will book again!",
       avatar: null,
     },
-  ];
+  ] : salonReviews;
 
   // Average rating: use API value if present, else calculate from reviews
-  const avgRating =
-    saloonDetails?.rating ||
-    (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1);
+  const avgRating = isPlaceholder 
+    ? (saloonDetails?.rating || "4.8")
+    : (reviewSummary?.avgRating?.toFixed(1) || saloonDetails?.rating || "–");
 
   // Rotating color palette for avatar initials
   const avatarColors = [
@@ -87,14 +89,14 @@ const SalonReviews = () => {
                   }`}
               >
                 <span className="text-sm font-bold">
-                  {review.name?.charAt(0)?.toUpperCase()}
+                  {(review.user?.name || review.name)?.charAt(0)?.toUpperCase()}
                 </span>
               </div>
 
               {/* Reviewer name + comment */}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-gray-800 leading-tight">
-                  {review.name}
+                  {review.user?.name || review.name}
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5 truncate">
                   "{review.comment}"

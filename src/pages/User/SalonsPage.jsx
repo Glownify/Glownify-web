@@ -594,6 +594,7 @@ import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getUserLocation } from "../../utils/getUserLocation";
+import SalonCard from "../Common/SalonCard";
 
 
 
@@ -630,128 +631,128 @@ const SkeletonCard = () => (
  * @param {Function} onNavigate      - Called with salon._id when user clicks View/Book
  * @param {Function} formatDistance  - Formats distance in meters to a readable string
  */
-const SalonCard = ({ salon, onNavigate, formatDistance }) => {
-  // Determine if the salon is currently open based on its hours
-  const isOpen = (() => {
-    try {
-      if (!salon.openingTime || !salon.closingTime) return null;
-      const now = new Date();
-      const [oh, om] = salon.openingTime.split(":").map(Number);
-      const [ch, cm] = salon.closingTime.split(":").map(Number);
-      const open = oh * 60 + om;
-      const close = ch * 60 + cm;
-      const cur = now.getHours() * 60 + now.getMinutes();
-      return cur >= open && cur <= close;
-    } catch {
-      return null; // if parsing fails, don't show open/closed badge
-    }
-  })();
+// const SalonCard = ({ salon, onNavigate, formatDistance }) => {
+//   // Determine if the salon is currently open based on its hours
+//   const isOpen = (() => {
+//     try {
+//       if (!salon.openingTime || !salon.closingTime) return null;
+//       const now = new Date();
+//       const [oh, om] = salon.openingTime.split(":").map(Number);
+//       const [ch, cm] = salon.closingTime.split(":").map(Number);
+//       const open = oh * 60 + om;
+//       const close = ch * 60 + cm;
+//       const cur = now.getHours() * 60 + now.getMinutes();
+//       return cur >= open && cur <= close;
+//     } catch {
+//       return null; // if parsing fails, don't show open/closed badge
+//     }
+//   })();
 
-  // Best available image for the salon
-  const imageUrl =
-    salon.image || salon.coverImage || null;
+//   // Best available image for the salon
+//   const imageUrl =
+//     salon.image || salon.coverImage || null;
 
-  return (
-    <div className="group bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 flex flex-col">
+//   return (
+//     <div className="group bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 flex flex-col">
 
-      {/* ── Card Image ── */}
-      <div className="relative h-52 bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center overflow-hidden">
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={salon.shopName}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-        ) : (
-          // Fallback icon when no image is available
-          <Star size={40} className="text-indigo-200" strokeWidth={1} />
-        )}
+//       {/* ── Card Image ── */}
+//       <div className="relative h-52 bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center overflow-hidden">
+//         {imageUrl ? (
+//           <img
+//             src={imageUrl}
+//             alt={salon.shopName}
+//             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+//           />
+//         ) : (
+//           // Fallback icon when no image is available
+//           <Star size={40} className="text-indigo-200" strokeWidth={1} />
+//         )}
 
-        {/* Category badge (top-left) */}
-        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm border border-gray-100">
-          <span className="text-[12px] font-black text-indigo-600 uppercase tracking-widest">
-            {salon.salonCategory || salon.gender || "SALON"}
-          </span>
-        </div>
+//         {/* Category badge (top-left) */}
+//         <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm border border-gray-100">
+//           <span className="text-[12px] font-black text-indigo-600 uppercase tracking-widest">
+//             {salon.salonCategory || salon.gender || "SALON"}
+//           </span>
+//         </div>
 
-        {/* Open/Closed badge (top-right) — shown only when hours are available */}
-        {isOpen !== null && (
-          <div
-            className={`absolute top-3 right-3 px-3 py-1 rounded-full text-[11px] font-bold shadow-sm ${isOpen ? "bg-emerald-500 text-white" : "bg-rose-500 text-white"
-              }`}
-          >
-            {isOpen ? "Open" : "Closed"}
-          </div>
-        )}
+//         {/* Open/Closed badge (top-right) — shown only when hours are available */}
+//         {isOpen !== null && (
+//           <div
+//             className={`absolute top-3 right-3 px-3 py-1 rounded-full text-[11px] font-bold shadow-sm ${isOpen ? "bg-emerald-500 text-white" : "bg-rose-500 text-white"
+//               }`}
+//           >
+//             {isOpen ? "Open" : "Closed"}
+//           </div>
+//         )}
 
-        {/* Rating badge (top-right) — shown only when open/closed status is unavailable */}
-        {isOpen === null && (
-          <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm flex items-center gap-1 border border-gray-100">
-            <Star size={13} className="fill-amber-400 text-amber-400" />
-            <span className="text-sm font-bold text-gray-700">
-              {salon.rating || "4.8"}
-            </span>
-          </div>
-        )}
-      </div>
+//         {/* Rating badge (top-right) — shown only when open/closed status is unavailable */}
+//         {isOpen === null && (
+//           <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm flex items-center gap-1 border border-gray-100">
+//             <Star size={13} className="fill-amber-400 text-amber-400" />
+//             <span className="text-sm font-bold text-gray-700">
+//               {salon.rating || "4.8"}
+//             </span>
+//           </div>
+//         )}
+//       </div>
 
-      {/* ── Card Content ── */}
-      <div className="p-5 flex flex-col flex-1">
+//       {/* ── Card Content ── */}
+//       <div className="p-5 flex flex-col flex-1">
 
-        {/* Salon name + rating (rating shown alongside name when hours are known) */}
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <h2 className="text-xl font-bold text-gray-900 truncate">{salon.shopName}</h2>
-          {isOpen !== null && (
-            <div className="flex items-center gap-1 shrink-0">
-              <Star size={14} className="fill-amber-400 text-amber-400" />
-              <span className="text-sm font-bold text-gray-700">
-                {salon.avgRating || "4.8"}
-              </span>
-            </div>
-          )}
-        </div>
+//         {/* Salon name + rating (rating shown alongside name when hours are known) */}
+//         <div className="flex items-start justify-between gap-2 mb-2">
+//           <h2 className="text-xl font-bold text-gray-900 truncate">{salon.shopName}</h2>
+//           {isOpen !== null && (
+//             <div className="flex items-center gap-1 shrink-0">
+//               <Star size={14} className="fill-amber-400 text-amber-400" />
+//               <span className="text-sm font-bold text-gray-700">
+//                 {salon.avgRating || "4.8"}
+//               </span>
+//             </div>
+//           )}
+//         </div>
 
-        {/* Distance from user */}
-        {(salon.distanceInMeters || salon.distance) && (
-          <p className="text-xs font-semibold text-indigo-600 mb-3 flex items-center gap-1">
-            <MapPin size={13} className="inline-block" />
-            {salon.distanceInMeters
-              ? formatDistance(salon.distanceInMeters)
-              : `${salon.distance} km away`}
-          </p>
-        )}
+//         {/* Distance from user */}
+//         {(salon.distanceInMeters || salon.distance) && (
+//           <p className="text-xs font-semibold text-indigo-600 mb-3 flex items-center gap-1">
+//             <MapPin size={13} className="inline-block" />
+//             {salon.distanceInMeters
+//               ? formatDistance(salon.distanceInMeters)
+//               : `${salon.distance} km away`}
+//           </p>
+//         )}
 
-        {/* Street address */}
-        {salon.location?.address && (
-          <p className="text-xs text-gray-400 mb-3 flex items-center gap-1">
-            <MapPin size={12} />
-            {salon.location.address}
-            {salon.location.city ? `, ${salon.location.city}` : ""}
-          </p>
-        )}
+//         {/* Street address */}
+//         {salon.location?.address && (
+//           <p className="text-xs text-gray-400 mb-3 flex items-center gap-1">
+//             <MapPin size={12} />
+//             {salon.location.address}
+//             {salon.location.city ? `, ${salon.location.city}` : ""}
+//           </p>
+//         )}
 
-        {/* Push footer to bottom */}
-        <div className="flex-1" />
+//         {/* Push footer to bottom */}
+//         <div className="flex-1" />
 
-        {/* Footer: View + Book Visit buttons */}
-        <div className="flex justify-between items-center border-t border-gray-50 pt-3 mt-2">
-          <button
-            onClick={() => onNavigate(salon._id)}
-            className="text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-full transition-colors"
-          >
-            View
-          </button>
-          <button
-            onClick={() => onNavigate(salon._id)}
-            className="text-sm font-extrabold text-indigo-600 hover:text-indigo-800 transition-colors"
-          >
-            Book Visit →
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+//         {/* Footer: View + Book Visit buttons */}
+//         <div className="flex justify-between items-center border-t border-gray-50 pt-3 mt-2">
+//           <button
+//             onClick={() => onNavigate(salon._id)}
+//             className="text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-full transition-colors"
+//           >
+//             View
+//           </button>
+//           <button
+//             onClick={() => onNavigate(salon._id)}
+//             className="text-sm font-extrabold text-indigo-600 hover:text-indigo-800 transition-colors"
+//           >
+//             Book Visit →
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
 // ─── Main Page ─────────────────────────────────────────────────────────────────
 
@@ -795,35 +796,6 @@ const SalonsPage = () => {
   // console.log("Redux salons:", nearbySalons);
   // console.log("Redux page:", page, "totalPages:", totalPages);
 
-  // useEffect(() => {
-  //   if (!lat || !lng) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (pos) => {
-  //         const { latitude, longitude } = pos.coords;
-
-  //         dispatch(setLocation({
-  //           lat: latitude,
-  //           lng: longitude
-  //         }));
-
-  //         setLocationReady(true); // ✅ IMPORTANT
-  //       },
-  //       () => {
-  //         const fallbackLat = 12.9716;
-  //         const fallbackLng = 77.5454;
-
-  //         dispatch(setLocation({
-  //           lat: fallbackLat,
-  //           lng: fallbackLng
-  //         }));
-
-  //         setLocationReady(true); // ✅ IMPORTANT
-  //       }
-  //     );
-  //   } else {
-  //     setLocationReady(true); // already present case
-  //   }
-  // }, []);
   useEffect(() => {
     const loadLocation = async () => {
       const { lat, lng } = await getUserLocation();
@@ -859,18 +831,6 @@ const SalonsPage = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  /**
-   * Converts raw metres to a human-readable distance string.
-   * e.g. 850 → "850 m away"  |  1500 → "1.5 km away"
-   */
-  const formatDistance = (meters) => {
-    if (!meters) return "";
-    return meters < 1000
-      ? `${Math.round(meters)} m away`
-      : `${(meters / 1000).toFixed(1)} km away`;
-  };
-
-
   const fetchSalons = async (pageNumber = 1) => {
     try {
       if (!lat || !lng) {
@@ -895,13 +855,7 @@ const SalonsPage = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (!selectedCategory) return;
 
-  //   if (!lat || !lng) return;
-
-  //   fetchSalons(1); // reset page
-  // }, [selectedCategory, lat, lng]);
   useEffect(() => {
     if (!selectedCategory) return;
 
@@ -1047,8 +1001,7 @@ const SalonsPage = () => {
               <SalonCard
                 key={salon._id}
                 salon={salon}
-                onNavigate={(id) => navigate(`/salon/${id}`)}
-                formatDistance={formatDistance}
+                onClick={() => navigate(`/salon/${salon._id}`)}
               />
             ))}
           </div>

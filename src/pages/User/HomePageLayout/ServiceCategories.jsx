@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 // Service Categories — mobile only (horizontal icon scroll)
 const ServiceCategories = ({ activeCategory, setActiveCategory }) => {
     const navigate = useNavigate();
-    const cats = Array.isArray(categories) ? categories : [];
+    const cats = categories?.length > 0 ? categories : " ";
 
     return (
         <div className="bg-white pb-3">

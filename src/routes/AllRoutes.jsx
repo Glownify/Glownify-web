@@ -137,7 +137,7 @@ const AllRoutes = () => {
             <Route path="/independentprofessionaldetailspage" element={<IndependentProfessionalDetailPage />} />
             <Route path="/salondetailPageforhome/:id" element={<SalonDetailPageForHome />} />
             <Route path="/salon/:id" element={<HomeSaloonsDetails />}>
-              <Route index element={<SalonServices />} />
+              <Route index element={<Navigate to="services" replace />} />
               <Route path="services" element={<SalonServices />} />
               <Route path="gallery" element={<SalonGallery />} />
               <Route path="map" element={<SalonMap />} />

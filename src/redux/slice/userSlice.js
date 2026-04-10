@@ -13,7 +13,8 @@ export const fetchAllCategories = createAsyncThunk(
   async (gender = "unisex", thunkAPI) => {
     try {
       const data = await getCategories(gender);
-      return data.categories;
+      // Safer extraction with optional chaining
+      return data?.categories || data?.data || (Array.isArray(data) ? data : []);
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -66,12 +67,13 @@ export const fetchNearbySalons = createAsyncThunk(
 
       const res = await getNearbySalons(params);
 
-      // console.log("API res:", res);
-
+      // Safer extraction with optional chaining
+      const extractedSalons = res?.salons || res?.data || (Array.isArray(res) ? res : []);
+      
       return {
-        salons: res.data || [],
-        page: res.page || 1,
-        totalPages: res.totalPages || 1,
+        salons: extractedSalons,
+        page: res?.page || 1,
+        totalPages: res?.totalPages || 1,
       };
 
     } catch (err) {
@@ -88,9 +90,8 @@ export const fetchHomeIndependentProfessionals = createAsyncThunk(
     try {
       const res = await getHomeIndependentProfessionals({ lat, lng, category });
 
-      // console.log("Home Independent PRO API:", res);
-
-      return res.data.data;
+      // Extremely robust check for nested data structures
+      return res?.data?.data || res?.data || res?.professionals || (Array.isArray(res) ? res : []);
     } catch (err) {
       return rejectWithValue(err.response?.data || "Failed");
     }
@@ -109,9 +110,7 @@ export const fetchUnisexNearbySalons = createAsyncThunk(
         category: "unisex",
       });
 
-      // console.log("UNISEX API:", res);
-
-      return res.data;
+      return res?.salons || res?.data || (Array.isArray(res) ? res : []);
     } catch (err) {
       return rejectWithValue(err.response?.data || "Failed");
     }

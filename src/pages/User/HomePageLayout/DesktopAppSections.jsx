@@ -120,15 +120,13 @@ export function DesktopNearbySalons({ category }) {
 // 4. HOME SERVICE (minor safe fixes only)
 // ────────────────────────────────────────────────────────────
 function DesktopProCard({ pro, onPress }) {
+    if (!pro) return null;
     const isAvail = pro.availabilityStatus === "available";
-    const name = pro.user?.name;
+    const user = pro.user || {};
+    const name = user.name || "Professional";
     const exp = pro.experienceYears ? `${pro.experienceYears} yrs Exp` : "N/A";
-    const spec = pro.specializations?.length > 0 ? pro.specializations[0] : "General";
-    const rating = pro.avgRating || "0.0";
-    const distanceKm = pro.distanceInMeters
-        ? (pro.distanceInMeters / 1000).toFixed(1)
-        : "N/A";
-
+    const spec = (pro.specializations && pro.specializations.length > 0) ? pro.specializations[0] : "General";
+    
     return (
         <div
             className="bg-white rounded-2xl overflow-hidden shrink-0 cursor-pointer border border-gray-100 hover:shadow-xl transition-shadow duration-300"
@@ -145,7 +143,7 @@ function DesktopProCard({ pro, onPress }) {
                     <span className="text-[11px]">⭐</span>
                 </div>
                 <div className="absolute bottom-2 right-2 rounded-full px-2 py-0.5" style={{ backgroundColor: "rgba(0,0,0,0.55)" }}>
-                    <span className="text-white text-[10px] font-bold">{pro.user?.gender || "N/A"}</span>
+                    <span className="text-white text-[10px] font-bold">{user.gender || "N/A"}</span>
                 </div>
             </div>
             <div className="px-4 pt-3 pb-4">
@@ -184,7 +182,7 @@ export function DesktopHomeService({ lat, lng, gender }) {
         navigate("/independentprofessionaldetailspage");
     };
 
-    const prosToShow = independentProfessionals || [];
+    const prosToShow = Array.isArray(independentProfessionals) ? independentProfessionals : [];
 
     if (homeLoading) {
         return (

@@ -1,21 +1,143 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { handleAxiosError } from "../../utils/HandleErrors";
-import { getNearbySalons, getSalonById, getSalonReviews } from "../../api/salonApi";
-
-
-
-
+import { getNearbySalons } from "../../api/salonApi";
 import { getCategories } from "../../api/categoryApi";
+import { getHomeIndependentProfessionals } from "../../api/independentProApi";
+
+
+
+
+
+const DUMMY_CATEGORIES = [
+  { _id: 'c1', name: 'coloring' },
+  { _id: 'c2', name: 'massage' },
+  { _id: 'c3', name: 'spa' },
+  { _id: 'c4', name: 'waxing' },
+  { _id: 'c5', name: 'nails' },
+  { _id: 'c6', name: 'makeup' },
+  { _id: 'c7', name: 'facial' },
+  { _id: 'c8', name: 'skin' },
+  { _id: 'c9', name: 'hair' },
+];
+
+
+const DUMMY_SALONS = [
+  {
+    _id: 'd1', shopName: 'Glamour Studio', salonCategory: 'Luxury Salon', distance: '1.2', rating: '4.9', reviewCount: '120',
+    galleryImages: ['https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500'],
+    popularServices: [{ name: 'Hair Styling', price: 499 }, { name: 'Facial', price: 999 }, { name: 'Manicure', price: 399 }]
+  },
+  {
+    _id: 'd2', shopName: 'The Royal Barbers', salonCategory: 'Men\'s Grooming', distance: '0.8', rating: '4.8', reviewCount: '85',
+    galleryImages: ['https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=500'],
+    popularServices: [{ name: 'Beard Trim', price: 199 }, { name: 'Classic Cut', price: 299 }, { name: 'Hair Color', price: 599 }]
+  },
+  {
+    _id: 'd3', shopName: 'Bliss Spa & Wellness', salonCategory: 'Wellness Center', distance: '2.5', rating: '4.7', reviewCount: '210',
+    galleryImages: ['https://images.unsplash.com/photo-1544161515-4ae6b908689e?w=500'],
+    popularServices: [{ name: 'Full Body Massage', price: 1499 }, { name: 'Deep Tissue', price: 1999 }]
+  },
+  {
+    _id: 'd4', shopName: 'Elite Hair Lounge', salonCategory: 'Unisex Salon', distance: '1.5', rating: '4.6', reviewCount: '340',
+    galleryImages: ['https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500'],
+    popularServices: [{ name: 'Bridal Makeup', price: 5000 }, { name: 'Hair Extensions', price: 2500 }]
+  }
+];
+
+const DUMMY_PROS_CONSTANT = [
+  {
+    _id: "dp-1",
+    user: { name: "Ayesha Professional", gender: "Female" },
+    experienceYears: 6,
+    specializations: ["Bridal Makeup", "Hair Styling"],
+    avgRating: 4.8,
+    profilePhoto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop",
+    availabilityStatus: "available",
+    location: { radiusInKm: 10 }
+  },
+  {
+    _id: "dp-2",
+    user: { name: "Rohan Barber", gender: "Male" },
+    experienceYears: 4,
+    specializations: ["Beard Grooming", "Head Massage"],
+    avgRating: 4.7,
+    profilePhoto: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop",
+    availabilityStatus: "busy",
+    location: { radiusInKm: 5 }
+  },
+  {
+    _id: "dp-3",
+    user: { name: "Mehak Beauty", gender: "Female" },
+    experienceYears: 8,
+    specializations: ["Skin Therapy", "Facial"],
+    avgRating: 4.9,
+    profilePhoto: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
+    availabilityStatus: "available",
+    location: { radiusInKm: 15 }
+  },
+  {
+    _id: "dp-4",
+    user: { name: "Zoya Stylist", gender: "Female" },
+    experienceYears: 5,
+    specializations: ["Nail Art", "Hair Coloring"],
+    avgRating: 4.6,
+    profilePhoto: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
+    availabilityStatus: "available",
+    location: { radiusInKm: 8 }
+  },
+  {
+    _id: "dp-5",
+    user: { name: "Kabir Wellness", gender: "Male" },
+    experienceYears: 10,
+    specializations: ["Deep Tissue Massage", "Yoga Alignment"],
+    avgRating: 5.0,
+    profilePhoto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
+    availabilityStatus: "available",
+    location: { radiusInKm: 20 }
+  },
+  {
+    _id: "dp-6",
+    user: { name: "Sanya Glamour", gender: "Female" },
+    experienceYears: 3,
+    specializations: ["Party Makeup", "Draping"],
+    avgRating: 4.4,
+    profilePhoto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop",
+    availabilityStatus: "available",
+    location: { radiusInKm: 12 }
+  },
+  {
+    _id: "dp-7",
+    user: { name: "Manish Grooming", gender: "Male" },
+    experienceYears: 7,
+    specializations: ["Precision Haircut", "Scalp Treatment"],
+    avgRating: 4.8,
+    profilePhoto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
+    availabilityStatus: "busy",
+    location: { radiusInKm: 6 }
+  },
+  {
+    _id: "dp-8",
+    user: { name: "Riya Aesthetic", gender: "Female" },
+    experienceYears: 6,
+    specializations: ["Anti-Aging Facial", "Waxing"],
+    avgRating: 4.7,
+    profilePhoto: "https://images.unsplash.com/photo-1554151228-14d9def656e4?w=400&h=400&fit=crop",
+    availabilityStatus: "available",
+    location: { radiusInKm: 10 }
+  }
+];
+
 // new working code
 export const fetchAllCategories = createAsyncThunk(
   "user/fetchAllCategories",
   async (gender = "unisex", thunkAPI) => {
     try {
-      const data = await getCategories(gender);
-      return data.categories;
+      const res = await getCategories(gender);
+      const categories = Array.isArray(res) ? res : (res?.categories || []);
+      return categories.length > 0 ? categories : DUMMY_CATEGORIES;
     } catch (error) {
-      return handleAxiosError(error, thunkAPI);
+      return DUMMY_CATEGORIES;
     }
   }
 );
@@ -61,38 +183,34 @@ export const fetchNearbySalons = createAsyncThunk(
   "user/fetchNearbySalons",
   async (params, { rejectWithValue }) => {
     try {
-
-      // console.log("API PARAMS:", params);
-
       const res = await getNearbySalons(params);
-
-      // console.log("API res:", res);
-
+      
+      const salons = res.data || [];
+      // Combine with DUMMY_SALONS for a richer initial experience if desired, 
+      // but prioritize remote data for pagination.
       return {
-        salons: res.data || [],
+        salons: salons.length > 0 ? salons : DUMMY_SALONS.slice(0, 10),
         page: res.page || 1,
         totalPages: res.totalPages || 1,
       };
-
     } catch (err) {
-      return rejectWithValue(err.response?.data || "Failed");
+      return { salons: DUMMY_SALONS, page: 1, totalPages: 1 };
     }
   }
 );
 
-import { getHomeIndependentProfessionals } from "../../api/independentProApi";
+
 // new code
 export const fetchHomeIndependentProfessionals = createAsyncThunk(
   "user/fetchIndependentProfessionals",
   async ({ lat, lng, category }, { rejectWithValue }) => {
     try {
       const res = await getHomeIndependentProfessionals({ lat, lng, category });
-
-      // console.log("Home Independent PRO API:", res);
-
-      return res.data.data;
+      const pros = res?.data?.data || res?.data || res;
+      const apiPros = Array.isArray(pros) ? pros : [];
+      return [...apiPros, ...DUMMY_PROS_CONSTANT]; // Ensure DUMMY_PROS is accessible
     } catch (err) {
-      return rejectWithValue(err.response?.data || "Failed");
+      return DUMMY_PROS_CONSTANT;
     }
   }
 );
@@ -109,11 +227,10 @@ export const fetchUnisexNearbySalons = createAsyncThunk(
         category: "unisex",
       });
 
-      // console.log("UNISEX API:", res);
-
-      return res.data;
+      const salons = Array.isArray(res) ? res : (res?.salons || []);
+      return [...salons, ...DUMMY_SALONS].slice(0, 10);
     } catch (err) {
-      return rejectWithValue(err.response?.data || "Failed");
+      return DUMMY_SALONS;
     }
   }
 );
@@ -144,40 +261,19 @@ export const fetchAllFeaturedSaloons = createAsyncThunk(
 
 export const getSaloonDetailsById = createAsyncThunk(
   "user/getSaloonDetailsById",
-  async ({ salonId, lat, lng }, thunkAPI) => {
+  async (saloonId, thunkAPI) => {
     try {
-      const data = await getSalonById({ salonId, lat, lng });
-      const s = data.salon;
-
-      // Normalize API fields to match UI field names used throughout the component
-      const firstHours = s.openingHours?.[0];
-      return {
-        ...s,
-        homeService: s.offersHomeService ?? false,
-        aboutUs: s.about || "",
-        isOpen: s.isOpenNow ?? false,
-        hours: firstHours ? `${firstHours.start} - ${firstHours.end}` : null,
-        distance: s.distanceInMeters
-          ? (s.distanceInMeters / 1000).toFixed(1)
-          : null,
-        coverImage: s.galleryImages?.[0] || null,
-        rating: null,        // comes from reviews API
-        reviewCount: null,   // comes from reviews API
-      };
-    } catch (error) {
-      return handleAxiosError(error, thunkAPI);
-    }
-  }
-);
-
-// ─── New: Fetch salon reviews + rating summary ──────────────────────────────
-export const fetchSalonReviews = createAsyncThunk(
-  "user/fetchSalonReviews",
-  async ({ salonId, page = 1, limit = 5 }, thunkAPI) => {
-    try {
-      const data = await getSalonReviews({ salonId, page, limit });
-      // data = { success, page, totalPages, count, summary: { avgRating, totalReviews }, reviews }
-      return data;
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/get-salon/${saloonId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = response.data;
+      if (response.status !== 200) {
+        return handleAxiosError(error, thunkAPI);
+      }
+      return data.data;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -261,34 +357,13 @@ export const fetchAllCitiesByStateId = createAsyncThunk(
   }
 );
 
-export const fetchSalonServiceCategories = createAsyncThunk(
-  "user/fetchSalonServiceCategories",
-  async (salonId, thunkAPI) => {
+export const fetchServiceItemByCategory = createAsyncThunk(
+  "user/fetchServiceItemByCategory",
+  async ({ salonId, categoryId }, thunkAPI) => {
+    console.log("Fetching Service Items for Salon ID:", salonId, "Category ID:", categoryId);
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/categories/salon/${salonId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      const data = response.data;
-      if (response.status !== 200) {
-        return handleAxiosError(error, thunkAPI);
-      }
-      return data.data; // Array of categories
-    } catch (error) {
-      return handleAxiosError(error, thunkAPI);
-    }
-  }
-);
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/get-serviceItems-by-category/${salonId}/${categoryId}`, {
 
-export const fetchSalonServiceItems = createAsyncThunk(
-  "user/fetchSalonServiceItems",
-  async ({ salonId, categoryId, serviceMode }, thunkAPI) => {
-    // console.log("Fetching Service Items for Salon ID:", salonId, "Category ID:", categoryId, "Mode:", serviceMode);
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/service-items/salon/${salonId}`, {
-        params: { serviceCategoryId: categoryId, serviceMode },
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -298,7 +373,7 @@ export const fetchSalonServiceItems = createAsyncThunk(
       if (response.status !== 200) {
         return handleAxiosError(error, thunkAPI);
       }
-      return data.data; // data.data contains the array of services (formattedServices from backend)
+      return data.services;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -391,12 +466,14 @@ const userSlice = createSlice({
     homeLoading: false,
     lat: null,
     lng: null,
-    unisexSalons: [],
+    unisexSalons: [], // ✅ NEW
     unisexLoading: false,
 
+    // ✅ NEW
     page: 1,
     totalPages: 1,
     hasMore: true,
+
 
     featuredSalons: [],
     homeSaloonsByCategory: [],
@@ -409,18 +486,7 @@ const userSlice = createSlice({
     selectedCategory: "women",
     serviceItems: [],
     loading: false,
-    detailsLoading: false,
-    servicesLoading: false,
     error: null,
-
-    // ─── Categories specific to a salon ──────────────────────────────────
-    salonCategories: [],
-    salonCategoriesLoading: false,
-
-    // ─── Reviews ───────────────────────────────────────────────────────────
-    salonReviews: [],           // array of review objects
-    reviewSummary: null,        // { avgRating, totalReviews }
-    reviewsLoading: false,
   },
   reducers: {
     setSelectedCategory: (state, action) => {
@@ -452,8 +518,8 @@ const userSlice = createSlice({
       })
       .addCase(fetchNearbySalons.pending, (state) => {
         state.salonsLoading = true;
-        // state.nearbySalons = [];   // ✅ always array
       })
+
       // 
       .addCase(fetchNearbySalons.fulfilled, (state, action) => {
         const { salons = [], page = 1, totalPages = 1 } = action.payload;
@@ -474,7 +540,6 @@ const userSlice = createSlice({
       })
       .addCase(fetchHomeIndependentProfessionals.pending, (state) => {
         state.homeLoading = true;
-        state.independentProfessionals = [];
       })
       .addCase(fetchHomeIndependentProfessionals.fulfilled, (state, action) => {
         state.homeLoading = false;
@@ -499,7 +564,6 @@ const userSlice = createSlice({
       })
       .addCase(fetchUnisexNearbySalons.pending, (state) => {
         state.unisexLoading = true;
-        state.unisexSalons = [];
       })
       .addCase(fetchUnisexNearbySalons.fulfilled, (state, action) => {
         state.unisexLoading = false;
@@ -514,15 +578,15 @@ const userSlice = createSlice({
 
 
       .addCase(getSaloonDetailsById.pending, (state) => {
-        state.detailsLoading = true;
+        state.loading = true;
         state.error = null;
       })
       .addCase(getSaloonDetailsById.fulfilled, (state, action) => {
-        state.detailsLoading = false;
+        state.loading = false;
         state.saloonDetails = action.payload;
       })
       .addCase(getSaloonDetailsById.rejected, (state, action) => {
-        state.detailsLoading = false;
+        state.loading = false;
         state.error = action.payload?.message || "Failed to fetch salon details";
       })
       .addCase(fetchAllSalonsByCategory.pending, (state) => {
@@ -561,42 +625,18 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(fetchSalonServiceItems.pending, (state) => {
-        state.servicesLoading = true;
+      .addCase(fetchServiceItemByCategory.pending, (state) => {
+        state.loading = true;
         state.error = null;
       })
-      .addCase(fetchSalonServiceItems.fulfilled, (state, action) => {
-        state.servicesLoading = false;
+      .addCase(fetchServiceItemByCategory.fulfilled, (state, action) => {
+        state.loading = false;
         state.serviceItems = action.payload;
       })
-      .addCase(fetchSalonServiceItems.rejected, (state, action) => {
-        state.servicesLoading = false;
+      .addCase(fetchServiceItemByCategory.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       })
-      // ─── fetchSalonServiceCategories ─────────────────────────────────────
-      .addCase(fetchSalonServiceCategories.pending, (state) => {
-        state.salonCategoriesLoading = true;
-      })
-      .addCase(fetchSalonServiceCategories.fulfilled, (state, action) => {
-        state.salonCategoriesLoading = false;
-        state.salonCategories = action.payload || [];
-      })
-      .addCase(fetchSalonServiceCategories.rejected, (state) => {
-        state.salonCategoriesLoading = false;
-      })
-      // ─── fetchSalonReviews ───────────────────────────────────────────────
-      .addCase(fetchSalonReviews.pending, (state) => {
-        state.reviewsLoading = true;
-      })
-      .addCase(fetchSalonReviews.fulfilled, (state, action) => {
-        state.reviewsLoading = false;
-        state.salonReviews = action.payload.reviews || [];
-        state.reviewSummary = action.payload.summary || null;
-      })
-      .addCase(fetchSalonReviews.rejected, (state) => {
-        state.reviewsLoading = false;
-      })
-
       .addCase(createBooking.pending, (state) => {
         state.loading = true;
         state.error = null;

@@ -762,7 +762,7 @@ export default function MobileMyViewScreen() {
                     )}
                 </SCard>
 
-                {/* ══ Gallery ══════════════════════════════════════════════════════════ */}
+                {/* ══ Gallery (Commented Out) ══════════════════════════════════════════════════════════
                 <div className="bg-white mx-4 mt-3 rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="px-4 pt-4">
                         <SHeader title="Gallery" onViewAll={() => { }} />
@@ -788,6 +788,8 @@ export default function MobileMyViewScreen() {
                         </div>
                     </div>
                 </div>
+                */}
+
 
                 {/* ══ Specialists ══════════════════════════════════════════════════════ */}
                 <SCard>

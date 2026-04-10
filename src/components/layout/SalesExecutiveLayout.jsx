@@ -26,7 +26,7 @@ const navItems = [
   { to: "/sales-executive/my-targets", label: "My Targets", icon: Target },
   { to: "/sales-executive/manage-salesman", label: "Sales persons", icon: Users },
   { to: "/sales-executive/my-commissions", label: "My Commissions", icon: Wallet },
-  { to: "/sales-executive/reports", label: "Reports", icon: FileText },
+  { to: "#", label: "Reports", icon: FileText },
 ];
 
 const SalesExecutiveLayout = () => {

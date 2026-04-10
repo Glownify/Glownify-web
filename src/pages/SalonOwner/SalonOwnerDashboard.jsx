@@ -1,6 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { toast } from "react-hot-toast";
 import { checkSubscription } from "../../utils/checkSubscription";
 import MobileSalonAdminDashboard from "./Mobile/MobileSalonAdminDashboard";
 import {
@@ -19,9 +18,7 @@ import {
   FileText,
   Share2,
   BookOpen,
-  Clock,
   Wallet,
-  Users,
 } from "lucide-react";
 import {
   ComposedChart,
@@ -38,29 +35,29 @@ import {
 } from "recharts";
 
 const actionCards = [
-  { label: "Add Service", icon: Plus, bg: "#f4c9d5", text: "#a63b61", path: "/salon-owner/manage-services", active: true },
-  { label: "Salon View", icon: Eye, bg: "#c8e5f6", text: "#2f7ea3", path: "/salon-owner/my-view", active: true },
-  { label: "Create Offer", icon: Gift, bg: "#f3cad9", text: "#b84879", path: "/salon-owner/manage-add-ons", active: true },
-  { label: "View Reports", icon: FileText, bg: "#caead1", text: "#2a8a57", path: "/salon-owner/reports", active: true },
-  { label: "Share", icon: Share2, bg: "#f7dfab", text: "#b87814", path: "/salon-owner/marketing", active: true },
-  { label: "Courses", icon: BookOpen, bg: "#f1c9dc", text: "#ba4c7f", path: "#", disabled: true },
+  { label: "Add Service", icon: Plus, bg: "#f4c9d5", text: "#a63b61" },
+  { label: "Salon View", icon: Eye, bg: "#c8e5f6", text: "#2f7ea3" },
+  { label: "Create Offer", icon: Gift, bg: "#f3cad9", text: "#b84879" },
+  { label: "View Reports", icon: FileText, bg: "#caead1", text: "#2a8a57" },
+  { label: "Share", icon: Share2, bg: "#f7dfab", text: "#b87814" },
+  { label: "Courses", icon: BookOpen, bg: "#f1c9dc", text: "#ba4c7f" },
 ];
 
 const metricCards = [
-  { title: "Today's Earnings", subtitle: "+12% vs yesterday", value: "₹ 5,700", icon: Wallet, iconWrap: "bg-[#e2d2ff] text-[#744de0]" },
-  { title: "Booked Today", subtitle: "4 upcoming slots", value: "23", icon: BookOpen, iconWrap: "bg-[#d7f0e1] text-[#4ba57f]" },
-  { title: "Pending Requests", subtitle: "Requires attention", value: "05", icon: Check, iconWrap: "bg-[#ffe5c8] text-[#da8e48]" },
-  { title: "Total Customers", subtitle: "Lifetime reach", value: "863", icon: Users, iconWrap: "bg-[#e0d4ff] text-[#7452df]" },
+  { title: "Total Salons Registered", subtitle: "", value: "48", icon: Store, iconWrap: "bg-[#e2d2ff] text-[#744de0]" },
+  { title: "Active Subscriptions", subtitle: "\u20B9 2,60,000 Earning", value: "32", icon: Check, iconWrap: "bg-[#d7f0e1] text-[#4ba57f]" },
+  { title: "Pending Followups", subtitle: "", value: "11", icon: Check, iconWrap: "bg-[#ffe5c8] text-[#da8e48]" },
+  { title: "This Month Commission", subtitle: "Earnings", value: "\u20B9 18,500", icon: Wallet, iconWrap: "bg-[#e0d4ff] text-[#7452df]" },
 ];
 
 const activityData = [
-  { name: "Mon", revenue: 1800, bookings: 12 },
-  { name: "Tue", revenue: 2600, bookings: 18 },
-  { name: "Wed", revenue: 3400, bookings: 24 },
-  { name: "Thu", revenue: 3800, bookings: 20 },
-  { name: "Fri", revenue: 4500, bookings: 32 },
-  { name: "Sat", revenue: 6000, bookings: 45 },
-  { name: "Sun", revenue: 5000, bookings: 38 },
+  { name: "Jan", salons: 18, subs: 16 },
+  { name: "Feb", salons: 26, subs: 22 },
+  { name: "Mar", salons: 34, subs: 28 },
+  { name: "Apr", salons: 38, subs: 33 },
+  { name: "May", salons: 45, subs: 39 },
+  { name: "Jun", salons: 40, subs: 45 },
+  { name: "Aug", salons: 50, subs: 58 },
 ];
 
 const pieData = [
@@ -74,12 +71,12 @@ const alertsData = [
   { id: "SP-SAL-235", name: "SimplyStrands Unisex", location: "Banaswadi", score: 31 },
 ];
 
-const recentBookingsData = [
-  { name: "Amit K.", id: "BK-HRC-001", service: "Hair Color", duration: "1 hr", amount: "₹ 2,500", status: "Pending", time: "11:30 AM", statusClass: "bg-[#fcd34d] text-slate-800" },
-  { name: "Mehak S.", id: "BK-MSC-002", service: "Full Body Massage", duration: "1.5 hr", amount: "₹ 2,000", status: "Confirmed", time: "12:45 PM", statusClass: "bg-[#9bc5ba] text-white" },
-  { name: "Riya", id: "BK-MKP-003", service: "Bridal Makeup", duration: "2 hr", amount: "₹ 5,000", status: "Pending", time: "02:15 PM", statusClass: "bg-[#fcd34d] text-slate-800" },
-  { name: "Sneha T.", id: "BK-PKT-004", service: "Facial Care", duration: "45 mins", amount: "₹ 1,200", status: "Completed", time: "09:30 AM", statusClass: "bg-[#9bc5ba] text-white" },
-  { name: "Vikram P.", id: "BK-CUT-005", service: "Signature Haircut", duration: "30 mins", amount: "₹ 800", status: "Cancelled", time: "04:00 PM", statusClass: "bg-rose-500 text-white" },
+const salonsData = [
+  { name: "Style Elegante", id: "SP JPM 005", area: "Jayanagar", subArea: "Ayanagar", serviceType: "In-Salon", plan: "Premium", status: "Active", regDate: "25 Mar, 201", statusClass: "bg-[#9bc5ba] text-white" },
+  { name: "SpaXpress Salon", id: "SP-SLR 034", area: "Jayanagar", subArea: "Jayanagar", serviceType: "Premium", plan: "Premium", status: "Active", regDate: "26 Mar, 201", statusClass: "bg-[#9bc5ba] text-white" },
+  { name: "Golden Mirror", id: "SP-BLR G31", area: "Indiranagar", subArea: "Jayanagar", serviceType: "In-Salon", plan: "Basic", status: "Pro", regDate: "25 Mar, 201", statusClass: "bg-[#9b63e4] text-white" },
+  { name: "Glamour Touch Spa", id: "SP-SAL 215", area: "Jayanagar", subArea: "Jayanagar", serviceType: "In-Salon", plan: "Pro", status: "Trial", regDate: "21 Mar, 201", statusClass: "bg-[#7f8fdc] text-white" },
+  { name: "StyleLight Salon", id: "SP-SAL 179", area: "Malleswaram", subArea: "Bangalore", serviceType: "In-Salon", plan: "Pro", status: "Pro", regDate: "21 Mar, 201", statusClass: "bg-[#7d75d6] text-white" },
 ];
 
 const quickActions = [
@@ -102,21 +99,10 @@ const SalonOwnerDashboard = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const [filterActive, setFilterActive] = useState(false);
-  const [filterMonth, setFilterMonth] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [bookings, setBookings] = useState(recentBookingsData);
-
   useEffect(() => {
-    let filtered = [...recentBookingsData];
-    if (filterActive) {
-      filtered = filtered.filter(b => b.status === "Accepted" || b.status === "In Service");
-    }
-    if (filterMonth) {
-      filtered = filtered.slice(0, 3);
-    }
-    setBookings(filtered);
-  }, [filterActive, filterMonth]);
+    if (location.state?.skipSubscriptionCheck) return;
+    checkSubscription(navigate);
+  }, [navigate, location]);
 
   if (isMobile) return <MobileSalonAdminDashboard />;
   const PINK_BRAND = "#D946EF";
@@ -127,38 +113,32 @@ const SalonOwnerDashboard = () => {
 
         <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
           {actionCards.map((item) => (
-            <button 
-              key={item.label + item.bg} 
-              onClick={() => item.path !== "#" && navigate(item.path)}
-              className="h-[64px] rounded-full bg-white border border-slate-50 flex items-center justify-center gap-4 px-6 font-black text-[13px] text-slate-700 hover:scale-[1.03] transition-all hover:shadow-[0_15px_30px_rgba(139,92,246,0.06)] group"
-            >
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center`} style={{backgroundColor: item.bg}}>
-                 <item.icon size={16} style={{color: item.text}} />
-              </div>
-              <span className="tracking-tight">{item.label}</span>
+            <button key={item.label + item.bg} className="h-[62px] rounded-[22px] border border-white/50 bg-white/40 backdrop-blur-md shadow-sm flex items-center justify-center gap-3 px-4 font-bold text-[14px] text-slate-600 hover:scale-105 transition-all hover:bg-white hover:shadow-xl hover:shadow-purple-500/5">
+              <item.icon size={16} className="text-[#8B5CF6]" />
+              <span>{item.label}</span>
             </button>
           ))}
         </section>
 
-        <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+        <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           {metricCards.map((card) => (
-            <div key={card.title} className="bg-white rounded-[45px] border border-purple-50/50 px-8 py-8 shadow-[0_15px_40px_rgba(0,0,0,0.02)] flex items-center justify-between min-h-[140px] hover:shadow-xl hover:-translate-y-1 transition-all group">
+            <div key={card.title} className="bg-white/70 backdrop-blur-xl rounded-[30px] border border-purple-100/50 px-8 py-8 shadow-sm flex items-center justify-between min-h-[140px] hover:shadow-xl hover:-translate-y-1 transition-all group">
               <div>
-                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.1em] mb-2">{card.title}</p>
-                <p className="text-[10px] text-[#8B5CF6] font-bold mb-1">{card.subtitle}</p>
-                <h3 className="text-3xl font-black text-slate-800 tracking-tight">{card.value}</h3>
+                <p className="text-[12px] font-bold text-slate-400 uppercase tracking-widest mb-1">{card.title}</p>
+                <p className="text-[11px] text-[#8B5CF6] font-bold">{card.subtitle}</p>
+                <h3 className="text-3xl font-black text-slate-800 mt-2 tracking-tight">{card.value}</h3>
               </div>
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 ${card.iconWrap} bg-opacity-40`}>
-                <card.icon size={26} />
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-transform group-hover:scale-110 ${card.iconWrap} bg-white ring-1 ring-slate-50`}>
+                <card.icon size={24} />
               </div>
             </div>
           ))}
         </section>
 
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-          <div className="lg:col-span-12 xl:col-span-12 2xl:col-span-5 bg-white border border-purple-100/20 rounded-[45px] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.02)] min-h-[460px] flex flex-col justify-between">
+          <div className="lg:col-span-12 xl:col-span-6 bg-white/70 border border-purple-100/20 rounded-[40px] p-8 shadow-sm min-h-[400px]">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-black text-slate-800 tracking-tight">Revenue Overview</h3>
+              <h3 className="text-xl font-black text-slate-800 tracking-tight">Registration Activity</h3>
               <div className="flex items-center gap-3 bg-purple-50 p-1 rounded-xl">
                  <button className="px-4 py-1.5 rounded-lg bg-white text-[#8B5CF6] font-bold text-xs shadow-sm">Monthly</button>
                  <button className="px-4 py-1.5 rounded-lg text-slate-400 font-bold text-xs">Yearly</button>
@@ -171,36 +151,36 @@ const SalonOwnerDashboard = () => {
                   <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: "#94a3b8", fontWeight: 700 }} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: "#94a3b8", fontWeight: 700 }} />
                   <Tooltip contentStyle={{borderRadius: '20px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)'}} />
-                  <Bar dataKey="revenue" fill="#8B5CF6" radius={[6, 6, 0, 0]} maxBarSize={32} />
-                  <Line dataKey="bookings" type="monotone" stroke="#D946EF" strokeWidth={4} dot={{ r: 6, fill: "#fff", stroke: "#D946EF", strokeWidth: 3 }} />
+                  <Bar dataKey="salons" fill="#8B5CF6" radius={[6, 6, 0, 0]} maxBarSize={32} />
+                  <Line dataKey="subs" type="monotone" stroke="#D946EF" strokeWidth={4} dot={{ r: 6, fill: "#fff", stroke: "#D946EF", strokeWidth: 3 }} />
                 </ComposedChart>
               </ResponsiveContainer>
             </div>
             <div className="flex items-center gap-6 text-[11px] font-black uppercase tracking-widest text-slate-400 mt-6">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]" /> Total Revenue
+                <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]" /> Registered Salons
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#D946EF]" /> Bookings
+                <span className="w-2.5 h-2.5 rounded-full bg-[#D946EF]" /> Subscriptions
               </div>
             </div>
           </div>
 
-          <div className="lg:col-span-6 xl:col-span-6 2xl:col-span-4 bg-white border border-purple-100/20 rounded-[45px] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.02)] min-h-[460px] overflow-hidden">
-            <h3 className="text-xl font-black text-slate-800 tracking-tight mb-8">Service Mix</h3>
+          <div className="lg:col-span-5 xl:col-span-3 bg-white/70 border border-purple-100/20 rounded-[40px] p-8 shadow-sm min-h-[400px]">
+            <h3 className="text-xl font-black text-slate-800 tracking-tight mb-8">Commission Overview</h3>
             <div className="space-y-8 text-[12px] text-[#6c588f]">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 border-b border-purple-50 pb-8">
-                <div className="space-y-4 text-center sm:text-left">
+              <div className="flex items-center justify-between gap-6 border-b border-purple-50 pb-8">
+                <div className="space-y-4">
                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Total Payout</p>
-                      <h4 className="text-2xl font-black text-[#8B5CF6]">₹ 1,85,000</h4>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Commission Rate</p>
+                      <h4 className="text-2xl font-black text-[#8B5CF6]">45%</h4>
                    </div>
                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Platform Fee</p>
-                      <h4 className="text-2xl font-black text-[#D946EF]">10%</h4>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Conversion Rate</p>
+                      <h4 className="text-2xl font-black text-[#D946EF]">40%</h4>
                    </div>
                 </div>
-                <div className="w-24 h-24 sm:w-28 sm:h-28 relative shrink-0">
+                <div className="w-32 h-32 relative shrink-0">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie data={pieData} innerRadius={35} outerRadius={50} dataKey="value" stroke="none">
@@ -209,8 +189,8 @@ const SalonOwnerDashboard = () => {
                     </PieChart>
                   </ResponsiveContainer>
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-[#8B5CF6]">
-                    <span className="text-[18px] font-black">43%</span>
-                    <span className="text-[7px] font-bold uppercase tracking-tighter opacity-60">Payout</span>
+                    <span className="text-xl font-black">43%</span>
+                    <span className="text-[8px] font-bold uppercase tracking-tighter opacity-60">Payout</span>
                   </div>
                 </div>
               </div>
@@ -230,138 +210,90 @@ const SalonOwnerDashboard = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-6 xl:col-span-6 2xl:col-span-3 space-y-6">
-            <div className="bg-white/84 border border-[#dacaf4] rounded-[22px] px-6 py-5 shadow-sm flex items-center justify-between">
-              <h3 className="text-[18px] font-black text-[#2c1e4c] tracking-tight">Advertisements</h3>
+          <div className="lg:col-span-7 xl:col-span-3 space-y-4">
+            <div className="bg-white/84 border border-[#dacaf4] rounded-[22px] px-5 py-4 shadow-sm flex items-center justify-between">
+              <h3 className="text-[16px] font-bold text-[#2c1e4c]">Advertisements</h3>
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]" />
-                <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]/30" />
-                <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]/30" />
+                <span className="w-3 h-3 rounded-full bg-[#b7afcf]" />
+                <span className="w-3 h-3 rounded-full bg-[#d8d0ee]" />
+                <span className="w-3 h-3 rounded-full bg-[#d8d0ee]" />
               </div>
             </div>
-            <div className="relative overflow-hidden rounded-[40px] border border-[#f5d29b] bg-gradient-to-br from-[#ffcf3b] via-[#ffb324] to-[#ff7a1b] min-h-[340px] shadow-[0_20px_50px_rgba(255,166,0,0.22)] p-8 flex flex-col justify-center">
-              <div className="relative z-10 max-w-[80%]">
+            <div className="relative overflow-hidden rounded-[24px] border border-[#f5d29b] bg-gradient-to-br from-[#ffcf3b] via-[#ffb324] to-[#ff7a1b] min-h-[288px] shadow-[0_20px_50px_rgba(255,166,0,0.22)] p-6">
+              <div className="relative z-10 max-w-[62%] xl:max-w-[68%]">
                 <p className="text-[18px] md:text-[24px] italic font-extrabold text-[#212145]">Special Offer!</p>
                 <h4 className="text-[24px] lg:text-[28px] xl:text-[34px] font-extrabold leading-[1.1] text-[#24315d] mt-4">Get 30% OFF on Website Design</h4>
                 <p className="text-[14px] font-semibold text-[#6b3d00] mt-4">Valid till: 30 March</p>
                 <div className="flex flex-wrap gap-3 mt-6">
-                  <button className="px-5 h-11 rounded-xl bg-[#3554b8] text-white font-bold hover:scale-105 transition-transform shadow-lg shadow-blue-900/20">View Details</button>
-                  <button className="px-5 h-11 rounded-xl bg-[#ff7a1b] border border-white/40 text-white font-bold hover:scale-105 transition-transform">Contact Now</button>
+                  <button className="px-5 h-11 rounded-xl bg-[#3554b8] text-white font-semibold">View Details</button>
+                  <button className="px-5 h-11 rounded-xl bg-[#ff7a1b] border border-white/40 text-white font-semibold">Contact Now</button>
                 </div>
               </div>
-              <div className="absolute right-4 bottom-4 text-[120px] font-black text-white/10 select-none pointer-events-none rotate-12 leading-none uppercase">%</div>
-              <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/20 blur-3xl rounded-full" />
-              <div className="absolute right-8 top-1/2 -translate-y-1/2 flex flex-col gap-2">
-                 <button className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-md text-white border border-white/20 flex items-center justify-center hover:bg-white hover:text-[#ff7a1b] transition-all"><ChevronLeft size={18} /></button>
-                 <button className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-md text-white border border-white/20 flex items-center justify-center hover:bg-white hover:text-[#ff7a1b] transition-all"><ChevronRight size={18} /></button>
-              </div>
+              <div className="absolute right-2 bottom-2 w-[150px] h-[120px] rounded-[24px] bg-white/30 blur-2xl" />
+              <div className="absolute right-4 bottom-4 text-[56px] lg:text-[68px] xl:text-[84px]">??</div>
+              <button className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-11 h-11 rounded-xl bg-white text-[#7b6ca9] shadow-lg flex items-center justify-center"><ChevronLeft size={20} /></button>
+              <button className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-11 h-11 rounded-xl bg-white text-[#7b6ca9] shadow-lg flex items-center justify-center"><ChevronRight size={20} /></button>
             </div>
           </div>
         </section>
 
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-4">
           <div className="lg:col-span-8 bg-white/84 border border-[#dacaf4] rounded-[22px] px-5 py-5 shadow-sm overflow-hidden">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-              <div className="space-y-1">
-                <h4 className="text-[18px] font-black text-[#2c1e4c] tracking-tight">Recent Bookings</h4>
-                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest leading-none">Awaiting Management</p>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                <button 
-                  onClick={() => setFilterActive(!filterActive)}
-                  className={`px-6 h-10 rounded-full border border-purple-100 text-[11px] font-black uppercase tracking-widest transition-all ${filterActive ? 'bg-[#8B5CF6] text-white shadow-lg shadow-purple-500/20' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
-                >
-                  Active Only
-                </button>
-                <button 
-                  onClick={() => setFilterMonth(!filterMonth)}
-                  className={`px-6 h-10 rounded-full border border-purple-100 text-[11px] font-black uppercase tracking-widest transition-all ${filterMonth ? 'bg-[#8B5CF6] text-white shadow-lg shadow-purple-500/20' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
-                >
-                  This Month
-                </button>
-                <button className="px-6 h-10 rounded-full border border-purple-100 bg-white text-slate-400 text-[11px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50">By Area <ChevronDown size={14} /></button>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
+              <h4 className="text-[15px] font-bold text-[#2c1e4c]">My Registered Salons</h4>
+              <div className="flex flex-wrap gap-2">
+                <button className="px-4 h-9 rounded-xl border border-[#d8c7f4] bg-white/95 text-[#654f8d] text-[13px] font-medium">Active Only</button>
+                <button className="px-4 h-9 rounded-xl border border-[#d8c7f4] bg-white/95 text-[#654f8d] text-[13px] font-medium">This Month</button>
+                <button className="px-4 h-9 rounded-xl border border-[#d8c7f4] bg-white/95 text-[#654f8d] text-[13px] font-medium flex items-center gap-2">By Area <ChevronDown size={14} /></button>
               </div>
             </div>
 
-            <div className="space-y-4">
-              {bookings.map((booking) => (
-                <div key={booking.id} className="group flex flex-col xl:flex-row xl:items-center justify-between gap-6 p-6 xl:p-8 rounded-[32px] bg-slate-50/50 border border-slate-100 transition-all hover:bg-white hover:shadow-xl hover:shadow-purple-500/5 hover:-translate-y-1">
-                  <div className="flex items-center gap-6 flex-1">
-                    <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg shadow-purple-500/10 border-2 border-white grayscale-[0.2] group-hover:grayscale-0 transition-all shrink-0">
-                       <img src={`https://i.pravatar.cc/150?u=${booking.id}`} alt="customer" className="w-full h-full object-cover" />
-                    </div>
-                    <div className="space-y-1">
-                       <div className="flex items-center gap-2">
-                          <h5 className="text-[17px] font-black text-slate-800">{booking.name}</h5>
-                          <span className="px-2 py-0.5 rounded-lg bg-white border border-slate-100 text-[9px] font-black uppercase text-[#8B5CF6] tracking-tighter">Verified</span>
-                       </div>
-                       <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{booking.id}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-10 xl:gap-16 flex-[2]">
-                    <div className="space-y-1">
-                       <p className="text-[9px] font-black uppercase tracking-widest text-[#8B5CF6]/60">Treatment</p>
-                       <p className="text-[14px] font-black text-[#8B5CF6] truncate max-w-[150px]">{booking.service}</p>
-                    </div>
-                    <div className="space-y-1">
-                       <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Schedule</p>
-                       <div className="flex items-center gap-2">
-                          <Clock size={12} className="text-[#D946EF]" />
-                          <p className="text-[13px] font-bold text-slate-700">{booking.time}</p>
-                       </div>
-                    </div>
-                    <div className="space-y-1">
-                       <p className="text-[9px] font-black uppercase tracking-widest text-rose-500/60">Revenue</p>
-                       <p className="text-[16px] font-black text-slate-900">{booking.amount}</p>
-                    </div>
-                    <div className="space-y-1 min-w-[100px]">
-                       <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Current Status</p>
-                       <div className={`text-[11px] font-black uppercase tracking-widest ${booking.status === 'Cancelled' ? 'text-rose-500' : 'text-emerald-500'}`}>
-                          {booking.status}
-                       </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                     <button className="px-8 py-3.5 rounded-2xl bg-[#8B5CF6] text-white font-black text-[12px] uppercase tracking-widest shadow-lg shadow-purple-500/20 hover:scale-105 active:scale-95 transition-all">Accept</button>
-                     <button className="px-8 py-3.5 rounded-2xl bg-rose-50 text-rose-500 border border-rose-100 font-black text-[12px] uppercase tracking-widest hover:bg-rose-500 hover:text-white transition-all">Decline</button>
-                  </div>
-                </div>
-              ))}
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[760px]">
+                <thead>
+                  <tr className="text-left text-[13px] text-[#715c99] border-b border-[#ece1f8]">
+                    <th className="pb-4 font-semibold">Salon Name</th>
+                    <th className="pb-4 font-semibold">Area</th>
+                    <th className="pb-4 font-semibold">Service Type</th>
+                    <th className="pb-4 font-semibold">Plan</th>
+                    <th className="pb-4 font-semibold">Status</th>
+                    <th className="pb-4 font-semibold">Reg Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {salonsData.map((salon) => (
+                    <tr key={salon.id} className="border-b border-[#f1e9fb] text-[14px] text-[#2f2450]">
+                      <td className="py-4">
+                        <div className="font-semibold">{salon.name}</div>
+                        <div className="text-[11px] text-[#9181b4] mt-1">{salon.id}</div>
+                      </td>
+                      <td className="py-4">
+                        <div>{salon.area}</div>
+                        <div className="text-[11px] text-[#9181b4] mt-1">{salon.subArea}</div>
+                      </td>
+                      <td className="py-4">
+                        <span className="inline-flex px-3 py-1 rounded-xl bg-[#edf4f5] text-[#5f6778] text-[13px]">{salon.serviceType}</span>
+                      </td>
+                      <td className="py-4">{salon.plan}</td>
+                      <td className="py-4">
+                        <span className={`inline-flex px-4 py-1 rounded-xl text-[13px] font-medium ${salon.statusClass}`}>{salon.status}</span>
+                      </td>
+                      <td className="py-4">{salon.regDate}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
 
             <div className="flex items-center justify-between pt-4 text-[13px] text-[#7f70a6]">
-              <p>Showing {(currentPage-1)*6+1} - {Math.min(currentPage*6, 48)} of 48</p>
+              <p>Showing 1 - 6 of 48</p>
               <div className="flex items-center gap-2">
-                <button 
-                  onClick={() => setCurrentPage(Math.max(1, currentPage-1))}
-                  className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50 transition-all font-bold"
-                >
-                  {`<`}
-                </button>
-                {[1, 2, 3].map(page => (
-                  <button 
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={`w-8 h-8 rounded-lg transition-all font-bold ${currentPage === page ? 'bg-[#8a63f7] text-white shadow-lg' : 'border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50'}`}
-                  >
-                    {page}
-                  </button>
-                ))}
-                <span className="px-1 text-slate-300">...</span>
-                <button 
-                   onClick={() => setCurrentPage(79)}
-                   className={`w-10 h-8 rounded-lg transition-all font-bold ${currentPage === 79 ? 'bg-[#8a63f7] text-white shadow-lg' : 'border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50'}`}
-                >
-                  79
-                </button>
-                <button 
-                  onClick={() => setCurrentPage(Math.min(79, currentPage+1))}
-                  className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50 transition-all font-bold"
-                >
-                  {`>`}
-                </button>
+                <button className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6]">{`<`}</button>
+                <button className="w-8 h-8 rounded-lg bg-[#8a63f7] text-white">1</button>
+                <button className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6]">2</button>
+                <button className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6]">3</button>
+                <button className="w-10 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6]">79</button>
+                <button className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6]">{`>`}</button>
               </div>
             </div>
           </div>

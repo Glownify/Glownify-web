@@ -8,12 +8,42 @@ import {
     Bell, Check, X, Star
 } from "lucide-react";
 
-import { MOCK_BOOKINGS, MOCK_REVIEWS } from "../../utils/constants";
-import Avatar from "../../components/common/Avatar";
-
 // ─── Colors ────────────────────────────────────────────────────────────────────
 const PINK = "#e91e63";
 const BG = "#fce4ec";
+
+// ─── Mock Data ────────────────────────────────────────────────────────────────
+const MOCK_BOOKINGS = [
+    { id: 1, customerName: "Amit K.", service: "Hair Color", duration: "1 hr", date: "May 12, 11:00 AM", amount: 2500, status: "pending", avatar: "https://i.pravatar.cc/150?u=amit2" },
+    { id: 2, customerName: "Mehak S.", service: "Full Body Massage", duration: "1.5 hr", date: "May 12, 11:00 AM", amount: 2000, status: "pending", avatar: "https://i.pravatar.cc/150?u=mehak" },
+    { id: 3, customerName: "Riya", service: "Bridal Makeup", duration: "2 hr", date: "May 12, 11:00 AM", amount: 5000, status: "pending", avatar: "https://i.pravatar.cc/150?u=riya" },
+];
+
+const MOCK_REVIEWS = [
+    { id: 1, name: "Neha T.", rating: 5, date: "May 11", initials: "NT", avatarColor: "#fecdd3", text: "Amazing experience! The staff was very professional and friendly." },
+];
+
+// ─── Avatar ───────────────────────────────────────────────────────────────────
+const Avatar = ({ src, initials, color = "#fecdd3", size = 48 }) => {
+    const [imgError, setImgError] = useState(false);
+    if (src && !imgError) {
+        return (
+            <img
+                src={src}
+                alt={initials}
+                onError={() => setImgError(true)}
+                className="rounded-full shrink-0 object-cover"
+                style={{ width: size, height: size }}
+            />
+        );
+    }
+    return (
+        <div className="rounded-full flex items-center justify-center shrink-0 font-bold"
+            style={{ width: size, height: size, backgroundColor: color, fontSize: size * 0.33, color: "#9f1239" }}>
+            {initials}
+        </div>
+    );
+};
 
 // ─── Booking Card — exact match to dashboard screenshot ────────────────────────
 const BookingCard = ({ booking, onAccept, onDecline }) => {

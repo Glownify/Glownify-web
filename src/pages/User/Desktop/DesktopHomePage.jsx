@@ -27,7 +27,7 @@ import {
  * ✅ To edit desktop home UI, ONLY edit this file.
  * ❌ Do NOT add data-fetching here — keep all API calls in HomePage.jsx.
  */
-const DesktopHomePage = ({ gender, setGender, activeCategory, setActiveCategory, filteredCategories, lat, lng }) => {
+const DesktopHomePage = ({ gender, setGender, filteredCategories, lat, lng }) => {
     return (
         <div className="min-h-screen bg-linear-to-r from-[#FFF7F1] to-[#FFEDE2] pb-20">
             <Hero />
@@ -45,10 +45,7 @@ const DesktopHomePage = ({ gender, setGender, activeCategory, setActiveCategory,
                         {["women", "men"].map((g) => (
                             <button
                                 key={g}
-                                onClick={() => {
-                                    setGender(g);
-                                    setActiveCategory(null); // Reset service filter when switching gender
-                                }}
+                                onClick={() => setGender(g)}
                                 className="flex-1 flex items-center justify-center gap-2 py-3 rounded-full font-semibold text-sm transition-all duration-200"
                                 style={
                                     gender === g
@@ -68,15 +65,11 @@ const DesktopHomePage = ({ gender, setGender, activeCategory, setActiveCategory,
                 </div>
 
                 {/* Service categories — desktop (larger, centered) */}
-                <DesktopServiceCategories 
-                    categories={filteredCategories} 
-                    activeCategory={activeCategory}
-                    setActiveCategory={setActiveCategory}
-                />
+                <DesktopServiceCategories categories={filteredCategories} />
 
                 {/* Nearby Salons — desktop (3-col grid) */}
                 <DesktopNearbySalons
-                    category={activeCategory || gender}
+                    category={gender}
                     lat={lat}
                     lng={lng}
                 />

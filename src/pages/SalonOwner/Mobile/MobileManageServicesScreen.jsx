@@ -27,7 +27,40 @@ import {
   Tag
 } from "lucide-react";
 
-import { MOCK_SERVICES as DUMMY_SERVICES, EMPTY_SERVICE_FORM as EMPTY_FORM } from "../../../utils/constants";
+// Fallback dummy data if Redux store is empty
+const DUMMY_SERVICES = [
+  {
+    _id: "s1", name: "Classic Haircut",
+    category: { _id: "c1", name: "Hair Care", gender: "UNISEX" },
+    price: 350, durationMins: 30, discountPercent: 10,
+    description: "A clean, classic haircut styled to your preference.",
+    serviceMode: "Salon", status: "active", gender: "unisex",
+    addOns: [
+      { id: "a1", name: "Hair Wash", price: 100, duration: 10, isRecommended: true },
+      { id: "a2", name: "Blow Dry",  price: 150, duration: 15, isRecommended: false },
+    ],
+  },
+  {
+    _id: "s2", name: "Balayage Coloring",
+    category: { _id: "c2", name: "Hair Care", gender: "WOMEN" },
+    price: 2500, durationMins: 120, discountPercent: 0,
+    description: "Hand-painted highlights for a natural sun-kissed look.",
+    serviceMode: "Salon", status: "active", gender: "women", addOns: [],
+  },
+  {
+    _id: "s3", name: "Beard Shaping",
+    category: { _id: "c3", name: "Beard Grooming", gender: "MEN" },
+    price: 200, durationMins: 20, discountPercent: 0,
+    description: "Precision beard trim and shaping with hot towel finish.",
+    serviceMode: "Both", status: "inactive", gender: "men",
+    addOns: [{ id: "a3", name: "Hot Towel", price: 50, duration: 5, isRecommended: true }],
+  },
+];
+
+const EMPTY_FORM = {
+  name: "", category: "", price: "", durationMins: "30",
+  discountPercent: "0", description: "", serviceMode: "salon", addOns: [],
+};
 
 const genderBadge = (gender) => {
   const g = (gender || "").toLowerCase();

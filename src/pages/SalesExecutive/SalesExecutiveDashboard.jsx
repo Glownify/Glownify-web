@@ -1,5 +1,4 @@
 import React, { memo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   Check,
@@ -30,16 +29,15 @@ const leadPipelineData = [
 ];
 
 const quickActions = [
-  { icon: Plus, label: "Add Lead", iconColor: "#f43f5e", bg: "#fecdd3", path: "/sales-executive/dashboard" },
-  { icon: Target, label: "Track Target", iconColor: "#0ea5e9", bg: "#e0f2fe", path: "/sales-executive/dashboard" },
-  { icon: Users, label: "Sales Team", iconColor: "#ec4899", bg: "#fbcfe8", path: "/sales-executive/manage-salesman" },
-  { icon: FileText, label: "View Reports", iconColor: "#10b981", bg: "#d1fae5", path: "/sales-executive/dashboard" },
-  { icon: MapPin, label: "Districts", iconColor: "#f97316", bg: "#ffedd5", path: "/sales-executive/dashboard" },
-  { icon: Zap, label: "Instant Lead", iconColor: "#8b5cf6", bg: "#ede9fe", path: "/sales-executive/dashboard" },
+  { icon: Plus, label: "Add Lead", iconColor: "#f43f5e", bg: "#fecdd3" },
+  { icon: Target, label: "Track Target", iconColor: "#0ea5e9", bg: "#e0f2fe" },
+  { icon: Users, label: "Sales Team", iconColor: "#ec4899", bg: "#fbcfe8" },
+  { icon: FileText, label: "View Reports", iconColor: "#10b981", bg: "#d1fae5" },
+  { icon: MapPin, label: "Districts", iconColor: "#f97316", bg: "#ffedd5" },
+  { icon: Zap, label: "Instant Lead", iconColor: "#8b5cf6", bg: "#ede9fe" },
 ];
 
 const SalesExecutiveDashboard = () => {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("All Lead");
 
   return (
@@ -70,7 +68,6 @@ const SalesExecutiveDashboard = () => {
         {quickActions.map((action) => (
           <button
             key={action.label}
-            onClick={() => action.path && navigate(action.path)}
             className="flex items-center gap-3 rounded-[22px] border border-white/50 bg-white/40 backdrop-blur-md p-4 shadow-sm transition-all hover:scale-[1.03] hover:shadow-xl hover:shadow-purple-500/5 active:scale-[0.98] group"
           >
             <div className="rounded-xl bg-purple-50 p-2 shadow-inner group-hover:scale-110 transition-transform">

@@ -18,20 +18,14 @@ import {
   Sparkles,
   Heart,
   ChevronDown,
-  Building,
-  Tag,
-  PlusCircle,
-  Star,
-  RefreshCcw,
-  Info
+  ToggleLeft,
+  ToggleRight
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useMobile from "../../hooks/useMobile";
 import MobileManageServicesScreen from "./Mobile/MobileManageServicesScreen";
 
 import AddServiceConfig from "./AddServiceConfig";
-
-import { MOCK_SERVICES } from "../../utils/constants";
 
 const ManageServicesPage = () => {
   const dispatch = useDispatch();
@@ -48,7 +42,59 @@ const ManageServicesPage = () => {
 
   const tabs = ["All Services", "Hair Care", "Nail Care", "Skin Therapy", "Bridal Packages"];
 
-  const displayServices = serviceItems.length > 0 ? serviceItems : MOCK_SERVICES;
+  // Mock data to match the image exactly for demonstration
+  const displayServices = [
+    {
+      id: 1,
+      name: "Classic Editorial Haircut",
+      description: "Precision cutting focused on structural integrity and...",
+      duration: "45 mins",
+      price: "85",
+      status: "ACTIVE",
+      icon: Scissors,
+      iconBg: "bg-red-50 text-red-500",
+    },
+    {
+      id: 2,
+      name: "Botanical Scalp Therapy",
+      description: "A restorative treatment using organic oils to rejuvenate follicle...",
+      duration: "60 mins",
+      price: "120",
+      status: "ACTIVE",
+      icon: Droplets,
+      iconBg: "bg-emerald-50 text-emerald-500",
+    },
+    {
+      id: 3,
+      name: "Hand-Painted Balayage",
+      description: "Artisanal hair painting for a sun-kissed, natural transition.",
+      duration: "180 mins",
+      price: "240",
+      status: "INACTIVE",
+      icon: Palette,
+      iconBg: "bg-slate-100 text-slate-500",
+    },
+    {
+      id: 4,
+      name: "Signature Velvet Blowout",
+      description: "High-volume styling with a silk-press finish for ultimate luxury.",
+      duration: "30 mins",
+      price: "55",
+      status: "ACTIVE",
+      icon: Sparkles,
+      iconBg: "bg-red-50 text-red-400",
+    },
+    {
+      id: 5,
+      name: "Matte Porcelain Manicure",
+      description: "Minimalist nail architecture with a high-durability matte aesthetic.",
+      duration: "45 mins",
+      price: "65",
+      status: "ACTIVE",
+      icon: Heart,
+      iconBg: "bg-emerald-50 text-emerald-400",
+    },
+  ];
 
   if (isMobile) {
     return <MobileManageServicesScreen />;
@@ -110,99 +156,57 @@ const ManageServicesPage = () => {
 
       {/* ── Services Grid ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-        {displayServices.map((service) => {
-          const catName = typeof service.category === "object" ? service.category?.name : categories.find(c => c._id === service.category)?.name || "Category";
-          const gender = (service.gender || "UNISEX").toUpperCase();
-          const mode = service.serviceMode || "Salon";
-
-          return (
-            <div 
-              key={service.id || service._id} 
-              className="group bg-white rounded-[40px] p-8 border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 hover:-translate-y-2 flex flex-col h-full relative"
-            >
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-tight transition-colors">
-                  {service.name}
-                </h3>
-                <span className={`text-[11px] font-black uppercase tracking-wider px-3 py-1.5 rounded-full ${
-                  service.status?.toUpperCase() === 'ACTIVE' 
-                  ? 'bg-emerald-50 text-emerald-600' 
-                  : 'bg-slate-50 text-slate-400'
-                }`}>
-                  {service.status?.toUpperCase() === 'ACTIVE' ? 'Active' : 'Inactive'}
-                </span>
+        {displayServices.map((service) => (
+          <div 
+            key={service.id} 
+            className="group bg-white rounded-[40px] p-10 border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-purple-500/5 transition-all duration-500 hover:-translate-y-2 flex flex-col h-full relative"
+          >
+            <div className="flex justify-between items-start mb-8">
+              <div className={`w-14 h-14 rounded-[22px] ${service.iconBg} flex items-center justify-center transition-transform group-hover:rotate-6`}>
+                <service.icon size={28} strokeWidth={2.5} />
               </div>
-
-              {/* Tags Row */}
-              <div className="flex flex-wrap items-center gap-2 mb-6">
-                <div className="flex items-center gap-1.5 text-teal-700">
-                  <Scissors size={14} strokeWidth={2.5} />
-                  <span className="text-xs font-bold">{catName}</span>
-                </div>
-                <div className="bg-[#A855F7] px-3 py-1 rounded-full">
-                  <span className="text-white text-[10px] font-black uppercase">{gender}</span>
-                </div>
-                <div className="bg-[#10B981] flex items-center gap-1.5 px-3 py-1 rounded-full">
-                  <Building size={10} className="text-white" />
-                  <span className="text-white text-[10px] font-black uppercase">{mode}</span>
-                </div>
-              </div>
-
-              {/* Price & Duration Row */}
-              <div className="flex items-center gap-4 mb-6 pt-4 border-t border-slate-50">
-                <div className="text-3xl font-black text-slate-900 tracking-tighter">
-                  ₹{service.price}
-                </div>
-                <div className="flex items-center gap-1.5 text-slate-400 font-bold text-sm">
-                  <Clock size={16} /> {service.duration || `${service.durationMins} mins`}
-                </div>
-                {service.discountPercent > 0 && (
-                  <div className="bg-emerald-50 px-2.5 py-1 rounded-lg ml-auto flex items-center gap-1.5">
-                    <Tag size={12} className="text-emerald-500" />
-                    <span className="text-[11px] font-black text-emerald-500">{service.discountPercent}% off</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Add-ons Section */}
-              {service.addOns?.length > 0 && (
-                <div className="mb-6">
-                  <div className="flex items-center gap-1.5 mb-3 text-teal-700">
-                    <PlusCircle size={16} strokeWidth={2.5} />
-                    <span className="text-xs font-black">{service.addOns.length} Add-ons</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {service.addOns.map((addon, idx) => (
-                      <div key={idx} className="bg-cyan-50 border border-cyan-100/50 px-3 py-1.5 rounded-full flex items-center gap-1.5">
-                        <span className="text-[11px] font-bold text-cyan-700">{addon.name} (+₹{addon.price})</span>
-                        {addon.isRecommended && <Star size={10} fill="#F59E0B" className="text-amber-500" />}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <p className="text-slate-500 font-medium text-[13px] leading-relaxed mb-8 flex-1">
-                {service.description}
-              </p>
-
-              <div className="flex items-center gap-3 pt-6 border-t border-slate-50">
-                <button className="flex-1 h-12 bg-[#0F766E] rounded-2xl flex items-center justify-center gap-2 text-white font-bold text-sm transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-teal-900/10">
-                  <Pencil size={16} strokeWidth={2.5} />
-                  <span>Edit</span>
-                </button>
-                <button className="flex-1 h-12 bg-[#10B981] rounded-2xl flex items-center justify-center gap-2 text-white font-bold text-sm transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-emerald-900/10">
-                  <RefreshCcw size={16} strokeWidth={2.5} />
-                  <span>Toggle</span>
-                </button>
-                <button className="flex-1 h-12 bg-[#EF4444] rounded-2xl flex items-center justify-center gap-2 text-white font-bold text-sm transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-red-900/10">
-                  <Trash2 size={16} strokeWidth={2.5} />
-                  <span>Delete</span>
-                </button>
-              </div>
+              <span className={`text-[10px] font-black uppercase tracking-[0.15em] px-3 py-1.5 rounded-lg border ${
+                service.status === 'ACTIVE' 
+                ? 'bg-emerald-50 text-emerald-600 border-emerald-100/50' 
+                : 'bg-slate-50 text-slate-400 border-slate-200/50'
+              }`}>
+                {service.status}
+              </span>
             </div>
-          );
-        })}
+
+            <div className="flex-1 space-y-4">
+               <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-tight group-hover:text-[#D81159] transition-colors">
+                 {service.name}
+               </h3>
+               <p className="text-slate-500 font-medium leading-relaxed">
+                 {service.description}
+               </p>
+            </div>
+
+            <div className="mt-10 pt-8 border-t border-slate-50 flex flex-col space-y-6">
+               <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-slate-400 font-bold text-sm">
+                    <Clock size={16} /> {service.duration}
+                  </div>
+                  <div className="text-3xl font-black text-slate-800 tracking-tighter">
+                    <span className="text-[#D81159] text-xl mr-1 font-bold">$</span>{service.price}
+                  </div>
+               </div>
+
+               <div className="flex items-center gap-3">
+                  <button className="flex-1 h-12 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-400 hover:text-blue-500 hover:bg-blue-50 hover:border-blue-100 transition-all">
+                    <Pencil size={18} />
+                  </button>
+                  <button className="flex-1 h-12 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-400 hover:text-[#D81159] hover:bg-red-50 hover:border-red-100 transition-all">
+                    {service.status === 'ACTIVE' ? <ToggleRight size={24} className="text-[#D81159]" /> : <ToggleLeft size={24} />}
+                  </button>
+                  <button className="flex-1 h-12 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-600 hover:bg-red-50 hover:border-red-100 transition-all">
+                    <Trash2 size={18} />
+                  </button>
+               </div>
+            </div>
+          </div>
+        ))}
 
         {/* Add New Service Card */}
         <div 

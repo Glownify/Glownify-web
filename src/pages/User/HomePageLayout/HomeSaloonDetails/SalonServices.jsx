@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchServiceItemByCategory } from "../../../../redux/slice/userSlice";
+import { fetchSalonServiceItems } from "../../../../redux/slice/userSlice";
 import { useOutletContext, useNavigate, useParams } from "react-router-dom";
 import {
   Clock,
@@ -16,25 +16,8 @@ import {
   updateServiceMode,
 } from "../../../../utils/CartStorage";
 
-// Placeholder images for service categories
-const SERVICE_IMAGES = {
-  hair: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=200&h=200&fit=crop&crop=face",
-  facial: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=200&h=200&fit=crop&crop=face",
-  wax: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=200&h=200&fit=crop&crop=face",
-  makeup: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=200&h=200&fit=crop&crop=face",
-  nail: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=200&h=200&fit=crop&crop=face",
-  spa: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=200&h=200&fit=crop&crop=face",
-  beard: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=200&h=200&fit=crop&crop=face",
-  color: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=200&h=200&fit=crop&crop=face",
-};
-
-const getServiceImage = (name) => {
-  const lower = name?.toLowerCase() || "";
-  for (const [key, url] of Object.entries(SERVICE_IMAGES)) {
-    if (lower.includes(key)) return url;
-  }
-  return SERVICE_IMAGES.hair;
-};
+// Placeholder image for services
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500&h=500&fit=crop";
 
 const formatDuration = (mins) => {
   if (!mins) return "45 min";
@@ -44,32 +27,7 @@ const formatDuration = (mins) => {
   return m > 0 ? `${h} hour ${m} min` : `${h} hour`;
 };
 
-// ─── Fallback demo services for placeholder salons ───
-const DEMO_SERVICES = {
-  "cat-1": [ // Hair
-    { _id: "demo-h1", name: "Hair Cut & Style", price: 299, durationMins: 45, serviceMode: "both", homeServiceCharge: 50 },
-    { _id: "demo-h2", name: "Hair Spa Treatment", price: 799, durationMins: 60, serviceMode: "both", homeServiceCharge: 80 },
-    { _id: "demo-h3", name: "Hair Coloring", price: 1499, durationMins: 90, serviceMode: "salon", homeServiceCharge: 0 },
-    { _id: "demo-h4", name: "Hair Straightening", price: 2499, durationMins: 120, serviceMode: "salon", homeServiceCharge: 0 },
-  ],
-  "cat-2": [ // Facial
-    { _id: "demo-f1", name: "Facial Treatment", price: 950, durationMins: 45, serviceMode: "both", homeServiceCharge: 60 },
-    { _id: "demo-f2", name: "Clean Up", price: 600, durationMins: 30, serviceMode: "both", homeServiceCharge: 40, tag: "STEALDEAL" },
-    { _id: "demo-f3", name: "Diamond Facial", price: 1499, durationMins: 75, serviceMode: "both", homeServiceCharge: 100 },
-  ],
-  "cat-3": [ // Wax
-    { _id: "demo-w1", name: "Full Arms Waxing", price: 400, durationMins: 20, serviceMode: "both", homeServiceCharge: 40 },
-    { _id: "demo-w2", name: "Full Legs Waxing", price: 299, durationMins: 40, serviceMode: "both", homeServiceCharge: 50 },
-    { _id: "demo-w3", name: "Full Body Waxing", price: 899, durationMins: 90, serviceMode: "both", homeServiceCharge: 100 },
-  ],
-  "cat-4": [ // Makeup
-    { _id: "demo-m1", name: "Party Makeup", price: 1999, durationMins: 60, serviceMode: "both", homeServiceCharge: 150 },
-    { _id: "demo-m2", name: "Bridal Makeup", price: 4000, durationMins: 120, serviceMode: "both", homeServiceCharge: 200 },
-    { _id: "demo-m3", name: "Engagement Makeup", price: 3499, durationMins: 90, serviceMode: "both", homeServiceCharge: 180 },
-  ],
-};
-
-// Free offer threshold
+// ─── Free offer threshold ───
 const FREE_OFFER_THRESHOLD = 999;
 const FREE_OFFER_NAME = "Nail Polish Service";
 
@@ -81,21 +39,14 @@ const SalonServices = () => {
   // serviceMode comes from the parent toggle ("home" | "salon") in HomeSaloonsDetails
   const { saloonDetails, activeCategory: ctxCategory, setActiveCategory, serviceMode } = useOutletContext();
 
-  // Match all dummy ID formats: home-page placeholders, and SalonsPage dummy IDs (d-w-*, d-m-*)
-  const isPlaceholder =
-    id?.startsWith("placeholder") ||
-    id?.startsWith("d-w-") ||
-    id?.startsWith("d-m-");
-
   const [cartItems, setCartItems] = useState([]);
-  const [demoItems, setDemoItems] = useState([]);
 
   const categories = saloonDetails?.serviceCategories || [];
   const selectedSalonId = saloonDetails?._id;
-  const { serviceItems, loading } = useSelector((state) => state.user);
+  const { serviceItems, servicesLoading } = useSelector((state) => state.user);
 
-  // Use demo items for placeholder salons, real items for real salons
-  const displayItems = isPlaceholder ? demoItems : serviceItems;
+  // Use real items from the selected salon
+  const displayItems = serviceItems;
 
   useEffect(() => {
     if (userId) setCartItems(getCart(userId));
@@ -112,12 +63,10 @@ const SalonServices = () => {
   // Load services whenever activeCategory changes
   useEffect(() => {
     if (!ctxCategory) return;
-    if (isPlaceholder) {
-      setDemoItems(DEMO_SERVICES[ctxCategory] || []);
-    } else if (selectedSalonId) {
-      dispatch(fetchServiceItemByCategory({ salonId: selectedSalonId, categoryId: ctxCategory }));
+    if (selectedSalonId) {
+      dispatch(fetchSalonServiceItems({ salonId: selectedSalonId, categoryId: ctxCategory }));
     }
-  }, [ctxCategory, selectedSalonId, dispatch, isPlaceholder]);
+  }, [ctxCategory, selectedSalonId, dispatch]);
 
   // Called when user taps "+Add" or the "+" stepper button.
   // Respects the current toggle (serviceMode) for the booking mode.
@@ -170,7 +119,7 @@ const SalonServices = () => {
   const offerProgress = Math.min(1, cartTotal / FREE_OFFER_THRESHOLD);
   const offerUnlocked = cartTotal >= FREE_OFFER_THRESHOLD;
 
-  const isLoading = loading && !isPlaceholder;
+  const isLoading = servicesLoading;
 
   return (
     <div className="w-full min-h-[400px] relative pb-24">
@@ -191,85 +140,87 @@ const SalonServices = () => {
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden" style={{ borderTopWidth: 4, borderTopColor: "#EA8491" }}>
-            {displayItems?.length > 0 ? displayItems?.map((service, idx) => {
+          <>
+            {displayItems?.map((service) => {
               const qty = getServiceQuantity(service._id);
               return (
                 <div
                   key={service._id}
-                  className={`flex items-center gap-5 p-6 transition-colors hover:bg-gray-50/50 ${idx < displayItems.length - 1 ? "border-b border-gray-50" : ""}`}
+                  className="bg-white rounded-2xl p-4 border border-pink-100/60 shadow-sm hover:shadow-md transition-all duration-300"
                 >
-                  {/* Service Thumbnail */}
-                  <div className="w-20 h-20 md:w-24 md:h-24 rounded-[1.5rem] overflow-hidden shrink-0 shadow-sm bg-gray-100">
-                    <img
-                      src={getServiceImage(service.name)}
-                      alt={service.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-
-                  {/* Service Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap mb-1">
-                      <h4 className="text-base md:text-lg font-bold text-gray-900 leading-tight">
-                        {service.name}
-                      </h4>
-                      {service.tag && (
-                        <span className="text-[10px] font-bold text-rose-500 border border-rose-200 bg-rose-50 rounded px-2 py-0.5 leading-none">
-                          *{service.tag}
-                        </span>
-                      )}
+                  <div className="flex gap-4 items-center">
+                    {/* Service Thumbnail */}
+                    <div className="w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden shrink-0 shadow-sm bg-gray-100">
+                      <img
+                        src={service.imageURL || DEFAULT_IMAGE}
+                        alt={service.name}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
-                    <div className="flex items-center gap-1.5 text-gray-400 mb-1.5">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span className="text-xs md:text-sm">{formatDuration(service.durationMins)}</span>
-                    </div>
-                    <p className="text-lg md:text-xl font-black text-gray-900">
-                      ₹{service.price?.toLocaleString?.() || service.price}
-                    </p>
-                  </div>
 
-                  {/* Add / Qty Controls */}
-                  <div className="shrink-0">
-                    {qty > 0 ? (
-                      <div className="flex items-center gap-0 border-2 border-[#EA8491] rounded-2xl overflow-hidden bg-white">
-                        <button
-                          onClick={() => handleRemoveFromCart(service._id)}
-                          className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center hover:bg-rose-50 transition-colors text-[#EA8491]"
-                        >
-                          <Minus className="w-5 h-5" />
-                        </button>
-                        <span className="w-10 md:w-12 text-center text-sm md:text-base font-black text-gray-900">
-                          {qty}
-                        </span>
+                    {/* Service Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                        <h4 className="text-sm md:text-base font-bold text-gray-900 leading-tight">
+                          {service.name}
+                        </h4>
+                        {service.tag && (
+                          <span className="text-[10px] font-bold text-rose-500 border border-rose-300 rounded px-1.5 py-0.5 leading-none">
+                            *{service.tag}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs md:text-sm text-gray-400 mt-0.5 flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {formatDuration(service.durationMins)}
+                      </p>
+                      <p className="text-base md:text-lg font-black text-gray-900 mt-1">
+                        ₹{service.price?.toLocaleString?.() || service.price}
+                      </p>
+                    </div>
+
+                    {/* Add / Qty Controls */}
+                    <div className="shrink-0">
+                      {qty > 0 ? (
+                        <div className="flex items-center gap-0 border border-pink-200 rounded-full overflow-hidden">
+                          <button
+                            onClick={() => handleRemoveFromCart(service._id)}
+                            className="w-9 h-9 flex items-center justify-center bg-pink-50 hover:bg-pink-100 transition-colors text-rose-500"
+                          >
+                            <Minus className="w-4 h-4" />
+                          </button>
+                          <span className="w-9 h-9 flex items-center justify-center text-sm font-bold text-gray-800 bg-white">
+                            {qty}
+                          </span>
+                          <button
+                            onClick={() => initiateAddToCart(service)}
+                            className="w-9 h-9 flex items-center justify-center bg-pink-50 hover:bg-pink-100 transition-colors text-rose-500"
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ) : (
                         <button
                           onClick={() => initiateAddToCart(service)}
-                          className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center hover:bg-rose-50 transition-colors text-[#EA8491]"
+                          className="flex items-center gap-1 px-4 py-2 rounded-full text-sm font-bold border-2 border-rose-300 text-rose-500 bg-white hover:bg-rose-50 transition-all active:scale-95"
                         >
-                          <Plus className="w-5 h-5" />
+                          + Add
                         </button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => initiateAddToCart(service)}
-                        className="flex items-center gap-1.5 px-6 py-2.5 rounded-2xl text-sm md:text-base font-bold border-2 border-[#EA8491] text-[#EA8491] bg-white hover:bg-[#EA8491]/5 transition-all active:scale-95 shadow-sm"
-                      >
-                        + Add
-                      </button>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </div>
               );
-            }) : (
-              <div className="text-center py-20 bg-white">
-                <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-5xl text-gray-200">✂</span>
-                </div>
-                <p className="text-gray-400 font-bold text-lg">No services in this category</p>
-                <p className="text-gray-300 text-sm mt-1">Try selecting a different category from above</p>
+            })}
+
+            {/* No services message */}
+            {(!displayItems || displayItems.length === 0) && !isLoading && ctxCategory && (
+              <div className="text-center py-12 bg-white rounded-2xl border border-pink-100/60">
+                <span className="text-4xl text-gray-300 block mb-3">✂</span>
+                <p className="text-gray-400 font-medium text-sm">No services in this category</p>
               </div>
             )}
-          </div>
+          </>
         )}
       </div>
 

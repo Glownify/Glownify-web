@@ -21,18 +21,16 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const { featuredSalons, categories } = useSelector((state) => state.user);
   const [gender, setGender] = useState("women");
-  const [activeCategory, setActiveCategory] = useState(null); // e.g. "Massage", "Spa"
-  const [lat, setLat] = useState(12.9716); 
-  const [lng, setLng] = useState(77.5454);
+  const [lat, setLat] = useState(null);
+  const [lng, setLng] = useState(null);
 
-  const resolveArray = (val) => {
-    if (Array.isArray(val)) return val;
-    if (val && typeof val === 'object') return Object.values(val).find(Array.isArray) || [];
-    return [];
-  };
-
-  const displayCategories = resolveArray(categories);
-  const displayFeaturedSalons = resolveArray(featuredSalons);
+  // ── Derived data (computed once, passed to both layouts) ──
+  const filteredCategories = categories?.filter(
+    (cat) => cat.gender === gender || cat.gender === "unisex"
+  );
+  const filteredFeaturedSalons = featuredSalons?.filter(
+    (salon) => salon.gender === gender || salon.gender === "unisex"
+  );
 
   useEffect(() => {
     dispatch(fetchAllFeaturedSaloons());
@@ -41,22 +39,37 @@ const HomePage = () => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       dispatch(fetchAllCategories(gender));
-    }, 300);
+    }, 300); // debounce
     return () => clearTimeout(timeout);
   }, [gender]);
 
   useEffect(() => {
     if (lat && lng && gender) {
-      const categoryToFetch = activeCategory || gender;
-      console.log("FETCHING NEARBY:", { lat, lng, category: categoryToFetch });
+      console.log("CALLING API:", { lat, lng, gender });
+
       dispatch(fetchNearbySalons({
         lat,
         lng,
-        category: categoryToFetch
+        category: gender   // ✅ this is correct if gender = men/women
       }));
     }
-  }, [gender, activeCategory, lat, lng]);
+  }, [gender, lat, lng]);
 
+  // ── Geolocation ──
+  // useEffect(() => {
+  //   navigator.geolocation.getCurrentPosition(
+  //     (pos) => {
+  //       const { latitude, longitude } = pos.coords;
+  //       setLat(latitude);
+  //       setLng(longitude);
+  //     },
+  //     () => {
+  //       // ✅ fallback location (important)
+  //       setLat(12.9716);
+  //       setLng(77.5454);
+  //     }
+  //   );
+  // }, []);
   useEffect(() => {
     const loadLocation = async () => {
       const { lat, lng } = await getUserLocation();
@@ -68,20 +81,16 @@ const HomePage = () => {
     };
 
     loadLocation();
-  }, [dispatch]);
+  }, []);
 
+  // ── Sync gender → Redux selectedCategory ──
   useEffect(() => { dispatch(setSelectedCategory(gender)); }, [gender, dispatch]);
+
+  // ── Sync lat/lng → Redux ──
   useEffect(() => { if (lat && lng) dispatch(setLocation({ lat, lng })); }, [lat, lng, dispatch]);
 
-  const sharedProps = { 
-    gender, 
-    setGender, 
-    activeCategory,
-    setActiveCategory,
-    filteredCategories: displayCategories, 
-    fallbackSalons: displayFeaturedSalons, 
-    lat, lng 
-  };
+  // ── Shared props passed to both layouts ──
+  const sharedProps = { gender, setGender, filteredCategories, lat, lng };
 
   return isMobile
     ? <MobileHomePage {...sharedProps} />

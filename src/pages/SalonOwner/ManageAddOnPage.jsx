@@ -18,17 +18,9 @@ const emptyForm = {
   isRecommended: false,
 };
 
-const DUMMY_ADD_ONS = [
-  { _id: "d1", name: "Luxury Aromatherapy", price: 350, duration: 15, providerType: "salon", isRecommended: true, imageURL: "" },
-  { _id: "d2", name: "Intense Scalp Massage", price: 500, duration: 20, providerType: "salon", isRecommended: false, imageURL: "" },
-  { _id: "d3", name: "Premium Gold Mask", price: 1200, duration: 30, providerType: "home", isRecommended: true, imageURL: "" },
-  { _id: "d4", name: "Luxe Foot Scrub", price: 450, duration: 20, providerType: "salon", isRecommended: false, imageURL: "" },
-];
-
 const ManageAddOnPage = () => {
   const dispatch = useDispatch();
-  const { addOns: reduxAddOns = [], loading } = useSelector((state) => state.saloonowner);
-  const addOns = reduxAddOns.length > 0 ? reduxAddOns : DUMMY_ADD_ONS;
+  const { addOns = [], loading } = useSelector((state) => state.saloonowner);
 
   const [formData, setFormData] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);

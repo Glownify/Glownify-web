@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Users,
   Wallet,
@@ -15,7 +14,6 @@ import { fetchDashboardData } from "../../redux/slice/salesmanSlice";
 
 const SalesmanDashboard = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const user = useSelector((state) => state.auth.user);
   const dashboardData = useSelector((state) => state.salesman.dashboardData);
@@ -123,10 +121,7 @@ const SalesmanDashboard = () => {
               <h2 className="font-bold text-slate-900">
                 Recently Onboarded Salons
               </h2>
-              <button 
-                onClick={() => navigate("/salesman/my-saloons")}
-                className="text-indigo-600 text-sm font-semibold flex items-center gap-1 hover:underline"
-              >
+              <button className="text-indigo-600 text-sm font-semibold flex items-center gap-1 hover:underline">
                 View All <ArrowRight size={14} />
               </button>
             </div>

@@ -18,9 +18,7 @@ const AddServiceConfig = ({ onCancel, onSave }) => {
   const [activeListing, setActiveListing] = useState(true);
   const [serviceMode, setServiceMode] = useState("Salon Only");
   const [addOns, setAddOns] = useState([
-    { id: 1, name: "Premium Essential Oils", price: "350", min: "1" },
-    { id: 2, name: "Scalp Therapy Extension", price: "500", min: "1" },
-    { id: 3, name: "24K Gold Hydration Mask", price: "1200", min: "0" }
+    { id: 1, name: "Premium Essential Oils", price: "15", min: "0" }
   ]);
 
   const addRow = () => {

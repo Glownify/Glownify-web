@@ -79,6 +79,7 @@ const Navbar = () => {
 
             <NavLink to="/bookings" className={navLinkStyles}>My Bookings</NavLink>
 
+            <NavLink to="/courses" className="text-rose-600 font-bold hover:text-rose-700 transition-colors">Courses</NavLink>
             {!user && (
               <NavLink to="/partner-with-us" className="text-rose-600 font-bold hover:text-rose-700 transition-colors">
                 Partner With Us
@@ -189,6 +190,7 @@ const Navbar = () => {
                   <ChevronRight size={20} className={isSalonsActive ? "text-rose-500" : "text-slate-300"} />
                 </button>
                 <MobileNavLink to="/bookings" label="My Bookings" onClick={() => setOpen(false)} />
+                <MobileNavLink to="/courses" label="Courses" onClick={() => setOpen(false)} />
                 {!user && <MobileNavLink to="/partner-with-us" label="Partner With Us" highlight onClick={() => setOpen(false)} />}
               </nav>
             </div>

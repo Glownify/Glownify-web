@@ -1,173 +1,146 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { 
-    ChevronLeft, 
-    Calendar, 
-    Clock, 
-    Menu,
-    UserCircle,
-    User,
-    Home,
-    Store,
-    MapPin,
-    ArrowLeft
-} from "lucide-react";
+import { ChevronLeft, SlidersHorizontal, Calendar, User, Clock, MapPin, Home } from "lucide-react";
 import MobileBottomNav from "./MobileBottomNav";
 
-// ─── Colors (Translated from React Native constants) ──────────────────────────
+// ─── Colors ────────────────────────────────────────────────────────────────────
 const PINK = "#e91e63";
-const BG = "#fff1f2"; // Matches the light pinkish background in the image
 const TEAL = "#14b8a6";
-const RED = "#f43f5e";
+const BG = "#fdf2f8"; // Updated to lighter pink
 
 // ─── Mock Data ─────────────────────────────────────────────────────────────────
 const MOCK_BOOKINGS = [
-    {
-        id: 1,
-        customerName: 'Rahul P.',
-        service: 'Bridal Makeup',
-        specialist: 'Pooja S.',
-        date: 'May 13',
-        time: '1:00 PM',
-        duration: '2 hrs',
-        status: 'pending',
-        isNew: true,
-        amount: 5000,
-        totalAmount: 2500,
-        initials: 'RP',
-        avatar: 'https://i.pravatar.cc/150?u=rahul',
-    },
-    {
-        id: 2,
-        customerName: 'Sunil',
-        service: 'Hair Cut + Shave',
-        specialist: 'Ajay',
-        date: 'May 13',
-        time: '11:00 AM',
-        duration: '1.5 hr',
-        status: 'pending',
-        isNew: false,
-        amount: 900,
-        totalAmount: 900,
-        initials: 'SU',
-        avatar: 'https://i.pravatar.cc/150?u=sunil',
-    },
-    {
-        id: 5,
-        customerName: 'Amit K.',
-        service: 'Full Grooming',
-        serviceSubtitle: '(Haircut, Shave, & Massage)',
-        specialist: 'Rohit',
-        date: 'May 13',
-        time: '10:00 AM',
-        duration: '1.5 hrs',
-        status: 'pending',
-        isNew: false,
-        amount: 1500,
-        totalAmount: 1500,
-        initials: 'AK',
-        avatar: 'https://i.pravatar.cc/150?u=amit2',
-    },
-    {
-        id: 7,
-        customerName: 'Vikram Singh',
-        service: 'Beard Trim',
-        specialist: 'Arjun Reddy',
-        date: 'May 10',
-        time: '3:00 PM',
-        duration: '30 min',
-        status: 'completed',
-        isNew: false,
-        amount: 800,
-        totalAmount: 800,
-        initials: 'VS',
-        avatar: 'https://i.pravatar.cc/150?u=vikram',
-    },
+    { id: 1, customerName: "Rahul P.", service: "Bridal Makeup", tier: "PREMIUM SERVICE", specialist: "Pooja S.", date: "May 13, 1:00 PM", status: "pending", type: "salon", amount: 5000, initials: "RP", avatarColor: "#9e9e9e" },
+    { id: 2, customerName: "Sunil", service: "Hair Cut + Shave", tier: "REGULAR", specialist: "Ajay", date: "May 13, 11:00 AM", status: "pending", type: "salon", amount: 900, initials: "S", avatarColor: "#fecdd3" },
+    { id: 3, customerName: "Amit K.", service: "Full Grooming", tier: "PREMIUM", specialist: "Rohit", date: "May 13, 10:00 AM", status: "pending", type: "home", amount: 1500, initials: "AK", avatarColor: "#9e9e9e" },
+    { id: 4, customerName: "Vikram Singh", service: "Beard Trim", tier: "REGULAR", specialist: "Arjun", date: "May 10, 3:00 PM", status: "accepted", type: "home", amount: 800, initials: "VS", avatarColor: "#dbeafe" },
 ];
 
-const STATUS_TABS = ['All', 'Ongoing', 'Completed', 'Cancelled'];
+const STATUS_TABS = ["All", "Ongoing", "Completed", "Cancelled"];
 
-// ─── Booking Card Component ───────────────────────────────────────────────────
+const getStatusFilter = (tab) => {
+    switch (tab) {
+        case "Ongoing": return ["accepted"];
+        case "Completed": return ["completed"];
+        case "Cancelled": return ["declined"];
+        default: return ["pending", "accepted", "completed", "declined"];
+    }
+};
+
+// ─── Avatar ───────────────────────────────────────────────────────────────────
+const Avatar = ({ initials, color, size = 52, isNew }) => (
+    <div className="relative">
+        <div className="rounded-full flex items-center justify-center shrink-0 font-bold"
+            style={{ width: size, height: size, backgroundColor: color, fontSize: size * 0.3, color: "#fff" }}>
+            {initials}
+        </div>
+    </div>
+);
+
+// ─── Booking Card — exact match to screenshot ─────────────────────────────────
 const BookingCard = ({ booking, onAccept, onDecline, onPress }) => {
     const isPending = booking.status === "pending";
+
+    const statusCfg = {
+        accepted: { bg: "#f0fdf4", color: "#10b981", label: "Accepted" },
+        completed: { bg: "#eff6ff", color: "#3b82f6", label: "Completed" },
+        declined: { bg: "#fff1f2", color: PINK, label: "Declined" },
+    }[booking.status];
 
     return (
         <div
             onClick={onPress}
-            className="bg-white rounded-[24px] mb-4 p-5 shadow-sm active:scale-[0.98] transition-all cursor-pointer border border-[#fef2f2]"
-            style={{ 
-                boxShadow: '0 4px 20px rgba(233, 30, 99, 0.05)',
-            }}
+            className="bg-white rounded-[24px] mb-4 overflow-hidden cursor-pointer p-4 pb-5 shadow-sm"
         >
-            {/* Top row: avatar + name/service + NEW badge */}
-            <div className="flex items-start gap-4">
-                <div className="w-[64px] h-[64px] rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
-                    <img src={booking.avatar} className="w-full h-full object-cover" alt="avatar" />
-                </div>
-                
-                <div className="flex-1 min-w-0">
+            {/* ── Top section ── */}
+            <div className="flex items-start gap-4 mb-2">
+                <img src={`https://i.pravatar.cc/150?u=${booking.id}`} className="w-14 h-14 rounded-full object-cover" alt="avatar" />
+                <div className="flex-1 min-w-0 pt-0.5">
                     <div className="flex items-center justify-between">
-                        <h1 className="font-bold text-[19px] text-gray-800 leading-tight truncate">{booking.customerName}</h1>
-                        {booking.isNew && isPending && (
-                            <div className="bg-[#fff7ed] px-3 py-1 rounded-full">
-                                <span className="text-[11px] font-bold text-[#f97316]">New</span>
-                            </div>
-                        )}
+                        <p className="font-bold text-[18px] text-gray-800 leading-tight">{booking.customerName}</p>
+                        {isPending && <span className="bg-[#ffedd5] text-[#d97706] text-[11px] font-bold px-3 py-0.5 rounded-full">New</span>}
                     </div>
-                    <p className="text-[15px] text-gray-500 mt-1 font-medium">{booking.service}</p>
-                    {booking.serviceSubtitle && (
-                        <p className="text-[12px] text-gray-400 mt-[1px] leading-tight">{booking.serviceSubtitle}</p>
-                    )}
-
-                    {/* Info items in a flex row */}
-                    <div className="flex flex-wrap items-center gap-x-4 mt-3">
-                        <div className="flex items-center gap-1.5 min-w-0">
-                            <Calendar size={14} className="text-gray-300" />
-                            <span className="text-[12px] text-gray-400 font-bold whitespace-nowrap">{booking.date}, {booking.time}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 min-w-0">
-                            <UserCircle size={14} className="text-gray-300" />
-                            <span className="text-[12px] text-gray-400 font-bold truncate max-w-[80px]">{booking.specialist}</span>
-                        </div>
-                        <span className="text-[17px] font-black text-gray-800 ml-auto">₹ {booking.amount.toLocaleString()}</span>
-                    </div>
+                    <p className="text-[14px] text-gray-500 mt-1">{booking.service}</p>
+                    {booking.service.includes("Grooming") && <p className="text-[12px] text-gray-400 mt-0.5">(Haircut, Shave, &amp; Massage)</p>}
                 </div>
             </div>
 
-            {/* Bottom Actions Row */}
-            <div className="flex items-center justify-between mt-6 pt-5 border-t border-[#fff1f2]">
-                <div className="flex items-center gap-1.5 text-gray-400 font-bold">
-                    <span className="text-[13px]">Total</span>
-                    <span className="text-[14px] text-gray-700">₹{booking.totalAmount.toLocaleString()}</span>
-                    <span className="mx-1 text-[12px] text-gray-200">|</span>
-                    <span className="text-[12px]">{booking.duration}</span>
+            {/* Row 2: Date & Time + Provider */}
+            <div className="flex items-center justify-between text-gray-500 mt-4 mb-5 ml-[72px]">
+                <div className="flex items-center gap-1.5">
+                    <Calendar size={13} color="#9ca3af" />
+                    <p className="text-[12.5px]">{booking.date}</p>
                 </div>
+                <div className="flex items-center gap-1.5 ml-2">
+                    <User size={13} color="#9ca3af" />
+                    <p className="text-[12.5px]">{booking.specialist}</p>
+                </div>
+                <p className="font-extrabold text-[17px] text-gray-900 ml-auto">₹ {booking.amount.toLocaleString("en-IN")}</p>
+            </div>
 
+            {/* ── Divider + Actions ── */}
+            <div className="border-t border-gray-100 flex items-center justify-between pt-4 mt-1">
+                <div className="flex items-center gap-1.5">
+                    <span className="text-[13px] text-gray-400">Total</span>
+                    <span className="text-[15px] font-bold text-gray-700">₹{(booking.amount).toLocaleString("en-IN")}</span>
+                    <span className="text-[12px] text-gray-300 mx-1">|</span>
+                    <span className="text-[12px] text-gray-400">2 hrs</span>
+                </div>
                 {isPending ? (
-                    <div className="flex gap-2">
+                    <div className="flex gap-2.5">
                         <button
                             onClick={(e) => { e.stopPropagation(); onAccept(booking.id); }}
-                            className="bg-[#14b8a6] text-white px-6 py-2.5 rounded-2xl font-bold text-[13px] active:scale-95 transition-all shadow-lg shadow-teal-100"
+                            className="px-5 py-2 rounded-full font-bold text-[14px] text-white transition-all shadow-sm"
+                            style={{ backgroundColor: TEAL }}
                         >
                             Accept
                         </button>
                         <button
                             onClick={(e) => { e.stopPropagation(); onDecline(booking.id); }}
-                            className="bg-[#f43f5e] text-white px-6 py-2.5 rounded-2xl font-bold text-[13px] active:scale-95 transition-all shadow-lg shadow-rose-100"
+                            className="px-5 py-2 rounded-full font-bold text-[14px] text-white transition-all shadow-sm"
+                            style={{ backgroundColor: "#ef4444" }}
                         >
                             Decline
                         </button>
                     </div>
                 ) : (
-                    <div className={`px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${
-                        booking.status === 'accepted' ? 'bg-[#f0fdfa] text-[#14b8a6]' 
-                        : booking.status === 'completed' ? 'bg-[#eff6ff] text-[#3b82f6]' 
-                        : 'bg-[#fff1f2] text-[#f43f5e]'
-                    }`}>
-                        {booking.status}
+                    <div>
+                        <span className="inline-flex text-[12px] font-bold px-3 py-1.5 rounded-full"
+                            style={{ backgroundColor: statusCfg?.bg, color: statusCfg?.color }}>
+                            {statusCfg?.label ?? booking.status}
+                        </span>
                     </div>
                 )}
             </div>
+        </div>
+    );
+};
+
+// ─── Animated Type Toggle ─────────────────────────────────────────────────────
+const TypeToggle = ({ value, onChange }) => {
+    const OPTS = [
+        { key: "salon", icon: MapPin, label: "Salon Visit" },
+        { key: "home", icon: Home, label: "Home Service" },
+    ];
+
+    return (
+        <div className="flex bg-white rounded-full border border-gray-100 p-1 mx-4 relative mb-4 shadow-sm">
+            {OPTS.map((opt) => {
+                const active = value === opt.key;
+                const IconComponent = opt.icon;
+                return (
+                    <button
+                        key={opt.key}
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 z-10 transition-colors rounded-full ${active ? "bg-[#ffe4e6]" : ""}`}
+                        onClick={() => onChange(opt.key)}
+                    >
+                         <IconComponent size={15} color={active ? PINK : "#9ca3af"} />
+                         <span className={`text-[15px] font-bold ${active ? "text-pink-600" : "text-gray-400"}`}>
+                            {opt.label}
+                        </span>
+                    </button>
+                );
+            })}
         </div>
     );
 };
@@ -177,86 +150,61 @@ const SalonBookingsPage = () => {
     const navigate = useNavigate();
     const [bookings, setBookings] = useState(MOCK_BOOKINGS);
     const [activeTab, setActiveTab] = useState("All");
-    const [serviceType, setServiceType] = useState('salon'); // 'salon' | 'home'
+    const [bookingType, setBookingType] = useState("salon");
 
-    const pendingCount = bookings.filter(b => b.status === "pending").length;
-
-    const handleAccept = (id) => setBookings(p => p.map(b => b.id === id ? { ...b, status: "accepted" } : b));
-    const handleDecline = (id) => setBookings(p => p.map(b => b.id === id ? { ...b, status: "declined" } : b));
-
-    const getStatusFilter = (tab) => {
-        switch (tab) {
-          case 'Ongoing': return ['accepted'];
-          case 'Completed': return ['completed'];
-          case 'Cancelled': return ['declined'];
-          default: return ['pending', 'accepted', 'completed', 'declined'];
-        }
-    };
-
+    const pendingCount = bookings.filter((b) => b.status === "pending" && b.type === bookingType).length;
     const allowedStatuses = getStatusFilter(activeTab);
-    const filtered = bookings.filter(b => allowedStatuses.includes(b.status));
+    const filtered = bookings.filter((b) => {
+        const statusMatch = allowedStatuses.includes(b.status);
+        const typeMatch = b.type === bookingType;
+        return statusMatch && typeMatch;
+    });
+
+    const handleAccept = (id) => setBookings((p) => p.map((b) => b.id === id ? { ...b, status: "accepted" } : b));
+    const handleDecline = (id) => setBookings((p) => p.map((b) => b.id === id ? { ...b, status: "declined" } : b));
 
     return (
-        <div className="min-h-screen pb-32 font-sans overflow-x-hidden" style={{ backgroundColor: BG }}>
+        <div className="min-h-screen pb-28" style={{ backgroundColor: BG }}>
+
             {/* ── Header ── */}
-            <div className="px-5 pt-4 pb-4 mb-2 flex items-center justify-between sticky top-0 bg-[#fff1f2]/80 backdrop-blur-md z-20">
-                <button onClick={() => navigate(-1)} className="p-1 -ml-1 active:opacity-70 transition-opacity">
-                    <ArrowLeft size={24} color={PINK} strokeWidth={3} />
+            <div className="flex items-center justify-between px-4 pt-5 pb-3">
+                <button onClick={() => navigate(-1)} className="w-9 h-9 flex items-center justify-center">
+                    <ChevronLeft size={26} color={PINK} />
                 </button>
-                <h1 className="font-bold text-[18px] text-[#1f2937]">New Booking Requests</h1>
+                <p className="font-bold text-[17px] text-gray-900">New Booking Requests</p>
+                {/* Avatar + badge */}
                 <div className="relative">
-                    <div className="w-[42px] h-[42px] rounded-full overflow-hidden bg-gray-100 border-2 border-white shadow-sm ring-1 ring-pink-100">
-                        <img src="https://i.pravatar.cc/150?u=salon_admin_f" className="w-full h-full object-cover" alt="avatar" />
-                    </div>
-                    <div className="absolute -top-[1px] -right-[1px] w-[20px] h-[20px] rounded-full flex items-center justify-center bg-[#f43f5e] border-2 border-[#fff1f2]">
-                        <span className="text-white text-[10px] font-bold">3</span>
+                    <img src="https://i.pravatar.cc/150?img=11" alt="avatar" className="w-10 h-10 rounded-full object-cover" />
+                    <div className="absolute -top-0.5 -right-0.5 w-[17px] h-[17px] rounded-full flex items-center justify-center border-2"
+                        style={{ backgroundColor: PINK, borderColor: BG }}>
+                        <span className="text-white text-[9px] font-bold">3</span>
                     </div>
                 </div>
             </div>
 
-            {/* ── Service Type Toggle (Matches Image 1) ── */}
-            <div className="px-4 mb-5">
-                <div className="bg-white p-1.5 rounded-[22px] flex gap-1 shadow-sm border border-[#fff1f2]">
-                    <button 
-                        onClick={() => setServiceType('salon')}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-[18px] text-[14px] font-bold transition-all ${serviceType === 'salon' ? 'bg-[#fff1f2] text-pink-500 shadow-inner' : 'text-gray-400'}`}
-                    >
-                        <span className="text-base">?</span> Salon Visit
-                    </button>
-                    <button 
-                        onClick={() => setServiceType('home')}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-[18px] text-[14px] font-bold transition-all ${serviceType === 'home' ? 'bg-[#fff1f2] text-pink-500 shadow-inner' : 'text-gray-400'}`}
-                    >
-                        <Home size={18} /> Home Service
-                    </button>
-                </div>
-            </div>
+            {/* ── Service Type Toggle ── */}
+            <TypeToggle value={bookingType} onChange={setBookingType} />
 
-            {/* ── Status Banner (Matches Image 1) ── */}
-            <div className="bg-white rounded-[22px] px-6 py-4 mx-4 mb-6 flex items-center gap-3 shadow-sm border border-[#fef2f2]">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center border-2 border-amber-50">
-                    <Clock size={20} className="text-amber-500" />
+            {/* ── Pending Count Card (Simple style matching new image) ── */}
+            <div className="mx-4 mb-5 rounded-2xl px-5 py-3 flex items-center bg-white shadow-sm border border-gray-100 gap-2">
+                <div className="w-6 h-6 flex items-center justify-center">
+                    <Clock size={18} color="#f59e0b" />
                 </div>
-                <p className="text-[17px] font-bold text-gray-700 flex items-baseline gap-2">
-                    <span className="text-[18px] text-gray-900">3</span>
-                    <span className="text-gray-500 font-medium">Pending Requests</span>
+                <p className="text-[15px] font-medium text-gray-700">
+                     <span className="font-extrabold text-gray-900">{pendingCount}</span> Pending Requests
                 </p>
             </div>
 
-            {/* ── Status Tabs — Pill Style (Matches Image 1) ── */}
-            <div className="flex gap-2.5 px-4 mb-6 overflow-x-auto no-scrollbar pb-1">
-                {STATUS_TABS.map(tab => {
+            {/* ── Status Tabs — Pill Style ── */}
+            <div className="flex px-4 mb-6 gap-2 overflow-x-auto scrollbar-hide py-1">
+                {STATUS_TABS.map((tab) => {
                     const active = activeTab === tab;
                     return (
-                        <button
-                            key={tab}
-                            onClick={() => setActiveTab(tab)}
-                            className={`px-6 py-2.5 rounded-full font-bold text-[15px] transition-all whitespace-nowrap ${
-                                active 
-                                ? 'bg-rose-500 text-white shadow-lg shadow-rose-200' 
-                                : 'bg-white text-gray-400 border border-gray-50 shadow-sm'
-                            }`}
-                        >
+                        <button key={tab} onClick={() => setActiveTab(tab)}
+                            className={`px-5 py-2 rounded-full text-[14px] font-bold transition-all whitespace-nowrap`}
+                            style={active
+                                ? { backgroundColor: "#fb7185", color: "#fff", boxShadow: "0 2px 8px rgba(251, 113, 133, 0.4)" }
+                                : { backgroundColor: "#fff", color: "#9ca3af", border: "1px solid #e5e7eb" }}>
                             {tab}
                         </button>
                     );
@@ -264,17 +212,17 @@ const SalonBookingsPage = () => {
             </div>
 
             {/* ── Booking List ── */}
-            <div className="px-4 space-y-1">
+            <div className="px-4">
                 {filtered.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-24 text-center bg-white/40 rounded-[40px] border-2 border-dashed border-pink-100/50 mx-4">
-                        <div className="w-[84px] h-[84px] rounded-[32px] bg-pink-50/50 flex items-center justify-center mb-5 rotate-12">
-                            <Calendar size={38} className="text-[#f48fb1]" />
+                    <div className="flex flex-col items-center justify-center mt-20 gap-3">
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: "#fce7f3" }}>
+                            <Calendar size={28} color="#f48fb1" />
                         </div>
-                        <h3 className="text-[18px] font-black text-slate-800">No active bookings</h3>
-                        <p className="text-[14px] text-slate-400 mt-2 font-medium px-10">Nothing in "{activeTab}" filter for today.</p>
+                        <p className="font-bold text-[16px] text-gray-700">No bookings here</p>
+                        <p className="text-[13px] text-gray-400">Nothing in "{activeTab}" yet</p>
                     </div>
                 ) : (
-                    filtered.map(booking => (
+                    filtered.map((booking) => (
                         <BookingCard
                             key={booking.id}
                             booking={booking}
@@ -289,7 +237,6 @@ const SalonBookingsPage = () => {
             <MobileBottomNav />
         </div>
     );
-};
+}
 
 export default SalonBookingsPage;
-

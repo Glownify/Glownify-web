@@ -26,10 +26,6 @@ import SuperAdminProfilePage from "../pages/SuperAdmin/SuperAdminProfilePage";
 import SalesExecutiveDashboard from "./../pages/SalesExecutive/SalesExecutiveDashboard";
 import ManageSalesman from "./../pages/SalesExecutive/ManageSalesman";
 import SalesExecutiveProfilePage from "../pages/SalesExecutive/SalesExecutiveProfilePage";
-import LeadPipeline from "../pages/SalesExecutive/LeadPipeline";
-import MyCommissions from "../pages/SalesExecutive/MyCommissions";
-import SalesReportPage from "../pages/SalesExecutive/SalesReportPage";
-import MyTargetsPage from "../pages/SalesExecutive/MyTargetsPage";
 
 // ─── Protected Layouts ───────────────────────────────────────────────────────
 import SalonOwnerLayout from "../components/layout/SalonOwnerLayout";
@@ -40,26 +36,21 @@ import SalonOwnerDashboard from "../pages/SalonOwner/SalonOwnerDashboard";
 import ManageServicesPage from "../pages/SalonOwner/ManageServicesPage";
 import ManageSpecialistsPage from "../pages/SalonOwner/ManageSpecialistsPage";
 import ManageAnalyticsPage from "../pages/SalonOwner/ManageAnalyticsPage";
+import ManageBookingsPage from "../pages/SalonOwner/ManageBookingsPage";
 import AIHairstyleScannerPage from "../pages/SalonOwner/AIHairstyleScannerPage";
 import AIPosterCreatorPage from "../pages/SalonOwner/AIPosterCreatorPage";
 import SalonOwnerProfilePage from "../pages/SalonOwner/SalonOwnerProfilePage";
 import ManageAddOnPage from "../pages/SalonOwner/ManageAddOnPage";
 import SubscriptionPage from "../pages/SalonOwner/SubscriptionPage";
-import SalonBookingsPage from "../pages/SalonOwner/SalonBookingsPage";
-import BookingDetailPage from "../pages/SalonOwner/BookingDetailPage";
-import BillingDetailPage from "../pages/SalonOwner/BillingDetailPage";
+import SalonBookingsPage from "../pages/SalonOwner/Mobile/SalonBookingsPage";
+import BookingDetailPage from "../pages/SalonOwner/Mobile/BookingDetailPage";
+import BillingDetailPage from "../pages/SalonOwner/Mobile/BillingDetailPage";
 import MobileManageCategoriesScreen from "../pages/SalonOwner/Mobile/MobileManageCategoriesScreen";
 import MobileComboPackagesScreen from "../pages/SalonOwner/Mobile/MobileComboPackagesScreen";
 import MobileSalonNotificationsScreen from "../pages/SalonOwner/Mobile/MobileSalonNotificationsScreen";
 import MobileMyViewScreen from "../pages/SalonOwner/Mobile/MobileMyViewScreen";
-import MobileAddServiceScreen from "../pages/SalonOwner/Mobile/MobileAddServiceScreen";
 import SalonReportsPage from "../pages/SalonOwner/SalonReportsPage";
-import SalonMyViewPage from "../pages/SalonOwner/SalonMyViewPage";
-import SalonCategoriesPage from "../pages/SalonOwner/ManageCategoriesPage";
-import ComboPackagesPage from "../pages/SalonOwner/ComboPackagesPage";
-import SalonNotificationsPage from "../pages/SalonOwner/SalonNotificationsPage";
 
-import MarketingSuitePage from "../pages/SalonOwner/MarketingSuitePage";
 // ─── Salesman Pages ────────────────────────────────────────────────────────────
 import SalesmanDashboard from "../pages/Salesman/SalesmanDashboard";
 import MySaloonsPage from "../pages/Salesman/MySaloonsPage";
@@ -105,7 +96,6 @@ import AboutPage from "../pages/Common/AboutPage";
 import ContactPage from "../pages/Common/ContactPage";
 import CartPage from "../pages/User/CartPage";
 import BookingSuccessPage from "../pages/User/BookingSuccessPage";
-import HomeServicesPage from "../pages/User/HomeServicesPage";
 import BookSubscriptionPage from "../pages/BookSubscriptionPage";
 import PaymentSubscriptionPage from "../pages/PaymentSubscriptionPage";
 
@@ -125,7 +115,6 @@ const AllRoutes = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/salons" element={<SalonsPage />} />
-            <Route path="/home-services" element={<HomeServicesPage />} />
             <Route path="/offers" element={<OffersPage />} />
             <Route path="/bookings" element={<MobileBookingsPage />} />
             <Route path="/profile" element={<MobileProfilePage />} />
@@ -137,7 +126,7 @@ const AllRoutes = () => {
             <Route path="/independentprofessionaldetailspage" element={<IndependentProfessionalDetailPage />} />
             <Route path="/salondetailPageforhome/:id" element={<SalonDetailPageForHome />} />
             <Route path="/salon/:id" element={<HomeSaloonsDetails />}>
-              <Route index element={<Navigate to="services" replace />} />
+              <Route index element={<SalonServices />} />
               <Route path="services" element={<SalonServices />} />
               <Route path="gallery" element={<SalonGallery />} />
               <Route path="map" element={<SalonMap />} />
@@ -180,10 +169,6 @@ const AllRoutes = () => {
             <Route index element={<SalesExecutiveDashboard />} />
             <Route path="dashboard" element={<SalesExecutiveDashboard />} />
             <Route path="manage-salesman" element={<ManageSalesman />} />
-            <Route path="lead-pipeline" element={<LeadPipeline />} />
-            <Route path="my-targets" element={<MyTargetsPage />} />
-            <Route path="my-commissions" element={<MyCommissions />} />
-            <Route path="reports" element={<SalesReportPage />} />
             <Route path="profile" element={<SalesExecutiveProfilePage />} />
           </Route>
 
@@ -194,8 +179,7 @@ const AllRoutes = () => {
             <Route path="manage-services" element={<ManageServicesPage />} />
             <Route path="manage-specialists" element={<ManageSpecialistsPage />} />
             <Route path="manage-analytics" element={<ManageAnalyticsPage />} />
-            <Route path="manage-bookings" element={<SalonBookingsPage />} />
-            <Route path="marketing" element={<MarketingSuitePage />} />
+            <Route path="manage-bookings" element={<ManageBookingsPage />} />
             <Route path="ai-poster-creator" element={<AIPosterCreatorPage />} />
             <Route path="ai-hairstyle-scanner" element={<AIHairstyleScannerPage />} />
             <Route path="manage-add-ons" element={<ManageAddOnPage />} />
@@ -203,12 +187,11 @@ const AllRoutes = () => {
             <Route path="bookings" element={<SalonBookingsPage />} />
             <Route path="booking-detail" element={<BookingDetailPage />} />
             <Route path="create-bill" element={<BillingDetailPage />} />
-            <Route path="manage-categories" element={<SalonCategoriesPage />} />
-            <Route path="combo-packages" element={<ComboPackagesPage />} />
-            <Route path="notifications" element={<SalonNotificationsPage />} />
-            <Route path="my-view" element={<SalonMyViewPage />} />
+            <Route path="manage-categories-mobile" element={<MobileManageCategoriesScreen />} />
+            <Route path="combo-packages" element={<MobileComboPackagesScreen />} />
+            <Route path="notifications" element={<MobileSalonNotificationsScreen />} />
+            <Route path="my-view" element={<MobileMyViewScreen />} />
             <Route path="reports" element={<SalonReportsPage />} />
-            <Route path="manage-services-mobile" element={<MobileAddServiceScreen />} />
           </Route>
           <Route path="subscription" element={<SubscriptionPage />} />
 

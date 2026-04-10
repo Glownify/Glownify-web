@@ -3,18 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllSubscriptions } from "../../redux/slice/saloonownerSlice";
 import { useNavigate } from "react-router-dom";
 
-const DUMMY_SUBSCRIPTIONS = [
-  { _id: "s1", name: "Starter Tier", price: 999, durationInDays: 30, features: ["Up to 5 Specialists", "Digital Menu Pricing", "Basic Analytics", "Booking Management"] },
-  { _id: "s2", name: "Professional", price: 2499, durationInDays: 90, features: ["Unlimited Specialists", "Custom AI Posters", "Advanced Analytics", "Marketing Suite Access", "Priority Support"] },
-  { _id: "s3", name: "Elite Atelier", price: 4999, durationInDays: 180, features: ["All Professional Features", "White-labeled Booking", "Business Strategy Consultation", "VIP Listing Badge"] },
-];
-
 const SubscriptionPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { subscriptions: reduxSubscriptions = [] } = useSelector((state) => state.saloonowner);
-  const subscriptions = reduxSubscriptions.length > 0 ? reduxSubscriptions : DUMMY_SUBSCRIPTIONS;
+  const { subscriptions } = useSelector((state) => state.saloonowner);
   const [selectedPlan, setSelectedPlan] = useState(null);
 
   useEffect(() => {

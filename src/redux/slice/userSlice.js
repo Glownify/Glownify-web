@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { handleAxiosError } from "../../utils/HandleErrors";
-import { getNearbySalons } from "../../api/salonApi";
+import { getNearbySalons, getSalonById, getSalonReviews } from "../../api/salonApi";
 
 
 
@@ -144,19 +144,40 @@ export const fetchAllFeaturedSaloons = createAsyncThunk(
 
 export const getSaloonDetailsById = createAsyncThunk(
   "user/getSaloonDetailsById",
-  async (saloonId, thunkAPI) => {
+  async ({ salonId, lat, lng }, thunkAPI) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/get-salon/${saloonId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      const data = response.data;
-      if (response.status !== 200) {
-        return handleAxiosError(error, thunkAPI);
-      }
-      return data.data;
+      const data = await getSalonById({ salonId, lat, lng });
+      const s = data.salon;
+
+      // Normalize API fields to match UI field names used throughout the component
+      const firstHours = s.openingHours?.[0];
+      return {
+        ...s,
+        homeService: s.offersHomeService ?? false,
+        aboutUs: s.about || "",
+        isOpen: s.isOpenNow ?? false,
+        hours: firstHours ? `${firstHours.start} - ${firstHours.end}` : null,
+        distance: s.distanceInMeters
+          ? (s.distanceInMeters / 1000).toFixed(1)
+          : null,
+        coverImage: s.galleryImages?.[0] || null,
+        rating: null,        // comes from reviews API
+        reviewCount: null,   // comes from reviews API
+      };
+    } catch (error) {
+      return handleAxiosError(error, thunkAPI);
+    }
+  }
+);
+
+// ─── New: Fetch salon reviews + rating summary ──────────────────────────────
+export const fetchSalonReviews = createAsyncThunk(
+  "user/fetchSalonReviews",
+  async ({ salonId, page = 1, limit = 5 }, thunkAPI) => {
+    try {
+      const data = await getSalonReviews({ salonId, page, limit });
+      // data = { success, page, totalPages, count, summary: { avgRating, totalReviews }, reviews }
+      return data;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -240,13 +261,11 @@ export const fetchAllCitiesByStateId = createAsyncThunk(
   }
 );
 
-export const fetchServiceItemByCategory = createAsyncThunk(
-  "user/fetchServiceItemByCategory",
-  async ({ salonId, categoryId }, thunkAPI) => {
-    console.log("Fetching Service Items for Salon ID:", salonId, "Category ID:", categoryId);
+export const fetchSalonServiceCategories = createAsyncThunk(
+  "user/fetchSalonServiceCategories",
+  async (salonId, thunkAPI) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/get-serviceItems-by-category/${salonId}/${categoryId}`, {
-
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/categories/salon/${salonId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -256,7 +275,30 @@ export const fetchServiceItemByCategory = createAsyncThunk(
       if (response.status !== 200) {
         return handleAxiosError(error, thunkAPI);
       }
-      return data.services;
+      return data.data; // Array of categories
+    } catch (error) {
+      return handleAxiosError(error, thunkAPI);
+    }
+  }
+);
+
+export const fetchSalonServiceItems = createAsyncThunk(
+  "user/fetchSalonServiceItems",
+  async ({ salonId, categoryId, serviceMode }, thunkAPI) => {
+    // console.log("Fetching Service Items for Salon ID:", salonId, "Category ID:", categoryId, "Mode:", serviceMode);
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/service-items/salon/${salonId}`, {
+        params: { serviceCategoryId: categoryId, serviceMode },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = response.data;
+      if (response.status !== 200) {
+        return handleAxiosError(error, thunkAPI);
+      }
+      return data.data; // data.data contains the array of services (formattedServices from backend)
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -349,14 +391,12 @@ const userSlice = createSlice({
     homeLoading: false,
     lat: null,
     lng: null,
-    unisexSalons: [], // ✅ NEW
+    unisexSalons: [],
     unisexLoading: false,
 
-    // ✅ NEW
     page: 1,
     totalPages: 1,
     hasMore: true,
-
 
     featuredSalons: [],
     homeSaloonsByCategory: [],
@@ -369,7 +409,18 @@ const userSlice = createSlice({
     selectedCategory: "women",
     serviceItems: [],
     loading: false,
+    detailsLoading: false,
+    servicesLoading: false,
     error: null,
+
+    // ─── Categories specific to a salon ──────────────────────────────────
+    salonCategories: [],
+    salonCategoriesLoading: false,
+
+    // ─── Reviews ───────────────────────────────────────────────────────────
+    salonReviews: [],           // array of review objects
+    reviewSummary: null,        // { avgRating, totalReviews }
+    reviewsLoading: false,
   },
   reducers: {
     setSelectedCategory: (state, action) => {
@@ -463,15 +514,15 @@ const userSlice = createSlice({
 
 
       .addCase(getSaloonDetailsById.pending, (state) => {
-        state.loading = true;
+        state.detailsLoading = true;
         state.error = null;
       })
       .addCase(getSaloonDetailsById.fulfilled, (state, action) => {
-        state.loading = false;
+        state.detailsLoading = false;
         state.saloonDetails = action.payload;
       })
       .addCase(getSaloonDetailsById.rejected, (state, action) => {
-        state.loading = false;
+        state.detailsLoading = false;
         state.error = action.payload?.message || "Failed to fetch salon details";
       })
       .addCase(fetchAllSalonsByCategory.pending, (state) => {
@@ -510,18 +561,42 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(fetchServiceItemByCategory.pending, (state) => {
-        state.loading = true;
+      .addCase(fetchSalonServiceItems.pending, (state) => {
+        state.servicesLoading = true;
         state.error = null;
       })
-      .addCase(fetchServiceItemByCategory.fulfilled, (state, action) => {
-        state.loading = false;
+      .addCase(fetchSalonServiceItems.fulfilled, (state, action) => {
+        state.servicesLoading = false;
         state.serviceItems = action.payload;
       })
-      .addCase(fetchServiceItemByCategory.rejected, (state, action) => {
-        state.loading = false;
+      .addCase(fetchSalonServiceItems.rejected, (state, action) => {
+        state.servicesLoading = false;
         state.error = action.payload;
       })
+      // ─── fetchSalonServiceCategories ─────────────────────────────────────
+      .addCase(fetchSalonServiceCategories.pending, (state) => {
+        state.salonCategoriesLoading = true;
+      })
+      .addCase(fetchSalonServiceCategories.fulfilled, (state, action) => {
+        state.salonCategoriesLoading = false;
+        state.salonCategories = action.payload || [];
+      })
+      .addCase(fetchSalonServiceCategories.rejected, (state) => {
+        state.salonCategoriesLoading = false;
+      })
+      // ─── fetchSalonReviews ───────────────────────────────────────────────
+      .addCase(fetchSalonReviews.pending, (state) => {
+        state.reviewsLoading = true;
+      })
+      .addCase(fetchSalonReviews.fulfilled, (state, action) => {
+        state.reviewsLoading = false;
+        state.salonReviews = action.payload.reviews || [];
+        state.reviewSummary = action.payload.summary || null;
+      })
+      .addCase(fetchSalonReviews.rejected, (state) => {
+        state.reviewsLoading = false;
+      })
+
       .addCase(createBooking.pending, (state) => {
         state.loading = true;
         state.error = null;

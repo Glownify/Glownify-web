@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchServiceItemByCategory } from "../../../../redux/slice/userSlice";
+import { fetchSalonServiceItems } from "../../../../redux/slice/userSlice";
 import { useOutletContext, useNavigate, useParams } from "react-router-dom";
 import {
   Clock,
@@ -16,25 +16,8 @@ import {
   updateServiceMode,
 } from "../../../../utils/CartStorage";
 
-// Placeholder images for service categories
-const SERVICE_IMAGES = {
-  hair: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=200&h=200&fit=crop&crop=face",
-  facial: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=200&h=200&fit=crop&crop=face",
-  wax: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=200&h=200&fit=crop&crop=face",
-  makeup: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=200&h=200&fit=crop&crop=face",
-  nail: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=200&h=200&fit=crop&crop=face",
-  spa: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=200&h=200&fit=crop&crop=face",
-  beard: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=200&h=200&fit=crop&crop=face",
-  color: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=200&h=200&fit=crop&crop=face",
-};
-
-const getServiceImage = (name) => {
-  const lower = name?.toLowerCase() || "";
-  for (const [key, url] of Object.entries(SERVICE_IMAGES)) {
-    if (lower.includes(key)) return url;
-  }
-  return SERVICE_IMAGES.hair;
-};
+// Placeholder image for services
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500&h=500&fit=crop";
 
 const formatDuration = (mins) => {
   if (!mins) return "45 min";
@@ -44,32 +27,7 @@ const formatDuration = (mins) => {
   return m > 0 ? `${h} hour ${m} min` : `${h} hour`;
 };
 
-// ─── Fallback demo services for placeholder salons ───
-const DEMO_SERVICES = {
-  "cat-1": [ // Hair
-    { _id: "demo-h1", name: "Hair Cut & Style", price: 299, durationMins: 45, serviceMode: "both", homeServiceCharge: 50 },
-    { _id: "demo-h2", name: "Hair Spa Treatment", price: 799, durationMins: 60, serviceMode: "both", homeServiceCharge: 80 },
-    { _id: "demo-h3", name: "Hair Coloring", price: 1499, durationMins: 90, serviceMode: "salon", homeServiceCharge: 0 },
-    { _id: "demo-h4", name: "Hair Straightening", price: 2499, durationMins: 120, serviceMode: "salon", homeServiceCharge: 0 },
-  ],
-  "cat-2": [ // Facial
-    { _id: "demo-f1", name: "Facial Treatment", price: 950, durationMins: 45, serviceMode: "both", homeServiceCharge: 60 },
-    { _id: "demo-f2", name: "Clean Up", price: 600, durationMins: 30, serviceMode: "both", homeServiceCharge: 40, tag: "STEALDEAL" },
-    { _id: "demo-f3", name: "Diamond Facial", price: 1499, durationMins: 75, serviceMode: "both", homeServiceCharge: 100 },
-  ],
-  "cat-3": [ // Wax
-    { _id: "demo-w1", name: "Full Arms Waxing", price: 400, durationMins: 20, serviceMode: "both", homeServiceCharge: 40 },
-    { _id: "demo-w2", name: "Full Legs Waxing", price: 299, durationMins: 40, serviceMode: "both", homeServiceCharge: 50 },
-    { _id: "demo-w3", name: "Full Body Waxing", price: 899, durationMins: 90, serviceMode: "both", homeServiceCharge: 100 },
-  ],
-  "cat-4": [ // Makeup
-    { _id: "demo-m1", name: "Party Makeup", price: 1999, durationMins: 60, serviceMode: "both", homeServiceCharge: 150 },
-    { _id: "demo-m2", name: "Bridal Makeup", price: 4000, durationMins: 120, serviceMode: "both", homeServiceCharge: 200 },
-    { _id: "demo-m3", name: "Engagement Makeup", price: 3499, durationMins: 90, serviceMode: "both", homeServiceCharge: 180 },
-  ],
-};
-
-// Free offer threshold
+// ─── Free offer threshold ───
 const FREE_OFFER_THRESHOLD = 999;
 const FREE_OFFER_NAME = "Nail Polish Service";
 
@@ -81,21 +39,14 @@ const SalonServices = () => {
   // serviceMode comes from the parent toggle ("home" | "salon") in HomeSaloonsDetails
   const { saloonDetails, activeCategory: ctxCategory, setActiveCategory, serviceMode } = useOutletContext();
 
-  // Match all dummy ID formats: home-page placeholders, and SalonsPage dummy IDs (d-w-*, d-m-*)
-  const isPlaceholder =
-    id?.startsWith("placeholder") ||
-    id?.startsWith("d-w-") ||
-    id?.startsWith("d-m-");
-
   const [cartItems, setCartItems] = useState([]);
-  const [demoItems, setDemoItems] = useState([]);
 
   const categories = saloonDetails?.serviceCategories || [];
   const selectedSalonId = saloonDetails?._id;
-  const { serviceItems, loading } = useSelector((state) => state.user);
+  const { serviceItems, servicesLoading } = useSelector((state) => state.user);
 
-  // Use demo items for placeholder salons, real items for real salons
-  const displayItems = isPlaceholder ? demoItems : serviceItems;
+  // Use real items from the selected salon
+  const displayItems = serviceItems;
 
   useEffect(() => {
     if (userId) setCartItems(getCart(userId));
@@ -112,12 +63,10 @@ const SalonServices = () => {
   // Load services whenever activeCategory changes
   useEffect(() => {
     if (!ctxCategory) return;
-    if (isPlaceholder) {
-      setDemoItems(DEMO_SERVICES[ctxCategory] || []);
-    } else if (selectedSalonId) {
-      dispatch(fetchServiceItemByCategory({ salonId: selectedSalonId, categoryId: ctxCategory }));
+    if (selectedSalonId) {
+      dispatch(fetchSalonServiceItems({ salonId: selectedSalonId, categoryId: ctxCategory }));
     }
-  }, [ctxCategory, selectedSalonId, dispatch, isPlaceholder]);
+  }, [ctxCategory, selectedSalonId, dispatch]);
 
   // Called when user taps "+Add" or the "+" stepper button.
   // Respects the current toggle (serviceMode) for the booking mode.
@@ -170,7 +119,7 @@ const SalonServices = () => {
   const offerProgress = Math.min(1, cartTotal / FREE_OFFER_THRESHOLD);
   const offerUnlocked = cartTotal >= FREE_OFFER_THRESHOLD;
 
-  const isLoading = loading && !isPlaceholder;
+  const isLoading = servicesLoading;
 
   return (
     <div className="w-full min-h-[400px] relative pb-24">
@@ -203,7 +152,7 @@ const SalonServices = () => {
                     {/* Service Thumbnail */}
                     <div className="w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden shrink-0 shadow-sm bg-gray-100">
                       <img
-                        src={getServiceImage(service.name)}
+                        src={service.imageURL || DEFAULT_IMAGE}
                         alt={service.name}
                         className="w-full h-full object-cover"
                       />

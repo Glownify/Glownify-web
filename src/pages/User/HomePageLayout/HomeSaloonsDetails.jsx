@@ -1,165 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, Outlet, useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getSaloonDetailsById } from "../../../redux/slice/userSlice";
+import { getSaloonDetailsById, fetchSalonReviews, fetchSalonServiceItems, fetchSalonServiceCategories } from "../../../redux/slice/userSlice";
 import { addToCart, removeFromCart, getCart } from "../../../utils/CartStorage";
 import {
   ArrowLeft, Heart, Star, MapPin, ChevronDown, ChevronUp,
   Sparkles, Clock, ShoppingCart, ChevronRight, Plus, Minus, Search, SlidersHorizontal, X,
 } from "lucide-react";
-import salonImgLocal from "../../../assets/salon.png";
-import haircutImgLocal from "../../../assets/haircut.png";
-import facialImgLocal from "../../../assets/facial.png";
-import makeupImgLocal from "../../../assets/makeup.png";
+// import salonImgLocal from "../../../assets/salon.png";
+// import haircutImgLocal from "../../../assets/haircut.png";
+// import facialImgLocal from "../../../assets/facial.png";
+// import makeupImgLocal from "../../../assets/makeup.png";
 
-// ─── Fallback Data ─────────────────────────────────────────────────────────────
-// Used for placeholder/demo salon IDs (e.g. when navigating from home page cards).
+// --- IMAGE MAPPING HELPERS ---
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500&h=500&fit=crop";
 
-const FALLBACK_SALON = {
-  _id: "demo",
-  shopName: "Glamour Beauty Salon",
-  tagline: "Elegant & Luxurious Beauty Services",
-  hours: "10:00 AM - 8:00 PM",
-  isOpen: true,
-  coverImage:
-    "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop",
-  galleryImages: [
-    salonImgLocal,
-    haircutImgLocal,
-    facialImgLocal,
-    makeupImgLocal,
-    salonImgLocal,
-    haircutImgLocal,
-  ],
-  location: {
-    address: "Anand Nagar",
-    city: "Pune",
-    state: "Maharashtra",
-    pincode: "411001",
-  },
-  aboutUs: "We offer a wide range of premium beauty services in a relaxing and luxurious environment. Our expert stylists and beauticians are dedicated to making you look and feel your best.",
-  homeService: true,
-  rating: "4.8",
-  reviewCount: "120",
-  distance: "2.5",
-  serviceCategories: [
-    { _id: "cat-1", name: "Hair" },
-    { _id: "cat-2", name: "Facial" },
-    { _id: "cat-3", name: "Wax" },
-    { _id: "cat-4", name: "Makeup" },
-  ],
-  specialistsData: [],
-};
-
-// ─── Category Image Mapping ────────────────────────────────────────────────────
-// Maps category keywords to representative Unsplash images.
-
-const CATEGORY_IMAGES = {
-  hair: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=200&h=200&fit=crop&crop=face",
-  facial: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=200&h=200&fit=crop&crop=face",
-  wax: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=200&h=200&fit=crop&crop=face",
-  makeup: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=200&h=200&fit=crop&crop=face",
-  nail: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=200&h=200&fit=crop&crop=face",
-  spa: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=200&h=200&fit=crop&crop=face",
-  beard: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=200&h=200&fit=crop&crop=face",
-};
-
-// ─── Service Image Mapping (for mobile service thumbnails) ──────────────────────
-const SERVICE_IMAGES = {
-  hair: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=200&h=200&fit=crop&crop=face",
-  facial: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=200&h=200&fit=crop&crop=face",
-  wax: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=200&h=200&fit=crop&crop=face",
-  makeup: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=200&h=200&fit=crop&crop=face",
-  nail: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=200&h=200&fit=crop&crop=face",
-  spa: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=200&h=200&fit=crop&crop=face",
-  cut: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=200&h=200&fit=crop",
-};
-const getServiceImage = (name) => {
-  const lower = name?.toLowerCase() || "";
-  for (const [key, url] of Object.entries(SERVICE_IMAGES)) {
-    if (lower.includes(key)) return url;
-  }
-  return SERVICE_IMAGES.hair;
-};
 const formatDuration = (mins) => {
   if (!mins) return "45 min";
   if (mins < 60) return `${mins} min`;
   const h = Math.floor(mins / 60), m = mins % 60;
   return m > 0 ? `${h} hour ${m} min` : `${h} hour`;
-};
-
-// ─── Mobile Demo Services (matches React Native app DUMMY_SERVICES) ──────────────
-const MOBILE_DEMO_SERVICES = {
-  "cat-1": [
-    { _id: "m-h1", name: "Haircut & Styling", duration: "30 mins", salonPrice: 600, homePrice: 700, serviceMode: "both", badge: null },
-    { _id: "m-h2", name: "Hair Spa", duration: "40 mins", salonPrice: 700, homePrice: 850, serviceMode: "both", badge: null },
-    { _id: "m-h3", name: "Hair Coloring", duration: "1 hour", salonPrice: 1200, homePrice: null, serviceMode: "salon", badge: "Opt." },
-  ],
-  "cat-2": [
-    { _id: "m-f1", name: "Facial Treatment", duration: "45 mins", salonPrice: 800, homePrice: 950, serviceMode: "both", badge: null },
-    { _id: "m-f2", name: "Clean Up", duration: "30 mins", salonPrice: 500, homePrice: 600, serviceMode: "both", badge: "*STEALDEAL" },
-  ],
-  "cat-3": [
-    { _id: "m-w1", name: "Full Arms Waxing", duration: "20 mins", salonPrice: 300, homePrice: 400, serviceMode: "both", badge: null },
-    { _id: "m-w2", name: "Full Legs Waxing", duration: "40 mins", salonPrice: 299, homePrice: 380, serviceMode: "both", badge: null },
-  ],
-  "cat-4": [
-    { _id: "m-m1", name: "Bridal Makeup", duration: "2 hours", salonPrice: 3500, homePrice: 4000, serviceMode: "both", badge: null },
-    { _id: "m-m2", name: "Party Makeup", duration: "1 hour", salonPrice: 1999, homePrice: 2200, serviceMode: "both", badge: null },
-  ],
-};
-
-// ─── Sub-service options (shown in bottom sheet when Add is tapped) ───────────
-// Keyed by parent service _id. Each sub-service has its own price, duration, image.
-const SUB_SERVICES = {
-  "m-h1": [
-    { _id: "m-h1-a", name: "Women Cut", duration: "20 mins", price: 250, image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=200&h=200&fit=crop&crop=face" },
-    { _id: "m-h1-b", name: "Men Cut", duration: "15 mins", price: 200, image: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=200&h=200&fit=crop&crop=face" },
-    { _id: "m-h1-c", name: "Blow Dry", duration: "20 mins", price: 300, image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=200&h=200&fit=crop" },
-    { _id: "m-h1-d", name: "Trim & Style", duration: "15 mins", price: 150, image: null },
-  ],
-  "m-h2": [
-    { _id: "m-h2-a", name: "Spa Treatment", duration: "30 mins", price: 400, image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=200&h=200&fit=crop" },
-    { _id: "m-h2-b", name: "Deep Conditioning", duration: "20 mins", price: 350, image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=200&h=200&fit=crop&crop=face" },
-  ],
-  "m-f1": [
-    { _id: "m-f1-a", name: "Basic Facial", duration: "30 mins", price: 500, image: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=200&h=200&fit=crop&crop=face" },
-    { _id: "m-f1-b", name: "Gold Facial", duration: "45 mins", price: 800, image: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=200&h=200&fit=crop" },
-    { _id: "m-f1-c", name: "Anti-Ageing Facial", duration: "60 mins", price: 1200, image: "https://images.unsplash.com/photo-1591343395082-e120087004b4?w=200&h=200&fit=crop" },
-  ],
-  "m-f2": [
-    { _id: "m-f2-a", name: "Normal Clean Up", duration: "20 mins", price: 300, image: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=200&h=200&fit=crop" },
-    { _id: "m-f2-b", name: "D-Tan Clean Up", duration: "30 mins", price: 400, image: "https://images.unsplash.com/photo-1591343395082-e120087004b4?w=200&h=200&fit=crop" },
-  ],
-  "m-w1": [
-    { _id: "m-w1-a", name: "Half Arms", duration: "10 mins", price: 150, image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=200&h=200&fit=crop" },
-    { _id: "m-w1-b", name: "Full Arms", duration: "20 mins", price: 300, image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=200&h=200&fit=crop" },
-  ],
-  "m-w2": [
-    { _id: "m-w2-a", name: "Half Legs", duration: "20 mins", price: 199, image: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=200&h=200&fit=crop" },
-    { _id: "m-w2-b", name: "Full Legs", duration: "40 mins", price: 299, image: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=200&h=200&fit=crop" },
-  ],
-  "m-m1": [
-    { _id: "m-m1-a", name: "Bridal (Basic)", duration: "90 mins", price: 2500, image: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=200&h=200&fit=crop" },
-    { _id: "m-m1-b", name: "Bridal (Premium)", duration: "2 hours", price: 4000, image: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=200&h=200&fit=crop" },
-  ],
-  "m-m2": [
-    { _id: "m-m2-a", name: "Day Makeup", duration: "45 mins", price: 999, image: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=200&h=200&fit=crop" },
-    { _id: "m-m2-b", name: "Party Makeup", duration: "1 hour", price: 1499, image: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=200&h=200&fit=crop" },
-    { _id: "m-m2-c", name: "HD Makeup", duration: "75 mins", price: 1999, image: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=200&h=200&fit=crop" },
-  ],
-};
-
-/**
- * Returns the best-matching image URL for a given service category name.
- * Falls back to the hair image if no keyword match is found.
- */
-const getCategoryImage = (name) => {
-  const lower = name?.toLowerCase() || "";
-  for (const [key, url] of Object.entries(CATEGORY_IMAGES)) {
-    if (lower.includes(key)) return url;
-  }
-  return CATEGORY_IMAGES.hair;
 };
 
 // ─── Shared Horizontal Padding ─────────────────────────────────────────────────
@@ -188,7 +48,7 @@ const HomeSaloonsDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { saloonDetails, loading, serviceItems } = useSelector(
+  const { saloonDetails, detailsLoading, serviceItems, salonCategories } = useSelector(
     (state) => state.user
   );
 
@@ -207,34 +67,56 @@ const HomeSaloonsDetails = () => {
   // Auth user id (needed for CartStorage)
   const userId = useSelector((state) => state?.auth?.user?._id);
 
-  // Treat any dummy/demo ID as a placeholder — no real API call needed.
-  // "placeholder" prefix = home page cards; "d-w-" / "d-m-" = dummy salon IDs from SalonsPage.
-  const isPlaceholder =
-    id?.startsWith("placeholder") ||
-    id?.startsWith("d-w-") ||
-    id?.startsWith("d-m-");
+  // Lat/Lng from Redux (needed for distance calc in salon details API)
+  const lat = useSelector((state) => state.user.lat);
+  const lng = useSelector((state) => state.user.lng);
+
+  // Reviews from Redux
+  const salonReviews = useSelector((state) => state.user.salonReviews);
+  const reviewSummary = useSelector((state) => state.user.reviewSummary);
 
   // ── Fetch salon data ──────────────────────────────────────
   useEffect(() => {
-    if (id && !isPlaceholder) {
-      dispatch(getSaloonDetailsById(id));
+    if (id) {
+      dispatch(getSaloonDetailsById({ salonId: id, lat, lng }));
+      dispatch(fetchSalonReviews({ salonId: id }));
+      dispatch(fetchSalonServiceCategories(id));
     }
-  }, [dispatch, id, isPlaceholder]);
+  }, [dispatch, id, lat, lng]);
 
-  // Resolve which salon data to display
-  const salon = isPlaceholder ? FALLBACK_SALON : saloonDetails || FALLBACK_SALON;
-  const categories = salon.serviceCategories || [];
-
-  // Auto-select the first available category on load
+  // ── Fetch filtered service items ──────────────────────────
   useEffect(() => {
-    if (categories.length > 0 && !activeCategory) {
-      setActiveCategory(categories[0]._id);
+    // Only fetch if we have a valid category ID (24 characters)
+    const isValidCategory = activeCategory && activeCategory.length === 24;
+
+    if (id && activeCategory && isValidCategory) {
+      dispatch(fetchSalonServiceItems({
+        salonId: id,
+        categoryId: activeCategory,
+        serviceMode
+      }));
     }
-  }, [categories]);
+  }, [dispatch, id, activeCategory, serviceMode]);
+
+  // Resolve salon data
+  const salon = saloonDetails || {};
+  const categories = salonCategories || [];
+
+  // Auto-select the first available category on load or when categories update
+  useEffect(() => {
+    if (categories.length > 0) {
+      // If no category selected OR the current selection is a dummy ID (for safety)
+      const isDummySelected = activeCategory?.toString().startsWith("cat-");
+      if (!activeCategory || isDummySelected) {
+        setActiveCategory(categories[0]._id);
+      }
+    }
+  }, [categories, activeCategory]);
 
   // Load cart from storage on mount / userId change — deduplicate stale data
   useEffect(() => {
     if (!userId) return;
+    const cartKey = `@user_cart_${userId}`;
     let raw = getCart(userId);
     // Deduplicate: if a sub-service (e.g. "m-h1-a") exists, remove the bare
     // parent ID ("m-h1") that may have been added before sub-service sheet existed.
@@ -260,7 +142,7 @@ const HomeSaloonsDetails = () => {
       return { ...salonEntry, services: uniqueServices };
     }).filter((e) => e.services.length > 0);
     // Write deduplicated cart back to localStorage
-    localStorage.setItem(getCartKey(userId), JSON.stringify(raw));
+    localStorage.setItem(cartKey, JSON.stringify(raw));
     setCartItems(raw);
   }, [userId]);
 
@@ -269,19 +151,15 @@ const HomeSaloonsDetails = () => {
   const activeCatName = categories.find((c) => c._id === activeCategory)?.name || "Cat";
 
   // ── Mobile view derived data ──────────────────────────────────
-  // Services for the mobile view (demo for placeholders, API for real salons)
-  const rawMobileServices = isPlaceholder
-    ? (MOBILE_DEMO_SERVICES[activeCategory] || [])
-    : (serviceItems || []).map(s => ({
-      ...s,
-      salonPrice: s.price,
-      homePrice: s.homeServiceCharge ? s.price + s.homeServiceCharge : null,
-      duration: formatDuration(s.durationMins),
-    }));
-  const mobileDisplayServices = rawMobileServices.filter(
-    s => !(serviceMode === "home" && s.serviceMode === "salon")
-  );
-  // Search filter applied over the mode-filtered list
+  // Services for the mobile view (API driven)
+  const rawMobileServices = (serviceItems || []).map(s => ({
+    ...s,
+    duration: formatDuration(s.durationMins),
+  }));
+
+  const mobileDisplayServices = rawMobileServices;
+
+  // Search filter applied over the list
   const filteredMobileServices = serviceSearch
     ? mobileDisplayServices.filter(s => s.name?.toLowerCase().includes(serviceSearch.toLowerCase()))
     : mobileDisplayServices;
@@ -290,7 +168,7 @@ const HomeSaloonsDetails = () => {
   const selectedSalonId = salon?._id;
   const mobileAddToCart = (service) => {
     const resolvedMode = serviceMode === "home" ? "home" : "salon";
-    const price = resolvedMode === "home" && service.homePrice != null ? service.homePrice : service.salonPrice || service.price || 0;
+    const price = service.price || 0;
     const updated = addToCart(userId, salon, { ...service, price }, resolvedMode);
     setCartItems(updated);
   };
@@ -335,19 +213,24 @@ const HomeSaloonsDetails = () => {
   const mobileCartCount = currentSalonCart?.services?.length || 0;
   const mobileCartTotal = currentSalonCart?.services?.reduce((sum, s) => sum + (Number(s.price) || 0), 0) || 0;
 
-  // Reviews fallback for mobile view
-  const mobileReviews = (salon?.reviews?.length > 0 ? salon.reviews : [
-    { id: "1", userName: "Pooja S", userAvatar: "https://i.pravatar.cc/150?img=1", rating: 5, comment: "Great service and very clean!" },
-    { id: "2", userName: "Amit K", userAvatar: "https://i.pravatar.cc/150?img=2", rating: 5, comment: "Loved the facial, will book again!" },
-    { id: "3", userName: "Priya M", userAvatar: "https://i.pravatar.cc/150?img=3", rating: 4, comment: "Amazing experience, staff was very friendly!" },
-  ]);
-  const mobileAvgRating = salon?.rating ||
-    (mobileReviews.reduce((s, r) => s + r.rating, 0) / mobileReviews.length).toFixed(1);
+
+  // Reviews — use real API data
+  const FALLBACK_REVIEWS = [
+    { _id: "1", user: { name: "Pooja S" }, userAvatar: "https://i.pravatar.cc/150?img=1", rating: 5, comment: "Great service and very clean!" },
+    { _id: "2", user: { name: "Amit K" }, userAvatar: "https://i.pravatar.cc/150?img=2", rating: 5, comment: "Loved the facial, will book again!" },
+    { _id: "3", user: { name: "Priya M" }, userAvatar: "https://i.pravatar.cc/150?img=3", rating: 4, comment: "Amazing experience, staff was very friendly!" },
+  ];
+  const mobileReviews = (salonReviews.length > 0 ? salonReviews : FALLBACK_REVIEWS);
+
+  // Rating — from reviewSummary
+  const mobileAvgRating = (reviewSummary?.avgRating?.toFixed(1) || salon?.rating || "–");
+  const mobileReviewCount = (reviewSummary?.totalReviews ?? mobileReviews.length);
+
   const mobileFullStars = Math.floor(Number(mobileAvgRating));
   const salonImages = (salon.galleryImages?.length > 0 ? salon.galleryImages : [salon.coverImage]).filter(Boolean);
 
   // ── Loading State ─────────────────────────────────────────
-  if (loading && !isPlaceholder) {
+  if (detailsLoading) {
     return (
       <div className="flex flex-col justify-center items-center h-screen bg-gradient-to-b from-pink-50 to-white">
         <div className="relative">
@@ -409,8 +292,8 @@ const HomeSaloonsDetails = () => {
           <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
             <div className="flex items-center gap-1 bg-black/40 rounded-xl px-3 py-1.5">
               <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-              <span className="text-white text-xs font-bold">{salon.rating || "4.8"}</span>
-              <span className="text-white/70 text-xs">({salon.reviewCount || "120"})</span>
+              <span className="text-white text-xs font-bold">{mobileAvgRating}</span>
+              <span className="text-white/70 text-xs">({mobileReviewCount})</span>
             </div>
             <div className="flex gap-2">
               <div className="flex items-center bg-black/40 rounded-xl px-3 py-1.5 gap-1">
@@ -475,34 +358,6 @@ const HomeSaloonsDetails = () => {
           )}
         </div>
 
-        {/* 5 — Gallery (commented out for now) */}
-        {/* <div className="mx-4 mt-4">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base font-bold text-gray-900">Gallery</h2>
-            <span className="text-[#EA8491] text-xs font-semibold">{salonImages.length} photos</span>
-          </div>
-          <div className="bg-white rounded-2xl overflow-hidden border border-pink-100" style={{ borderTopWidth: 2, borderTopColor: "#EA8491" }}>
-            <div className="flex gap-1 p-2 pb-1">
-              <div className="relative flex-1 rounded-xl overflow-hidden" style={{ height: 160 }}>
-                <img src={salonImages[0]} alt="featured" className="w-full h-full object-cover" />
-                <span className="absolute top-2 left-2 bg-[#EA8491] text-white text-[10px] font-bold px-2 py-0.5 rounded-md">Featured</span>
-              </div>
-              <div className="flex-1 rounded-xl overflow-hidden" style={{ height: 160 }}>
-                <img src={salonImages[1] || salonImages[0]} alt="gallery" className="w-full h-full object-cover" />
-              </div>
-            </div>
-            {salonImages.length > 2 && (
-              <div className="flex gap-1 px-2 pb-2">
-                {salonImages.slice(2, 5).map((img, i) => (
-                  <div key={i} className="flex-1 rounded-xl overflow-hidden" style={{ height: 90 }}>
-                    <img src={img} alt={`gallery-${i}`} className="w-full h-full object-cover" />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div> */}
-
         {/* 5 — Our Services (category circles) */}
         <div className="mx-4 mt-5">
           <h2 className="text-sm font-bold text-gray-900 mb-3">Our Services</h2>
@@ -512,7 +367,7 @@ const HomeSaloonsDetails = () => {
               return (
                 <button key={cat._id} onClick={() => setActiveCategory(cat._id)} className="flex flex-col items-center gap-1.5 shrink-0">
                   <div className={`w-16 h-16 rounded-full overflow-hidden shadow-md transition-all ${isActive ? "ring-[3px] ring-[#EA8491] ring-offset-2" : "ring-[2px] ring-gray-200"}`}>
-                    <img src={getCategoryImage(cat.name)} alt={cat.name} className="w-full h-full object-cover" />
+                    <img src={cat.icon || DEFAULT_IMAGE} alt={cat.name} className="w-full h-full object-cover" />
                   </div>
                   <span className={`text-[11px] font-semibold text-center ${isActive ? "text-[#EA8491]" : "text-gray-600"}`}>{cat.name}</span>
                 </button>
@@ -524,6 +379,12 @@ const HomeSaloonsDetails = () => {
         {/* 6 — Booking Mode Toggle */}
         <div className="mx-4 mt-4">
           <div className="flex bg-white rounded-full p-1.5 shadow-sm border border-gray-100">
+            <button
+              onClick={() => setServiceMode("salon")}
+              className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${serviceMode === "salon" ? "bg-[#EA8491] text-white shadow" : "text-gray-500"}`}
+            >
+              Visit Salon
+            </button>
             {salon.homeService && (
               <button
                 onClick={() => setServiceMode("home")}
@@ -532,12 +393,6 @@ const HomeSaloonsDetails = () => {
                 Salon at Home
               </button>
             )}
-            <button
-              onClick={() => setServiceMode("salon")}
-              className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${serviceMode === "salon" ? "bg-[#EA8491] text-white shadow" : "text-gray-500"}`}
-            >
-              Visit Salon
-            </button>
           </div>
         </div>
 
@@ -568,14 +423,13 @@ const HomeSaloonsDetails = () => {
           {/* Services card with pink top border like app */}
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm px-4 overflow-hidden" style={{ borderTopWidth: 2, borderTopColor: "#EA8491" }}>
             {filteredMobileServices.length > 0 ? filteredMobileServices.map((service) => {
-              const price = serviceMode === "home" && service.homePrice != null ? service.homePrice : service.salonPrice || service.price || 0;
               const inCart = isMobileServiceInCart(service._id);
               const unavailable = serviceMode === "home" && service.serviceMode === "salon";
               return (
                 <div key={service._id} className={`flex items-center gap-3 py-4 border-b border-gray-50 last:border-0 ${unavailable ? "opacity-40" : ""}`}>
                   {/* Thumbnail */}
                   <div className="w-[60px] h-[60px] rounded-2xl overflow-hidden bg-gray-100 shrink-0">
-                    <img src={getServiceImage(service.name)} alt={service.name} className="w-full h-full object-cover" />
+                    <img src={service.imageURL || DEFAULT_IMAGE} alt={service.name} className="w-full h-full object-cover" />
                   </div>
                   {/* Details */}
                   <div className="flex-1 min-w-0">
@@ -589,7 +443,7 @@ const HomeSaloonsDetails = () => {
                       <Clock className="w-3 h-3 text-gray-400" />
                       <span className="text-gray-400 text-xs">{service.duration || formatDuration(service.durationMins)}</span>
                     </div>
-                    <span className="text-gray-900 font-bold text-sm">₹{price?.toLocaleString?.() || price}</span>
+                    <span className="text-gray-900 font-bold text-sm">₹{service.price?.toLocaleString?.() || service.price}</span>
                   </div>
                   {/* CTA */}
                   {!unavailable ? (
@@ -598,8 +452,8 @@ const HomeSaloonsDetails = () => {
                         if (inCart) {
                           mobileRemoveParentAndSubs(service._id);
                         } else {
-                          // Open sub-service bottom sheet if sub-services exist
-                          const subs = SUB_SERVICES[service._id];
+                          // Open sub-service bottom sheet if addons exist
+                          const subs = isPlaceholder ? SUB_SERVICES[service._id] : (service.addons || []);
                           if (subs && subs.length > 0) {
                             setSubSheet({ service, subServices: subs });
                             setSelectedSubs({});
@@ -657,17 +511,17 @@ const HomeSaloonsDetails = () => {
             </div>
             <div className="h-px bg-gray-50 mx-4" />
             {/* Review rows — show first 2 like app */}
-            {mobileReviews.slice(0, 2).map((review, i) => (
-              <div key={review.id || i} className={`flex items-start px-4 py-3.5 gap-3 ${i < 1 ? "border-b border-gray-50" : ""}`}>
+            {mobileReviews.slice(0, 5).map((review, i) => (
+              <div key={review._id || i} className={`flex items-start px-4 py-3.5 gap-3 ${i < 1 ? "border-b border-gray-50" : ""}`}>
                 <div className="w-9 h-9 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center shrink-0">
-                  {review.userAvatar
-                    ? <img src={review.userAvatar} alt={review.userName} className="w-full h-full object-cover" />
-                    : <span className="text-sm font-bold text-gray-500">{(review.userName || review.name)?.charAt(0)?.toUpperCase()}</span>
+                  {review.user?.avatar || review.userAvatar
+                    ? <img src={review.user?.avatar || review.userAvatar} alt={review.user?.name || review.userName} className="w-full h-full object-cover" />
+                    : <span className="text-sm font-bold text-gray-500">{(review.user?.name || review.userName || review.name)?.charAt(0)?.toUpperCase()}</span>
                   }
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-gray-800">{review.userName || review.name}</span>
+                    <span className="text-sm font-semibold text-gray-800">{review.user?.name || review.userName || review.name}</span>
                     <div className="flex gap-px">
                       {[1, 2, 3, 4, 5].map(s => (
                         <Star key={s} className={`w-[10px] h-[10px] ${s <= review.rating ? "text-amber-400 fill-amber-400" : "text-gray-200 fill-gray-200"}`} />
@@ -910,10 +764,10 @@ const HomeSaloonsDetails = () => {
               <div className="flex items-center gap-1.5">
                 <span className="bg-amber-500 text-white text-[11px] md:text-xs px-2 py-0.5 md:px-2.5 md:py-1 rounded-full font-bold flex items-center gap-1">
                   <Star className="w-3 h-3 fill-white" />
-                  {salon.rating || "4.5"}
+                  {mobileAvgRating}
                 </span>
                 <span className="text-white/90">
-                  ({salon.reviewCount || "120"} Reviews)
+                  ({mobileReviewCount} Reviews)
                 </span>
               </div>
 
@@ -1053,7 +907,7 @@ const HomeSaloonsDetails = () => {
                           }`}
                       >
                         <img
-                          src={getCategoryImage(cat.name)}
+                          src={cat.icon || DEFAULT_IMAGE}
                           alt={cat.name}
                           className="w-full h-full object-cover"
                         />
@@ -1068,19 +922,6 @@ const HomeSaloonsDetails = () => {
                   );
                 })}
 
-                {/* "More" circle — image-based to match other category circles */}
-                <button className="flex flex-col items-center gap-1.5 shrink-0 focus:outline-none">
-                  <div className="w-16 h-16 md:w-[4.5rem] md:h-[4.5rem] lg:w-20 lg:h-20 rounded-full overflow-hidden shadow-md ring-[2px] ring-gray-200">
-                    <img
-                      src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=200&h=200&fit=crop&crop=face"
-                      alt="More"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <span className="text-[11px] md:text-xs lg:text-sm font-semibold text-gray-600 text-center">
-                    More
-                  </span>
-                </button>
               </div>
             )}
           </div>
@@ -1088,6 +929,17 @@ const HomeSaloonsDetails = () => {
           {/* ── Service Mode Toggle (Home / Visit Salon) ── */}
           <div className={`${PX} py-4`}>
             <div className="inline-flex bg-white rounded-full p-1 shadow-sm border border-gray-100">
+
+              {/* "Visit Salon" option — always shown */}
+              <button
+                onClick={() => setServiceMode("salon")}
+                className={`px-6 md:px-8 py-2.5 rounded-full text-sm md:text-base font-bold transition-all duration-300 ${serviceMode === "salon"
+                  ? "bg-teal-600 text-white shadow-md"
+                  : "text-gray-500 hover:text-gray-700"
+                  }`}
+              >
+                Visit Salon
+              </button>
 
               {/* "Salon at Home" option — only shown if salon offers home service */}
               {salon.homeService && (
@@ -1101,17 +953,6 @@ const HomeSaloonsDetails = () => {
                   Salon at Home
                 </button>
               )}
-
-              {/* "Visit Salon" option — always shown */}
-              <button
-                onClick={() => setServiceMode("salon")}
-                className={`px-6 md:px-8 py-2.5 rounded-full text-sm md:text-base font-bold transition-all duration-300 ${serviceMode === "salon"
-                  ? "bg-teal-600 text-white shadow-md"
-                  : "text-gray-500 hover:text-gray-700"
-                  }`}
-              >
-                Visit Salon
-              </button>
             </div>
           </div>
 
@@ -1161,6 +1002,8 @@ const HomeSaloonsDetails = () => {
                 serviceMode,
                 activeCategory,
                 setActiveCategory,
+                salonReviews,
+                reviewSummary
               }}
             />
           </div>

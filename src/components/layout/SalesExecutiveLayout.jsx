@@ -19,6 +19,7 @@ import {
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../redux/slice/authSlice";
 import useMobile from "../../hooks/useMobile";
+import MobileSalesExecutiveBottomNav from "../../pages/SalesExecutive/Mobile/MobileSalesExecutiveBottomNav";
 
 const navItems = [
   { to: "/sales-executive/dashboard", label: "Analytics", icon: LayoutDashboard },
@@ -41,13 +42,53 @@ const SalesExecutiveLayout = () => {
   };
 
   if (isMobile) {
-    return <Outlet />;
+    const getPageTitle = () => {
+      const item = navItems.find(item => location.pathname === item.to);
+      return item ? item.label : "Dashboard";
+    };
+
+    return (
+      <div className="min-h-screen bg-[#F8F9FA] pb-24">
+        {/* Mobile Header Row */}
+        <div className="sticky top-0 z-40 flex items-center justify-between bg-white/80 px-6 py-4 backdrop-blur-xl border-b border-slate-100">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-slate-100 shadow-sm">
+              <img src="https://i.pravatar.cc/100?u=exec1" alt="Executive" className="h-full w-full object-cover" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-black text-slate-800">Executive</span>
+              <div className="flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Online</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
+             <span className="text-[14px] font-black text-[#E11D48] tracking-tight uppercase">{getPageTitle()}</span>
+          </div>
+
+          <div className="flex items-center gap-4">
+             <button className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-400">
+                <Bell size={18} />
+                <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white" />
+             </button>
+          </div>
+        </div>
+
+        <main className="p-4">
+          <Outlet />
+        </main>
+
+        <MobileSalesExecutiveBottomNav />
+      </div>
+    );
   }
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#E2DFFF]">
       {/* ── Sidebar ── */}
-      <aside className="w-88 h-screen flex flex-col bg-white border-r border-slate-100 sticky top-0 shadow-[20px_0_60px_rgba(0,0,0,0.02)] z-50 shrink-0">
+      <aside className="w-72 2xl:w-88 h-screen flex flex-col bg-white border-r border-slate-100 sticky top-0 shadow-[20px_0_60px_rgba(0,0,0,0.02)] z-50 shrink-0 transition-all duration-300">
         <div className="p-10 mb-6 flex flex-col">
             <span className="text-2xl font-black text-slate-800 tracking-tighter uppercase whitespace-nowrap">GLOWNIFY</span>
             <span className="text-[10px] font-black text-[#8B5CF6] uppercase tracking-[0.25em] mt-1.5 opacity-60 leading-none">Sales & Executive Suite</span>
@@ -116,7 +157,7 @@ const SalesExecutiveLayout = () => {
            </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-12 no-scrollbar">
+        <div className="flex-1 overflow-y-auto p-4 lg:p-10 2xl:p-12 no-scrollbar">
           <div className="max-w-[1600px] mx-auto w-full">
             <Outlet />
           </div>

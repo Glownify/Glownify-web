@@ -18,6 +18,8 @@ import {
   Target,
   FileText
 } from "lucide-react";
+import useMobile from "../../hooks/useMobile";
+import MobileReportsScreen from "./Mobile/MobileReportsScreen";
 
 const miniBarData = [
   { value: 40 }, { value: 65 }, { value: 45 }, { value: 90 }, { value: 75 }, { value: 100 }
@@ -48,7 +50,10 @@ const topSalons = [
 ];
 
 const SalesReportPage = () => {
+  const isMobile = useMobile();
   const [viewType, setViewType] = useState("map");
+
+  if (isMobile) return <MobileReportsScreen />;
 
   return (
     <div className="flex flex-col gap-8 animate-in fade-in duration-700 pb-10">
@@ -65,7 +70,7 @@ const SalesReportPage = () => {
       {/* Top Cards Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {/* Revenue Growth */}
-        <div className="rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-8 shadow-sm flex flex-col justify-between h-80">
+        <div className="rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-6 lg:p-8 shadow-sm flex flex-col justify-between h-80">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-[10px] font-black text-teal-500 uppercase tracking-widest mb-1">Total Revenue Growth</p>
@@ -93,7 +98,7 @@ const SalesReportPage = () => {
         </div>
 
         {/* Registration Activity */}
-        <div className="rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-8 shadow-sm h-80">
+        <div className="rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-6 lg:p-8 shadow-sm h-80">
           <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8">Registration Activity</h4>
           <div className="space-y-6">
             <ActivityItem icon={<Users size={18} />} label="New Members" value="1,248" growth="+8%" />
@@ -103,7 +108,7 @@ const SalesReportPage = () => {
         </div>
 
         {/* Executive Summary */}
-        <div className="rounded-[40px] bg-[#BE185D] p-8 text-white shadow-2xl shadow-rose-900/20 flex flex-col justify-between h-80">
+        <div className="rounded-[40px] bg-[#BE185D] p-6 lg:p-8 shadow-2xl shadow-rose-900/20 flex flex-col justify-between h-80">
           <div>
              <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-6">Executive Summary</p>
              <h3 className="text-2xl font-bold leading-relaxed tracking-tight">
@@ -117,9 +122,9 @@ const SalesReportPage = () => {
       </div>
 
       {/* Market Density & Top Salons */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8">
         {/* Map Section */}
-        <div className="lg:col-span-7 rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-8 shadow-sm">
+        <div className="xl:col-span-7 rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-6 lg:p-8 shadow-sm">
            <div className="flex items-center justify-between mb-8">
              <div>
                <h3 className="text-xl font-black text-slate-800 tracking-tight">Market Density Index</h3>
@@ -162,7 +167,7 @@ const SalesReportPage = () => {
         </div>
 
         {/* Top Salons */}
-        <div className="lg:col-span-5 rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-8 shadow-sm">
+        <div className="xl:col-span-5 rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-6 lg:p-8 shadow-sm">
            <div className="flex items-center justify-between mb-8">
               <h3 className="text-xl font-black text-slate-800 tracking-tight">Top Performing Salons</h3>
               <button className="text-[11px] font-black text-rose-500 uppercase tracking-widest hover:translate-x-1 transition-transform">

@@ -20,6 +20,8 @@ import {
   Target,
   MoreHorizontal
 } from "lucide-react";
+import useMobile from "../../hooks/useMobile";
+import MobileTargetsScreen from "./Mobile/MobileTargetsScreen";
 
 const pieData = [
   { name: "Achieved", value: 82 },
@@ -41,6 +43,9 @@ const districtData = [
 ];
 
 const MyTargetsPage = () => {
+  const isMobile = useMobile();
+  
+  if (isMobile) return <MobileTargetsScreen />;
   return (
     <div className="flex flex-col gap-8 animate-in fade-in duration-700 pb-10">
       {/* Header */}
@@ -53,9 +58,9 @@ const MyTargetsPage = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8">
         {/* Main Achievement Card */}
-        <div className="lg:col-span-8 rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-10 shadow-sm flex flex-col md:flex-row items-center gap-12">
+        <div className="xl:col-span-8 rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-6 lg:p-8 2xl:p-10 shadow-sm flex flex-col md:flex-row items-center gap-8 lg:gap-12">
             <div className="relative w-64 h-64 shrink-0">
                 <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -106,7 +111,7 @@ const MyTargetsPage = () => {
         </div>
 
         {/* Districts Card */}
-        <div className="lg:col-span-4 rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-10 shadow-sm flex flex-col h-full">
+        <div className="xl:col-span-4 rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-6 lg:p-8 2xl:p-10 shadow-sm flex flex-col h-full">
             <div className="flex items-center justify-between mb-10">
                 <h3 className="text-[13px] font-black text-slate-400 uppercase tracking-widest">Districts</h3>
                 <MoreHorizontal className="text-slate-300" size={20} />
@@ -131,9 +136,9 @@ const MyTargetsPage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8">
         {/* Monthly Velocity Card */}
-        <div className="lg:col-span-8 rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-10 shadow-sm">
+        <div className="xl:col-span-8 rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-6 lg:p-8 2xl:p-10 shadow-sm">
             <div className="flex items-center justify-between mb-12">
                 <div>
                    <h3 className="text-xl font-black text-slate-800 tracking-tight">Monthly Velocity</h3>
@@ -181,7 +186,7 @@ const MyTargetsPage = () => {
         </div>
 
         {/* Incentive Card */}
-        <div className="lg:col-span-4 rounded-[40px] bg-[#1a1a1a] p-10 text-white flex flex-col justify-between shadow-2xl shadow-indigo-900/40 min-h-[400px]">
+        <div className="xl:col-span-4 rounded-[40px] bg-[#1a1a1a] p-6 lg:p-8 2xl:p-10 text-white flex flex-col justify-between shadow-2xl shadow-indigo-900/40 min-h-[400px]">
             <div>
                 <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2">Incentive Tier</p>
                 <h3 className="text-2xl font-black italic tracking-tight">The Presidential Club</h3>

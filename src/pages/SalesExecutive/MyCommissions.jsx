@@ -11,6 +11,8 @@ import {
   Lightbulb,
   MapPin
 } from "lucide-react";
+import useMobile from "../../hooks/useMobile";
+import MobileEarningsScreen from "./Mobile/MobileEarningsScreen";
 import { BarChart, Bar, XAxis, ResponsiveContainer, Cell, Tooltip } from "recharts";
 
 const performanceData = [
@@ -66,6 +68,9 @@ const serviceCategories = [
 ];
 
 const MyCommissions = () => {
+  const isMobile = useMobile();
+  
+  if (isMobile) return <MobileEarningsScreen />;
   return (
     <div className="flex flex-col gap-8 animate-in fade-in duration-700 pb-10">
       {/* Header Section */}

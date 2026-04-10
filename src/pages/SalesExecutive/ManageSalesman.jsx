@@ -18,8 +18,11 @@ import {
   createSalesman,
   fetchAllSalesman,
 } from "../../redux/slice/salesexecutiveSlice";
+import useMobile from "../../hooks/useMobile";
+import MobileTeamScreen from "./Mobile/MobileTeamScreen";
 
 const ManageSalesman = () => {
+  const isMobile = useMobile();
   const dispatch = useDispatch();
   const { salesman = [], loading } = useSelector((state) => state.salesexecutive);
   const user = useSelector((state) => state.auth.user);
@@ -82,6 +85,8 @@ const ManageSalesman = () => {
     } catch (error) { console.error(error); }
   };
 
+  if (isMobile) return <MobileTeamScreen />;
+
   return (
     <div className="flex flex-col gap-8 animate-in fade-in duration-700 pb-10">
       {/* Header & Main Stats */}
@@ -111,7 +116,7 @@ const ManageSalesman = () => {
       </div>
 
       {/* Directory Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
         {/* Salesman Cards */}
         {displayData.map((item, index) => (
           <div key={item._id} className="group relative overflow-hidden rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-8 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">

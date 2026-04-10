@@ -19,6 +19,8 @@ import {
   Zap,
 } from "lucide-react";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
+import useMobile from "../../hooks/useMobile";
+import MobileEarningsScreen from "./Mobile/MobileEarningsScreen";
 
 const leadPipelineData = [
   { name: "Jan", value: 400 },
@@ -39,8 +41,11 @@ const quickActions = [
 ];
 
 const SalesExecutiveDashboard = () => {
+  const isMobile = useMobile();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("All Lead");
+
+  if (isMobile) return <MobileEarningsScreen />;
 
   return (
     <div className="flex flex-col gap-6 animate-in fade-in duration-700">
@@ -66,7 +71,7 @@ const SalesExecutiveDashboard = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6">
         {quickActions.map((action) => (
           <button
             key={action.label}
@@ -83,9 +88,9 @@ const SalesExecutiveDashboard = () => {
         ))}
       </div>
 
-      <div className="flex flex-col gap-8 xl:flex-row">
-        <div className="flex min-w-0 flex-[2.5] flex-col gap-8">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-4">
+      <div className="flex flex-col gap-6 lg:gap-8 2xl:flex-row">
+        <div className="flex min-w-0 flex-[2.5] flex-col gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 gap-4 lg:gap-6 md:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-4">
             <StatCard
               title="Monthly Target"
               value="Rs 25,00,000"
@@ -225,7 +230,7 @@ const SalesExecutiveDashboard = () => {
           </div>
         </div>
 
-        <aside className="min-w-0 flex-1 space-y-8 xl:min-w-[360px]">
+        <aside className="min-w-0 flex-1 space-y-6 lg:space-y-8 lg:min-w-[300px] 2xl:min-w-[360px]">
           <div className="relative overflow-hidden rounded-[40px] border border-[#8B5CF6]/20 bg-white/70 p-8 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/5">
             <div className="mb-10 flex items-center justify-between">
               <h3 className="text-xl font-black text-slate-800 tracking-tight">

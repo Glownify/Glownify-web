@@ -12,6 +12,8 @@ import {
   Search,
   ChevronRight
 } from "lucide-react";
+import useMobile from "../../hooks/useMobile";
+import MobilePipelineScreen from "./Mobile/MobilePipelineScreen";
 
 const funnelData = [
   { label: "DISCOVERY", count: 18, color: "from-[#8B5CF6] to-[#A78BFA]", width: "100%" },
@@ -62,6 +64,9 @@ const opportunities = [
 ];
 
 const LeadPipeline = () => {
+  const isMobile = useMobile();
+  
+  if (isMobile) return <MobilePipelineScreen />;
   return (
     <div className="flex flex-col gap-8 animate-in fade-in duration-700 pb-10">
       {/* Header Section */}
@@ -74,7 +79,7 @@ const LeadPipeline = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6 lg:gap-8">
         {/* Pipeline Funnel */}
         <div className="lg:col-span-2 rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-8 shadow-sm">
           <div className="flex items-center justify-between mb-10">

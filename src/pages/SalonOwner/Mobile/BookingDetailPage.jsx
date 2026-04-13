@@ -16,51 +16,46 @@ import {
 } from "lucide-react";
 
 // ─── Colors ────────────────────────────────────────────────────────────────────
-const PINK = "#f43f5e";
-const TEAL = "#14b8a6";
+const RED = "#f43f5e";
 
-// ─── Mock Data ─────────────────────────────────────────────────────────────────
-const DEFAULT_BOOKING = {
-    id: 1,
-    customerName: 'Ayesha',
-    service: 'Waxing + Facial',
-    status: 'completed', // pending | accepted | completed | cancelled
-    date: 'May 13, 2024',
-    timeStart: '12:00 PM',
-    timeEnd: '1:30 PM',
-    duration: '90 mins',
-    specialist: {
-        name: 'Priya',
-        role: 'Assigned Professional',
-        initials: 'PR',
-        avatarColor: '#fecdd3',
-    },
-    services: [
-        { id: 1, name: 'Full Arm Waxing', price: 600 },
-        { id: 2, name: 'Leg Waxing', price: 700 },
-        { id: 3, name: 'Acne Facial', price: 500 },
-    ],
-    notes: '"Client preferred organic wax for arms. No allergies reported during facial session. Very satisfied with the glow."',
-    initials: 'AY',
-    avatarColor: '#fecdd3',
+const formatTime = (timeStr) => {
+    if (!timeStr) return "N/A";
+    try {
+        const [hours, minutes] = timeStr.split(':');
+        const h = parseInt(hours, 10);
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        const h12 = h % 12 || 12;
+        return `${h12.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+    } catch (e) {
+        return timeStr;
+    }
 };
 
 const STATUS_CONFIG = {
     completed: { label: 'COMPLETED', bg: '#f0fdf4', text: '#10b981' },
     accepted: { label: 'ACCEPTED', bg: '#f0fdf4', text: '#10b981' },
+    confirmed: { label: 'CONFIRMED', bg: '#f0fdf4', text: '#10b981' },
     pending: { label: 'PENDING', bg: '#fffbeb', text: '#f59e0b' },
     cancelled: { label: 'CANCELLED', bg: '#fff1f2', text: '#f43f5e' },
 };
 
 // ─── Avatar Component ─────────────────────────────────────────────────────────
-const Avatar = ({ initials, color, size = 72 }) => (
-    <div 
-        className="rounded-full flex items-center justify-center shrink-0 font-bold"
-        style={{ width: size, height: size, backgroundColor: color, fontSize: size * 0.32, color: '#9f1239' }}
-    >
-        {initials}
-    </div>
-);
+const Avatar = ({ name, initials, avatar, color = "#fecdd3", size = 72 }) => {
+    const displayInitials = initials || name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || "?";
+    
+    return (
+        <div 
+            className="rounded-full flex items-center justify-center shrink-0 font-bold overflow-hidden"
+            style={{ width: size, height: size, backgroundColor: avatar ? 'transparent' : color, fontSize: size * 0.32, color: '#9f1239' }}
+        >
+            {avatar ? (
+                <img src={avatar} className="w-full h-full object-cover" alt="avatar" />
+            ) : (
+                displayInitials
+            )}
+        </div>
+    );
+};
 
 // ─── Section Label ────────────────────────────────────────────────────────────
 const SectionLabel = ({ title, action, onAction }) => (
@@ -80,12 +75,38 @@ const BookingDetailPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     
-    // Merge navigation state with default mock
-    const booking = location.state?.booking ? { ...DEFAULT_BOOKING, ...location.state.booking } : DEFAULT_BOOKING;
-    const [notes] = useState(booking.notes);
+    const booking = location.state?.booking;
 
-    const statusCfg = STATUS_CONFIG[booking.status] ?? STATUS_CONFIG.pending;
-    const grandTotal = booking.services.reduce((sum, s) => sum + s.price, 0);
+    if (!booking) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <p>Booking not found</p>
+                <button onClick={() => navigate(-1)}>Go Back</button>
+            </div>
+        );
+    }
+
+    // Data Mapping
+    const customer = booking.customer || { name: "Guest" };
+    const specialist = booking.specialist || { name: "Not Assigned", role: "Specialist" };
+    const status = booking.status?.toLowerCase() || "pending";
+    const statusCfg = STATUS_CONFIG[status] ?? STATUS_CONFIG.pending;
+    
+    const bookingDateFormatted = new Date(booking.bookingDate).toLocaleDateString('en-IN', { 
+        day: 'numeric', month: 'long', year: 'numeric' 
+    });
+    
+    const services = booking.serviceItems?.map(item => {
+        const svc = item.service;
+        const name = (typeof svc === 'object' ? svc?.name : svc) || item.name || "Service";
+        return {
+            id: item._id,
+            name: name,
+            price: item.price || 0
+        };
+    }) || [];
+
+    const grandTotal = booking.totalAmount || services.reduce((sum, s) => sum + s.price, 0);
 
     return (
         <div className="min-h-screen bg-white pb-40 font-sans select-none">
@@ -104,16 +125,16 @@ const BookingDetailPage = () => {
                 {/* ── Customer Hero ── */}
                 <div className="px-5 pt-6 pb-6 flex items-center gap-4">
                     <div className="relative">
-                        <Avatar initials={booking.initials} color={booking.avatarColor} size={72} />
-                        {booking.status === 'completed' && (
+                        <Avatar name={customer.name} avatar={customer.avatar} size={72} />
+                        {(status === 'completed' || status === 'confirmed' || status === 'accepted') && (
                             <div className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-[#14b8a6] flex items-center justify-center border-2 border-white">
                                 <Check size={14} color="#fff" strokeWidth={3} />
                             </div>
                         )}
                     </div>
                     <div className="flex-1">
-                        <h1 className="font-bold text-[24px] text-[#1f2937] leading-tight">{booking.customerName}</h1>
-                        <p className="text-[#6b7280] text-[14px] mt-0.5 font-medium">{booking.service}</p>
+                        <h1 className="font-bold text-[24px] text-[#1f2937] leading-tight">{customer.name}</h1>
+                        <p className="text-[#6b7280] text-[14px] mt-0.5 font-medium">{services[0]?.name || "Service"}</p>
                     </div>
                     <div className="rounded-full px-3 py-1.5 shrink-0" style={{ backgroundColor: statusCfg.bg }}>
                         <span className="text-[11px] font-bold tracking-wider" style={{ color: statusCfg.text }}>{statusCfg.label}</span>
@@ -128,16 +149,16 @@ const BookingDetailPage = () => {
                             <Calendar size={22} color="#f43f5e" />
                         </div>
                         <div>
-                            <p className="font-bold text-[16px] text-[#1f2937]">{booking.date}</p>
-                            <p className="text-[#9ca3af] text-[13px] mt-0.5 font-medium">{booking.timeStart} – {booking.timeEnd} ({booking.duration})</p>
+                            <p className="font-bold text-[16px] text-[#1f2937]">{bookingDateFormatted}</p>
+                            <p className="text-[#9ca3af] text-[13px] mt-0.5 font-medium">{formatTime(booking.timeSlot?.start)} – {formatTime(booking.timeSlot?.end)} <span className="mx-2 text-slate-200">|</span> {booking.bookingType === 'in_salon' ? 'Salon Visit' : 'Home Service'}</p>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-3 rounded-2xl px-4 py-3 bg-[#f9fafb]">
-                        <Avatar initials={booking.specialist.initials} color={booking.specialist.avatarColor} size={44} />
+                        <Avatar name={specialist.name} avatar={specialist.avatar} size={44} />
                         <div className="flex-1 min-w-0">
-                            <p className="font-bold text-[14px] text-[#1f2937] truncate">{booking.specialist.name}</p>
-                            <p className="text-[#9ca3af] text-[12px] mt-0.5 font-medium">{booking.specialist.role}</p>
+                            <p className="font-bold text-[14px] text-[#1f2937] truncate">{specialist.name}</p>
+                            <p className="text-[#9ca3af] text-[12px] mt-0.5 font-medium">{specialist.role || "Professional"}</p>
                         </div>
                         <div className="w-9 h-9 rounded-full flex items-center justify-center bg-[#14b8a6]">
                             <MessageSquare size={16} color="#fff" fill="white" />
@@ -149,13 +170,13 @@ const BookingDetailPage = () => {
                 <div className="mx-4 rounded-[24px] p-5 mb-4 bg-white border border-[#f3f4f6]" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
                     <SectionLabel title="SERVICE SUMMARY" />
                     <div className="space-y-0">
-                        {booking.services.map((service, idx) => (
+                        {services.map((service, idx) => (
                             <React.Fragment key={service.id}>
                                 <div className="flex justify-between items-center py-3">
                                     <p className="text-[#374151] text-[15px] font-medium">{service.name}</p>
                                     <p className="font-bold text-[#1f2937] text-[15px]">₹{service.price.toLocaleString("en-IN")}</p>
                                 </div>
-                                {idx < booking.services.length - 1 && <div className="h-px bg-[#f3f4f6]" />}
+                                {idx < services.length - 1 && <div className="h-px bg-[#f3f4f6]" />}
                             </React.Fragment>
                         ))}
                     </div>
@@ -167,12 +188,14 @@ const BookingDetailPage = () => {
                 </div>
 
                 {/* ── Additional Notes ── */}
-                <div className="mx-4 mb-6">
-                    <SectionLabel title="ADDITIONAL NOTES" action="Edit" />
-                    <div className="rounded-2xl p-4 bg-[#f0fdfa] border border-[#99f6e4]">
-                        <p className="text-[#374151] text-[14px] leading-relaxed italic font-medium">{notes}</p>
+                {booking.notes && (
+                    <div className="mx-4 mb-6">
+                        <SectionLabel title="ADDITIONAL NOTES" action="Edit" />
+                        <div className="rounded-2xl p-4 bg-[#f0fdfa] border border-[#99f6e4]">
+                            <p className="text-[#374151] text-[14px] leading-relaxed italic font-medium">{booking.notes}</p>
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* ── Quick Actions Row ── */}
                 <div className="flex mx-4 mb-6 rounded-[24px] bg-white border border-[#f3f4f6]" style={{ boxShadow: '0 2px 6px rgba(0,0,0,0.04)', overflow: 'hidden' }}>
@@ -204,7 +227,7 @@ const BookingDetailPage = () => {
                     <RefreshCw size={18} /> Rebook
                 </button>
                 <button 
-                    onClick={() => navigate("/salon-owner/billing-detail")}
+                    onClick={() => navigate("/salon-owner/billing-detail", { state: { booking } })}
                     className="flex-[2] flex items-center justify-center gap-2 rounded-full py-4 font-bold text-[15px] bg-[#f43f5e] text-white active:shadow-inner active:scale-95 transition-all shadow-lg shadow-pink-200"
                 >
                     <Receipt size={18} /> Create Bill

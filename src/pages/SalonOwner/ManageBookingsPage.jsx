@@ -256,9 +256,11 @@ const ManageBookingsPage = () => {
                                             </div>
                                             <div className="space-y-0.5">
                                                 <p className="text-sm font-black text-[#1a0b3a]">{booking.customer?.name || "Customer"}</p>
-                                                <p className="text-[11px] font-bold text-gray-500">
-                                                    {booking.serviceItems?.[0]?.service?.name || "General Service"} • <span className="text-[#E91E63]">₹{booking.totalAmount}</span>
-                                                </p>
+                                                    {(() => {
+                                                        const item = booking.serviceItems?.[0];
+                                                        const svc = item?.service;
+                                                        return (typeof svc === 'object' ? svc?.name : svc) || item?.name || "General Service";
+                                                    })()} • <span className="text-[#E91E63]">₹{booking.totalAmount}</span>
                                             </div>
                                         </div>
                                     </td>

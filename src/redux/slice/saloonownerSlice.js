@@ -1,26 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { handleAxiosError } from "../../utils/HandleErrors";
+import axiosInstance from "../../api/axiosInstance";
 
 export const fetchAllCategories = createAsyncThunk(
   "saloonowner/fetchAllCategories",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/user/get-all-categories`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = response.data;
-      console.log("Categories Response Data:", data);
-      if (response.status !== 200) {
-        return handleAxiosError(error, thunkAPI);
-      }
-      return data.categories; // Assuming the API returns { categories: [...] }
+      const response = await axiosInstance.get("/user/get-all-categories");
+      return response.data.categories;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -31,20 +19,8 @@ export const fetchAllServiceItems = createAsyncThunk(
   "saloonowner/fetchAllServiceItems",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/salon-admin/get-service-items`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = response.data;
-      if (response.status !== 200) {
-        return handleAxiosError(error, thunkAPI);
-      }
-      return data.services;
+      const response = await axiosInstance.get("/salon-admin/get-service-items");
+      return response.data.services;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -55,21 +31,8 @@ export const createServiceItem = createAsyncThunk(
   "saloonowner/createServiceItem",
   async (serviceData, thunkAPI) => {
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/salon-admin/create-service-item`,
-        serviceData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = response.data;
-      if (response.status !== 201) {
-        return handleAxiosError(error, thunkAPI);
-      }
-      return data.service;
+      const response = await axiosInstance.post("/salon-admin/create-service-item", serviceData);
+      return response.data.service;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -79,25 +42,9 @@ export const createServiceItem = createAsyncThunk(
 export const editServiceItem = createAsyncThunk(
   "saloonowner/editServiceItem",
   async ({ serviceId, serviceData }, thunkAPI) => {
-    console.log("Editing Service Item:", serviceId, serviceData);
     try {
-      const response = await axios.put(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/salon-admin/update-service-item/${serviceId}`,
-        serviceData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = response.data;
-      if (response.status !== 200) {
-        return handleAxiosError(error, thunkAPI);
-      }
-      return data.service;
+      const response = await axiosInstance.put(`/salon-admin/update-service-item/${serviceId}`, serviceData);
+      return response.data.service;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -108,21 +55,7 @@ export const deleteServiceItem = createAsyncThunk(
   "saloonowner/deleteServiceItem",
   async (serviceId, thunkAPI) => {
     try {
-      const response = await axios.delete(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/salon-admin/delete-service-item/${serviceId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = response.data;
-      if (response.status !== 200) {
-        return handleAxiosError(error, thunkAPI);
-      }
+      const response = await axiosInstance.delete(`/salon-admin/delete-service-item/${serviceId}`);
       return serviceId;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
@@ -134,21 +67,8 @@ export const fetchAllSpecialists = createAsyncThunk(
   "saloonowner/fetchAllSpecialists",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/salon-admin/get-specialists`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = response.data;
-      console.log("Specialists Response Data:", data);
-      if (response.status !== 200) {
-        return handleAxiosError(error, thunkAPI);
-      }
-      return data.specialists; // Assuming the API returns { specialists: [...] }
+      const response = await axiosInstance.get("/salon-admin/get-specialists");
+      return response.data.specialists;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -158,23 +78,9 @@ export const fetchAllSpecialists = createAsyncThunk(
 export const createSpecialist = createAsyncThunk(
   "saloonowner/createSpecialist",
   async (specialistData, thunkAPI) => {
-    console.log("Creating Specialist with Data:", specialistData);
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/salon-admin/add-specialist`,
-        specialistData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = response.data;
-      if (response.status !== 201) {
-        return handleAxiosError(error, thunkAPI);
-      }
-      return data.specialist;
+      const response = await axiosInstance.post("/salon-admin/add-specialist", specialistData);
+      return response.data.specialist;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -184,50 +90,20 @@ export const createSpecialist = createAsyncThunk(
 export const editSpecialist = createAsyncThunk(
   "saloonowner/editSpecialist",
   async ({ specialistId, specialistData }, thunkAPI) => {
-    console.log("Editing Specialist:", specialistId, specialistData);
     try {
-      const response = await axios.put(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/salon-admin/update-specialist/${specialistId}`,
-        specialistData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = response.data;
-      if (response.status !== 200) {
-        return handleAxiosError(error, thunkAPI);
-      }
-      return data.specialist;
+      const response = await axiosInstance.put(`/salon-admin/update-specialist/${specialistId}`, specialistData);
+      return response.data.specialist;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
-    }
+  }
 );
 
 export const deleteSpecialist = createAsyncThunk(
   "saloonowner/deleteSpecialist",
   async (specialistId, thunkAPI) => {
     try {
-      const response = await axios.delete(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/salon-admin/delete-specialist/${specialistId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = response.data;
-      if (response.status !== 200) {
-        return handleAxiosError(error, thunkAPI);
-      }
+      const response = await axiosInstance.delete(`/salon-admin/delete-specialist/${specialistId}`);
       return specialistId;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
@@ -237,22 +113,25 @@ export const deleteSpecialist = createAsyncThunk(
 
 export const fetchBookings = createAsyncThunk(
   "saloonowner/fetchBookings",
-  async (_, thunkAPI) => {
+  async (params = {}, thunkAPI) => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/booking/get-salon-bookings`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = response.data;
-      if (response.status !== 200) {
-        return handleAxiosError(error, thunkAPI);
-      }
-      return data.bookings; // Assuming the API returns { bookings: [...] }
+      const { status, bookingType, page = 1, limit = 10 } = params;
+      const response = await axiosInstance.get("/bookings/provider", {
+        params: { status, bookingType, page, limit }
+      });
+      return response.data; // { success, bookings, totalBookings, pendingCount, currentPage, totalPages }
+    } catch (error) {
+      return handleAxiosError(error, thunkAPI);
+    }
+  }
+);
+
+export const updateBookingStatus = createAsyncThunk(
+  "saloonowner/updateBookingStatus",
+  async ({ bookingId, status }, thunkAPI) => {
+    try {
+      const response = await axiosInstance.patch(`/bookings/${bookingId}/status`, { status });
+      return { bookingId, status, data: response.data };
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -263,22 +142,8 @@ export const createAddOn = createAsyncThunk(
   "saloonowner/createAddOn",
   async (addOnData, thunkAPI) => {
     try {
-      console.log("Creating Add-On Service with Data:", addOnData);
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/salon-admin/create-add-on`,
-        addOnData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = response.data;
-      if (response.status !== 201) {
-        return handleAxiosError(error, thunkAPI);
-      }
-      return data.addOn;
+      const response = await axiosInstance.post("/salon-admin/create-add-on", addOnData);
+      return response.data.addOn;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -288,25 +153,9 @@ export const createAddOn = createAsyncThunk(
 export const editAddOn = createAsyncThunk(
   "saloonowner/editAddOn",
   async ({ addOnId, addOnData }, thunkAPI) => {
-    console.log("Editing Add-On Service:", addOnId, addOnData);
     try {
-      const response = await axios.put(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/salon-admin/update-add-on/${addOnId}`,
-        addOnData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = response.data;
-      if (response.status !== 200) {
-        return handleAxiosError(error, thunkAPI);
-      }
-      return data.addOn;
+      const response = await axiosInstance.put(`/salon-admin/update-add-on/${addOnId}`, addOnData);
+      return response.data.addOn;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -317,21 +166,7 @@ export const deleteAddOn = createAsyncThunk(
   "saloonowner/deleteAddOn",
   async (addOnId, thunkAPI) => {
     try {
-      const response = await axios.delete(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/salon-admin/delete-add-on/${addOnId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = response.data;
-      if (response.status !== 200) {
-        return handleAxiosError(error, thunkAPI);
-      }
+      const response = await axiosInstance.delete(`/salon-admin/delete-add-on/${addOnId}`);
       return addOnId;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
@@ -343,21 +178,8 @@ export const fetchAllAddOns = createAsyncThunk(
   "saloonowner/fetchAllAddOns",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/salon-admin/get-add-ons`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      console.log("Fetch All Add-Ons Response:", response);
-      const data = response.data;
-      if (response.status !== 200) {
-        return handleAxiosError(error, thunkAPI);
-      } 
-      return data.addOns;
+      const response = await axiosInstance.get("/salon-admin/get-add-ons");
+      return response.data.addOns;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -368,23 +190,20 @@ export const fetchAllSubscriptions = createAsyncThunk(
   "saloonowner/fetchAllSubscriptions",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/salon-admin/get-subscription-plans`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      console.log("Fetch All Subscriptions Response:", response);
-      const data = response.data;
-      if (response.status !== 200) {
-        return handleAxiosError(error, thunkAPI);
-      }
-      return data.plans;
+      const response = await axiosInstance.get("/salon-admin/get-subscription-plans");
+      return response.data.plans;
+    } catch (error) {
+      return handleAxiosError(error, thunkAPI);
+    }
+  }
+);
+
+export const fetchSalonOwnerDashboard = createAsyncThunk(
+  "saloonowner/fetchSalonOwnerDashboard",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axiosInstance.get("/salons/owner/dashboard");
+      return response.data.data;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -398,8 +217,13 @@ const saloonownerSlice = createSlice({
     categories: [],
     specialists: [],
     bookings: [],
+    totalBookings: 0,
+    pendingCount: 0,
+    totalPages: 1,
+    currentPage: 1,
     addOns: [],
     subscriptions: [],
+    dashboardData: null,
     loading: false,
     error: null,
   },
@@ -534,9 +358,28 @@ const saloonownerSlice = createSlice({
       })
       .addCase(fetchBookings.fulfilled, (state, action) => {
         state.loading = false;
-        state.bookings = action.payload;
+        state.bookings = action.payload.bookings;
+        state.totalBookings = action.payload.totalBookings;
+        state.pendingCount = action.payload.pendingCount;
+        state.totalPages = action.payload.totalPages;
+        state.currentPage = action.payload.currentPage;
       })
       .addCase(fetchBookings.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateBookingStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateBookingStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.bookings.findIndex(b => b._id === action.payload.bookingId);
+        if (index !== -1) {
+          state.bookings[index].status = action.payload.status;
+        }
+      })
+      .addCase(updateBookingStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
@@ -609,6 +452,18 @@ const saloonownerSlice = createSlice({
         state.subscriptions = action.payload;
       })
       .addCase(fetchAllSubscriptions.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchSalonOwnerDashboard.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchSalonOwnerDashboard.fulfilled, (state, action) => {
+        state.loading = false;
+        state.dashboardData = action.payload;
+      })
+      .addCase(fetchSalonOwnerDashboard.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

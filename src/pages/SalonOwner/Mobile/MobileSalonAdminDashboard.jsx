@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import {
@@ -15,6 +16,7 @@ import {
     Eye,
 } from 'lucide-react';
 import MobileBottomNav from './MobileBottomNav';
+import { fetchSalonOwnerDashboard } from '../../../redux/slice/saloonownerSlice';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const H_PAD = '16px'; // single source of truth for horizontal padding
@@ -293,7 +295,26 @@ const QuickActionBtn = ({ action, style, onPress }) => {
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function MobileSalonAdminDashboard() {
     const navigate = useNavigate();
-    const [bookings, setBookings] = useState(MOCK_RECENT_BOOKINGS);
+    const dispatch = useDispatch();
+    const { dashboardData, loading } = useSelector((state) => state.saloonowner);
+    const { user } = useSelector((state) => state.auth);
+    const [bookings, setBookings] = useState([]);
+
+    useEffect(() => {
+        dispatch(fetchSalonOwnerDashboard());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (dashboardData?.recentBookings) {
+            setBookings(dashboardData.recentBookings);
+        }
+    }, [dashboardData]);
+
+    const stats = dashboardData?.stats || {
+        bookedToday: 0,
+        pendingBookings: 0,
+        totalCustomers: 0
+    };
 
     const handleAccept = (id) => {
         setBookings((prev) =>
@@ -323,7 +344,7 @@ export default function MobileSalonAdminDashboard() {
             >
                 <div>
                     <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937', margin: 0 }}>
-                        Hello, Glamour Salon 👋
+                        Hello, {user?.roleDetails?.shopName || 'Salon Owner'} 👋
                     </h1>
                 </div>
 
@@ -410,14 +431,21 @@ export default function MobileSalonAdminDashboard() {
                         justifyContent: 'space-between',
                     }}
                 >
-                    {STATS_CONFIG.map((config) => (
-                        <StatCard
-                            key={config.key}
-                            config={config}
-                            value={MOCK_STATS[config.key]}
-                            onPress={() => navigate(config.navigateTo)}
-                        />
-                    ))}
+                    {STATS_CONFIG.map((config) => {
+                        let value = 0;
+                        if (config.key === 'bookedToday') value = stats.bookedToday;
+                        if (config.key === 'pendingRequests') value = stats.pendingBookings;
+                        if (config.key === 'totalCustomers') value = stats.totalCustomers;
+
+                        return (
+                            <StatCard
+                                key={config.key}
+                                config={config}
+                                value={value}
+                                onPress={() => navigate(config.navigateTo)}
+                            />
+                        );
+                    })}
                 </div>
 
                 {/* ── Quick Actions ───────────────────────────────────────────────── */}
@@ -479,23 +507,16 @@ export default function MobileSalonAdminDashboard() {
                         </button>
                     </div>
 
-                    {bookings.map((booking) => (
-                        <div
-                            key={booking.id}
-                            style={{
-                                backgroundColor: '#fff',
-                                borderRadius: '14px',
-                                padding: '14px',
-                                marginBottom: '12px',
-                                ...cardShadow,
-                            }}
-                        >
+                    {bookings.length > 0 ? (
+                        bookings.map((booking) => (
                             <div
+                                key={booking._id || booking.id}
                                 style={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
+                                    backgroundColor: '#fff',
+                                    borderRadius: '14px',
+                                    padding: '14px',
+                                    marginBottom: '12px',
+                                    ...cardShadow,
                                 }}
                             >
                                 <div
@@ -503,81 +524,102 @@ export default function MobileSalonAdminDashboard() {
                                         display: 'flex',
                                         flexDirection: 'row',
                                         alignItems: 'center',
-                                        flex: 1,
+                                        justifyContent: 'space-between',
                                     }}
                                 >
-                                    <Avatar src={booking.avatar} size={48} />
-                                    <div style={{ marginLeft: '12px', flex: 1 }}>
-                                        <div
-                                            style={{
-                                                fontWeight: 'bold',
-                                                color: '#1f2937',
-                                                fontSize: '15px',
-                                            }}
-                                        >
-                                            {booking.customer}
-                                        </div>
-                                        <div
-                                            style={{ color: '#9ca3af', fontSize: '13px', marginTop: '2px' }}
-                                        >
-                                            {booking.service} • {booking.duration}
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
+                                            flex: 1,
+                                        }}
+                                    >
+                                        <Avatar 
+                                            src={booking.customer?.avatar || booking.avatar} 
+                                            initials={(booking.customer?.name || booking.user?.name || 'G')?.substring(0, 2).toUpperCase()} 
+                                            size={48} 
+                                        />
+                                        <div style={{ marginLeft: '12px', flex: 1 }}>
+                                            <div
+                                                style={{
+                                                    fontWeight: 'bold',
+                                                    color: '#1f2937',
+                                                    fontSize: '15px',
+                                                }}
+                                            >
+                                                {booking.customer?.name || booking.user?.name || 'Guest'}
+                                            </div>
+                                            <div
+                                                style={{ color: '#9ca3af', fontSize: '13px', marginTop: '2px' }}
+                                            >
+                                                {(() => {
+                                                    const item = booking.serviceItems?.[0];
+                                                    const svc = item?.service;
+                                                    return (typeof svc === 'object' ? svc?.name : svc) || item?.name || booking.serviceName || booking.service || 'Service';
+                                                })()} • {booking.duration || '1 hr'}
+                                            </div>
                                         </div>
                                     </div>
+                                    <div
+                                        style={{ fontWeight: 'bold', color: '#1f2937', fontSize: '15px' }}
+                                    >
+                                        ₹ {(booking.totalAmount || booking.totalPrice || booking.amount || 0).toLocaleString()}
+                                    </div>
                                 </div>
-                                <div
-                                    style={{ fontWeight: 'bold', color: '#1f2937', fontSize: '15px' }}
-                                >
-                                    ₹ {booking.amount.toLocaleString()}
-                                </div>
-                            </div>
 
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    marginTop: '14px',
-                                    paddingTop: '14px',
-                                    borderTop: '1px solid #f3f4f6',
-                                }}
-                            >
-                                <span style={{ color: '#9ca3af', fontSize: '12px' }}>
-                                    May 12, 11:00 AM
-                                </span>
-                                <div style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
-                                    <button
-                                        onClick={() => handleAccept(booking.id)}
-                                        style={{
-                                            padding: '8px 16px',
-                                            borderRadius: '10px',
-                                            backgroundColor: '#059669',
-                                            border: 'none',
-                                            cursor: 'pointer',
-                                        }}
-                                    >
-                                        <span style={{ color: '#fff', fontWeight: '700', fontSize: '12px' }}>
-                                            Accept
-                                        </span>
-                                    </button>
-                                    <button
-                                        onClick={() => handleDecline(booking.id)}
-                                        style={{
-                                            padding: '8px 16px',
-                                            borderRadius: '10px',
-                                            backgroundColor: '#e11d48',
-                                            border: 'none',
-                                            cursor: 'pointer',
-                                        }}
-                                    >
-                                        <span style={{ color: '#fff', fontWeight: '700', fontSize: '12px' }}>
-                                            Decline
-                                        </span>
-                                    </button>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        marginTop: '14px',
+                                        paddingTop: '14px',
+                                        borderTop: '1px solid #f3f4f6',
+                                    }}
+                                >
+                                    <span style={{ color: '#9ca3af', fontSize: '12px' }}>
+                                        {booking.bookingDate ? new Date(booking.bookingDate).toLocaleDateString() : 'Today'}, {booking.timeSlot || '11:00 AM'}
+                                    </span>
+                                    <div style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
+                                        <button
+                                            onClick={() => handleAccept(booking._id || booking.id)}
+                                            style={{
+                                                padding: '8px 16px',
+                                                borderRadius: '10px',
+                                                backgroundColor: '#059669',
+                                                border: 'none',
+                                                cursor: 'pointer',
+                                            }}
+                                        >
+                                            <span style={{ color: '#fff', fontWeight: '700', fontSize: '12px' }}>
+                                                Accept
+                                            </span>
+                                        </button>
+                                        <button
+                                            onClick={() => handleDecline(booking._id || booking.id)}
+                                            style={{
+                                                padding: '8px 16px',
+                                                borderRadius: '10px',
+                                                backgroundColor: '#e11d48',
+                                                border: 'none',
+                                                cursor: 'pointer',
+                                            }}
+                                        >
+                                            <span style={{ color: '#fff', fontWeight: '700', fontSize: '12px' }}>
+                                                Decline
+                                            </span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
+                        ))
+                    ) : (
+                        <div style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
+                            No recent bookings
                         </div>
-                    ))}
+                    )}
                 </div>
 
                 {/* ── Recent Reviews ──────────────────────────────────────────────── */}
@@ -611,72 +653,78 @@ export default function MobileSalonAdminDashboard() {
                         </button>
                     </div>
 
-                    {MOCK_REVIEWS.map((review) => (
-                        <div
-                            key={review.id}
-                            style={{
-                                backgroundColor: '#fff',
-                                borderRadius: '14px',
-                                padding: '14px',
-                                marginBottom: '12px',
-                                ...cardShadow,
-                            }}
-                        >
-                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
-                                <Avatar
-                                    initials={review.initials}
-                                    color={review.avatarColor}
-                                    size={44}
-                                />
-                                <div style={{ marginLeft: '12px', flex: 1 }}>
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            flexDirection: 'row',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                        }}
-                                    >
-                                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                            <span
-                                                style={{
-                                                    fontWeight: 'bold',
-                                                    color: '#1f2937',
-                                                    fontSize: '15px',
-                                                }}
-                                            >
-                                                {review.name}
-                                            </span>
-                                            <div style={{ display: 'flex', flexDirection: 'row', marginLeft: '8px' }}>
-                                                {[1, 2, 3, 4, 5].map((i) => (
-                                                    <Star
-                                                        key={i}
-                                                        size={10}
-                                                        fill={i <= review.rating ? '#fbbf24' : '#e5e7eb'}
-                                                        color={i <= review.rating ? '#fbbf24' : '#e5e7eb'}
-                                                    />
-                                                ))}
+                    {(dashboardData?.recentReviews || []).length > 0 ? (
+                        dashboardData.recentReviews.map((review) => (
+                            <div
+                                key={review._id}
+                                style={{
+                                    backgroundColor: '#fff',
+                                    borderRadius: '14px',
+                                    padding: '14px',
+                                    marginBottom: '12px',
+                                    ...cardShadow,
+                                }}
+                            >
+                                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                                    <Avatar
+                                        initials={review.user?.name?.substring(0, 2).toUpperCase()}
+                                        color={'#fda4af'}
+                                        size={44}
+                                    />
+                                    <div style={{ marginLeft: '12px', flex: 1 }}>
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                            }}
+                                        >
+                                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                                <span
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        color: '#1f2937',
+                                                        fontSize: '15px',
+                                                    }}
+                                                >
+                                                    {review.user?.name || 'Anonymous'}
+                                                </span>
+                                                <div style={{ display: 'flex', flexDirection: 'row', marginLeft: '8px' }}>
+                                                    {[1, 2, 3, 4, 5].map((i) => (
+                                                        <Star
+                                                            key={i}
+                                                            size={10}
+                                                            fill={i <= review.rating ? '#fbbf24' : '#e5e7eb'}
+                                                            color={i <= review.rating ? '#fbbf24' : '#e5e7eb'}
+                                                        />
+                                                    ))}
+                                                </div>
                                             </div>
+                                            <span style={{ color: '#9ca3af', fontSize: '12px' }}>
+                                                {new Date(review.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                            </span>
                                         </div>
-                                        <span style={{ color: '#9ca3af', fontSize: '12px' }}>
-                                            May 11
-                                        </span>
+                                        <div
+                                            style={{
+                                                color: '#6b7280',
+                                                marginTop: '4px',
+                                                fontSize: '13px',
+                                                lineHeight: '18px',
+                                            }}
+                                        >
+                                            {review.comment}
+                                        </div>
                                     </div>
-                                    <div
-                                        style={{
-                                            color: '#6b7280',
-                                            marginTop: '4px',
-                                            fontSize: '13px',
-                                            lineHeight: '18px',
-                                        }}
-                                    >
-                                        {review.text}
-                                    </div>
+                                    <ChevronRight size={16} color="#9ca3af" style={{ marginLeft: '4px' }} />
                                 </div>
-                                <ChevronRight size={16} color="#9ca3af" style={{ marginLeft: '4px' }} />
                             </div>
+                        ))
+                    ) : (
+                        <div style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>
+                            No recent reviews
                         </div>
-                    ))}
+                    )}
                 </div>
             </div>
 

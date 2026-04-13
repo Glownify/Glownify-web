@@ -208,7 +208,7 @@ export default function MobileSalonProfileScreen() {
                         </div>
 
                         <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#1f2937', marginBottom: '4px', marginTop: 0 }}>
-                            {roleDetails?.shopName || user?.name || 'Glamour Salon'}
+                            {roleDetails?.shopName || user?.name || 'Salon Owner'}
                         </h2>
 
                         {/* Rating pill */}

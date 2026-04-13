@@ -42,11 +42,11 @@ const SalonOwnerProfilePage = () => {
   };
 
   const currentUser = user || {
-    name: "Glamour Salon",
-    email: "salonowner1@gmail.com",
+    name: "Salon Owner",
+    email: "",
     roleDetails: {
-      shopName: "Glamour Salon",
-      location: { address: "MG Road, Bangalore" },
+      shopName: "Salon",
+      location: { address: "" },
     },
   };
 

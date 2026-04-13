@@ -194,8 +194,8 @@ const SHeader = ({ title, subtitle, onEdit, onViewAll, editMode }) => (
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export default function MobileMyViewScreen() {
     const navigate = useNavigate();
-    // const userDetails = useSelector(state => state.auth.user);
-    // const salonData   = useSelector(state => state.user.salonDetails);
+    const { user } = useSelector(state => state.auth);
+    const roleDetails = user?.roleDetails || {};
 
     const specialists = MOCK_SPECIALISTS;
     const openingHours = DEFAULT_HOURS;
@@ -210,11 +210,22 @@ export default function MobileMyViewScreen() {
     const [isOpen, setIsOpen] = useState(true);
 
     // ── Editable fields ────────────────────────────────────────────────────────
-    const [shopName, setShopName] = useState('Glamour Salon');
-    const [tagline, setTagline] = useState('Premium Hair & Beauty Studio');
-    const [about, setAbout] = useState('We specialize in professional beauty & grooming. Our skilled team ensures you leave looking and feeling your absolute best.');
-    const [contact, setContact] = useState({ phone: '+91 98765 43210', whatsapp: '+91 98765 43210', email: 'hello@glamoursalon.in', website: 'www.glamoursalon.in', instagram: '@glamoursalon' });
-    const [location, setLocation] = useState({ address: '42, Rose Garden Road', city: 'Mumbai', landmark: 'Near Inorbit Mall', parking: 'Street parking available' });
+    const [shopName, setShopName] = useState(roleDetails?.shopName || 'Glamour Salon');
+    const [tagline, setTagline] = useState(roleDetails?.tagline || 'Premium Hair & Beauty Studio');
+    const [about, setAbout] = useState(roleDetails?.about || 'We specialize in professional beauty & grooming. Our skilled team ensures you leave looking and feeling your absolute best.');
+    const [contact, setContact] = useState({
+        phone: roleDetails?.contactNumber || '+91 98765 43210',
+        whatsapp: roleDetails?.whatsappNumber || '+91 98765 43210',
+        email: user?.email || 'hello@glamoursalon.in',
+        website: roleDetails?.website || 'www.glamoursalon.in',
+        instagram: roleDetails?.socialMedia?.instagram || '@glamoursalon'
+    });
+    const [location, setLocation] = useState({
+        address: roleDetails?.location?.address || '42, Rose Garden Road',
+        city: roleDetails?.location?.city || 'Mumbai',
+        landmark: roleDetails?.location?.landmark || 'Near Inorbit Mall',
+        parking: roleDetails?.parkingInfo || 'Street parking available'
+    });
     const [homeService, setHomeService] = useState({ enabled: true, radius: '10', extraCharge: '100' });
     const [amenities, setAmenities] = useState({ ac: true, parking: true, wifi: true, card: true, pets: false, waiting: true, kids: false, accessible: false });
     const [policies, setPolicies] = useState({ cancellation: 'Free cancellation up to 2 hours before appointment.', late: 'A grace period of 10 minutes is allowed.', payment: 'Cash, card, and UPI accepted.', children: 'Children under 5 are welcome with a guardian.' });

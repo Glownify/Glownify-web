@@ -12,7 +12,35 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+const DUMMY_EXECUTIVES = [
+  {
+    _id: "se1",
+    user: { name: "Robert Fox", email: "robert.fox@glownify.com", phone: "+1 555 010 111" },
+    referralId: "GLO-FOX-9821",
+    city: "c1",
+    commissionRate: 12.5,
+    status: "Active"
+  },
+  {
+    _id: "se2",
+    user: { name: "Annette Black", email: "annette.b@glownify.com", phone: "+1 555 010 222" },
+    referralId: "GLO-ANN-4432",
+    city: "c2",
+    commissionRate: 15.0,
+    status: "Active"
+  },
+  {
+    _id: "se3",
+    user: { name: "Cody Fisher", email: "cody.f@glownify.com", phone: "+1 555 010 333" },
+    referralId: "GLO-COD-1877",
+    city: "c1",
+    commissionRate: 10.0,
+    status: "On Leave"
+  }
+];
+
 const ManageSalesExecutivePage = () => {
+
   const dispatch = useDispatch();
 
   // Redux State
@@ -102,7 +130,8 @@ const ManageSalesExecutivePage = () => {
             <div key={i} className="h-64 bg-slate-100 animate-pulse rounded-[32px]" />
           ))
         ) : (
-          salesExecutives.map((se) => {
+          (salesExecutives.length > 0 ? salesExecutives : DUMMY_EXECUTIVES).map((se) => {
+
             // CITY NAME LOOKUP LOGIC
             const cityName = cities.find(c => c._id === se.city)?.name || "Not Assigned";
 

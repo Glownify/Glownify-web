@@ -20,6 +20,7 @@ import { useDispatch } from "react-redux";
 import { logoutUser } from "../../redux/slice/authSlice";
 import useMobile from "../../hooks/useMobile";
 import MobileSalesExecutiveBottomNav from "../../pages/SalesExecutive/Mobile/MobileSalesExecutiveBottomNav";
+import CreateLeadModal from "../../pages/SalesExecutive/CreateLeadModal";
 
 const navItems = [
   { to: "/sales-executive/dashboard", label: "Analytics", icon: LayoutDashboard },
@@ -28,6 +29,7 @@ const navItems = [
   { to: "/sales-executive/manage-salesman", label: "Sales persons", icon: Users },
   { to: "/sales-executive/my-commissions", label: "My Commissions", icon: Wallet },
   { to: "/sales-executive/reports", label: "Reports", icon: FileText },
+  { to: "/sales-executive/districts", label: "Districts", icon: MapPin },
 ];
 
 const SalesExecutiveLayout = () => {
@@ -35,6 +37,7 @@ const SalesExecutiveLayout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
 
   const logout = () => {
     dispatch(logoutUser());
@@ -50,7 +53,7 @@ const SalesExecutiveLayout = () => {
     return (
       <div className="min-h-screen bg-[#F8F9FA] pb-24">
         {/* Mobile Header Row */}
-        <div className="sticky top-0 z-40 flex items-center justify-between bg-white/80 px-6 py-4 backdrop-blur-xl border-b border-slate-100">
+        <div className="sticky top-0 z-40 flex items-center justify-between bg-white/90 px-6 py-4 backdrop-blur-xl border-b border-slate-100">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-slate-100 shadow-sm">
               <img src="https://i.pravatar.cc/100?u=exec1" alt="Executive" className="h-full w-full object-cover" />
@@ -59,17 +62,24 @@ const SalesExecutiveLayout = () => {
               <span className="text-sm font-black text-slate-800">Executive</span>
               <div className="flex items-center gap-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Online</span>
+                <span className="text-[10px] font-bold text-slate-400 upper-case tracking-wider">ONLINE</span>
               </div>
             </div>
           </div>
 
-          <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
-             <span className="text-[14px] font-black text-[#E11D48] tracking-tight uppercase">{getPageTitle()}</span>
+          <div className="flex flex-col items-center">
+             <span className="text-[14px] font-black text-[#8B5CF6] tracking-tight uppercase leading-none">{getPageTitle()}</span>
+             <div className="h-1 w-4 bg-[#8B5CF6] rounded-full mt-1.5" />
           </div>
 
           <div className="flex items-center gap-4">
-             <button className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-400">
+             <button 
+               onClick={() => setIsLeadModalOpen(true)}
+               className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-[#8B5CF6] transition-all active:scale-95"
+             >
+                <Plus size={18} />
+             </button>
+             <button className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-400 transition-all active:scale-95">
                 <Bell size={18} />
                 <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white" />
              </button>
@@ -142,7 +152,10 @@ const SalesExecutiveLayout = () => {
            </div>
 
            <div className="flex items-center gap-6">
-              <button className="h-13 px-8 rounded-2xl bg-[#8B5CF6] text-white text-[14px] font-black shadow-xl shadow-purple-500/20 active:scale-95 transition-all hover:-translate-y-1">
+              <button 
+                onClick={() => setIsLeadModalOpen(true)}
+                className="h-13 px-8 rounded-2xl bg-[#8B5CF6] text-white text-[14px] font-black shadow-xl shadow-purple-500/20 active:scale-95 transition-all hover:-translate-y-1"
+              >
                  Create Lead
               </button>
               <div className="flex items-center gap-3 border-l border-slate-100 pl-6 ml-2">
@@ -164,6 +177,10 @@ const SalesExecutiveLayout = () => {
         </div>
       </main>
 
+       <CreateLeadModal 
+        isOpen={isLeadModalOpen} 
+        onClose={() => setIsLeadModalOpen(false)} 
+      />
       <style>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

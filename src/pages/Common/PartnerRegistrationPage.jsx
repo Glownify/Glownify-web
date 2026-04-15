@@ -17,11 +17,16 @@ const PartnerRegistrationPage = () => {
   const [salonStep, setSalonStep] = useState(1);
   const [salonFormData, setSalonFormData] = useState({
     basicInfo: {
+      ownerName: "",
       salonname: "",
+      password: "",
       salonType: "Unisex",
+      shopType: "personal",
+      offersHomeService: false,
       mobileno: "",
       watsupno: "",
       email: "",
+      partners: [],
     },
     addressInfo: {
       country: "India",
@@ -50,7 +55,46 @@ const PartnerRegistrationPage = () => {
   };
 
   const handleSalonFinalSubmit = () => {
-    console.log("final salon form submit data", salonFormData);
+    const finalPayload = {
+      name: salonFormData.basicInfo.ownerName,
+      email: salonFormData.basicInfo.email,
+      phone: salonFormData.basicInfo.mobileno,
+      password: salonFormData.basicInfo.password,
+      whatsappNumber: salonFormData.basicInfo.watsupno,
+      role: "salon_owner",
+      salonData: {
+        shopType: salonFormData.basicInfo.shopType,
+        shopName: salonFormData.basicInfo.salonname,
+        salonCategory: salonFormData.basicInfo.salonType.toLowerCase(),
+        offersHomeService: salonFormData.basicInfo.offersHomeService,
+        location: {
+          type: "Point",
+          address: salonFormData.addressInfo.fullAddress || `${salonFormData.addressInfo.area}, ${salonFormData.addressInfo.city}`,
+          coordinates: [77.5946, 12.9716], // Placeholder coordinates
+          city: salonFormData.addressInfo.city,
+          state: salonFormData.addressInfo.state,
+          pincode: salonFormData.addressInfo.pincode
+        },
+        galleryImages: [salonFormData.documents.coverImg, salonFormData.documents.gallaryImg].filter(Boolean),
+        partners: salonFormData.basicInfo.shopType === "partnership" ? salonFormData.basicInfo.partners : [],
+        governmentId: {
+          idType: salonFormData.documents.idType || "Aadhaar",
+          idNumber: salonFormData.documents.idNumber || "Not Provided",
+          idImageUrl: "https://example.com/id-image.png" // Placeholder
+        },
+        openingHours: [
+          { day: "Mon", start: "09:00", end: "20:00" },
+          { day: "Tue", start: "09:00", end: "20:00" },
+          { day: "Wed", start: "09:00", end: "20:00" },
+          { day: "Thu", start: "09:00", end: "20:00" },
+          { day: "Fri", start: "09:00", end: "20:00" },
+          { day: "Sat", start: "09:00", end: "20:00" },
+          { day: "Sun", start: "09:00", end: "20:00" }
+        ]
+      }
+    };
+    console.log("final salon form submit data for backend:", finalPayload);
+    alert("Registration data prepared for backend! Check console for JSON structure.");
   };
 
   // ══════════════════════════════════════

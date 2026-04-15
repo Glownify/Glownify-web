@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, LogOut, ShoppingCart, MapPin, User, ChevronRight, Search } from "lucide-react";
+import { Menu, X, LogOut, ShoppingCart, MapPin, User, ChevronRight } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../redux/slice/authSlice";
 
@@ -81,14 +81,11 @@ const Navbar = () => {
 
             <NavLink to="/courses" className="text-rose-600 font-bold hover:text-rose-700 transition-colors">Courses</NavLink>
             {!user && (
-              <NavLink to="/partner-with-us" className="text-rose-600 font-bold hover:text-rose-700 transition-colors">
+              <NavLink to="/partner-with-us/salon-owner-register" className="text-rose-600 font-bold hover:text-rose-700 transition-colors">
                 Partner With Us
               </NavLink>
             )}
-            <div>
-              <Search className="w-5 h-5 text-gray-600 text-rose-600 hover:bg-rose-80 cursor-pointer" />
-              <span className="absolute top-1 right-1 w-2 h-2  hover:bg-rose-500 rounded-full border-2 border-white"></span>
-            </div>
+
 
           </nav>
 
@@ -191,7 +188,7 @@ const Navbar = () => {
                 </button>
                 <MobileNavLink to="/bookings" label="My Bookings" onClick={() => setOpen(false)} />
                 <MobileNavLink to="/courses" label="Courses" onClick={() => setOpen(false)} />
-                {!user && <MobileNavLink to="/partner-with-us" label="Partner With Us" highlight onClick={() => setOpen(false)} />}
+                {!user && <MobileNavLink to="/partner-with-us/salon-owner-register" label="Partner With Us" highlight onClick={() => setOpen(false)} />}
               </nav>
             </div>
 

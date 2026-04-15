@@ -125,262 +125,262 @@ const SalonOwnerDashboard = () => {
   return (
     <div className="space-y-12 animate-in fade-in duration-1000">
 
-        <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
-          {actionCards.map((item) => (
-            <button 
-              key={item.label + item.bg} 
-              onClick={() => item.path !== "#" && navigate(item.path)}
-              className="h-[64px] rounded-full bg-white border border-slate-50 flex items-center justify-center gap-4 px-6 font-black text-[13px] text-slate-700 hover:scale-[1.03] transition-all hover:shadow-[0_15px_30px_rgba(139,92,246,0.06)] group"
-            >
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center`} style={{backgroundColor: item.bg}}>
-                 <item.icon size={16} style={{color: item.text}} />
-              </div>
-              <span className="tracking-tight">{item.label}</span>
-            </button>
-          ))}
-        </section>
+      <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+        {actionCards.map((item) => (
+          <button
+            key={item.label + item.bg}
+            onClick={() => item.path !== "#" && navigate(item.path)}
+            className="h-[64px] rounded-full bg-white border border-slate-50 flex items-center justify-center gap-4 px-6 font-black text-[13px] text-slate-700 hover:scale-[1.03] transition-all hover:shadow-[0_15px_30px_rgba(139,92,246,0.06)] group"
+          >
+            <div className={`w-9 h-9 rounded-full flex items-center justify-center`} style={{ backgroundColor: item.bg }}>
+              <item.icon size={16} style={{ color: item.text }} />
+            </div>
+            <span className="tracking-tight">{item.label}</span>
+          </button>
+        ))}
+      </section>
 
-        <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          {metricCards.map((card) => (
-            <div key={card.title} className="bg-white rounded-[45px] border border-purple-50/50 px-8 py-8 shadow-[0_15px_40px_rgba(0,0,0,0.02)] flex items-center justify-between min-h-[140px] hover:shadow-xl hover:-translate-y-1 transition-all group">
-              <div>
-                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.1em] mb-2">{card.title}</p>
-                <p className="text-[10px] text-[#8B5CF6] font-bold mb-1">{card.subtitle}</p>
-                <h3 className="text-3xl font-black text-slate-800 tracking-tight">{card.value}</h3>
-              </div>
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 ${card.iconWrap} bg-opacity-40`}>
-                <card.icon size={26} />
-              </div>
+      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+        {metricCards.map((card) => (
+          <div key={card.title} className="bg-white rounded-[45px] border border-purple-50/50 px-8 py-8 shadow-[0_15px_40px_rgba(0,0,0,0.02)] flex items-center justify-between min-h-[140px] hover:shadow-xl hover:-translate-y-1 transition-all group">
+            <div>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.1em] mb-2">{card.title}</p>
+              <p className="text-[10px] text-[#8B5CF6] font-bold mb-1">{card.subtitle}</p>
+              <h3 className="text-3xl font-black text-slate-800 tracking-tight">{card.value}</h3>
             </div>
-          ))}
-        </section>
-
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-          <div className="lg:col-span-12 xl:col-span-12 2xl:col-span-5 bg-white border border-purple-100/20 rounded-[45px] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.02)] min-h-[460px] flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-black text-slate-800 tracking-tight">Revenue Overview</h3>
-              <div className="flex items-center gap-3 bg-purple-50 p-1 rounded-xl">
-                 <button className="px-4 py-1.5 rounded-lg bg-white text-[#8B5CF6] font-bold text-xs shadow-sm">Monthly</button>
-                 <button className="px-4 py-1.5 rounded-lg text-slate-400 font-bold text-xs">Yearly</button>
-              </div>
-            </div>
-            <div className="h-[260px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={activityData} margin={{ top: 10, right: 5, left: -20, bottom: 10 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: "#94a3b8", fontWeight: 700 }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: "#94a3b8", fontWeight: 700 }} />
-                  <Tooltip contentStyle={{borderRadius: '20px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)'}} />
-                  <Bar dataKey="revenue" fill="#8B5CF6" radius={[6, 6, 0, 0]} maxBarSize={32} />
-                  <Line dataKey="bookings" type="monotone" stroke="#D946EF" strokeWidth={4} dot={{ r: 6, fill: "#fff", stroke: "#D946EF", strokeWidth: 3 }} />
-                </ComposedChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="flex items-center gap-6 text-[11px] font-black uppercase tracking-widest text-slate-400 mt-6">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]" /> Total Revenue
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#D946EF]" /> Bookings
-              </div>
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 ${card.iconWrap} bg-opacity-40`}>
+              <card.icon size={26} />
             </div>
           </div>
+        ))}
+      </section>
 
-          <div className="lg:col-span-6 xl:col-span-6 2xl:col-span-4 bg-white border border-purple-100/20 rounded-[45px] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.02)] min-h-[460px] overflow-hidden">
-            <h3 className="text-xl font-black text-slate-800 tracking-tight mb-8">Service Mix</h3>
-            <div className="space-y-8 text-[12px] text-[#6c588f]">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 border-b border-purple-50 pb-8">
-                <div className="space-y-4 text-center sm:text-left">
-                   <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Total Payout</p>
-                      <h4 className="text-2xl font-black text-[#8B5CF6]">₹ 1,85,000</h4>
-                   </div>
-                   <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Platform Fee</p>
-                      <h4 className="text-2xl font-black text-[#D946EF]">10%</h4>
-                   </div>
-                </div>
-                <div className="w-24 h-24 sm:w-28 sm:h-28 relative shrink-0">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie data={pieData} innerRadius={35} outerRadius={50} dataKey="value" stroke="none">
-                        {pieData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}
-                      </Pie>
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-[#8B5CF6]">
-                    <span className="text-[18px] font-black">43%</span>
-                    <span className="text-[7px] font-bold uppercase tracking-tighter opacity-60">Payout</span>
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between text-[14px] font-black text-slate-700"><span>Paid</span><span>₹1,80,000</span></div>
-                <div className="flex items-center justify-between text-[14px] font-black text-slate-700"><span>Pending</span><span>₹85,000</span></div>
-                <div className="pt-6 border-t border-purple-50">
-                  <div className="flex justify-between items-end mb-2">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Progress</p>
-                    <p className="text-[12px] font-black text-[#8B5CF6]">62%</p>
-                  </div>
-                  <div className="h-2 rounded-full bg-slate-100 overflow-hidden shadow-inner">
-                    <div className="h-full w-[62%] bg-gradient-to-r from-[#D946EF] to-[#8B5CF6] rounded-full shadow-lg transition-all duration-1000" />
-                  </div>
-                </div>
-              </div>
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <div className="lg:col-span-12 xl:col-span-12 2xl:col-span-5 bg-white border border-purple-100/20 rounded-[45px] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.02)] min-h-[460px] flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="text-xl font-black text-slate-800 tracking-tight">Revenue Overview</h3>
+            <div className="flex items-center gap-3 bg-purple-50 p-1 rounded-xl">
+              <button className="px-4 py-1.5 rounded-lg bg-white text-[#8B5CF6] font-bold text-xs shadow-sm">Monthly</button>
+              <button className="px-4 py-1.5 rounded-lg text-slate-400 font-bold text-xs">Yearly</button>
             </div>
           </div>
-
-          <div className="lg:col-span-6 xl:col-span-6 2xl:col-span-3 space-y-6">
-            <div className="bg-white/84 border border-[#dacaf4] rounded-[22px] px-6 py-5 shadow-sm flex items-center justify-between">
-              <h3 className="text-[18px] font-black text-[#2c1e4c] tracking-tight">Advertisements</h3>
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]" />
-                <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]/30" />
-                <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]/30" />
-              </div>
+          <div className="h-[260px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={activityData} margin={{ top: 10, right: 5, left: -20, bottom: 10 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: "#94a3b8", fontWeight: 700 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: "#94a3b8", fontWeight: 700 }} />
+                <Tooltip contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }} />
+                <Bar dataKey="revenue" fill="#8B5CF6" radius={[6, 6, 0, 0]} maxBarSize={32} />
+                <Line dataKey="bookings" type="monotone" stroke="#D946EF" strokeWidth={4} dot={{ r: 6, fill: "#fff", stroke: "#D946EF", strokeWidth: 3 }} />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex items-center gap-6 text-[11px] font-black uppercase tracking-widest text-slate-400 mt-6">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]" /> Total Revenue
             </div>
-            <div className="relative overflow-hidden rounded-[40px] border border-[#f5d29b] bg-gradient-to-br from-[#ffcf3b] via-[#ffb324] to-[#ff7a1b] min-h-[340px] shadow-[0_20px_50px_rgba(255,166,0,0.22)] p-8 flex flex-col justify-center">
-              <div className="relative z-10 max-w-[80%]">
-                <p className="text-[18px] md:text-[24px] italic font-extrabold text-[#212145]">Special Offer!</p>
-                <h4 className="text-[24px] lg:text-[28px] xl:text-[34px] font-extrabold leading-[1.1] text-[#24315d] mt-4">Get 30% OFF on Website Design</h4>
-                <p className="text-[14px] font-semibold text-[#6b3d00] mt-4">Valid till: 30 March</p>
-                <div className="flex flex-wrap gap-3 mt-6">
-                  <button className="px-5 h-11 rounded-xl bg-[#3554b8] text-white font-bold hover:scale-105 transition-transform shadow-lg shadow-blue-900/20">View Details</button>
-                  <button className="px-5 h-11 rounded-xl bg-[#ff7a1b] border border-white/40 text-white font-bold hover:scale-105 transition-transform">Contact Now</button>
-                </div>
-              </div>
-              <div className="absolute right-4 bottom-4 text-[120px] font-black text-white/10 select-none pointer-events-none rotate-12 leading-none uppercase">%</div>
-              <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/20 blur-3xl rounded-full" />
-              <div className="absolute right-8 top-1/2 -translate-y-1/2 flex flex-col gap-2">
-                 <button className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-md text-white border border-white/20 flex items-center justify-center hover:bg-white hover:text-[#ff7a1b] transition-all"><ChevronLeft size={18} /></button>
-                 <button className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-md text-white border border-white/20 flex items-center justify-center hover:bg-white hover:text-[#ff7a1b] transition-all"><ChevronRight size={18} /></button>
-              </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#D946EF]" /> Bookings
             </div>
           </div>
-        </section>
+        </div>
 
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <div className="lg:col-span-8 bg-white/84 border border-[#dacaf4] rounded-[22px] px-5 py-5 shadow-sm overflow-hidden">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-              <div className="space-y-1">
-                <h4 className="text-[18px] font-black text-[#2c1e4c] tracking-tight">Recent Bookings</h4>
-                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest leading-none">Awaiting Management</p>
+        <div className="lg:col-span-6 xl:col-span-6 2xl:col-span-4 bg-white border border-purple-100/20 rounded-[45px] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.02)] min-h-[460px] overflow-hidden">
+          <h3 className="text-xl font-black text-slate-800 tracking-tight mb-8">Service Mix</h3>
+          <div className="space-y-8 text-[12px] text-[#6c588f]">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-6 border-b border-purple-50 pb-8">
+              <div className="space-y-4 text-center sm:text-left">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Total Payout</p>
+                  <h4 className="text-2xl font-black text-[#8B5CF6]">₹ 1,85,000</h4>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Platform Fee</p>
+                  <h4 className="text-2xl font-black text-[#D946EF]">10%</h4>
+                </div>
               </div>
-              <div className="flex flex-wrap gap-3">
-                <button 
-                  onClick={() => setFilterActive(!filterActive)}
-                  className={`px-6 h-10 rounded-full border border-purple-100 text-[11px] font-black uppercase tracking-widest transition-all ${filterActive ? 'bg-[#8B5CF6] text-white shadow-lg shadow-purple-500/20' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
-                >
-                  Active Only
-                </button>
-                <button 
-                  onClick={() => setFilterMonth(!filterMonth)}
-                  className={`px-6 h-10 rounded-full border border-purple-100 text-[11px] font-black uppercase tracking-widest transition-all ${filterMonth ? 'bg-[#8B5CF6] text-white shadow-lg shadow-purple-500/20' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
-                >
-                  This Month
-                </button>
-                <button className="px-6 h-10 rounded-full border border-purple-100 bg-white text-slate-400 text-[11px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50">By Area <ChevronDown size={14} /></button>
+              <div className="w-24 h-24 sm:w-28 sm:h-28 relative shrink-0">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={pieData} innerRadius={35} outerRadius={50} dataKey="value" stroke="none">
+                      {pieData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-[#8B5CF6]">
+                  <span className="text-[18px] font-black">43%</span>
+                  <span className="text-[7px] font-bold uppercase tracking-tighter opacity-60">Payout</span>
+                </div>
               </div>
             </div>
-
             <div className="space-y-4">
-              {bookings.map((booking) => (
-                <div key={booking.id} className="group flex flex-col xl:flex-row xl:items-center justify-between gap-6 p-6 xl:p-8 rounded-[32px] bg-slate-50/50 border border-slate-100 transition-all hover:bg-white hover:shadow-xl hover:shadow-purple-500/5 hover:-translate-y-1">
-                  <div className="flex items-center gap-6 flex-1">
-                    <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg shadow-purple-500/10 border-2 border-white grayscale-[0.2] group-hover:grayscale-0 transition-all shrink-0">
-                       <img src={`https://i.pravatar.cc/150?u=${booking.id}`} alt="customer" className="w-full h-full object-cover" />
-                    </div>
-                    <div className="space-y-1">
-                       <div className="flex items-center gap-2">
-                          <h5 className="text-[17px] font-black text-slate-800">{booking.name}</h5>
-                          <span className="px-2 py-0.5 rounded-lg bg-white border border-slate-100 text-[9px] font-black uppercase text-[#8B5CF6] tracking-tighter">Verified</span>
-                       </div>
-                       <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{booking.id}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-10 xl:gap-16 flex-[2]">
-                    <div className="space-y-1">
-                       <p className="text-[9px] font-black uppercase tracking-widest text-[#8B5CF6]/60">Treatment</p>
-                       <p className="text-[14px] font-black text-[#8B5CF6] truncate max-w-[150px]">{booking.service}</p>
-                    </div>
-                    <div className="space-y-1">
-                       <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Schedule</p>
-                       <div className="flex items-center gap-2">
-                          <Clock size={12} className="text-[#D946EF]" />
-                          <p className="text-[13px] font-bold text-slate-700">{booking.time}</p>
-                       </div>
-                    </div>
-                    <div className="space-y-1">
-                       <p className="text-[9px] font-black uppercase tracking-widest text-rose-500/60">Revenue</p>
-                       <p className="text-[16px] font-black text-slate-900">{booking.amount}</p>
-                    </div>
-                    <div className="space-y-1 min-w-[100px]">
-                       <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Current Status</p>
-                       <div className={`text-[11px] font-black uppercase tracking-widest ${booking.status === 'Cancelled' ? 'text-rose-500' : 'text-emerald-500'}`}>
-                          {booking.status}
-                       </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                     <button className="px-8 py-3.5 rounded-2xl bg-[#8B5CF6] text-white font-black text-[12px] uppercase tracking-widest shadow-lg shadow-purple-500/20 hover:scale-105 active:scale-95 transition-all">Accept</button>
-                     <button className="px-8 py-3.5 rounded-2xl bg-rose-50 text-rose-500 border border-rose-100 font-black text-[12px] uppercase tracking-widest hover:bg-rose-500 hover:text-white transition-all">Decline</button>
-                  </div>
+              <div className="flex items-center justify-between text-[14px] font-black text-slate-700"><span>Paid</span><span>₹1,80,000</span></div>
+              <div className="flex items-center justify-between text-[14px] font-black text-slate-700"><span>Pending</span><span>₹85,000</span></div>
+              <div className="pt-6 border-t border-purple-50">
+                <div className="flex justify-between items-end mb-2">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Progress</p>
+                  <p className="text-[12px] font-black text-[#8B5CF6]">62%</p>
                 </div>
-              ))}
-            </div>
-
-            <div className="flex items-center justify-between pt-4 text-[13px] text-[#7f70a6]">
-              <p>Showing {(currentPage-1)*6+1} - {Math.min(currentPage*6, 48)} of 48</p>
-              <div className="flex items-center gap-2">
-                <button 
-                  onClick={() => setCurrentPage(Math.max(1, currentPage-1))}
-                  className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50 transition-all font-bold"
-                >
-                  {`<`}
-                </button>
-                {[1, 2, 3].map(page => (
-                  <button 
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={`w-8 h-8 rounded-lg transition-all font-bold ${currentPage === page ? 'bg-[#8a63f7] text-white shadow-lg' : 'border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50'}`}
-                  >
-                    {page}
-                  </button>
-                ))}
-                <span className="px-1 text-slate-300">...</span>
-                <button 
-                   onClick={() => setCurrentPage(79)}
-                   className={`w-10 h-8 rounded-lg transition-all font-bold ${currentPage === 79 ? 'bg-[#8a63f7] text-white shadow-lg' : 'border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50'}`}
-                >
-                  79
-                </button>
-                <button 
-                  onClick={() => setCurrentPage(Math.min(79, currentPage+1))}
-                  className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50 transition-all font-bold"
-                >
-                  {`>`}
-                </button>
+                <div className="h-2 rounded-full bg-slate-100 overflow-hidden shadow-inner">
+                  <div className="h-full w-[62%] bg-gradient-to-r from-[#D946EF] to-[#8B5CF6] rounded-full shadow-lg transition-all duration-1000" />
+                </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="lg:col-span-4 bg-white/84 border border-[#dacaf4] rounded-[22px] px-5 py-5 shadow-sm">
-            <h4 className="text-[15px] font-bold text-[#2c1e4c] mb-3">Low Performance Alert</h4>
-            <div className="space-y-3">
-              {alertsData.map((alert) => (
-                <div key={alert.id} className="flex items-center justify-between rounded-2xl bg-[#f6efff] px-4 py-3.5">
-                  <div>
-                    <p className="text-[14px] font-semibold text-[#2f2450]">{alert.name}</p>
-                    <p className="text-[11px] text-[#9181b4]">{alert.location}</p>
-                  </div>
-                  <div className="px-3 py-1.5 rounded-xl bg-white/95 text-[#5e4b86] text-[12px] font-bold shadow-sm">{alert.score}</div>
-                </div>
-              ))}
+        <div className="lg:col-span-6 xl:col-span-6 2xl:col-span-3 space-y-6">
+          <div className="bg-white/84 border border-[#dacaf4] rounded-[22px] px-6 py-5 shadow-sm flex items-center justify-between">
+            <h3 className="text-[18px] font-black text-[#2c1e4c] tracking-tight">Advertisements</h3>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]/30" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]/30" />
             </div>
           </div>
-        </section>
+          <div className="relative overflow-hidden rounded-[40px] border border-[#f5d29b] bg-gradient-to-br from-[#ffcf3b] via-[#ffb324] to-[#ff7a1b] min-h-[340px] shadow-[0_20px_50px_rgba(255,166,0,0.22)] p-8 flex flex-col justify-center">
+            <div className="relative z-10 max-w-[80%]">
+              <p className="text-[18px] md:text-[24px] italic font-extrabold text-[#212145]">Special Offer!</p>
+              <h4 className="text-[24px] lg:text-[28px] xl:text-[34px] font-extrabold leading-[1.1] text-[#24315d] mt-4">Get 30% OFF on Website Design</h4>
+              <p className="text-[14px] font-semibold text-[#6b3d00] mt-4">Valid till: 30 March</p>
+              <div className="flex flex-wrap gap-3 mt-6">
+                <button className="px-5 h-11 rounded-xl bg-[#3554b8] text-white font-bold hover:scale-105 transition-transform shadow-lg shadow-blue-900/20">View Details</button>
+                <button className="px-5 h-11 rounded-xl bg-[#ff7a1b] border border-white/40 text-white font-bold hover:scale-105 transition-transform">Contact Now</button>
+              </div>
+            </div>
+            <div className="absolute right-4 bottom-4 text-[120px] font-black text-white/10 select-none pointer-events-none rotate-12 leading-none uppercase">%</div>
+            <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/20 blur-3xl rounded-full" />
+            <div className="absolute right-8 top-1/2 -translate-y-1/2 flex flex-col gap-2">
+              <button className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-md text-white border border-white/20 flex items-center justify-center hover:bg-white hover:text-[#ff7a1b] transition-all"><ChevronLeft size={18} /></button>
+              <button className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-md text-white border border-white/20 flex items-center justify-center hover:bg-white hover:text-[#ff7a1b] transition-all"><ChevronRight size={18} /></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div className="lg:col-span-8 bg-white/84 border border-[#dacaf4] rounded-[22px] px-5 py-5 shadow-sm overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <div className="space-y-1">
+              <h4 className="text-[18px] font-black text-[#2c1e4c] tracking-tight">Recent Bookings</h4>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest leading-none">Awaiting Management</p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={() => setFilterActive(!filterActive)}
+                className={`px-6 h-10 rounded-full border border-purple-100 text-[11px] font-black uppercase tracking-widest transition-all ${filterActive ? 'bg-[#8B5CF6] text-white shadow-lg shadow-purple-500/20' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
+              >
+                Active Only
+              </button>
+              <button
+                onClick={() => setFilterMonth(!filterMonth)}
+                className={`px-6 h-10 rounded-full border border-purple-100 text-[11px] font-black uppercase tracking-widest transition-all ${filterMonth ? 'bg-[#8B5CF6] text-white shadow-lg shadow-purple-500/20' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
+              >
+                This Month
+              </button>
+              <button className="px-6 h-10 rounded-full border border-purple-100 bg-white text-slate-400 text-[11px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50">By Area <ChevronDown size={14} /></button>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {bookings.map((booking) => (
+              <div key={booking.id} className="group flex flex-col xl:flex-row xl:items-center justify-between gap-6 p-6 xl:p-8 rounded-[32px] bg-slate-50/50 border border-slate-100 transition-all hover:bg-white hover:shadow-xl hover:shadow-purple-500/5 hover:-translate-y-1">
+                <div className="flex items-center gap-6 flex-1">
+                  <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg shadow-purple-500/10 border-2 border-white grayscale-[0.2] group-hover:grayscale-0 transition-all shrink-0">
+                    <img src={`https://i.pravatar.cc/150?u=${booking.id}`} alt="customer" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <h5 className="text-[17px] font-black text-slate-800">{booking.name}</h5>
+                      <span className="px-2 py-0.5 rounded-lg bg-white border border-slate-100 text-[9px] font-black uppercase text-[#8B5CF6] tracking-tighter">Verified</span>
+                    </div>
+                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{booking.id}</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-10 xl:gap-16 flex-[2]">
+                  <div className="space-y-1">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-[#8B5CF6]/60">Treatment</p>
+                    <p className="text-[14px] font-black text-[#8B5CF6] truncate max-w-[150px]">{booking.service}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Schedule</p>
+                    <div className="flex items-center gap-2">
+                      <Clock size={12} className="text-[#D946EF]" />
+                      <p className="text-[13px] font-bold text-slate-700">{booking.time}</p>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-rose-500/60">Revenue</p>
+                    <p className="text-[16px] font-black text-slate-900">{booking.amount}</p>
+                  </div>
+                  <div className="space-y-1 min-w-[100px]">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Current Status</p>
+                    <div className={`text-[11px] font-black uppercase tracking-widest ${booking.status === 'Cancelled' ? 'text-rose-500' : 'text-emerald-500'}`}>
+                      {booking.status}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button className="px-8 py-3.5 rounded-2xl bg-[#8B5CF6] text-white font-black text-[12px] uppercase tracking-widest shadow-lg shadow-purple-500/20 hover:scale-105 active:scale-95 transition-all">Accept</button>
+                  <button className="px-8 py-3.5 rounded-2xl bg-rose-50 text-rose-500 border border-rose-100 font-black text-[12px] uppercase tracking-widest hover:bg-rose-500 hover:text-white transition-all">Decline</button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-between pt-4 text-[13px] text-[#7f70a6]">
+            <p>Showing {(currentPage - 1) * 6 + 1} - {Math.min(currentPage * 6, 48)} of 48</p>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50 transition-all font-bold"
+              >
+                {`<`}
+              </button>
+              {[1, 2, 3].map(page => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`w-8 h-8 rounded-lg transition-all font-bold ${currentPage === page ? 'bg-[#8a63f7] text-white shadow-lg' : 'border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50'}`}
+                >
+                  {page}
+                </button>
+              ))}
+              <span className="px-1 text-slate-300">...</span>
+              <button
+                onClick={() => setCurrentPage(79)}
+                className={`w-10 h-8 rounded-lg transition-all font-bold ${currentPage === 79 ? 'bg-[#8a63f7] text-white shadow-lg' : 'border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50'}`}
+              >
+                79
+              </button>
+              <button
+                onClick={() => setCurrentPage(Math.min(79, currentPage + 1))}
+                className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50 transition-all font-bold"
+              >
+                {`>`}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="lg:col-span-4 bg-white/84 border border-[#dacaf4] rounded-[22px] px-5 py-5 shadow-sm">
+          <h4 className="text-[15px] font-bold text-[#2c1e4c] mb-3">Low Performance Alert</h4>
+          <div className="space-y-3">
+            {alertsData.map((alert) => (
+              <div key={alert.id} className="flex items-center justify-between rounded-2xl bg-[#f6efff] px-4 py-3.5">
+                <div>
+                  <p className="text-[14px] font-semibold text-[#2f2450]">{alert.name}</p>
+                  <p className="text-[11px] text-[#9181b4]">{alert.location}</p>
+                </div>
+                <div className="px-3 py-1.5 rounded-xl bg-white/95 text-[#5e4b86] text-[12px] font-bold shadow-sm">{alert.score}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

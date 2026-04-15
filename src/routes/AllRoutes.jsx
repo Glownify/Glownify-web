@@ -30,6 +30,7 @@ import LeadPipeline from "../pages/SalesExecutive/LeadPipeline";
 import MyCommissions from "../pages/SalesExecutive/MyCommissions";
 import SalesReportPage from "../pages/SalesExecutive/SalesReportPage";
 import MyTargetsPage from "../pages/SalesExecutive/MyTargetsPage";
+import DistrictsPage from "../pages/SalesExecutive/DistrictsPage";
 
 // ─── Protected Layouts ───────────────────────────────────────────────────────
 import SalonOwnerLayout from "../components/layout/SalonOwnerLayout";
@@ -97,8 +98,6 @@ import OffersPage from "../pages/User/OffersPage";
 import MobileBookingsPage from "../pages/User/MobileBookingsPage";
 import MobileProfilePage from "../pages/User/MobileProfilePage";
 import PartnerRegistrationPage from "../pages/Common/PartnerRegistrationPage";
-import SalonOwnerRegisterPage from "../pages/Common/SalonOwnerRegisterPage";
-import IndependentProfessionalRegistrarionPage from "../pages/Common/IndependentProfessionalRegistrarionPage";
 import IndependentProfessionalDetailPage from "../pages/User/HomePageLayout/IndependentProfessionalDetailPage";
 import BlogPage from "../pages/Common/BlogPage";
 import AboutPage from "../pages/Common/AboutPage";
@@ -129,9 +128,9 @@ const AllRoutes = () => {
             <Route path="/offers" element={<OffersPage />} />
             <Route path="/bookings" element={<MobileBookingsPage />} />
             <Route path="/profile" element={<MobileProfilePage />} />
-            <Route path="/partner-with-us" element={<PartnerRegistrationPage />} />
-            <Route path="/partner-with-us/salon-owner-register" element={<SalonOwnerRegisterPage />} />
-            <Route path="/partner-with-us/independent-professional-register" element={<IndependentProfessionalRegistrarionPage />} />
+            <Route path="/partner-with-us" element={<Navigate replace to="/partner-with-us/salon-owner-register" />} />
+            <Route path="/partner-with-us/salon-owner-register" element={<PartnerRegistrationPage />} />
+            <Route path="/partner-with-us/independent-professional-register" element={<PartnerRegistrationPage />} />
             <Route path="/booksubscriptionpage" element={<BookSubscriptionPage />} />
             <Route path="/paymentsubscriptionpage" element={<PaymentSubscriptionPage />} />
             <Route path="/independentprofessionaldetailspage" element={<IndependentProfessionalDetailPage />} />
@@ -184,6 +183,7 @@ const AllRoutes = () => {
             <Route path="my-targets" element={<MyTargetsPage />} />
             <Route path="my-commissions" element={<MyCommissions />} />
             <Route path="reports" element={<SalesReportPage />} />
+            <Route path="districts" element={<DistrictsPage />} />
             <Route path="profile" element={<SalesExecutiveProfilePage />} />
           </Route>
 

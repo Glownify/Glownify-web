@@ -1,8 +1,35 @@
-
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
+// Icon imports
+import haircutIcon from "../../../assets/categoryIcons/haircut.svg";
+import spaIcon from "../../../assets/categoryIcons/spa.svg";
+import facialIcon from "../../../assets/categoryIcons/facial.svg";
+import makeupIcon from "../../../assets/categoryIcons/makeup.svg";
+import massageIcon from "../../../assets/categoryIcons/massage.svg";
+import nailsIcon from "../../../assets/categoryIcons/nails.svg";
+import waxingIcon from "../../../assets/categoryIcons/waxing.svg";
+import coloringIcon from "../../../assets/categoryIcons/coloring.svg";
+import skinIcon from "../../../assets/categoryIcons/skin.svg";
+
+const CATEGORY_ICONS = {
+    "Haircut": haircutIcon,
+    "Hair Care": haircutIcon,
+    "Spa": spaIcon,
+    "Facial": facialIcon,
+    "Makeup": makeupIcon,
+    "Massage": massageIcon,
+    "Nails": nailsIcon,
+    "Waxing": waxingIcon,
+    "Coloring": coloringIcon,
+    "Skin Therapy": skinIcon,
+    "Skin": skinIcon,
+};
+
+const DEFAULT_ICON = haircutIcon;
+
 // Service Categories — mobile only (horizontal icon scroll)
-const ServiceCategories = ({ activeCategory, setActiveCategory }) => {
+const ServiceCategories = ({ categories, activeCategory, setActiveCategory }) => {
     const navigate = useNavigate();
     const cats = Array.isArray(categories) ? categories : [];
 
@@ -20,7 +47,7 @@ const ServiceCategories = ({ activeCategory, setActiveCategory }) => {
             </div>
 
             <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-                {cats.map((cat) => {
+                {cats.filter(Boolean).map((cat) => {
                     const isActive = activeCategory === cat.name;
                     return (
                         <button

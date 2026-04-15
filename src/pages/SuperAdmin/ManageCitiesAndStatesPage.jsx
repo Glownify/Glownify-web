@@ -15,12 +15,30 @@ import {
 import toast from 'react-hot-toast';
 import useMobile from '../../hooks/useMobile';
 
+const DUMMY_STATES = [
+  { _id: 'st1', name: 'Maharashtra', country: 'India', code: 'MH', createdAt: new Date().toISOString() },
+  { _id: 'st2', name: 'Karnataka', country: 'India', code: 'KA', createdAt: new Date().toISOString() },
+  { _id: 'st3', name: 'Delhi', country: 'India', code: 'DL', createdAt: new Date().toISOString() },
+  { _id: 'st4', name: 'Tamil Nadu', country: 'India', code: 'TN', createdAt: new Date().toISOString() },
+];
+
+const DUMMY_CITIES = [
+  { _id: 'c1', name: 'Mumbai', state: { name: 'Maharashtra' }, country: 'India', pincode: '400001', createdAt: new Date().toISOString() },
+  { _id: 'c2', name: 'Pune', state: { name: 'Maharashtra' }, country: 'India', pincode: '411001', createdAt: new Date().toISOString() },
+  { _id: 'c3', name: 'Bangalore', state: { name: 'Karnataka' }, country: 'India', pincode: '560001', createdAt: new Date().toISOString() },
+  { _id: 'c4', name: 'New Delhi', state: { name: 'Delhi' }, country: 'India', pincode: '110001', createdAt: new Date().toISOString() },
+  { _id: 'c5', name: 'Chennai', state: { name: 'Tamil Nadu' }, country: 'India', pincode: '600001', createdAt: new Date().toISOString() },
+];
+
 const ManageCitiesAndStatesPage = () => {
   const dispatch = useDispatch();
   const isMobile = useMobile();
-  const { cities = [], states = [], loading, error } = useSelector(
+  const { cities: liveCities = [], states: liveStates = [], loading, error } = useSelector(
     (state) => state.superadmin || {}
   );
+
+  const states = liveStates.length > 0 ? liveStates : DUMMY_STATES;
+  const cities = liveCities.length > 0 ? liveCities : DUMMY_CITIES;
 
   const [activeTab, setActiveTab] = useState('cities'); // cities | states
   const [isModalOpen, setIsModalOpen] = useState(false);

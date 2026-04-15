@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { 
   TrendingUp, 
   Flame, 
@@ -16,57 +16,81 @@ import useMobile from "../../hooks/useMobile";
 import MobilePipelineScreen from "./Mobile/MobilePipelineScreen";
 
 const funnelData = [
-  { label: "DISCOVERY", count: 18, color: "from-[#8B5CF6] to-[#A78BFA]", width: "100%" },
-  { label: "PROPOSAL", count: 12, color: "from-[#D946EF] to-[#F0ABFC]", width: "70%" },
-  { label: "NEGOTIATION", count: 7, color: "from-[#F43F5E] to-[#FB7185]", width: "40%" },
+  { label: "DISCOVERY", count: 184, color: "from-[#8B5CF6] to-[#A78BFA]", width: "100%" },
+  { label: "PROPOSAL", count: 122, color: "from-[#D946EF] to-[#F0ABFC]", width: "70%" },
+  { label: "NEGOTIATION", count: 47, color: "from-[#F43F5E] to-[#FB7185]", width: "40%" },
 ];
 
 const heatMapData = [
-  { label: "HOT LEADS", count: "09", icon: <Flame size={20} className="text-orange-500" />, color: "text-rose-500", bg: "bg-rose-50" },
-  { label: "WARM LEADS", count: "22", icon: <Sun size={20} className="text-yellow-500" />, color: "text-amber-500", bg: "bg-amber-50" },
-  { label: "COLD STORAGE", count: "11", icon: <Snowflake size={20} className="text-blue-500" />, color: "text-blue-500", bg: "bg-blue-50" },
+  { label: "HOT LEADS", count: "24", icon: <Flame size={20} className="text-orange-500" />, color: "text-rose-500", bg: "bg-rose-50" },
+  { label: "WARM LEADS", count: "112", icon: <Sun size={20} className="text-yellow-500" />, color: "text-amber-500", bg: "bg-amber-50" },
+  { label: "COLD STORAGE", count: "48", icon: <Snowflake size={20} className="text-blue-500" />, color: "text-blue-500", bg: "bg-blue-50" },
 ];
 
 const opportunities = [
   {
-    source: "Stellar Media Group",
+    source: "Elite Hair & Spa",
     subSource: "Inbound Web",
-    account: "Enterprise Tier 1",
+    account: "Premium Salon",
     status: "PROPOSAL SENT",
     statusColor: "bg-teal-50 text-teal-600",
-    value: "$120,000",
+    value: "₹ 1,20,000",
     lastAction: "Call 2h ago",
-    initials: "SM",
+    initials: "EH",
     initialsBg: "bg-rose-100 text-rose-600"
   },
   {
-    source: "Apex Logistics",
+    source: "Radiance Beauty Hub",
     subSource: "Referral",
-    account: "Mid-Market",
+    account: "Chain Salon",
     status: "HOT NEGOTIATION",
     statusColor: "bg-rose-50 text-rose-600",
-    value: "$85,500",
+    value: "₹ 8,50,500",
     lastAction: "Email Yesterday",
-    initials: "AL",
+    initials: "RB",
     initialsBg: "bg-teal-100 text-teal-600"
   },
   {
-    source: "NextKindness Corp",
+    source: "The Royal Barbers",
     subSource: "Direct Outreach",
-    account: "Government",
+    account: "Individual Pro",
     status: "DISCOVERY",
     statusColor: "bg-slate-50 text-slate-600",
-    value: "$440,000",
+    value: "₹ 45,000",
     lastAction: "No action (3d)",
-    initials: "NK",
+    initials: "TR",
     initialsBg: "bg-amber-100 text-amber-600"
   }
 ];
 
 const LeadPipeline = () => {
   const isMobile = useMobile();
-  
+  const [filter, setFilter] = useState("All");
+  const [sortBy, setSortBy] = useState("Default");
+
+  const [activeOpportunities, setActiveOpportunities] = useState(opportunities);
+
   if (isMobile) return <MobilePipelineScreen />;
+
+  const handleFilter = (status) => {
+    setFilter(status);
+    if (status === "All") {
+      setActiveOpportunities(opportunities);
+    } else {
+      setActiveOpportunities(opportunities.filter(opp => opp.status === status));
+    }
+  };
+
+  const handleSortBy = (type) => {
+    setSortBy(type);
+    const sorted = [...activeOpportunities].sort((a, b) => {
+      const valA = parseInt(a.value.replace(/[^0-9]/g, ""));
+      const valB = parseInt(b.value.replace(/[^0-9]/g, ""));
+      return type === "Value" ? valB - valA : 0;
+    });
+    setActiveOpportunities(sorted);
+  };
+
   return (
     <div className="flex flex-col gap-8 animate-in fade-in duration-700 pb-10">
       {/* Header Section */}
@@ -75,7 +99,7 @@ const LeadPipeline = () => {
           Lead Pipeline
         </h1>
         <p className="text-slate-500 font-bold">
-          Tracking 42 active opportunities worth <span className="text-slate-900">$2.4M</span>
+          Tracking 42 active opportunities worth <span className="text-slate-900">₹ 2.4Cr</span>
         </p>
       </div>
 
@@ -112,7 +136,11 @@ const LeadPipeline = () => {
           <h3 className="text-xl font-black text-slate-800 tracking-tight mb-8">Heat Map</h3>
           <div className="flex flex-col gap-4">
             {heatMapData.map((item, index) => (
-              <div key={index} className="flex items-center justify-between p-6 rounded-[2.5rem] bg-white border border-slate-50 shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
+              <div 
+                key={index} 
+                onClick={() => handleFilter(item.label === "HOT LEADS" ? "HOT NEGOTIATION" : "All")}
+                className="flex items-center justify-between p-6 rounded-[2.5rem] bg-white border border-slate-50 shadow-sm hover:shadow-md transition-shadow cursor-pointer group"
+              >
                 <div>
                   <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${item.color}`}>{item.label}</p>
                   <p className="text-3xl font-black text-slate-800">{item.count}</p>
@@ -131,10 +159,21 @@ const LeadPipeline = () => {
         <div className="p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <h3 className="text-2xl font-black text-slate-800 tracking-tight">Active Opportunities</h3>
           <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-slate-50 border border-slate-100 text-[13px] font-black text-slate-600 hover:bg-slate-100 transition-colors">
-              <Filter size={16} /> Filter
-            </button>
-            <button className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-slate-50 border border-slate-100 text-[13px] font-black text-slate-600 hover:bg-slate-100 transition-colors">
+            <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-100">
+               {["All", "HOT NEGOTIATION", "PROPOSAL SENT"].map((f) => (
+                 <button 
+                  key={f}
+                  onClick={() => handleFilter(f)}
+                  className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${filter === f ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"}`}
+                 >
+                   {f === "HOT NEGOTIATION" ? "Hot" : f === "PROPOSAL SENT" ? "Proposals" : f}
+                 </button>
+               ))}
+            </div>
+            <button 
+              onClick={() => handleSortBy("Value")}
+              className={`flex items-center gap-2 px-6 py-3 rounded-2xl border transition-all text-[13px] font-black ${sortBy === "Value" ? "bg-rose-500 text-white border-rose-500 shadow-lg shadow-rose-200" : "bg-white border-slate-100 text-slate-600 hover:bg-slate-50"}`}
+            >
               <ArrowUpDown size={16} /> Sort by Value
             </button>
           </div>
@@ -153,7 +192,7 @@ const LeadPipeline = () => {
               </tr>
             </thead>
             <tbody>
-              {opportunities.map((opp, index) => (
+              {activeOpportunities.map((opp, index) => (
                 <tr key={index} className="group hover:bg-white/50 transition-colors border-b border-slate-50 last:border-0 cursor-pointer">
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-4">

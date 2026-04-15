@@ -1,4 +1,5 @@
 import React, { memo } from "react";
+import { toast } from "react-hot-toast";
 import { 
   PieChart, 
   Pie, 
@@ -36,10 +37,10 @@ const velocityData = [
 ];
 
 const districtData = [
-  { name: "North District", tier: "Elite Tier", progress: 94, value: "$1.1M", color: "bg-teal-500" },
-  { name: "West District", tier: "At Risk", progress: 68, value: "$0.8M", color: "bg-rose-500" },
-  { name: "East District", tier: "Core Performance", progress: 81, value: "$0.9M", color: "bg-indigo-400" },
-  { name: "Central District", tier: "Core Performance", progress: 79, value: "$0.6M", color: "bg-slate-400" },
+  { name: "Mumbai West", tier: "Elite Tier", progress: 94, value: "₹ 11.0L", color: "bg-teal-500" },
+  { name: "Bengaluru South", tier: "At Risk", progress: 68, value: "₹ 8.0L", color: "bg-rose-500" },
+  { name: "Delhi NCR", tier: "Core Performance", progress: 81, value: "₹ 19.5L", color: "bg-indigo-400" },
+  { name: "Pune East", tier: "Core Performance", progress: 79, value: "₹ 6.2L", color: "bg-slate-400" },
 ];
 
 const MyTargetsPage = () => {
@@ -89,22 +90,22 @@ const MyTargetsPage = () => {
                 <div className="flex flex-col gap-4">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Current Quarterly Revenue</p>
                     <div className="flex items-end gap-6 flex-wrap">
-                        <h3 className="text-6xl font-black text-slate-900 tracking-tighter">$3.44M</h3>
+                        <h3 className="text-6xl font-black text-slate-900 tracking-tighter">₹ 34.4L</h3>
                         <div className="mb-2 flex items-center gap-1 px-3 py-1.5 rounded-full bg-teal-50 text-teal-600 text-[10px] font-black">
                            <TrendingUp size={12} /> +12.4% vs LY
                         </div>
-                        <span className="mb-3 text-[13px] font-bold text-slate-400">Target Goal: <span className="text-slate-900">$4.20M</span></span>
+                        <span className="mb-3 text-[13px] font-bold text-slate-400">Target Goal: <span className="text-slate-900">₹ 42.0L</span></span>
                     </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-8 pt-8 border-t border-slate-50">
                    <div>
                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Gap to Target</p>
-                       <p className="text-3xl font-black text-rose-500">$756K</p>
+                       <p className="text-3xl font-black text-rose-500">₹ 7.5L</p>
                    </div>
                    <div>
                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Estimated Close</p>
-                       <p className="text-3xl font-black text-slate-800">$4.32M</p>
+                       <p className="text-3xl font-black text-slate-800">₹ 43.2L</p>
                    </div>
                 </div>
             </div>
@@ -118,7 +119,11 @@ const MyTargetsPage = () => {
             </div>
             <div className="space-y-8 flex-1">
                 {districtData.map((d, i) => (
-                    <div key={i} className="flex items-center justify-between group cursor-pointer">
+                    <div 
+                      key={i} 
+                      onClick={() => toast.success(`Viewing analytics for ${d.name}`)}
+                      className="flex items-center justify-between group cursor-pointer"
+                    >
                         <div className="flex items-center gap-4">
                             <div className={`w-1.5 h-10 rounded-full ${d.color}`} />
                             <div>
@@ -194,15 +199,15 @@ const MyTargetsPage = () => {
                 <div className="mt-12 space-y-6">
                     <div className="flex justify-between items-end">
                         <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Current Progress</span>
-                        <span className="text-sm font-black text-rose-500">$12,400 Bonus</span>
+                        <span className="text-sm font-black text-rose-500">₹ 12,400 Bonus</span>
                     </div>
                     <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
                         <div className="h-full bg-rose-500" style={{ width: '65%' }} />
                     </div>
                     <div className="flex justify-between text-[8px] font-black uppercase tracking-[0.2em] opacity-30">
-                        <span>$0</span>
-                        <span>$15k Milestone</span>
-                        <span>$25k Peak</span>
+                        <span>₹ 0</span>
+                        <span>₹ 15k Milestone</span>
+                        <span>₹ 25k Peak</span>
                     </div>
                 </div>
             </div>
@@ -213,7 +218,7 @@ const MyTargetsPage = () => {
                        <Share2 size={16} />
                    </div>
                    <p className="text-[11px] font-bold opacity-60">
-                      Next $250k revenue unlocks 5% accelerator
+                      Next ₹ 2.5L revenue unlocks 5% accelerator
                    </p>
                 </div>
             </div>
@@ -221,7 +226,10 @@ const MyTargetsPage = () => {
       </div>
 
       {/* Footer Intelligence Banner */}
-      <div className="rounded-[30px] bg-slate-50 border border-slate-100 p-8 flex flex-col md:flex-row items-center justify-between gap-6 group cursor-pointer hover:bg-slate-100/50 transition-all">
+      <div 
+        onClick={() => toast.success("Opening full strategic roadmap...")}
+        className="rounded-[30px] bg-slate-50 border border-slate-100 p-8 flex flex-col md:flex-row items-center justify-between gap-6 group cursor-pointer hover:bg-slate-100/50 transition-all"
+      >
          <div className="flex items-center gap-6">
             <div className="w-14 h-14 rounded-2xl bg-[#D9F99D] flex items-center justify-center text-[#365314] shadow-sm">
                 <Lightbulb size={24} />
@@ -229,7 +237,7 @@ const MyTargetsPage = () => {
             <div>
                <h4 className="text-sm font-black text-slate-800 mb-1">Executive Intelligence Report</h4>
                <p className="text-[12px] font-bold text-slate-500 leading-relaxed">
-                  Focusing on North District high-value renewals by Friday will secure the 85% Quarterly Milestone early.
+                  Focusing on Bandra West high-value renewals by Friday will secure the 85% Quarterly Milestone early.
                </p>
             </div>
          </div>

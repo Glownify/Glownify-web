@@ -81,6 +81,64 @@ const SalonDocumentUploadForm = ({ onBack, data, onChange, onSubmit, theme }) =>
             </div>
           </div>
 
+          {/* Government ID Section */}
+          <div className="pt-6 border-t border-gray-100">
+            <h3 className="text-sm font-bold text-gray-800 mb-4 uppercase tracking-wider">Identity Verification</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-gray-500 ml-1 uppercase">ID Type</label>
+                <select
+                  name="idType"
+                  value={data.idType || "Aadhaar"}
+                  onChange={(e) => onChange("idType", e.target.value)}
+                  className="w-full px-4 py-2 text-sm rounded-xl border border-gray-200 outline-none bg-gray-50"
+                >
+                  <option value="Aadhaar">Aadhaar Card</option>
+                  <option value="PAN">PAN Card</option>
+                  <option value="VoterID">Voter ID</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-gray-500 ml-1 uppercase">ID Number</label>
+                <input
+                  name="idNumber"
+                  value={data.idNumber || ""}
+                  onChange={(e) => onChange("idNumber", e.target.value)}
+                  placeholder="Enter ID Number"
+                  className="w-full px-4 py-2 text-sm rounded-xl border border-gray-200 outline-none bg-gray-50"
+                />
+              </div>
+            </div>
+            <div className="mt-3">
+              <UploadBox icon={Paperclip} label="Upload ID Document" small />
+            </div>
+          </div>
+
+          {/* Opening Hours */}
+          <div className="pt-6 border-t border-gray-100">
+            <h3 className="text-sm font-bold text-gray-800 mb-4 uppercase tracking-wider">Business Hours</h3>
+            <div className="space-y-2">
+              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+                <div key={day} className="flex items-center gap-4">
+                  <span className="w-10 text-xs font-bold text-gray-600">{day}</span>
+                  <div className="flex-1 flex gap-2">
+                    <input
+                      type="time"
+                      className="flex-1 px-3 py-1 text-xs border border-gray-200 rounded-lg outline-none"
+                      defaultValue="09:00"
+                    />
+                    <span className="text-gray-400 text-xs self-center">to</span>
+                    <input
+                      type="time"
+                      className="flex-1 px-3 py-1 text-xs border border-gray-200 rounded-lg outline-none"
+                      defaultValue="20:00"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="flex flex-col gap-4 mt-10">
             <button type="button" onClick={handleSubmit} className={btnPrimary}>
               Register Salon

@@ -1,4 +1,5 @@
 import React, { memo } from "react";
+import { toast } from "react-hot-toast";
 import { 
   TrendingUp, 
   Wallet, 
@@ -12,7 +13,7 @@ import {
   MapPin
 } from "lucide-react";
 import useMobile from "../../hooks/useMobile";
-import MobileEarningsScreen from "./Mobile/MobileEarningsScreen";
+import MobileCommissionsScreen from "./Mobile/MobileCommissionsScreen";
 import { BarChart, Bar, XAxis, ResponsiveContainer, Cell, Tooltip } from "recharts";
 
 const performanceData = [
@@ -28,49 +29,49 @@ const performanceData = [
 
 const recentCommissions = [
   {
-    date: { month: "Aug 24,", year: "2023" },
-    account: "Global FinTech Corp",
-    txId: "#TR-99821",
+    date: { month: "Oct 24,", year: "2026" },
+    account: "Elite Hair & Spa",
+    txId: "#TX-45210",
     status: "APPROVED",
     statusColor: "bg-teal-50 text-teal-600",
-    type: "Enterprise SaaS"
+    type: "Elite Subscription"
   },
   {
-    date: { month: "Aug 22,", year: "2023" },
-    account: "TechStream Solutions",
-    txId: "#TR-99745",
+    date: { month: "Oct 20,", year: "2026" },
+    account: "Radiance Beauty Hub",
+    txId: "#TX-45188",
     status: "PENDING",
     statusColor: "bg-slate-100 text-slate-600",
-    type: "Managed Services"
+    type: "Premium Setup"
   },
   {
-    date: { month: "Aug 18,", year: "2023" },
-    account: "Quantum Logistics",
-    txId: "#TR-99812",
+    date: { month: "Oct 18,", year: "2026" },
+    account: "The Royal Barbers",
+    txId: "#TX-45155",
     status: "APPROVED",
     statusColor: "bg-teal-50 text-teal-600",
-    type: "Enterprise SaaS"
+    type: "Standard Tier"
   },
   {
-    date: { month: "Aug 15,", year: "2023" },
-    account: "Astro Systems LLC",
-    txId: "#TR-99504",
+    date: { month: "Oct 15,", year: "2026" },
+    account: "Glow & Shine Studio",
+    txId: "#TX-45102",
     status: "APPROVED",
     statusColor: "bg-teal-50 text-teal-600",
-    type: "Consulting"
+    type: "Basic Package"
   }
 ];
 
 const serviceCategories = [
-  { label: "Enterprise SaaS", value: 65, color: "bg-[#BE185D]" },
-  { label: "Managed Services", value: 25, color: "bg-teal-500" },
-  { label: "Custom Solutions", value: 10, color: "bg-slate-200" },
+  { label: "Chain Salons", value: 65, color: "bg-[#BE185D]" },
+  { label: "Individual Pro", value: 25, color: "bg-teal-500" },
+  { label: "Home Services", value: 10, color: "bg-slate-200" },
 ];
 
 const MyCommissions = () => {
   const isMobile = useMobile();
   
-  if (isMobile) return <MobileEarningsScreen />;
+  if (isMobile) return <MobileCommissionsScreen />;
   return (
     <div className="flex flex-col gap-8 animate-in fade-in duration-700 pb-10">
       {/* Header Section */}
@@ -92,7 +93,7 @@ const MyCommissions = () => {
               <p className="text-[11px] font-black uppercase tracking-[0.2em] opacity-80 mb-4">
                 Current Period Earnings
               </p>
-              <h2 className="text-6xl font-black tracking-tighter">$84,250</h2>
+              <h2 className="text-6xl font-black tracking-tighter">₹ 84,250</h2>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md text-xs font-black">
@@ -113,14 +114,14 @@ const MyCommissions = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-8 shadow-sm">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Pending Payouts</p>
-                <h3 className="text-3xl font-black text-slate-800 mb-4">$12,480</h3>
+                <h3 className="text-3xl font-black text-slate-800 mb-4">₹ 12,480</h3>
                 <div className="flex items-center gap-2 text-teal-600 text-xs font-black">
                     <Calendar size={14} /> Expected Sep 15
                 </div>
             </div>
             <div className="rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-8 shadow-sm">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Lifetime Commissions</p>
-                <h3 className="text-3xl font-black text-slate-800 mb-4">$1.2M</h3>
+                <h3 className="text-3xl font-black text-slate-800 mb-4">₹ 18.2L</h3>
                 <div className="flex items-center gap-2 text-rose-500 text-xs font-black">
                     <Award size={14} /> Elite Tier Achievement
                 </div>
@@ -155,8 +156,8 @@ const MyCommissions = () => {
                                 return (
                                     <div className="bg-white p-3 rounded-2xl shadow-xl border border-slate-50">
                                         <p className="text-xs font-black text-slate-800 mb-1">{payload[0].payload.name}</p>
-                                        <p className="text-[10px] font-bold text-rose-500">Actual: ${payload[0].value}</p>
-                                        <p className="text-[10px] font-bold text-slate-400">Target: ${payload[1].value}</p>
+                                        <p className="text-[10px] font-bold text-rose-500">Actual: ₹{payload[0].value}</p>
+                                        <p className="text-[10px] font-bold text-slate-400">Target: ₹{payload[1].value}</p>
                                     </div>
                                 );
                             }
@@ -181,7 +182,10 @@ const MyCommissions = () => {
         <div className="xl:col-span-2 rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md overflow-hidden shadow-sm">
           <div className="p-8 flex items-center justify-between border-b border-slate-50">
              <h3 className="text-2xl font-black text-slate-800 tracking-tight">Recent Commissions</h3>
-             <button className="text-[11px] font-black text-rose-500 uppercase tracking-widest hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+             <button 
+              onClick={() => toast.success("Loading full transaction history...")}
+              className="text-[11px] font-black text-rose-500 uppercase tracking-widest hover:translate-x-1 transition-transform inline-flex items-center gap-1 outline-none"
+             >
                 View All History <ChevronRight size={14} />
              </button>
           </div>
@@ -251,12 +255,15 @@ const MyCommissions = () => {
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Coach Insight</span>
                  </div>
                  <p className="text-[12px] font-bold text-slate-600 leading-relaxed">
-                    Enterprise SaaS yields 1.2x higher margin this quarter. Focus prospecting here for bonus accelerators.
+                    Premium salon clusters yield 1.2x higher margin this quarter. Focus prospecting here for bonus accelerators.
                  </p>
               </div>
            </div>
 
-           <div className="relative h-64 rounded-[40px] overflow-hidden group cursor-pointer shadow-xl shadow-rose-900/20">
+           <div 
+            onClick={() => toast.success("Opening President's Club 2024 details...")}
+            className="relative h-64 rounded-[40px] overflow-hidden group cursor-pointer shadow-xl shadow-rose-900/20"
+           >
               <img 
                 src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=600" 
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
@@ -265,7 +272,7 @@ const MyCommissions = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-[#BE185D] via-transparent to-transparent opacity-90" />
               <div className="absolute inset-x-8 bottom-8 text-white">
                  <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-2">Upcoming Summit</p>
-                 <h4 className="text-2xl font-black leading-tight">President's Club 2024: Maui</h4>
+                 <h4 className="text-2xl font-black leading-tight">Glownify Elite 2024: Goa</h4>
                  <div className="mt-4 h-1 w-12 bg-white/50 rounded-full" />
               </div>
            </div>

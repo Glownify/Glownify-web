@@ -21,6 +21,8 @@ import {
 import useMobile from "../../hooks/useMobile";
 import MobileTeamScreen from "./Mobile/MobileTeamScreen";
 
+import SalesmanProfileModal from "./SalesmanProfileModal";
+
 const ManageSalesman = () => {
   const isMobile = useMobile();
   const dispatch = useDispatch();
@@ -29,6 +31,9 @@ const ManageSalesman = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [openCreate, setOpenCreate] = useState(false);
+  const [selectedSalesman, setSelectedSalesman] = useState(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -54,9 +59,9 @@ const ManageSalesman = () => {
     _id: `mock-${i}`,
     user: {
       name: [
-        "Marcus Reed", "Elena Rodriguez", "Jordan Kim", "Sarah Jenkins", 
-        "Alex Thompson", "Priya Sharma", "Liam O'Connor", "Chen Wei",
-        "Sofia Martinez", "James Wilson", "Amara Okafor", "Hiroshi Tanaka", "Isabella Rossi"
+        "Rahul Sharma", "Anjali Gupta", "Vikram Singh", "Sneha Patil", 
+        "Amit Verma", "Priya Nair", "Sandeep Reddy", "Meera Iyer",
+        "Arjun Kapoor", "Ishita Das", "Karan Malhotra", "Riya Saxena", "Deepak Joshi"
       ][i % 13],
       email: "exec@glownify.com"
     },
@@ -85,7 +90,17 @@ const ManageSalesman = () => {
     } catch (error) { console.error(error); }
   };
 
-  if (isMobile) return <MobileTeamScreen />;
+  const handleViewProfile = (item) => {
+    setSelectedSalesman(item);
+    setIsProfileOpen(true);
+  };
+
+  if (isMobile) return (
+    <MobileTeamScreen 
+      onAdd={() => setOpenCreate(true)} 
+      onViewProfile={handleViewProfile}
+    />
+  );
 
   return (
     <div className="flex flex-col gap-8 animate-in fade-in duration-700 pb-10">
@@ -93,7 +108,7 @@ const ManageSalesman = () => {
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-2">
           <h1 className="text-4xl font-black tracking-tight text-slate-900">
-            Team Directory
+            Sales persons
           </h1>
           <p className="max-w-md text-slate-500 font-bold leading-relaxed">
             Oversee and manage the global sales force performance metrics in real-time.
@@ -136,7 +151,7 @@ const ManageSalesman = () => {
              <div className="mb-8">
                 <h3 className="text-xl font-black text-slate-800 tracking-tight truncate">{item.user?.name}</h3>
                 <p className="text-[11px] font-bold text-slate-400 mt-1 uppercase tracking-wider">
-                   {['North America Region', 'European Markets', 'Asia Pacific', 'Middle East & Africa', 'Latin America'][index % 5]}
+                   {['Mumbai West District', 'Bengaluru South Zone', 'Delhi NCR North', 'Pune East Cluster', 'Chennai Metro'][index % 5]}
                 </p>
              </div>
 
@@ -150,9 +165,12 @@ const ManageSalesman = () => {
                 </div>
              </div>
 
-             <button className="w-full py-4 rounded-2xl bg-slate-100 text-[#1a0b3a]/40 text-xs font-black uppercase tracking-widest hover:bg-[#8B5CF6] hover:text-white transition-all shadow-sm">
-                View Profile
-             </button>
+             <button 
+                onClick={() => handleViewProfile(item)}
+                className="w-full py-4 rounded-2xl bg-slate-100 text-[#1a0b3a]/40 text-xs font-black uppercase tracking-widest hover:bg-[#8B5CF6] hover:text-white transition-all shadow-sm active:scale-95"
+              >
+                 View Profile
+              </button>
           </div>
         ))}
 
@@ -171,7 +189,7 @@ const ManageSalesman = () => {
         </button>
       </div>
 
-      {/* Create Modal - Reused logic from old version but styled premium */}
+      {/* Create Modal */}
       {openCreate && (
          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-300">
             <div className="w-full max-w-lg rounded-[40px] bg-white p-10 shadow-2xl animate-in zoom-in duration-300">
@@ -191,6 +209,10 @@ const ManageSalesman = () => {
                      <input name="email" value={formData.email} onChange={handleChange} className="w-full h-15 rounded-2xl border border-slate-100 bg-slate-50 px-6 font-bold text-slate-700 focus:bg-white focus:ring-4 focus:ring-rose-500/5 transition-all outline-none" placeholder="email@company.com" />
                   </div>
                   <div className="space-y-1">
+                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Phone Number</p>
+                     <input name="mobile" value={formData.mobile} onChange={handleChange} className="w-full h-15 rounded-2xl border border-slate-100 bg-slate-50 px-6 font-bold text-slate-700 focus:bg-white focus:ring-4 focus:ring-rose-500/5 transition-all outline-none" placeholder="+91 98765 43210" />
+                  </div>
+                  <div className="space-y-1">
                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Commission Rate (%)</p>
                      <input name="commissionRate" type="number" value={formData.commissionRate} onChange={handleChange} className="w-full h-15 rounded-2xl border border-slate-100 bg-slate-50 px-6 font-bold text-slate-700 focus:bg-white focus:ring-4 focus:ring-rose-500/5 transition-all outline-none" placeholder="15" />
                   </div>
@@ -201,6 +223,13 @@ const ManageSalesman = () => {
             </div>
          </div>
       )}
+
+      {/* Profile Modal */}
+      <SalesmanProfileModal 
+        isOpen={isProfileOpen} 
+        onClose={() => setIsProfileOpen(false)} 
+        salesman={selectedSalesman} 
+      />
     </div>
   );
 };

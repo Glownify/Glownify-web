@@ -32,7 +32,7 @@ const ServicesBanner = () => {
 
           <div className="relative z-10 mt-6">
             <Link
-              to="/partner-with-us"
+              to="/partner-with-us/salon-owner-register"
               className="group inline-flex items-center gap-2 
              bg-[#FFBC86] text-[#5A2C1E]
              font-bold py-2.5 px-6 rounded-xl

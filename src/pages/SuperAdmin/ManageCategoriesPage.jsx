@@ -4,6 +4,7 @@ import {
   fetchAllCategories,
   addCategory,
   updateCategory,
+  deleteCategory,
 } from "../../redux/slice/superadminSlice";
 import {
   Layers,
@@ -19,12 +20,34 @@ import {
   Zap,
   TrendingUp,
   Settings,
-  Plus
+  Plus,
+  Trash2,
+  Edit2
 } from "lucide-react";
 import toast from "react-hot-toast";
 import useMobile from "../../hooks/useMobile";
 
 const TABS = ["men", "women", "unisex"];
+
+const DUMMY_CATEGORIES = [
+  // MEN
+  { _id: "m1", name: "Classic Haircut", gender: "men", active: true, icon: "https://cdn-icons-png.flaticon.com/512/2821/2821012.png" },
+  { _id: "m2", name: "Beard Grooming", gender: "men", active: true, icon: "https://cdn-icons-png.flaticon.com/512/3248/3248383.png" },
+  { _id: "m3", name: "Face Cleanup", gender: "men", active: true, icon: "https://cdn-icons-png.flaticon.com/512/2950/2950821.png" },
+  { _id: "m4", name: "Hair Coloring", gender: "men", active: false, icon: "https://cdn-icons-png.flaticon.com/512/2950/2950854.png" },
+
+  // WOMEN
+  { _id: "w1", name: "Bridal Makeup", gender: "women", active: true, icon: "https://cdn-icons-png.flaticon.com/512/3209/3209144.png" },
+  { _id: "w2", name: "Premium Facial", gender: "women", active: true, icon: "https://cdn-icons-png.flaticon.com/512/3209/3209088.png" },
+  { _id: "w3", name: "Smooth Waxing", gender: "women", active: true, icon: "https://cdn-icons-png.flaticon.com/512/2950/2950811.png" },
+  { _id: "w4", name: "Nail Art", gender: "women", active: true, icon: "https://cdn-icons-png.flaticon.com/512/2950/2950849.png" },
+
+  // UNISEX
+  { _id: "u1", name: "Therapeutic Massage", gender: "unisex", active: true, icon: "https://cdn-icons-png.flaticon.com/512/3209/3209054.png" },
+  { _id: "u2", name: "Full Body Spa", gender: "unisex", active: true, icon: "https://cdn-icons-png.flaticon.com/512/3209/3209068.png" },
+  { _id: "u3", name: "Aromatherapy", gender: "unisex", active: true, icon: "https://cdn-icons-png.flaticon.com/512/3209/3209112.png" },
+];
+
 
 const ManageCategoriesPage = () => {
   const dispatch = useDispatch();
@@ -51,9 +74,13 @@ const ManageCategoriesPage = () => {
     dispatch(fetchAllCategories());
   }, [dispatch]);
 
-  const filteredCategories = categories.filter(
+  // Use dummy data if categories list is empty
+  const displayCategories = categories.length > 0 ? categories : DUMMY_CATEGORIES;
+
+  const filteredCategories = displayCategories.filter(
     (cat) => cat.gender === activeTab
   );
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -110,6 +137,21 @@ const ManageCategoriesPage = () => {
     setIsModalOpen(true);
   };
 
+  const handleDeleteCategory = async (categoryId) => {
+    if (!window.confirm("Are you sure you want to delete this category?")) return;
+    
+    try {
+      await toast.promise(dispatch(deleteCategory(categoryId)).unwrap(), {
+        loading: "Deleting category...",
+        success: "Category removed from taxonomy",
+        error: (err) => err?.message || "Failed to delete category",
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+
   if (loading)
     return (
       <div className="flex h-screen items-center justify-center bg-slate-50">
@@ -158,8 +200,9 @@ const ManageCategoriesPage = () => {
                        >
                           <span className="capitalize">{tab}</span>
                           <span className={`px-2 py-0.5 rounded-md text-[9px] ${activeTab === tab ? "bg-rose-200/50" : "bg-slate-100"}`}>
-                             {categories.filter(c => c.gender === tab).length}
+                             {displayCategories.filter(c => c.gender === tab).length}
                           </span>
+
                        </button>
                     ))}
                  </div>
@@ -168,7 +211,8 @@ const ManageCategoriesPage = () => {
               <div className="bg-slate-900 rounded-[2rem] p-8 text-white relative overflow-hidden group">
                  <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
                  <h4 className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1">Global Coverage</h4>
-                 <div className="text-3xl font-black mb-4">{categories.length}</div>
+                 <div className="text-3xl font-black mb-4">{displayCategories.length}</div>
+
                  <p className="text-[11px] font-medium opacity-50 leading-relaxed">
                     Active categories across all gender segments and service types.
                  </p>
@@ -192,12 +236,21 @@ const ManageCategoriesPage = () => {
                              )}
                           </div>
                           
-                          <button
-                             onClick={() => handleEditCategory(category)}
-                             className="p-2 opacity-0 group-hover:opacity-100 bg-slate-50 hover:bg-rose-100 text-slate-400 hover:text-rose-600 rounded-lg transition-all"
-                          >
-                             <Info size={16} />
-                          </button>
+                          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                             <button
+                                onClick={() => handleEditCategory(category)}
+                                className="p-2 bg-slate-50 hover:bg-rose-100 text-slate-400 hover:text-rose-600 rounded-lg transition-all"
+                             >
+                                <Edit2 size={14} />
+                             </button>
+                             <button
+                                onClick={() => handleDeleteCategory(category._id)}
+                                className="p-2 bg-slate-50 hover:bg-red-100 text-slate-400 hover:text-red-600 rounded-lg transition-all"
+                             >
+                                <Trash2 size={14} />
+                             </button>
+                          </div>
+
                        </div>
 
                        <div className="mt-8 relative z-10">
@@ -320,43 +373,37 @@ const ManageCategoriesPage = () => {
 
   // ── MOBILE VIEW ─────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-slate-50/50 p-6">
+    <div className="min-h-screen bg-[#F8FAFC] p-6 font-sans">
       {/* Header */}
-      <div className="mb-8 flex flex-col gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
-            Categories
-          </h1>
-          <p className="text-slate-500 text-sm font-medium">
-            Manage service segments
-          </p>
-        </div>
-        <button
-          onClick={() => {
-             setIsEditMode(false);
-             setCategoryData({ name: "", gender: activeTab, icon: "" });
-             setIsModalOpen(true);
-          }}
-          className="bg-rose-600 hover:bg-rose-700 text-white w-full py-4 rounded-2xl font-bold text-sm transition-all shadow-lg shadow-rose-100 flex items-center justify-center gap-2"
-        >
-          <Plus size={18} />
-          Add New
-        </button>
+      <div className="mb-8">
+        <span className="text-[10px] uppercase font-black tracking-widest text-rose-600">Taxonomy Manager</span>
+        <h1 className="text-3xl font-black text-slate-800 tracking-tight mt-1">
+          Segments
+        </h1>
+        <p className="text-slate-500 text-sm font-medium mt-1">
+          Service classifications hub
+        </p>
       </div>
 
-      {error && (
-        <div className="mb-6 bg-red-50 text-red-600 px-4 py-3 rounded-xl text-xs font-bold border border-red-100">
-           {error.message || error}
-        </div>
-      )}
+      <button
+        onClick={() => {
+           setIsEditMode(false);
+           setCategoryData({ name: "", gender: activeTab, icon: "" });
+           setIsModalOpen(true);
+        }}
+        className="bg-slate-900 text-white w-full py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] transition-all shadow-lg shadow-slate-200 flex items-center justify-center gap-2 mb-8 active:scale-95"
+      >
+        <Plus size={18} />
+        New Classification
+      </button>
 
       {/* Tabs */}
-      <div className="flex p-1 bg-slate-200/50 rounded-2xl mb-8 border border-slate-100 overflow-x-auto whitespace-nowrap scrollbar-hide">
+      <div className="flex p-1 bg-slate-200/40 rounded-2xl mb-8 border border-slate-100 overflow-x-auto whitespace-nowrap scrollbar-hide">
         {TABS.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`flex-1 px-6 py-3 rounded-xl text-xs font-black capitalize transition-all duration-200 ${
+            className={`flex-1 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-200 ${
               activeTab === tab
                 ? "bg-white text-rose-600 shadow-sm"
                 : "text-slate-400"
@@ -368,40 +415,59 @@ const ManageCategoriesPage = () => {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 gap-4">
+      <div className="space-y-4 mb-20">
         {filteredCategories.map((category) => (
           <div
             key={category._id}
-            className="group bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between"
+            className="group bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm flex items-center justify-between relative overflow-hidden active:bg-slate-50"
           >
-            <div className="flex items-center gap-4">
-              <div className="h-12 w-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden">
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="h-14 w-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden group-active:bg-rose-50 group-active:border-rose-100 transition-colors">
                 {category.icon ? (
                   <img src={category.icon} alt="" className="h-8 w-8 object-contain opacity-70" />
                 ) : (
                   <Tag className="text-slate-300" size={20} />
                 )}
               </div>
-              <div>
-                <h3 className="font-bold text-slate-800 text-sm">{category.name}</h3>
-                <span className={`text-[9px] font-black uppercase tracking-widest ${category.active ? "text-rose-500" : "text-slate-300"}`}>
-                  {category.active ? "Active" : "Inactive"}
-                </span>
+              <div className="flex flex-col">
+                <h3 className="font-black text-slate-800 text-[14px]">{category.name}</h3>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                   <div className={`w-1.5 h-1.5 rounded-full ${category.active ? "bg-emerald-500" : "bg-slate-300"}`}></div>
+                   <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+                     {category.active ? "Active" : "Inactive"}
+                   </span>
+                </div>
               </div>
             </div>
-            <button
-               onClick={() => handleEditCategory(category)}
-               className="p-3 rounded-xl bg-slate-50 text-slate-400"
-            >
-              <Info size={18} />
-            </button>
+            <div className="flex items-center gap-2 relative z-10">
+               <button
+                  onClick={() => handleEditCategory(category)}
+                  className="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center border border-slate-100 active:bg-rose-50 active:text-rose-600"
+               >
+                 <Edit2 size={16} />
+               </button>
+               <button
+                  onClick={() => handleDeleteCategory(category._id)}
+                  className="w-10 h-10 rounded-xl bg-slate-50 text-red-400 flex items-center justify-center border border-slate-100 active:bg-red-100"
+               >
+                 <Trash2 size={16} />
+               </button>
+            </div>
           </div>
         ))}
+
+        {filteredCategories.length === 0 && (
+           <div className="py-20 flex flex-col items-center justify-center text-slate-300 border-2 border-dashed border-slate-200 rounded-[2rem]">
+              <Tag size={48} className="opacity-20 mb-2" />
+              <p className="font-black text-[10px] uppercase tracking-widest opacity-40">No segments deployed</p>
+           </div>
+        )}
       </div>
 
       {renderModal()}
     </div>
   );
+
 };
 
 export default ManageCategoriesPage;

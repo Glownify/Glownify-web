@@ -144,7 +144,7 @@ const MobileHomeSaloons = ({ category, lat, lng, fallbackSalons = [] }) => {
     const navigate = useNavigate();
     const { nearbySalons = [], salonsLoading } = useSelector((state) => state.user);
 
-    const salonsToShow = formatSalonData(nearbySalons);
+    const salonsToShow = formatSalonData(nearbySalons || []);
 
     // ✅ loading
     if (salonsLoading) {
@@ -156,7 +156,7 @@ const MobileHomeSaloons = ({ category, lat, lng, fallbackSalons = [] }) => {
     }
 
     // ✅ empty state
-    if (!salonsToShow.length) {
+    if (!salonsToShow || !salonsToShow.length) {
         return (
             <div className="px-4 py-5">
                 <p className="text-gray-400 text-sm">No Salons found</p>

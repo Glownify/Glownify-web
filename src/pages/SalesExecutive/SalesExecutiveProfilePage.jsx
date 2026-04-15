@@ -5,7 +5,7 @@ import {
   Briefcase,
   Check,
   Copy,
-  DollarSign,
+  Wallet,
   Mail,
   MapPin,
   Phone,
@@ -129,9 +129,9 @@ const SalesExecutiveProfilePage = () => {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <StatTile
                 title="Total Earnings"
-                value={`$${details?.totalEarnings || 0}`}
+                value={`₹ ${details?.totalEarnings || 0}`}
                 accent="text-emerald-50/50 group-hover:text-emerald-50"
-                icon={<DollarSign size={100} />}
+                icon={<Wallet size={100} />}
                 footer={
                   <div className="mt-4 flex items-center gap-2 text-xs font-bold text-emerald-600">
                     <TrendingUp size={14} /> Paid to date

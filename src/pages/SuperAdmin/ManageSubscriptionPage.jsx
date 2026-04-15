@@ -24,10 +24,18 @@ import {
 } from "lucide-react";
 import useMobile from "../../hooks/useMobile";
 
+const DUMMY_PLANS = [
+  { _id: 'p1', name: 'Essential Starter', price: 999, durationInDays: 30, features: ['Core Analytics', 'Standard Support', 'Up to 5 Shop Listings'], commission: '15' },
+  { _id: 'p2', name: 'Professional Growth', price: 2999, durationInDays: 30, features: ['Advanced Insights', 'Priority Support', 'Unlimited Shop Listings', 'SEO Optimization'], commission: '10' },
+  { _id: 'p3', name: 'Elite Enterprise', price: 7999, durationInDays: 90, features: ['Custom Reporting', 'Dedicated Manager', 'API Access', 'Global Visibility'], commission: '8' },
+];
+
 const ManageSubscriptionPage = () => {
   const dispatch = useDispatch();
-  const { plans, loading, error } = useSelector((state) => state.superadmin);
+  const { plans: livePlans = [], loading, error } = useSelector((state) => state.superadmin || {});
   const isMobile = useMobile();
+
+  const plans = livePlans.length > 0 ? livePlans : DUMMY_PLANS;
 
   const [open, setOpen] = useState(false);
 
@@ -35,6 +43,7 @@ const ManageSubscriptionPage = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [durationInDays, setDurationInDays] = useState("");
+  const [commission, setCommission] = useState("");
   const [features, setFeatures] = useState([""]);
 
   useEffect(() => {
@@ -53,30 +62,40 @@ const ManageSubscriptionPage = () => {
 
   /* ---------------- CREATE SUBSCRIPTION ---------------- */
   const handleCreate = async () => {
-    if (!name || !price || !durationInDays) {
+    if (!name || !price || !durationInDays || !commission) {
       return toast.error("Please fill in all required fields");
     }
 
     try {
-      const createPromise = dispatch(
-        createSubscription({
-          name,
-          price: Number(price),
-          durationInDays: Number(durationInDays),
-          features: features.filter((f) => f.trim() !== ""),
-        })
-      ).unwrap();
+      const payload = {
+        name,
+        price: Number(price),
+        durationInDays: Number(durationInDays),
+        commission: Number(commission),
+        features: features.filter((f) => f.trim() !== ""),
+      };
+      console.log("Creating subscription with payload:", payload);
+
+      const createPromise = dispatch(createSubscription(payload)).unwrap();
 
       await toast.promise(createPromise, {
         loading: "Creating subscription...",
         success: (res) => res?.message || "Subscription created successfully!",
-        error: (err) => err?.message || "Failed to create subscription",
+        error: (err) =>
+          err?.message ||
+          err?.data?.message ||
+          err?.data?.error ||
+          err?.data?.errors?.map((e) => e.message || e).join(" ") ||
+          err?.errorCode ||
+          JSON.stringify(err) ||
+          "Failed to create subscription",
       });
 
       // Reset form and close modal
       setName("");
       setPrice("");
       setDurationInDays("");
+      setCommission("");
       setFeatures([""]);
       setOpen(false);
 
@@ -147,35 +166,29 @@ const ManageSubscriptionPage = () => {
         </div>
 
         {/* Tier Grid */}
-        <div className="grid grid-cols-3 gap-8">
-           <PlanTierCard 
-              name="Basic" 
-              desc="For independent artisans." 
-              price="49.00" 
-              commission="20" 
-              features={["3 Featured Days / Month", "Standard Support", "Advanced Analytics"]}
-              icon={<Layers size={20} />}
-           />
-           <PlanTierCard 
-              name="Pro" 
-              desc="For established studios." 
-              price="149.00" 
-              commission="12" 
-              features={["14 Featured Days / Month", "Priority Support", "Advanced Analytics"]}
-              icon={<Zap size={20} />}
-              isPopular
-              isRed
-           />
-           <PlanTierCard 
-              name="Premium" 
-              desc="For salon chains." 
-              price="399.00" 
-              commission="8" 
-              features={["Unlimited Featured Listings", "Dedicated Manager", "Custom API Access"]}
-              icon={<Wallet size={20} />}
-              isInviteOnly
-           />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+           {(plans && plans.length > 0) ? (
+             plans.map((plan, index) => (
+                <PlanTierCard 
+                   key={plan._id}
+                   name={plan.name} 
+                   desc={`${plan.durationInDays} days access`} 
+                   price={plan.price} 
+                   commission={plan.commission || "10"} 
+                   features={plan.features}
+                   icon={<Layers size={20} />}
+                   isPopular={index === 1}
+                   isRed={index === 1}
+                />
+             ))
+           ) : (
+             <div className="col-span-3 h-[300px] border-2 border-dashed border-slate-200 rounded-[2.5rem] flex flex-col items-center justify-center text-slate-300">
+                <Plus size={48} className="mb-2 opacity-20" />
+                <p className="font-black uppercase tracking-widest text-xs opacity-40">No active tiers found</p>
+             </div>
+           )}
         </div>
+
 
         {/* Bottom Configuration Area */}
         <div className="grid grid-cols-2 gap-8">
@@ -198,6 +211,7 @@ const ManageSubscriptionPage = () => {
                  Deploy a limited-time promotional tier or a geo-specific pricing model.
               </p>
               <button 
+                type="button"
                 onClick={() => setOpen(true)}
                 className="px-10 py-4 bg-slate-900 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all active:scale-95 shadow-lg"
               >
@@ -205,96 +219,186 @@ const ManageSubscriptionPage = () => {
               </button>
            </div>
         </div>
+
+        {/* CREATE MODAL */}
+        {open && (
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+            <div className="bg-white rounded-3xl w-full max-w-xl p-8 relative shadow-xl overflow-y-auto max-h-[90vh]">
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="absolute top-5 right-5 text-slate-400 hover:text-slate-700"
+              >
+                <X />
+              </button>
+
+              <h2 className="text-2xl font-bold mb-6">
+                Create Subscription Plan
+              </h2>
+
+              <input
+                className="w-full mb-4 px-4 py-3 border rounded-xl"
+                placeholder="Plan Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <input
+                  type="number"
+                  className="px-4 py-3 border rounded-xl"
+                  placeholder="Price"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+                <input
+                  type="number"
+                  className="px-4 py-3 border rounded-xl"
+                  placeholder="Duration (days)"
+                  value={durationInDays}
+                  onChange={(e) => setDurationInDays(e.target.value)}
+                />
+                <input
+                  type="number"
+                  className="px-4 py-3 border rounded-xl"
+                  placeholder="Commission %"
+                  value={commission}
+                  onChange={(e) => setCommission(e.target.value)}
+                />
+              </div>
+
+              {/* FEATURES */}
+              <div className="space-y-3 mb-6">
+                <p className="font-semibold">Features</p>
+
+                {features.map((feature, index) => (
+                  <div key={index} className="flex gap-3">
+                    <input
+                      className="flex-1 px-4 py-2 border rounded-xl"
+                      placeholder={`Feature ${index + 1}`}
+                      value={feature}
+                      onChange={(e) => updateFeature(index, e.target.value)}
+                    />
+                    {features.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeFeature(index)}
+                        className="text-red-500"
+                      >
+                        <Trash2 />
+                      </button>
+                    )}
+                  </div>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={addFeature}
+                  className="flex items-center gap-2 text-indigo-600 font-medium"
+                >
+                  <Plus size={16} /> Add Feature
+                </button>
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="px-5 py-2 rounded-xl border"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCreate}
+                  className="px-6 py-2 rounded-xl bg-slate-900 text-white font-semibold"
+                >
+                  Create Plan
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
 
+  // ── MOBILE VIEW ─────────────────────────────────────────────────────────────
   return (
-    <div className="space-y-10">
-      <div className="w-full mx-auto px-4 md:px-8 lg:px-12">
-        {/* HEADER */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900">
-              Subscription Plans
-            </h1>
-            <p className="text-slate-500">
-              Manage subscription tiers for salon owners
-            </p>
-          </div>
-
-          <button
-            onClick={() => setOpen(true)}
-            className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-semibold shadow"
-          >
-            <Plus size={20} />
-            Create Plan
-          </button>
-        </div>
-
-        {/* LOADING */}
-        {loading && (
-          <div className="flex justify-center py-[20vh]">
-            <div className="animate-spin h-8 w-8 border-4 border-rose-600 border-t-transparent rounded-full"></div>
-          </div>
-        )}
-
-        {/* ERROR */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl flex gap-3">
-            <AlertCircle />
-            <span>{error}</span>
-          </div>
-        )}
-
-        {/* PLANS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {plans && plans.length > 0 ? (
-            plans.map((plan) => (
-              <div
-                key={plan._id}
-                className="bg-white border rounded-3xl p-8 shadow-sm hover:shadow-xl transition"
-              >
-                <div className="flex justify-between mb-4">
-                  <h2 className="text-2xl font-bold">{plan.name}</h2>
-                  <span
-                    className={`px-3 py-1 text-xs rounded-full font-semibold ${plan.isActive
-                      ? "bg-emerald-100 text-emerald-600"
-                      : "bg-slate-200 text-slate-500"
-                      }`}
-                  >
-                    {plan.isActive ? "Active" : "Inactive"}
-                  </span>
-                </div>
-
-                <div className="flex items-baseline gap-1 mb-5">
-                  <span className="text-4xl font-extrabold">₹{plan.price}</span>
-                  <span className="text-slate-500">
-                    / {plan.durationInDays} days
-                  </span>
-                </div>
-
-                <div className="space-y-3">
-                  {plan.features.map((feature, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start gap-3 text-slate-600"
-                    >
-                      <CheckCircle2 className="text-indigo-500" size={18} />
-                      <span>{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))
-          ) : !loading && (
-            <div className="col-span-full bg-white border-2 border-dashed rounded-3xl py-20 flex flex-col items-center">
-              <Layers size={48} className="text-slate-300 mb-3" />
-              <p className="text-slate-500">No subscription plans found</p>
-            </div>
-          )}
-        </div>
+    <div className="min-h-screen bg-[#F8FAFC] p-6 lg:p-10 font-sans">
+      {/* Header */}
+      <div className="mb-8">
+        <span className="text-[10px] uppercase font-black tracking-widest text-rose-600">Revenue Engine</span>
+        <h1 className="text-3xl font-black text-slate-800 tracking-tight mt-1">Subscriptions</h1>
+        <p className="text-slate-500 text-sm font-medium mt-1">Manage economic tiers</p>
       </div>
+
+      {/* Revenue Stats Row */}
+      <div className="flex bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm mb-8 justify-between">
+         <div className="flex flex-col gap-1">
+            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">MRR Snapshot</span>
+            <div className="flex items-center gap-2">
+               <span className="text-2xl font-black text-slate-800">$142k</span>
+               <span className="text-[10px] font-black text-emerald-500">+12%</span>
+            </div>
+         </div>
+         <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center">
+            <TrendingUp size={22} />
+         </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="bg-slate-900 text-white w-full py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] transition-all shadow-lg shadow-slate-200 flex items-center justify-center gap-2 mb-8 active:scale-95"
+      >
+        <Plus size={18} />
+        Initialize New Tier
+      </button>
+
+      {/* Plans List */}
+      <div className="space-y-6 mb-20">
+        <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Active Tiers</h2>
+        {(plans && plans.length > 0) ? (
+          plans.map((plan, index) => (
+             <div key={plan._id} className={`bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden ${index === 1 ? 'ring-2 ring-rose-500' : ''}`}>
+                <div className="flex justify-between items-start mb-6">
+                   <div className="flex flex-col">
+                      <h3 className="font-black text-slate-800 text-lg leading-tight">{plan.name}</h3>
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{plan.durationInDays} Days Cycle</span>
+                   </div>
+                   <div className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${index === 1 ? 'bg-rose-600 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                      {index === 1 ? 'Popular' : 'Active'}
+                   </div>
+                </div>
+
+                <div className="flex items-baseline gap-1 mb-6">
+                   <span className="text-3xl font-black text-slate-800 tracking-tight">₹ {plan.price}</span>
+                   <span className="text-[10px] font-bold text-slate-400">/ billing</span>
+                </div>
+
+                <div className="space-y-3 mb-8">
+                   {plan.features.slice(0, 3).map((f, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                         <CheckCircle2 size={14} className="text-emerald-500" />
+                         <span className="text-[11px] font-bold text-slate-500">{f}</span>
+                      </div>
+                   ))}
+                </div>
+
+                <button className="w-full py-3.5 bg-slate-50 text-slate-600 rounded-2xl font-black text-[10px] uppercase tracking-widest active:bg-slate-100 group">
+                   Adjust Tier Parameters
+                </button>
+             </div>
+          ))
+        ) : (
+          <div className="py-20 flex flex-col items-center justify-center text-slate-300 border-2 border-dashed border-slate-200 rounded-[2rem]">
+             <Layers size={48} className="opacity-20 mb-2" />
+             <p className="font-black text-[10px] uppercase tracking-widest opacity-40">No tiers deployed</p>
+          </div>
+        )}
+      </div>
+
 
       {/* CREATE MODAL */}
       {open && (
@@ -318,7 +422,7 @@ const ManageSubscriptionPage = () => {
               onChange={(e) => setName(e.target.value)}
             />
 
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <input
                 type="number"
                 className="px-4 py-3 border rounded-xl"
@@ -332,6 +436,13 @@ const ManageSubscriptionPage = () => {
                 placeholder="Duration (days)"
                 value={durationInDays}
                 onChange={(e) => setDurationInDays(e.target.value)}
+              />
+              <input
+                type="number"
+                className="px-4 py-3 border rounded-xl"
+                placeholder="Commission %"
+                value={commission}
+                onChange={(e) => setCommission(e.target.value)}
               />
             </div>
 

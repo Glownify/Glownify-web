@@ -7,15 +7,17 @@ import {
   ShieldCheck, UserPlus, TrendingUp, MapPin, Briefcase, Users
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import useMobile from '../../hooks/useMobile';
 
 const ManageUsersPage = () => {
   const dispatch = useDispatch();
-  const { users = [], loading, error } = useSelector((state) => state.superadmin);
+  const { users = [], loading, error } = useSelector((state) => state.superadmin || {});
   
   // States
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6; 
+  const isMobile = useMobile();
 
   const [activeRole, setActiveRole] = useState("All Roles");
 
@@ -34,20 +36,6 @@ const ManageUsersPage = () => {
       dispatch(fetchAllUsers());
     } catch (error) {
       console.error("Block user failed:", error);
-    }
-  };
-
-  const handleActivateUser = async (userId) => {
-    try {
-      const activatePromise = dispatch(activateUser(userId)).unwrap();
-      await toast.promise(activatePromise, {
-        loading: "Activating user...",
-        success: (res) => res?.message || "User activated successfully",
-        error: (err) => err?.message || "Failed to activate user",
-      });
-      dispatch(fetchAllUsers());
-    } catch (error) {
-      console.error("Activate user failed:", error);
     }
   };
 
@@ -84,6 +72,72 @@ const ManageUsersPage = () => {
     </div>
   );
 
+  // ── MOBILE VIEW ─────────────────────────────────────────────────────────────
+  if (isMobile) {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] p-6 font-sans">
+        <div className="mb-8">
+           <span className="text-[10px] uppercase font-black tracking-widest text-rose-600">Platform Custodian</span>
+           <h1 className="text-3xl font-black text-slate-800 tracking-tight mt-1">Users</h1>
+           <p className="text-slate-500 text-sm font-medium mt-1">Manage platform participants</p>
+        </div>
+
+        {/* Search & Filter Mini */}
+        <div className="flex gap-2 mb-8">
+           <div className="flex-1 bg-white h-12 rounded-2xl border border-slate-100 flex items-center px-4 shadow-sm">
+              <Search size={16} className="text-slate-300 mr-2" />
+              <input 
+                type="text" 
+                placeholder="Find users..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="bg-transparent text-xs font-bold text-slate-700 outline-none w-full" 
+              />
+           </div>
+           <button className="w-12 h-12 bg-white rounded-2xl border border-slate-100 flex items-center justify-center text-slate-400 shadow-sm">
+              <Filter size={18} />
+           </button>
+        </div>
+
+        {/* User List */}
+        <div className="space-y-4 mb-20">
+           {currentItems.map((user) => (
+             <div key={user._id} className="bg-white p-5 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                <div className="flex justify-between items-start mb-4">
+                   <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 overflow-hidden shadow-inner">
+                         <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} alt="" />
+                      </div>
+                      <div className="flex flex-col">
+                         <h3 className="font-black text-slate-800 text-sm leading-tight">{user.name}</h3>
+                         <span className="text-[10px] font-bold text-slate-400 truncate max-w-[140px]">{user.email}</span>
+                      </div>
+                   </div>
+                   <span className={`px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest ${
+                      user.role === 'admin' ? 'bg-orange-50 text-orange-600' : 'bg-rose-50 text-rose-600'
+                   }`}>
+                      {user.role}
+                   </span>
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t border-slate-50">
+                   <div className={`flex items-center gap-1.5 ${user.status === 'suspended' ? 'text-rose-500' : 'text-emerald-500'}`}>
+                      <div className={`w-1.5 h-1.5 rounded-full ${user.status === 'suspended' ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
+                      <span className="text-[9px] font-black uppercase tracking-widest">{user.status}</span>
+                   </div>
+                   <div className="flex gap-2">
+                      <button onClick={() => handleBlockUser(user._id)} className="w-9 h-9 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center border border-slate-100 active:bg-rose-50 active:text-rose-600 transition-colors">
+                         <ShieldCheck size={16} />
+                      </button>
+                   </div>
+                </div>
+             </div>
+           ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8 pb-10">
       
@@ -104,7 +158,7 @@ const ManageUsersPage = () => {
                <div className="flex items-end gap-1 h-full justify-end">
                   {[40, 70, 45, 90, 65, 80, 50, 85].map((h, i) => (
                     <div key={i} className="w-2 bg-rose-500 rounded-t-sm" style={{ height: `${h}%` }}></div>
-                  ))}
+                   ))}
                </div>
             </div>
          </div>

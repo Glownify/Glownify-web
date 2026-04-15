@@ -102,7 +102,7 @@ const MobileProfilePage = () => {
                 <div>
                     <SectionLabel text="Earn With Us" />
                     <MenuCard>
-                        <MenuItem icon={Briefcase} label="Earn With Us" sub="Become a partner" onPress={() => navigate("/partner-with-us")} />
+                        <MenuItem icon={Briefcase} label="Earn With Us" sub="Become a partner" onPress={() => navigate("/partner-with-us/salon-owner-register")} />
                     </MenuCard>
                 </div>
 

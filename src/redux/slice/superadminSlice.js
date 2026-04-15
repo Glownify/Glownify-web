@@ -127,7 +127,68 @@ export const updateCategory = createAsyncThunk(
   }
 );
 
+export const deleteCategory = createAsyncThunk(
+
+  "superadmin/deleteCategory",
+  async (categoryId, thunkAPI) => {
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/super-admin/delete-category/${categoryId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      return categoryId;
+    } catch (error) {
+      return handleAxiosError(error, thunkAPI);
+    }
+  }
+);
+
+export const approveSalon = createAsyncThunk(
+  "superadmin/approveSalon",
+  async (salonId, thunkAPI) => {
+    try {
+      const response = await axios.patch(
+        `${import.meta.env.VITE_API_BASE_URL}/super-admin/approve-salon/${salonId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return handleAxiosError(error, thunkAPI);
+    }
+  }
+);
+
+export const rejectSalon = createAsyncThunk(
+  "superadmin/rejectSalon",
+  async ({ salonId, reason }, thunkAPI) => {
+    try {
+      const response = await axios.patch(
+        `${import.meta.env.VITE_API_BASE_URL}/super-admin/reject-salon/${salonId}`,
+        { reason },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return handleAxiosError(error, thunkAPI);
+    }
+  }
+);
+
 export const fetchAllUsers = createAsyncThunk(
+
   "superadmin/fetchAllUsers",
   async (_, thunkAPI) => {
     try {
@@ -418,9 +479,20 @@ export const createSubscription = createAsyncThunk(
       );
       const data = response.data;
       if (response.status !== 200 && response.status !== 201) {
-        return handleAxiosError(error, thunkAPI);
+        return thunkAPI.rejectWithValue({
+          message:
+            data?.message ||
+            data?.error ||
+            (Array.isArray(data?.errors) ? data.errors.map((e) => e.message || e).join(" ") : null) ||
+            response.statusText ||
+            "Failed to create subscription",
+          statusCode: response.status,
+          errorCode: data?.errorCode || "SERVER_ERROR",
+          data: data || null,
+          timestamp: Date.now(),
+        });
       }
-      return data.plan; // Assuming the API returns { subscription: {...} }
+      return data.plan || data.subscription || data;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }
@@ -665,7 +737,23 @@ const superadminSlice = createSlice({
       .addCase(createSubscription.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(deleteCategory.fulfilled, (state, action) => {
+        state.categories = state.categories.filter(cat => cat._id !== action.payload);
+      })
+      .addCase(approveSalon.fulfilled, (state, action) => {
+        const index = state.salons.findIndex(s => s._id === action.payload.salon?._id);
+        if (index !== -1) {
+          state.salons[index] = action.payload.salon;
+        }
+      })
+      .addCase(rejectSalon.fulfilled, (state, action) => {
+        const index = state.salons.findIndex(s => s._id === action.payload.salon?._id);
+        if (index !== -1) {
+          state.salons[index] = action.payload.salon;
+        }
       });
+
   },
 });
 

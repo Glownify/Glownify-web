@@ -1,5 +1,6 @@
 import React, { memo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import {
   ArrowRight,
   Check,
@@ -21,23 +22,37 @@ import {
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
 import useMobile from "../../hooks/useMobile";
 import MobileEarningsScreen from "./Mobile/MobileEarningsScreen";
+import MobileDashboardScreen from "./Mobile/MobileDashboardScreen";
 
 const leadPipelineData = [
-  { name: "Jan", value: 400 },
-  { name: "Feb", value: 300 },
-  { name: "Mar", value: 600 },
-  { name: "Apr", value: 450 },
-  { name: "May", value: 754 },
-  { name: "Jun", value: 500 },
+  { name: "Jan", value: 400000 },
+  { name: "Feb", value: 300000 },
+  { name: "Mar", value: 600000 },
+  { name: "Apr", value: 450000 },
+  { name: "May", value: 754000 },
+  { name: "Jun", value: 500000 },
 ];
 
 const quickActions = [
-  { icon: Plus, label: "Add Lead", iconColor: "#f43f5e", bg: "#fecdd3", path: "/sales-executive/dashboard" },
-  { icon: Target, label: "Track Target", iconColor: "#0ea5e9", bg: "#e0f2fe", path: "/sales-executive/dashboard" },
+  { icon: Plus, label: "Add Lead", iconColor: "#f43f5e", bg: "#fecdd3", path: "/sales-executive/lead-pipeline" },
+  { icon: Target, label: "Track Target", iconColor: "#0ea5e9", bg: "#e0f2fe", path: "/sales-executive/my-targets" },
   { icon: Users, label: "Sales Team", iconColor: "#ec4899", bg: "#fbcfe8", path: "/sales-executive/manage-salesman" },
-  { icon: FileText, label: "View Reports", iconColor: "#10b981", bg: "#d1fae5", path: "/sales-executive/dashboard" },
-  { icon: MapPin, label: "Districts", iconColor: "#f97316", bg: "#ffedd5", path: "/sales-executive/dashboard" },
-  { icon: Zap, label: "Instant Lead", iconColor: "#8b5cf6", bg: "#ede9fe", path: "/sales-executive/dashboard" },
+  { icon: FileText, label: "View Reports", iconColor: "#10b981", bg: "#d1fae5", path: "/sales-executive/reports" },
+  { icon: MapPin, label: "Districts", iconColor: "#f97316", bg: "#ffedd5", path: "/sales-executive/districts" },
+  { icon: Zap, label: "Instant Lead", iconColor: "#8b5cf6", bg: "#ede9fe", path: "/sales-executive/lead-pipeline" },
+];
+
+const salesPerformanceData = [
+  { name: "Rahul Sharma", id: "GL-EX-101", assignedTo: "India", city: "Mumbai", person: "Elite Hair & Spa", date: "Oct 12, 2023", revenue: "4,20,000", avatar: "RS", flag: "https://flagcdn.com/w20/in.png" },
+  { name: "Anjali Gupta", id: "GL-EX-102", assignedTo: "India", city: "Bengaluru", person: "Radiance Beauty", date: "Oct 11, 2023", revenue: "8,50,000", avatar: "AG", flag: "https://flagcdn.com/w20/in.png" },
+  { name: "Vikram Singh", id: "GL-EX-103", assignedTo: "India", city: "Delhi", person: "The Royal Barbers", date: "Oct 10, 2023", revenue: "2,45,000", avatar: "VS", flag: "https://flagcdn.com/w20/in.png" },
+  { name: "Sneha Patil", id: "GL-EX-104", assignedTo: "India", city: "Pune", person: "Glow & Shine", date: "Oct 09, 2023", revenue: "1,20,000", avatar: "SP", flag: "https://flagcdn.com/w20/in.png" },
+];
+
+const recentLeadsData = [
+  { name: "Oceanic Wellness", id: "LD-9021", assignedTo: "Aditya Kumar", status: "Verified", renewOn: "Oct 24", revenue: "45,000", target: "60,000" },
+  { name: "Urban Groomers", id: "LD-9022", assignedTo: "Santosh Patel", status: "Verified", renewOn: "Oct 28", revenue: "1,12,000", target: "1,50,000" },
+  { name: "Crystal Spa", id: "LD-9023", assignedTo: "Vikram Singh", status: "Verified", renewOn: "Oct 30", revenue: "88,000", target: "1,00,000" },
 ];
 
 const SalesExecutiveDashboard = () => {
@@ -45,14 +60,14 @@ const SalesExecutiveDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("All Lead");
 
-  if (isMobile) return <MobileEarningsScreen />;
+  if (isMobile) return <MobileDashboardScreen />;
 
   return (
     <div className="flex flex-col gap-6 animate-in fade-in duration-700">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1 min-w-0">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-            <span>Shonit's Aditya Kumar</span>
+            <span>Aditya Kumar</span>
             <span className="h-1 w-1 rounded-full bg-slate-200" />
             <span>Executive Analytics</span>
           </div>
@@ -62,10 +77,16 @@ const SalesExecutiveDashboard = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 rounded-xl border border-slate-100 bg-white px-5 py-2.5 text-xs font-bold text-slate-600 shadow-sm transition-all hover:bg-slate-50">
+          <button 
+            onClick={() => toast.success("Opening commission rules editor...")}
+            className="flex items-center gap-2 rounded-xl border border-slate-100 bg-white px-5 py-2.5 text-xs font-bold text-slate-600 shadow-sm transition-all hover:bg-slate-50 outline-none"
+          >
             <Settings size={14} /> Rules
           </button>
-          <button className="flex items-center gap-2 rounded-xl border border-slate-100 bg-white px-5 py-2.5 text-xs font-bold text-slate-600 shadow-sm transition-all hover:bg-slate-50">
+          <button 
+            onClick={() => toast.success("Preparing executive data export...")}
+            className="flex items-center gap-2 rounded-xl border border-slate-100 bg-white px-5 py-2.5 text-xs font-bold text-slate-600 shadow-sm transition-all hover:bg-slate-50 outline-none"
+          >
             <Download size={14} className="rotate-180" /> Export Data
           </button>
         </div>
@@ -93,14 +114,14 @@ const SalesExecutiveDashboard = () => {
           <div className="grid grid-cols-1 gap-4 lg:gap-6 md:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-4">
             <StatCard
               title="Monthly Target"
-              value="Rs 25,00,000"
+              value="₹ 25.0L"
               progress={82}
-              progressText="Rs 20,65,400"
+              progressText="₹ 20,65,400"
               progressColor="from-[#D946EF] to-[#8B5CF6]"
             />
             <StatCard
               title="Leads Managed"
-              value="18"
+              value="184"
               badge="Assigned"
               icon={
                 <div className="rounded-2xl bg-white p-3 shadow-sm ring-1 ring-slate-50">
@@ -121,8 +142,8 @@ const SalesExecutiveDashboard = () => {
             />
             <StatCard
               title="Districts"
-              value="31"
-              badge="Active Districts"
+              value="12"
+              badge="Active Clusters"
               icon={
                 <div className="rounded-2xl bg-white p-3 shadow-sm ring-1 ring-slate-50">
                   <MapPin className="text-[#8B5CF6]" size={20} />
@@ -138,13 +159,13 @@ const SalesExecutiveDashboard = () => {
                 <MetricPill
                   icon={<TrendingUp size={16} className="text-emerald-500" />}
                   label="Total Leads"
-                  value="754"
+                  value="1,284"
                   tone="bg-emerald-50"
                 />
                 <MetricPill
                   icon={<Wallet size={16} className="text-[#8B5CF6]" />}
                   label="Value"
-                  value="Rs 2.5M"
+                  value="₹ 45.2L"
                   tone="bg-purple-50"
                 />
               </div>
@@ -155,7 +176,7 @@ const SalesExecutiveDashboard = () => {
 
             <div className="relative mt-2 h-48 sm:h-56">
               <div className="animate-bounce-slow absolute left-4 top-2 z-30 flex h-20 w-20 flex-col items-center justify-center rounded-3xl bg-gradient-to-br from-[#6c5ce7] to-[#a29bfe] text-white shadow-xl shadow-[#6c5ce7]/30 sm:left-8 sm:h-24 sm:w-24">
-                <span className="text-2xl font-black sm:text-3xl">754</span>
+                <span className="text-2xl font-black sm:text-3xl">1.2K</span>
                 <span className="text-[10px] font-bold uppercase opacity-80">
                   Leads
                 </span>
@@ -198,14 +219,14 @@ const SalesExecutiveDashboard = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-4 bg-[#1a0b3a]/5 px-5 py-6 backdrop-blur-md sm:grid-cols-2 sm:gap-6 sm:px-8 xl:grid-cols-4 xl:px-12">
-              <PipelineMetric label="Hot Leads" value="Rs 6,40,000" color="bg-rose-500" />
+              <PipelineMetric label="Hot Leads" value="₹ 12,40,000" color="bg-rose-500" />
               <PipelineMetric
-                label="Converted Sales Person"
-                value="Rs 9,80,000"
+                label="Converted"
+                value="₹ 24,80,000"
                 color="bg-orange-400"
               />
-              <PipelineMetric label="Target Regions" value="Rs 1,12,000" color="bg-yellow-400" />
-              <PipelineMetric label="Revenue" value="Rs 27,20,000" color="bg-indigo-400" />
+              <PipelineMetric label="Target Regions" value="12 Districts" color="bg-yellow-400" />
+              <PipelineMetric label="Revenue" value="₹ 27,20,000" color="bg-indigo-400" />
             </div>
           </div>
 
@@ -217,16 +238,74 @@ const SalesExecutiveDashboard = () => {
                   (This Month)
                 </span>
               </h3>
-              <button className="flex items-center gap-3 rounded-2xl bg-[#8B5CF6] px-6 py-3 text-sm font-bold text-white shadow-xl shadow-purple-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
+              <button 
+                onClick={() => navigate("/sales-executive/my-targets")}
+                className="flex items-center gap-3 rounded-2xl bg-[#8B5CF6] px-6 py-3 text-sm font-bold text-white shadow-xl shadow-purple-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
                 <Target size={16} /> Targets
               </button>
             </div>
 
-            {/* ... rest of the table code ... */}
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b border-t border-[#1a0b3a]/5 bg-[#1a0b3a]/10">
+                    <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-[#1a0b3a]/30">Sales Person</th>
+                    <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-[#1a0b3a]/30">Country</th>
+                    <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-[#1a0b3a]/30">City</th>
+                    <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-[#1a0b3a]/30">Lead Person</th>
+                    <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-[#1a0b3a]/30">Date</th>
+                    <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-[#1a0b3a]/30">Revenue</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {salesPerformanceData.map((data, idx) => (
+                    <DataRow key={idx} {...data} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <div className="overflow-hidden rounded-[40px] border border-purple-100/20 bg-white/70 shadow-sm">
-            {/* ... rest of the assigned leads code ... */}
+            <div className="flex flex-col items-start justify-between gap-6 p-8 md:flex-row md:items-center">
+              <div className="flex flex-col gap-1">
+                <h3 className="text-2xl font-black text-slate-800 tracking-tight">Assigned Leads</h3>
+                <p className="text-xs font-bold text-slate-400">Reviewing top performing district managers</p>
+              </div>
+              <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-100">
+                {["All Lead", "Recent Lead", "History"].map((tab) => (
+                  <button 
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"}`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b border-t border-[#1a0b3a]/5 bg-[#1a0b3a]/10">
+                    <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-[#1a0b3a]/30">Account</th>
+                    <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-[#1a0b3a]/30">Assigned To</th>
+                    <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-[#1a0b3a]/30">Status</th>
+                    <th className="px-6 py-4 text-center text-[10px] font-black uppercase tracking-widest text-[#1a0b3a]/30">Renew On</th>
+                    <th className="px-6 py-4 text-center text-[10px] font-black uppercase tracking-widest text-[#1a0b3a]/30">Revenue</th>
+                    <th className="px-6 py-4 text-center text-[10px] font-black uppercase tracking-widest text-[#1a0b3a]/30">Target</th>
+                    <th className="px-6 py-4 text-right"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentLeadsData.map((lead, idx) => (
+                    <RecentLeadRow key={idx} {...lead} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -289,22 +368,22 @@ const SalesExecutiveDashboard = () => {
               <Msg
                 author="Santosh Patel"
                 role="Regional Lead"
-                text="Is there any issue with the new licensing procedure? Please check."
+                text="Aditya, please check the registration status for the Bandra cluster."
                 time="Today"
                 avatar="SP"
               />
               <Msg
-                author="Rohit Sharma"
-                text="I'll check and update you. Got it, thanks!"
-                time="April 22, 2024"
+                author="Aditya Kumar"
+                text="I'm on it Santosh. Should have the full report by EOD."
+                time="2h ago"
                 isResponse
-                avatar="RS"
+                avatar="AK"
               />
               <Msg
-                author="Santosh Patel"
-                text="The team is waiting for the final report. Any ETA?"
+                author="Vikram Singh"
+                text="The Pune East team is reporting a 15% spike in premium leads."
                 time="1h ago"
-                avatar="SP"
+                avatar="VS"
               />
             </div>
           </div>
@@ -350,7 +429,10 @@ const MetricPill = ({ icon, label, value, tone }) => (
 );
 
 const StatCard = ({ title, value, progress, progressText, progressColor, icon, badge, avatars }) => (
-  <div className="relative flex flex-col justify-between overflow-hidden rounded-[2.5rem] border border-white/80 bg-white/40 p-6 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-900/5 sm:p-8">
+  <div 
+    onClick={() => toast.success(`Viewing ${title} detailed analytics`)}
+    className="relative flex flex-col justify-between overflow-hidden rounded-[2.5rem] border border-white/80 bg-white/40 p-6 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-900/5 sm:p-8 cursor-pointer group active:scale-[0.98]"
+  >
     <div className="relative z-10 mb-8 flex items-start justify-between gap-4">
       <div className="space-y-2">
         <p className="text-[11px] font-black uppercase tracking-widest text-[#1a0b3a]/30">
@@ -537,7 +619,10 @@ const RecentLeadRow = ({ name, id, assignedTo, status, renewOn, revenue, target 
     <td className="px-6 py-4 text-center text-[#1a0b3a]">Rs {revenue}</td>
     <td className="px-6 py-4 text-center font-black text-[#1a0b3a]/60">Rs {target}</td>
     <td className="px-6 py-4 text-right">
-      <button className="rounded-lg bg-[#6C5CE7] px-4 py-1.5 text-[10px] font-black text-white shadow-lg shadow-indigo-500/20 transition-all hover:scale-[1.05]">
+      <button 
+        onClick={() => toast.success(`Managing ${name}...`)}
+        className="rounded-lg bg-[#6C5CE7] px-4 py-1.5 text-[10px] font-black text-white shadow-lg shadow-indigo-500/20 transition-all hover:scale-[1.05]"
+      >
         Manage
       </button>
     </td>

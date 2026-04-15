@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MapPin, Search, ChevronDown } from "lucide-react";
+import { MapPin, ChevronDown } from "lucide-react";
 
 /**
  * MobileHero — mobile-only teal header (shown only when viewport < md).
@@ -31,9 +31,7 @@ const MobileHero = () => {
                     <h1 className="text-white text-2xl font-extrabold tracking-tight leading-tight">Glownify</h1>
                     <p className="text-white/75 text-xs mt-0.5">Find the service you want, and book now!</p>
                 </div>
-                <button className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                    <Search size={18} className="text-white" />
-                </button>
+
             </div>
             {/* Location pill */}
             <div className="mt-3 flex items-center gap-2 bg-white/15 border border-white/20 rounded-full px-3 py-2">

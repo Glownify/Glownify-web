@@ -1,4 +1,5 @@
 import React, { memo, useState } from "react";
+import { toast } from "react-hot-toast";
 import { 
   BarChart, 
   Bar, 
@@ -27,23 +28,23 @@ const miniBarData = [
 
 const topSalons = [
   {
-    name: "The Gilded Shear",
-    location: "Beverly Hills, CA",
-    revenue: "$142,000",
+    name: "Elite Hair & Spa",
+    location: "Bandra West, Mumbai",
+    revenue: "₹ 1,42,000",
     progress: 85,
     image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&q=80&w=200"
   },
   {
-    name: "Lumina Wellness",
-    location: "Chelsea, NY",
-    revenue: "$118,500",
+    name: "Radiance Beauty Hub",
+    location: "Koramangala, Bengaluru",
+    revenue: "₹ 1,18,500",
     progress: 70,
     image: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&q=80&w=200"
   },
   {
-    name: "Verdant MedSpa",
-    location: "Austin, TX",
-    revenue: "$96,400",
+    name: "The Royal Barbers",
+    location: "Hauz Khas, Delhi",
+    revenue: "₹ 96,400",
     progress: 55,
     image: "https://images.unsplash.com/photo-1620331700440-97f62c05763b?auto=format&fit=crop&q=80&w=200"
   }
@@ -52,19 +53,41 @@ const topSalons = [
 const SalesReportPage = () => {
   const isMobile = useMobile();
   const [viewType, setViewType] = useState("map");
+  const [timePeriod, setTimePeriod] = useState("Monthly");
 
   if (isMobile) return <MobileReportsScreen />;
+
+  const periods = ["Weekly", "Monthly", "Yearly"];
 
   return (
     <div className="flex flex-col gap-8 animate-in fade-in duration-700 pb-10">
       {/* Header */}
-      <div className="flex flex-col gap-2">
-        <h1 className="text-4xl font-black tracking-tight text-slate-900">
-          Quarterly Reports
-        </h1>
-        <p className="text-slate-500 font-bold">
-          Q3 Fiscal Year 2024 Analysis & Projections
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-4xl font-black tracking-tight text-slate-900">
+            {timePeriod} Reports
+          </h1>
+          <p className="text-slate-500 font-bold">
+            {timePeriod === "Weekly" ? "Performance for Week 42" : timePeriod === "Monthly" ? "October 2026 Strategic Overview" : "Fiscal Year 2026 Performance Analysis"}
+          </p>
+        </div>
+
+        {/* Time Period Toggle */}
+        <div className="flex p-1.5 bg-white rounded-[24px] border border-slate-100 shadow-sm self-start md:self-center">
+          {periods.map((period) => (
+            <button
+              key={period}
+              onClick={() => setTimePeriod(period)}
+              className={`px-6 py-2.5 rounded-[18px] text-[11px] font-black uppercase tracking-widest transition-all duration-300 ${
+                timePeriod === period
+                  ? "bg-[#BE185D] text-white shadow-lg shadow-rose-500/20"
+                  : "text-slate-400 hover:text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              {period}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Top Cards Row */}
@@ -74,8 +97,8 @@ const SalesReportPage = () => {
           <div className="flex items-start justify-between">
             <div>
               <p className="text-[10px] font-black text-teal-500 uppercase tracking-widest mb-1">Total Revenue Growth</p>
-              <h3 className="text-5xl font-black text-slate-900">$4.2M</h3>
-              <p className="mt-2 text-[11px] font-bold text-slate-400">Outperforming target by $340k this quarter.</p>
+              <h3 className="text-5xl font-black text-slate-900">₹ 4.2L</h3>
+              <p className="mt-2 text-[11px] font-bold text-slate-400">Outperforming target by ₹ 34k this quarter.</p>
             </div>
             <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-teal-50 text-teal-500 text-[10px] font-black">
               <TrendingUp size={12} /> +14.2%
@@ -115,7 +138,10 @@ const SalesReportPage = () => {
                Northwest territory is showing a 22% spike in high-end treatment registrations.
              </h3>
           </div>
-          <button className="w-full py-4 rounded-2xl bg-white text-[#BE185D] text-sm font-black shadow-lg hover:scale-[1.02] active:scale-95 transition-all">
+          <button 
+            onClick={() => toast.success("Loading territory heat map...")}
+            className="w-full py-4 rounded-2xl bg-white text-[#BE185D] text-sm font-black shadow-lg hover:scale-[1.02] active:scale-95 transition-all outline-none"
+          >
              View Territory Map
           </button>
         </div>
@@ -154,13 +180,13 @@ const SalesReportPage = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-br from-rose-500/20 to-indigo-900/40" />
               
-              {/* Markers */}
-              <div className="absolute top-[30%] left-[25%] p-4 bg-white rounded-2xl shadow-2xl border border-white/50 animate-bounce">
-                 <p className="text-[8px] font-black text-slate-400 uppercase">Manhattan Hub</p>
+               {/* Markers */}
+              <div className="absolute top-[30%] left-[25%] p-4 bg-white rounded-2xl shadow-2xl border border-white/50 animate-bounce cursor-pointer" onClick={() => toast.success("Bandra Hub: 8.4 Density")}>
+                 <p className="text-[8px] font-black text-slate-400 uppercase">Bandra Hub</p>
                  <p className="text-xs font-black text-rose-500">8.4 Density</p>
               </div>
-              <div className="absolute bottom-[40%] right-[35%] p-4 bg-white rounded-2xl shadow-2xl border border-white/50">
-                 <p className="text-[8px] font-black text-slate-400 uppercase">Soho District</p>
+              <div className="absolute bottom-[40%] right-[35%] p-4 bg-white rounded-2xl shadow-2xl border border-white/50 cursor-pointer" onClick={() => toast.success("Koramangala Zone: 6.1 Density")}>
+                 <p className="text-[8px] font-black text-slate-400 uppercase">Koramangala Zone</p>
                  <p className="text-xs font-black text-teal-600">6.1 Density</p>
               </div>
            </div>
@@ -170,7 +196,10 @@ const SalesReportPage = () => {
         <div className="xl:col-span-5 rounded-[40px] border border-white/80 bg-white/70 backdrop-blur-md p-6 lg:p-8 shadow-sm">
            <div className="flex items-center justify-between mb-8">
               <h3 className="text-xl font-black text-slate-800 tracking-tight">Top Performing Salons</h3>
-              <button className="text-[11px] font-black text-rose-500 uppercase tracking-widest hover:translate-x-1 transition-transform">
+              <button 
+                onClick={() => toast.success("Opening detailed rankings...")}
+                className="text-[11px] font-black text-rose-500 uppercase tracking-widest hover:translate-x-1 transition-transform"
+              >
                  View Rankings
               </button>
            </div>

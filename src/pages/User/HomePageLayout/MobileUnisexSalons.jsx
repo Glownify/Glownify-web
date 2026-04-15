@@ -18,7 +18,7 @@ const MobileUnisexSalons = ({ lat, lng }) => {
         }
     }, [lat, lng]);
 
-    const salonsToShow = formatSalonData(unisexSalons);
+    const salonsToShow = formatSalonData(unisexSalons || []);
 
     if (unisexLoading) {
         return (
@@ -29,7 +29,7 @@ const MobileUnisexSalons = ({ lat, lng }) => {
     }
 
     // ✅ empty state
-    if (!salonsToShow.length) {
+    if (!salonsToShow || !salonsToShow.length) {
         return (
             <div className="px-4 py-5">
                 <p className="text-gray-400 text-sm">No Unisex Salons found</p>

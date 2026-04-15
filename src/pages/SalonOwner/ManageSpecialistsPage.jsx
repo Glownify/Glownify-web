@@ -283,7 +283,7 @@ const ManageSpecialistsPage = () => {
             {displaySpecialists.map((s) => (
               <div key={s._id} className="group bg-white rounded-[40px] border border-slate-100 p-8 shadow-sm hover:shadow-2xl hover:shadow-purple-500/5 transition-all duration-500 hover:-translate-y-2 flex flex-col h-full relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-rose-50 to-transparent rounded-bl-[100px] -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700 opacity-50"></div>
-                
+
                 <div className="relative z-10 flex flex-col h-full">
                   <div className="flex items-start justify-between mb-8">
                     <img
@@ -303,7 +303,7 @@ const ManageSpecialistsPage = () => {
                     <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-tight group-hover:text-[#D81159] transition-colors">
                       {s.user?.name}
                     </h3>
-                    
+
                     <div className="flex flex-wrap gap-2">
                       {s.expertise?.map((e, i) => (
                         <span key={i} className="text-[10px] bg-slate-50 border border-slate-100 text-slate-500 px-3 py-1.5 rounded-xl font-black uppercase tracking-widest">

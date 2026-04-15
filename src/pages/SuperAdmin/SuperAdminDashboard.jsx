@@ -31,16 +31,36 @@ import {
 } from "recharts";
 
 import { SUPERADMIN_CHART_DATA as mainChartData, STATE_REVENUE_DATA as stateRevenueData, GROWTH_RATE_DATA as growthData } from "../../utils/constants";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDashboardData } from "../../redux/slice/superadminSlice";
+import { useEffect } from "react";
+
 
 // ── Main Component ────────────────────────────────────────────────────────────
 
 const SuperAdminDashboard = () => {
+  const dispatch = useDispatch();
   const isMobile = useMobile();
   const navigate = useNavigate();
+
+  const { dashboardData, loading } = useSelector((state) => state.superadmin || {});
+
+  useEffect(() => {
+    dispatch(fetchDashboardData());
+  }, [dispatch]);
   
   if (isMobile) {
     return <MobileSuperAdminDashboard />;
   }
+
+  if (loading && !dashboardData) {
+    return (
+       <div className="flex h-[80vh] items-center justify-center">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-rose-600 border-t-transparent"></div>
+       </div>
+    );
+  }
+
 
   return (
     <div className="space-y-8 pb-10">
@@ -57,30 +77,31 @@ const SuperAdminDashboard = () => {
       <div className="grid grid-cols-4 gap-6">
         <StatCard 
           title="Platform Revenue" 
-          value="$1.42M"
+          value={dashboardData?.revenue ? `$${(dashboardData.revenue / 1000000).toFixed(2)}M` : "$1.42M"}
           subText="+12.4% vs last month"
           icon={<TrendingUp size={16} />}
           isValid
         />
         <StatCard 
           title="Active Salons" 
-          value="842"
+          value={dashboardData?.activeSalons || "842"}
           subText="24 onboarded this week"
           color="emerald"
         />
         <StatCard 
           title="Total Users" 
-          value="128.5k"
+          value={dashboardData?.totalUsers ? `${(dashboardData.totalUsers / 1000).toFixed(1)}k` : "128.5k"}
           subText="Churn rate 1.2%"
           color="slate"
         />
         <StatCard 
           title="Booking Velocity" 
-          value="18.2/min"
+          value={dashboardData?.bookingVelocity || "18.2/min"}
           subText="Peak activity detected"
           isPrimary
         />
       </div>
+
 
       <div className="grid grid-cols-12 gap-8">
         {/* ── Left Column: Critical Actions ── */}
@@ -95,6 +116,7 @@ const SuperAdminDashboard = () => {
                 title="Luxe Barbers - New Registration" 
                 desc="Identity verification & Tax compliance pending"
                 btnText="Approve"
+                onClick={() => navigate("/super-admin/manage-salons")}
                 icon={<Store size={18} />}
               />
               <ActionItem 
@@ -102,6 +124,7 @@ const SuperAdminDashboard = () => {
                 desc="$450.00 chargeback appeal from Salon ID: 442"
                 btnText="Review"
                 altBtnText="Escalate"
+                onClick={() => navigate("/super-admin/manage-finance")}
                 icon={<CreditCard size={18} className="text-orange-500" />}
                 isUrgency
               />
@@ -109,6 +132,7 @@ const SuperAdminDashboard = () => {
                 title="Enterprise Plan Migration" 
                 desc="Bloom Studio Group requesting custom tier access"
                 btnText="Enable Custom Tier"
+                onClick={() => navigate("/super-admin/manage-subscription")}
                 icon={<Users size={18} className="text-slate-500" />}
               />
            </div>
@@ -207,7 +231,7 @@ const StatCard = ({ title, value, subText, icon, color = 'rose', isPrimary, isVa
   </div>
 );
 
-const ActionItem = ({ title, desc, btnText, altBtnText, icon, isUrgency }) => (
+const ActionItem = ({ title, desc, btnText, altBtnText, icon, isUrgency, onClick }) => (
   <div className={`flex items-center justify-between p-6 rounded-[2rem] border transition-all ${
     isUrgency ? "bg-orange-50/30 border-orange-100" : "bg-slate-50/30 border-slate-100"
   }`}>
@@ -223,9 +247,23 @@ const ActionItem = ({ title, desc, btnText, altBtnText, icon, isUrgency }) => (
         </div>
      </div>
      <div className="flex items-center gap-3">
-        <button className="text-[11px] font-black text-slate-400 px-4 py-2 hover:text-slate-800 transition-colors">Details</button>
-        {altBtnText && <button className="px-5 py-2.5 rounded-xl border border-slate-200 text-[11px] font-black text-slate-500 hover:bg-slate-50 transition-all">{altBtnText}</button>}
-        <button className={`px-6 py-2.5 rounded-xl text-[11px] font-black text-white hover:opacity-90 transition-all ${
+        <button 
+          onClick={onClick}
+          className="text-[11px] font-black text-slate-400 px-4 py-2 hover:text-slate-800 transition-colors"
+        >
+          Details
+        </button>
+        {altBtnText && (
+          <button 
+            onClick={onClick}
+            className="px-5 py-2.5 rounded-xl border border-slate-200 text-[11px] font-black text-slate-500 hover:bg-slate-50 transition-all font-sans"
+          >
+            {altBtnText}
+          </button>
+        )}
+        <button 
+          onClick={onClick}
+          className={`px-6 py-2.5 rounded-xl text-[11px] font-black text-white hover:opacity-90 transition-all font-sans ${
           isUrgency ? "bg-rose-600 shadow-md shadow-rose-100" : "bg-rose-600 shadow-md shadow-rose-100"
         }`}>
            {btnText}

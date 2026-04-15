@@ -22,27 +22,27 @@ const performanceBreakdownData = [
 
 const commissions = [
   {
-    name: "Luxe Beauty Studio",
+    name: "Elite Hair & Spa",
     type: "NEW REGISTRATION • OCT 24",
-    amount: "+$450.00",
+    amount: "₹ 4,500",
     status: "SETTLED",
     statusColor: "bg-emerald-50 text-emerald-500",
     icon: Store,
     iconColor: "bg-teal-100 text-teal-600"
   },
   {
-    name: "Velvet Hair Salon",
+    name: "Radiance Beauty Hub",
     type: "ELITE SUBSCRIPTION • OCT 22",
-    amount: "+$850.00",
+    amount: "₹ 8,500",
     status: "PENDING",
     statusColor: "bg-slate-100 text-slate-500",
     icon: Calendar,
     iconColor: "bg-slate-100 text-slate-600"
   },
   {
-    name: "Gentlemen's Quarters",
+    name: "The Royal Barbers",
     type: "PREMIUM SETUP • OCT 21",
-    amount: "+$620.00",
+    amount: "₹ 6,200",
     status: "SETTLED",
     statusColor: "bg-emerald-50 text-emerald-500",
     icon: Zap,
@@ -53,16 +53,11 @@ const commissions = [
 const MobileEarningsScreen = () => {
   return (
     <div className="flex flex-col gap-6 animate-in slide-in-from-bottom-4 duration-700">
-      {/* Page Title Row (Matches Image 1 layout) */}
-      <div className="flex items-center justify-center -mt-14 mb-8">
-         <h1 className="text-lg font-black text-rose-500">Earnings</h1>
-      </div>
-
       {/* Main Earnings Card */}
       <div className="relative overflow-hidden rounded-[32px] bg-white p-6 shadow-[0_20px_50px_rgba(0,0,0,0.04)] ring-1 ring-slate-100">
         <div className="flex flex-col gap-1">
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Total Earnings</span>
-          <h2 className="text-4xl font-black tracking-tight text-slate-900">$12,840.00</h2>
+          <h2 className="text-4xl font-black tracking-tight text-slate-900">₹ 1,28,450</h2>
         </div>
         
         <div className="mt-4 flex items-center gap-2 text-emerald-500">
@@ -81,7 +76,7 @@ const MobileEarningsScreen = () => {
       <div className="grid grid-cols-2 gap-4">
         <div className="rounded-[28px] bg-white p-5 shadow-sm ring-1 ring-slate-100">
           <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Pending</span>
-          <h3 className="mt-2 text-2xl font-black text-slate-900">$2,450</h3>
+          <h3 className="mt-2 text-2xl font-black text-slate-900">₹ 24,500</h3>
           <div className="mt-3 h-1 w-full bg-slate-100 rounded-full overflow-hidden">
             <div className="h-full w-[60%] bg-rose-500 rounded-full" />
           </div>

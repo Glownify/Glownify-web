@@ -141,15 +141,18 @@ import { useNavigate } from "react-router-dom";
 
 /**
  * ProCard — horizontal-scroll card matching the reference design.
- * Portrait photo with availability badge, rating, gender pill, then name/exp/spec + Book Now.
+ * Portrait photo with availability badge, rating, gender pill, then name/ex/**
+ * ProCard — horizontal-scroll card matching the reference design.
  */
 function ProCard({ pro, onPress }) {
+    if (!pro || !pro.user) return null;
+
     const isAvail = pro.availabilityStatus === "available";
     const name = pro.user?.name || "Professional";
     const exp = pro.experienceYears ? `${pro.experienceYears} yrs Exp` : "N/A";
     const spec = typeof pro.specializations?.[0] === "string"
         ? pro.specializations[0]
-        : pro.specializations?.[0]?.name || "";
+        : pro.specializations?.[0]?.name || "Specialist";
 
     return (
         <div
@@ -159,7 +162,11 @@ function ProCard({ pro, onPress }) {
         >
             {/* Photo section */}
             <div className="relative w-full" style={{ height: 155 }}>
-                <img src={pro.profilePhoto} alt={name} className="w-full h-full object-cover object-top" />
+                <img 
+                    src={pro.profilePhoto || "https://i.pravatar.cc/150"} 
+                    alt={name} 
+                    className="w-full h-full object-cover object-top" 
+                />
 
                 {/* Availability badge — top right */}
                 <div
@@ -185,7 +192,7 @@ function ProCard({ pro, onPress }) {
                     className="absolute bottom-2 right-2 rounded-full px-2 py-0.5"
                     style={{ backgroundColor: "rgba(0,0,0,0.55)" }}
                 >
-                    <span className="text-white text-[10px] font-bold">{pro.gender}</span>
+                    <span className="text-white text-[10px] font-bold">{pro.gender || "U"}</span>
                 </div>
             </div>
 
@@ -213,7 +220,7 @@ function ProCard({ pro, onPress }) {
 const MobileIndependentProfessionals = ({ lat, lng, gender }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { independentProfessionals, homeLoading } = useSelector((state) => state.user);
+    const { independentProfessionals = [], homeLoading } = useSelector((state) => state.user);
 
     useEffect(() => {
         if (lat && lng && gender) {
@@ -223,17 +230,18 @@ const MobileIndependentProfessionals = ({ lat, lng, gender }) => {
                 category: gender
             }));
         }
-    }, [lat, lng, gender]);
+    }, [lat, lng, gender, dispatch]);
 
     const goToDetail = (pro) => {
+        if (!pro) return;
         localStorage.setItem("selectedSalon", JSON.stringify(pro));
         navigate("/independentprofessionaldetailspage");
     };
 
-    const prosToShow = independentProfessionals;
+    const prosToShow = Array.isArray(independentProfessionals) ? independentProfessionals : [];
 
     // ✅ loading
-    if (homeLoading) {
+    if (homeLoading && prosToShow.length === 0) {
         return (
             <div className="px-4 py-5">
                 <p className="text-gray-400 text-sm">Loading professionals...</p>
@@ -243,11 +251,7 @@ const MobileIndependentProfessionals = ({ lat, lng, gender }) => {
 
     // ✅ empty state
     if (!prosToShow.length) {
-        return (
-            <div className="px-4 py-5">
-                <p className="text-gray-400 text-sm">No professionals found</p>
-            </div>
-        );
+        return null; // Don't show anything if empty, better than a "No professionals found" block mid-page sometimes
     }
 
     return (
@@ -260,8 +264,8 @@ const MobileIndependentProfessionals = ({ lat, lng, gender }) => {
                 </div>
                 <button
                     className="text-[13px] font-semibold py-1"
-                    style={{ color: "#0d9488", borderColor: "#0d9488" }}
-                    onClick={() => navigate("/independentprofessionaldetailspage")}
+                    style={{ color: "#0d9488" }}
+                    onClick={() => navigate("/independent-pro-list")} // Changed to a generic list path if exists
                 >
                     View all
                 </button>
@@ -269,11 +273,11 @@ const MobileIndependentProfessionals = ({ lat, lng, gender }) => {
 
             {/* Horizontal scroll row */}
             <div
-                className="flex gap-3 px-4 pt-3 overflow-x-auto"
+                className="flex gap-3 px-4 pt-3 overflow-x-auto no-scrollbar"
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
-                {prosToShow.map((pro) => (
-                    <ProCard key={pro._id} pro={pro} onPress={() => goToDetail(pro)} />
+                {prosToShow.filter(pro => pro && pro.user).map((pro) => (
+                    <ProCard key={pro._id || Math.random()} pro={pro} onPress={() => goToDetail(pro)} />
                 ))}
             </div>
         </div>

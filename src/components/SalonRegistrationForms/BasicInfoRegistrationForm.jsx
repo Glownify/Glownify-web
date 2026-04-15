@@ -25,6 +25,19 @@ const BasicInfoRegistrationForm = ({ onNext, data, onChange, theme }) => {
         {/* Form card with grey bg + border */}
         <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Owner Name */}
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-gray-500 ml-1 uppercase">Owner Name</label>
+              <input
+                name="ownerName"
+                value={data.ownerName || ""}
+                onChange={(e) => onChange(e.target.name, e.target.value)}
+                type="text"
+                placeholder="Enter Full Name"
+                className={inputStyle}
+              />
+            </div>
+
             {/* Salon Name */}
             <div className="space-y-1">
               <label className="text-xs font-bold text-gray-500 ml-1 uppercase">Salon Name</label>
@@ -38,18 +51,51 @@ const BasicInfoRegistrationForm = ({ onNext, data, onChange, theme }) => {
               />
             </div>
 
+            {/* Password */}
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-gray-500 ml-1 uppercase">Password</label>
+              <input
+                name="password"
+                value={data.password || ""}
+                onChange={(e) => onChange(e.target.name, e.target.value)}
+                type="password"
+                placeholder="Enter Password"
+                className={inputStyle}
+              />
+            </div>
+
             {/* Salon Type */}
             <div className="space-y-1">
               <label className="text-xs font-bold text-gray-500 ml-1 uppercase">Salon Type</label>
               <select
                 name="salonType"
-                value={data.salonType}
+                value={data.salonType || "Unisex"}
                 onChange={(e) => onChange(e.target.name, e.target.value)}
                 className={inputStyle}
               >
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
+                <option value="Men">Men</option>
+                <option value="Women">Women</option>
                 <option value="Unisex">Unisex</option>
+              </select>
+            </div>
+
+            {/* Shop Type */}
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-gray-500 ml-1 uppercase">Shop Ownership Type</label>
+              <select
+                name="shopType"
+                value={data.shopType}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  onChange("shopType", val);
+                  if (val === "partnership" && (!data.partners || data.partners.length === 0)) {
+                    onChange("partners", [{ name: "", contactNumber: "", whatsappNumber: "" }]);
+                  }
+                }}
+                className={inputStyle}
+              >
+                <option value="personal">Personal</option>
+                <option value="partnership">Partnership</option>
               </select>
             </div>
 
@@ -80,7 +126,7 @@ const BasicInfoRegistrationForm = ({ onNext, data, onChange, theme }) => {
             </div>
 
             {/* Email */}
-            <div className="space-y-1 md:col-span-2">
+            <div className="space-y-1">
               <label className="text-xs font-bold text-gray-500 ml-1 uppercase">
                 Email <span className="text-gray-400 normal-case">(Optional)</span>
               </label>
@@ -93,7 +139,113 @@ const BasicInfoRegistrationForm = ({ onNext, data, onChange, theme }) => {
                 className={inputStyle}
               />
             </div>
+
+            {/* Offers Home Service */}
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-gray-500 ml-1 uppercase">Offers Home Service?</label>
+              <div className="flex gap-4 mt-2">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="offersHomeService"
+                    checked={data.offersHomeService === true}
+                    onChange={() => onChange("offersHomeService", true)}
+                    className="accent-purple-600"
+                  />
+                  <span className="text-sm font-bold text-gray-700">Yes</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="offersHomeService"
+                    checked={data.offersHomeService === false}
+                    onChange={() => onChange("offersHomeService", false)}
+                    className="accent-purple-600"
+                  />
+                  <span className="text-sm font-bold text-gray-700">No</span>
+                </label>
+              </div>
+            </div>
           </div>
+
+          {/* Partners Section (Only if Shop Type is Partnership) */}
+          {data.shopType === "partnership" && (
+            <div className="mt-8 pt-8 border-t border-gray-200">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-gray-800">Partners Details</h3>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newPartners = [...(data.partners || []), { name: "", contactNumber: "", whatsappNumber: "" }];
+                    onChange("partners", newPartners);
+                  }}
+                  className="text-sm font-bold text-purple-600 hover:text-purple-700"
+                >
+                  + Add Partner
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {(data.partners || []).map((partner, index) => (
+                  <div key={index} className="bg-white p-4 rounded-xl border border-gray-100 shadow-xs relative">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase">Partner Name</label>
+                        <input
+                          value={partner.name}
+                          onChange={(e) => {
+                            const newPartners = [...data.partners];
+                            newPartners[index] = { ...newPartners[index], name: e.target.value };
+                            onChange("partners", newPartners);
+                          }}
+                          placeholder="Partner Name"
+                          className="w-full text-sm border-b border-gray-200 py-1 focus:border-purple-500 outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase">Contact Number</label>
+                        <input
+                          value={partner.contactNumber}
+                          onChange={(e) => {
+                            const newPartners = [...data.partners];
+                            newPartners[index] = { ...newPartners[index], contactNumber: e.target.value };
+                            onChange("partners", newPartners);
+                          }}
+                          placeholder="Contact Number"
+                          className="w-full text-sm border-b border-gray-200 py-1 focus:border-purple-500 outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase">WhatsApp</label>
+                        <input
+                          value={partner.whatsappNumber}
+                          onChange={(e) => {
+                            const newPartners = [...data.partners];
+                            newPartners[index] = { ...newPartners[index], whatsappNumber: e.target.value };
+                            onChange("partners", newPartners);
+                          }}
+                          placeholder="WhatsApp Number"
+                          className="w-full text-sm border-b border-gray-200 py-1 focus:border-purple-500 outline-none"
+                        />
+                      </div>
+                    </div>
+                    {data.partners.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newPartners = data.partners.filter((_, i) => i !== index);
+                          onChange("partners", newPartners);
+                        }}
+                        className="absolute -top-1 -right-1 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] shadow-sm"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="mt-8 flex justify-end">

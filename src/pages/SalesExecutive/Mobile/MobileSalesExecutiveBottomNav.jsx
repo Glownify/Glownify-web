@@ -7,7 +7,8 @@ import {
   Wallet, 
   FileText,
   PieChart,
-  LineChart
+  LineChart,
+  LayoutDashboard
 } from "lucide-react";
 
 /**
@@ -18,6 +19,11 @@ import {
  */
 const MobileSalesExecutiveBottomNav = () => {
   const navItems = [
+    { 
+      to: "/sales-executive/dashboard", 
+      label: "HOME", 
+      icon: LayoutDashboard 
+    },
     { 
       to: "/sales-executive/lead-pipeline", 
       label: "PIPELINE", 
@@ -34,15 +40,10 @@ const MobileSalesExecutiveBottomNav = () => {
       icon: Users 
     },
     { 
-      to: "/sales-executive/dashboard", 
-      label: "EARNINGS", 
+      to: "/sales-executive/my-commissions", 
+      label: "COMMISSIONS", 
       icon: Wallet,
       isSpecial: true
-    },
-    { 
-      to: "/sales-executive/reports", 
-      label: "REPORTS", 
-      icon: FileText 
     },
   ];
 

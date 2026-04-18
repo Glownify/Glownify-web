@@ -1,8 +1,35 @@
 import React from "react";
 import { ChevronLeft, ArrowRight } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 
+// Fix for default Leaflet marker icons in React
+import L from "leaflet";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconUrl: markerIcon,
+  iconRetinaUrl: markerIcon2x,
+  shadowUrl: markerShadow,
+});
 const SalonAddressRegistrationForm = ({ onNext, onBack, data, onChange, theme }) => {
   const isPurple = theme === "purple";
+
+  const LocationMarker = () => {
+    useMapEvents({
+      click(e) {
+        onChange("lat", e.latlng.lat);
+        onChange("lng", e.latlng.lng);
+      },
+    });
+
+    return data.lat && data.lng ? (
+      <Marker position={[Number(data.lat), Number(data.lng)]} />
+    ) : null;
+  };
 
   // Themed styles
   const inputStyle = isPurple
@@ -17,6 +44,23 @@ const SalonAddressRegistrationForm = ({ onNext, onBack, data, onChange, theme })
     ? "flex items-center gap-2 text-gray-500 hover:text-purple-600 font-semibold transition-colors"
     : "flex-1 py-2 rounded-md border border-gray-300 text-sm text-gray-600 hover:bg-gray-50 transition active:scale-95";
 
+  const handleUseCurrentLocation = () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          onChange("lat", position.coords.latitude);
+          onChange("lng", position.coords.longitude);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          alert("Error getting location. Please enter manually.");
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by your browser.");
+    }
+  };
+
   if (isPurple) {
     return (
       <div className="w-full">
@@ -26,28 +70,57 @@ const SalonAddressRegistrationForm = ({ onNext, onBack, data, onChange, theme })
         </header>
 
         <div className="space-y-6">
-          {/* Map Search */}
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search your salon location"
-              className={inputStyle}
-            />
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-purple-600 cursor-pointer">📍</span>
-          </div>
-
           {/* Map Preview */}
-          <div className="relative w-full h-45 rounded-2xl overflow-hidden border-2 border-gray-100 shadow-inner">
-            <div className="w-full h-full bg-slate-100 flex items-center justify-center text-gray-400 text-xs text-center px-4 py-8">
-              Interactive Map Preview
-            </div>
+          <div className="relative w-full h-56 rounded-2xl overflow-hidden border-2 border-gray-100 shadow-inner z-0">
+            <MapContainer
+              center={[Number(data.lat) || 28.6139, Number(data.lng) || 77.2090]}
+              zoom={data.lat && data.lng ? 15 : 5}
+              style={{ width: "100%", height: "100%" }}
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <LocationMarker />
+            </MapContainer>
+
             <button
               type="button"
-              className="absolute top-3 right-3 bg-white px-3 py-1.5 rounded-xl border text-[10px] font-bold text-purple-600 shadow-sm flex items-center gap-1 hover:bg-gray-50"
+              onClick={handleUseCurrentLocation}
+              className="absolute top-3 right-3 bg-white px-3 py-1.5 rounded-xl border text-[10px] font-bold text-purple-600 shadow-sm flex items-center gap-1 hover:bg-gray-50 transition-all active:scale-95 z-[1000]"
             >
-              📍 USE CURRENT
+              📍 USE CURRENT LOCATION
             </button>
+          </div>
+
+          {/* Coordinates Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-gray-500 ml-1 uppercase text-purple-600">Latitude</label>
+              <input
+                name="lat"
+                type="number"
+                step="any"
+                value={data.lat || ""}
+                onChange={(e) => onChange(e.target.name, e.target.value)}
+                placeholder="e.g. 12.9716"
+                className={inputStyle}
+                required
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-gray-500 ml-1 uppercase text-purple-600">Longitude</label>
+              <input
+                name="lng"
+                type="number"
+                step="any"
+                value={data.lng || ""}
+                onChange={(e) => onChange(e.target.name, e.target.value)}
+                placeholder="e.g. 77.5946"
+                className={inputStyle}
+                required
+              />
+            </div>
           </div>
 
           {/* Address Fields */}
@@ -110,7 +183,17 @@ const SalonAddressRegistrationForm = ({ onNext, onBack, data, onChange, theme })
           <button type='button' onClick={onBack} className={btnSecondary}>
             <ChevronLeft size={20} /> Back
           </button>
-          <button type='button' onClick={() => onNext(data)} className={btnPrimary}>
+          <button
+            type='button'
+            onClick={() => {
+              if (!data.lat || !data.lng) {
+                alert("Please provide latitude and longitude.");
+                return;
+              }
+              onNext();
+            }}
+            className={btnPrimary}
+          >
             Continue <ArrowRight size={18} />
           </button>
         </div>
@@ -128,26 +211,29 @@ const SalonAddressRegistrationForm = ({ onNext, onBack, data, onChange, theme })
       </div>
 
       <div className="space-y-4">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search your salon location"
-            className="w-full rounded-md border border-gray-300 pl-9 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-600 cursor-pointer">📍</span>
-        </div>
-
-        <div className="relative w-full h-45 rounded-md overflow-hidden border border-gray-200 shadow-inner">
-          <div className="w-full h-full bg-slate-100 flex items-center justify-center text-gray-400 text-xs text-center px-4">
-            Interactive Map Preview
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="text-xs text-gray-700 font-medium">Latitude</label>
+            <input
+              name="lat"
+              type="number"
+              step="any"
+              value={data.lat}
+              onChange={(e) => onChange(e.target.name, e.target.value)}
+              className={inputStyle}
+            />
           </div>
-          <button
-            type="button"
-            className="absolute top-2 right-2 bg-white px-2 py-1 rounded border text-[10px] font-bold text-purple-600 shadow-sm flex items-center gap-1 hover:bg-gray-50"
-          >
-            📍 USE CURRENT
-          </button>
+          <div>
+            <label className="text-xs text-gray-700 font-medium">Longitude</label>
+            <input
+              name="lng"
+              type="number"
+              step="any"
+              value={data.lng}
+              onChange={(e) => onChange(e.target.name, e.target.value)}
+              className={inputStyle}
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -215,7 +301,13 @@ const SalonAddressRegistrationForm = ({ onNext, onBack, data, onChange, theme })
             ← Back
           </button>
           <button
-            onClick={() => onNext(data)}
+            onClick={() => {
+              if (!data.lat || !data.lng) {
+                alert("Please provide latitude and longitude.");
+                return;
+              }
+              onNext();
+            }}
             className={btnPrimary}
           >
             Next

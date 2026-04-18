@@ -97,8 +97,6 @@ import OffersPage from "../pages/User/OffersPage";
 import MobileBookingsPage from "../pages/User/MobileBookingsPage";
 import MobileProfilePage from "../pages/User/MobileProfilePage";
 import PartnerRegistrationPage from "../pages/Common/PartnerRegistrationPage";
-import SalonOwnerRegisterPage from "../pages/Common/SalonOwnerRegisterPage";
-import IndependentProfessionalRegistrarionPage from "../pages/Common/IndependentProfessionalRegistrarionPage";
 import IndependentProfessionalDetailPage from "../pages/User/HomePageLayout/IndependentProfessionalDetailPage";
 import BlogPage from "../pages/Common/BlogPage";
 import AboutPage from "../pages/Common/AboutPage";
@@ -130,8 +128,6 @@ const AllRoutes = () => {
             <Route path="/bookings" element={<MobileBookingsPage />} />
             <Route path="/profile" element={<MobileProfilePage />} />
             <Route path="/partner-with-us" element={<PartnerRegistrationPage />} />
-            <Route path="/partner-with-us/salon-owner-register" element={<SalonOwnerRegisterPage />} />
-            <Route path="/partner-with-us/independent-professional-register" element={<IndependentProfessionalRegistrarionPage />} />
             <Route path="/booksubscriptionpage" element={<BookSubscriptionPage />} />
             <Route path="/paymentsubscriptionpage" element={<PaymentSubscriptionPage />} />
             <Route path="/independentprofessionaldetailspage" element={<IndependentProfessionalDetailPage />} />

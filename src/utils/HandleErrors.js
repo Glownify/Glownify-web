@@ -7,6 +7,7 @@ export const handleAxiosError = (error, thunkAPI) => {
     // 🟥 Server responded (4xx / 5xx)
     if (error.response) {
       const data = error.response.data;
+      console.error("Backend Error Details:", data); // CRITICAL: Log actual server error
 
       return thunkAPI.rejectWithValue({
         message: data?.message || "Something went wrong",

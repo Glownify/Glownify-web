@@ -27,6 +27,38 @@ export const register = createAsyncThunk(
   }
 );
 
+export const registerIndependentPro = createAsyncThunk(
+  'auth/registerIndependentPro',
+  async (formData, thunkAPI) => {
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/signup-independent-pro`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return res.data;
+    } catch (error) {
+      return handleAxiosError(error, thunkAPI);
+    }
+  }
+);
+
+export const registerSalonOwner = createAsyncThunk(
+  'auth/registerSalonOwner',
+  async (formData, thunkAPI) => {
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/signup-salon-owner`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return res.data;
+    } catch (error) {
+      return handleAxiosError(error, thunkAPI);
+    }
+  }
+);
+
 export const logoutUser = createAsyncThunk(
   'auth/logout',
   async (_, thunkAPI) => {
@@ -97,6 +129,40 @@ export const logoutUser = createAsyncThunk(
         state.loading = false;
       })
       .addCase(register.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(registerIndependentPro.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerIndependentPro.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        state.role = action.payload.user.role;
+
+        localStorage.setItem('token', action.payload.token);
+        localStorage.setItem('user', JSON.stringify(action.payload.user));
+      })
+      .addCase(registerIndependentPro.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(registerSalonOwner.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerSalonOwner.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        state.role = action.payload.user.role;
+
+        localStorage.setItem('token', action.payload.token);
+        localStorage.setItem('user', JSON.stringify(action.payload.user));
+      })
+      .addCase(registerSalonOwner.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

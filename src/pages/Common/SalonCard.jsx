@@ -4,8 +4,12 @@ import salonImg from "../../assets/salon.png";
 function SalonCard({ salon, onClick }) {
     const [fav, setFav] = useState(false);
 
-    const img = salon.galleryImages?.[0] || salonImg;
+    const img = salon.image || salon.galleryImages?.[0] || salonImg;
     const services = salon.popularServices || [];
+
+    const hasRating = (salon.avgRating > 0 && salon.totalRatings > 0) || (salon.rating > 0 && salon.reviewCount > 0);
+    const displayRating = salon.avgRating || salon.rating;
+    const displayCount = salon.totalRatings || salon.reviewCount;
 
     return (
         <div onClick={onClick}
@@ -27,16 +31,18 @@ function SalonCard({ salon, onClick }) {
                     style={{ background: "linear-gradient(to top, rgba(0,0,0,0.70), transparent)" }}>
 
                     <span className="text-white text-xs font-semibold">
-                        📍 {salon.distance
+                        📍 {salon.distance != null
                             ? `${salon.distance} km`
-                            : salon.distanceInMeters
+                            : salon.distanceInMeters != null
                                 ? `${(salon.distanceInMeters / 1000).toFixed(1)} km`
-                                : "N/A"}
+                                : "0.0 km"}
                     </span>
 
-                    <span className="text-white text-xs font-semibold">
-                        ⭐ {salon.rating || "4.8"} ({salon.reviewCount || "200"})
-                    </span>
+                    {hasRating && (
+                        <span className="text-white text-xs font-semibold">
+                            ⭐ {displayRating} ({displayCount})
+                        </span>
+                    )}
                 </div>
             </div>
 

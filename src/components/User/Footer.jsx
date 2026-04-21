@@ -59,12 +59,12 @@ const Footer = () => {
             </h4>
             <ul className="space-y-3 text-sm mb-6">
               <li>
-                <Link to="/partner-with-us/salon-owner-register" className="text-slate-600 hover:text-orange-600 transition-colors">
+                <Link to="/partner-with-us" className="text-slate-600 hover:text-orange-600 transition-colors">
                   Register as a Salon
                 </Link>
               </li>
               <li>
-                <Link to="/partner-with-us/independent-professional-register" className="text-slate-600 hover:text-orange-600 transition-colors">
+                <Link to="/partner-with-us" className="text-slate-600 hover:text-orange-600 transition-colors">
                   Register as a Professional
                 </Link>
               </li>

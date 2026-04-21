@@ -12,6 +12,13 @@ import {
   Loader2,
   Images,
 } from "lucide-react";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+
 import bgImage from "../../assets/RegisterBackground.png";
 import BasicInfoRegistrationForm from "../../components/SalonRegistrationForms/BasicInfoRegistrationForm.jsx";
 import SalonAddressRegistrationForm from "../../components/SalonRegistrationForms/SalonAddressRegistrationForm.jsx";
@@ -21,6 +28,13 @@ import SalonOwnerHeader from "./SalonOwnerHeader";
 import { registerIndependentPro, registerSalonOwner } from "../../redux/slice/authSlice";
 import { fetchAllCategories } from "../../redux/slice/userSlice";
 import PartnersAndHoursForm from "../../components/SalonRegistrationForms/PartnersAndHoursForm.jsx";
+
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconUrl: markerIcon,
+  iconRetinaUrl: markerIcon2x,
+  shadowUrl: markerShadow,
+});
 
 // ─────────────────────────────────────────
 // Helpers
@@ -43,12 +57,19 @@ const PartnerRegistrationPage = () => {
   const { loading, error } = useSelector((s) => s.auth);
   const { categories } = useSelector((s) => s.user);
 
-  React.useEffect(() => {
-    dispatch(fetchAllCategories());
-  }, [dispatch]);
-
   // ── Role state ──
   const [selectedRole, setSelectedRole] = useState("salon_owner");
+
+  // ── Independent-specific fields -- defined early for useEffect
+  const [targetGender, setTargetGender] = useState("");
+
+  React.useEffect(() => {
+    if (selectedRole === "independent_pro" && targetGender) {
+      dispatch(fetchAllCategories(targetGender));
+    } else {
+      dispatch(fetchAllCategories("unisex"));
+    }
+  }, [dispatch, selectedRole, targetGender]);
 
   // ══════════════════════════════════════
   // SALON OWNER state
@@ -204,7 +225,6 @@ const PartnerRegistrationPage = () => {
 
   // -- Independent-specific fields --
   const [experienceYears, setExperienceYears] = useState("");
-  const [targetGender, setTargetGender] = useState("");
   const [specializations, setSpecializations] = useState([]);
 
   // -- Availability: { Mon: { start, end }, ... } --
@@ -236,6 +256,18 @@ const PartnerRegistrationPage = () => {
 
   const govIdInputRef = useRef();
   const workPhotoInputRef = useRef();
+
+  const LocationMarkerPro = () => {
+    useMapEvents({
+      click(e) {
+        setLocation((prev) => ({ ...prev, lat: e.latlng.lat, lng: e.latlng.lng }));
+      },
+    });
+
+    return location.lat && location.lng ? (
+      <Marker position={[Number(location.lat), Number(location.lng)]} />
+    ) : null;
+  };
 
   // ─────────────────────────────────────────
   // Handlers
@@ -812,16 +844,62 @@ const PartnerRegistrationPage = () => {
                         Service Location
                       </h3>
 
+                      <div className="relative w-full h-56 rounded-2xl overflow-hidden border-2 border-gray-100 shadow-inner z-0 mb-4">
+                        <MapContainer
+                          center={[Number(location.lat) || 28.6139, Number(location.lng) || 77.2090]}
+                          zoom={location.lat && location.lng ? 15 : 5}
+                          style={{ width: "100%", height: "100%" }}
+                        >
+                          <TileLayer
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                          />
+                          <LocationMarkerPro />
+                        </MapContainer>
+
+                        <button
+                          type="button"
+                          onClick={handleUseCurrentLocationPro}
+                          className="absolute top-3 right-3 bg-white px-3 py-1.5 rounded-xl border text-[10px] font-bold text-pink-600 shadow-sm flex items-center gap-1 hover:bg-gray-50 transition-all active:scale-95 z-[1000]"
+                        >
+                          📍 USE CURRENT LOCATION
+                        </button>
+                      </div>
+
                       <div className="grid grid-cols-2 gap-4">
-                        <div className="col-span-2 flex justify-end mb-2">
-                          <button
-                            type="button"
-                            onClick={handleUseCurrentLocationPro}
-                            className="bg-purple-100 px-3 py-1.5 rounded-xl border border-purple-200 text-[10px] font-bold text-purple-600 shadow-sm flex items-center gap-1 hover:bg-purple-200 transition-all active:scale-95 z-10"
-                          >
-                            📍 USE CURRENT LOCATION
-                          </button>
+
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-gray-500 uppercase text-pink-600">
+                            Latitude
+                          </label>
+                          <input
+                            name="lat"
+                            value={location.lat}
+                            onChange={handleLocationChange}
+                            type="number"
+                            step="any"
+                            placeholder="12.9716"
+                            required
+                            className={inputStyle}
+                          />
                         </div>
+
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-gray-500 uppercase text-pink-600">
+                            Longitude
+                          </label>
+                          <input
+                            name="lng"
+                            value={location.lng}
+                            onChange={handleLocationChange}
+                            type="number"
+                            step="any"
+                            placeholder="77.5946"
+                            required
+                            className={inputStyle}
+                          />
+                        </div>
+
                         <div className="space-y-1 col-span-2">
                           <label className="text-xs font-bold text-gray-500 uppercase">
                             Full Address
@@ -889,38 +967,6 @@ const PartnerRegistrationPage = () => {
                             type="number"
                             min="1"
                             placeholder="10"
-                            required
-                            className={inputStyle}
-                          />
-                        </div>
-
-                        <div className="space-y-1">
-                          <label className="text-xs font-bold text-gray-500 uppercase text-purple-600">
-                            Longitude
-                          </label>
-                          <input
-                            name="lng"
-                            value={location.lng}
-                            onChange={handleLocationChange}
-                            type="number"
-                            step="any"
-                            placeholder="77.5946"
-                            required
-                            className={inputStyle}
-                          />
-                        </div>
-
-                        <div className="space-y-1">
-                          <label className="text-xs font-bold text-gray-500 uppercase text-purple-600">
-                            Latitude
-                          </label>
-                          <input
-                            name="lat"
-                            value={location.lat}
-                            onChange={handleLocationChange}
-                            type="number"
-                            step="any"
-                            placeholder="12.9716"
                             required
                             className={inputStyle}
                           />
@@ -1002,54 +1048,6 @@ const PartnerRegistrationPage = () => {
                         />
                       </div>
 
-                      {/* Profile Photo Image upload */}
-                      <div className="space-y-1 mt-4">
-                        <label className="text-xs font-bold text-gray-500 ml-1 uppercase">
-                          Upload Profile Photo
-                        </label>
-                        {profilePhotoPreview ? (
-                          <div className="relative rounded-2xl overflow-hidden border border-gray-200 w-32 h-32 mx-auto">
-                            <img
-                              src={profilePhotoPreview}
-                              alt="Profile Preview"
-                              className="w-full h-full object-cover"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setProfilePhotoFile(null);
-                                setProfilePhotoPreview(null);
-                              }}
-                              className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-md text-gray-500 hover:text-red-500 transition-colors"
-                            >
-                              <X size={16} />
-                            </button>
-                          </div>
-                        ) : (
-                          <label
-                            className="group border-2 border-dashed border-gray-200 p-6 flex flex-col items-center rounded-2xl cursor-pointer hover:border-pink-500 hover:bg-pink-50/30 transition-all w-32 h-32 mx-auto justify-center text-center"
-                          >
-                            <div className="bg-pink-100 p-2 rounded-full text-pink-600 group-hover:scale-110 transition-transform">
-                              <ImagePlus size={20} />
-                            </div>
-                            <span className="mt-2 font-bold text-gray-700 text-xs">
-                              Profile
-                            </span>
-                            <input
-                              type="file"
-                              className="hidden"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files[0];
-                                if (!file) return;
-                                setProfilePhotoFile(file);
-                                setProfilePhotoPreview(URL.createObjectURL(file));
-                              }}
-                            />
-                          </label>
-                        )}
-                      </div>
-
                       {/* Gov ID Image upload */}
                       <div className="space-y-1">
                         <label className="text-xs font-bold text-gray-500 ml-1 uppercase">
@@ -1094,6 +1092,54 @@ const PartnerRegistrationPage = () => {
                               className="hidden"
                               accept="image/*,.pdf"
                               onChange={handleGovIdFile}
+                            />
+                          </label>
+                        )}
+                      </div>
+
+                      {/* Profile Photo Image upload */}
+                      <div className="space-y-1 mt-4">
+                        <label className="text-xs font-bold text-gray-500 ml-1 uppercase">
+                          Upload Profile Photo
+                        </label>
+                        {profilePhotoPreview ? (
+                          <div className="relative rounded-2xl overflow-hidden border border-gray-200 w-32 h-32 mx-auto">
+                            <img
+                              src={profilePhotoPreview}
+                              alt="Profile Preview"
+                              className="w-full h-full object-cover"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setProfilePhotoFile(null);
+                                setProfilePhotoPreview(null);
+                              }}
+                              className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-md text-gray-500 hover:text-red-500 transition-colors"
+                            >
+                              <X size={16} />
+                            </button>
+                          </div>
+                        ) : (
+                          <label
+                            className="group border-2 border-dashed border-gray-200 p-6 flex flex-col items-center rounded-2xl cursor-pointer hover:border-pink-500 hover:bg-pink-50/30 transition-all w-32 h-32 mx-auto justify-center text-center"
+                          >
+                            <div className="bg-pink-100 p-2 rounded-full text-pink-600 group-hover:scale-110 transition-transform">
+                              <ImagePlus size={20} />
+                            </div>
+                            <span className="mt-2 font-bold text-gray-700 text-xs">
+                              Profile
+                            </span>
+                            <input
+                              type="file"
+                              className="hidden"
+                              accept="image/*"
+                              onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (!file) return;
+                                setProfilePhotoFile(file);
+                                setProfilePhotoPreview(URL.createObjectURL(file));
+                              }}
                             />
                           </label>
                         )}

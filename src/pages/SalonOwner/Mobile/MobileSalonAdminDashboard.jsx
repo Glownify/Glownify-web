@@ -14,9 +14,12 @@ import {
     ChevronRight,
     Star,
     Eye,
+    UserCircle,
+    CheckCircle,
+    User,
 } from 'lucide-react';
 import MobileBottomNav from './MobileBottomNav';
-import { fetchSalonOwnerDashboard } from '../../../redux/slice/saloonownerSlice';
+import { fetchSalonOwnerDashboard, updateBookingStatus } from '../../../redux/slice/saloonownerSlice';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const H_PAD = '16px'; // single source of truth for horizontal padding
@@ -158,6 +161,112 @@ const STATS_CONFIG = [
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const cardShadow = {
     boxShadow: '0 2px 10px rgba(0, 0, 0, 0.06)',
+};
+
+const formatTime = (timeStr) => {
+    if (!timeStr) return "N/A";
+    try {
+        const [hours, minutes] = timeStr.split(':');
+        const h = parseInt(hours, 10);
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        const h12 = h % 12 || 12;
+        return `${h12.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+    } catch (e) {
+        return timeStr;
+    }
+};
+
+const BookingCard = ({ booking, onAccept, onDecline, onPress }) => {
+    const status = booking.status?.toLowerCase();
+    const isPending = status === "pending";
+
+    const customerName = booking.customer?.name || "Guest";
+    const firstItem = booking.serviceItems?.[0];
+    const svc = firstItem?.service;
+    const serviceName = (typeof svc === 'object' ? svc?.name : svc) || firstItem?.name || "Service";
+
+    const serviceSubtitle = booking.serviceItems?.length > 1 ? `+ ${booking.serviceItems.length - 1} more` : "";
+    const specialistName = booking.specialist?.name || "Not Assigned";
+    const bookingDate = new Date(booking.bookingDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+    const bookingTime = formatTime(booking.timeSlot?.start);
+    const amount = booking.totalAmount || booking.totalPrice || booking.amount || 0;
+    const avatar = booking.customer?.avatar || `https://i.pravatar.cc/150?u=${booking._id}`;
+
+    return (
+        <div
+            onClick={onPress}
+            className="bg-white rounded-[24px] mb-4 p-5 shadow-sm active:scale-[0.98] transition-all cursor-pointer border border-[#fef2f2]"
+            style={{
+                boxShadow: '0 4px 20px rgba(233, 30, 99, 0.05)',
+            }}
+        >
+            <div className="flex items-start gap-4">
+                <div className="w-[64px] h-[64px] rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
+                    <img src={avatar} className="w-full h-full object-cover" alt="avatar" />
+                </div>
+
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                        <h1 className="font-bold text-[19px] text-gray-800 leading-tight truncate">{customerName}</h1>
+                        {isPending && (
+                            <div className="bg-[#fff7ed] px-3 py-1 rounded-full">
+                                <span className="text-[11px] font-bold text-[#f97316]">New</span>
+                            </div>
+                        )}
+                    </div>
+                    <p className="text-[15px] text-gray-500 mt-1 font-medium">{serviceName}</p>
+                    {serviceSubtitle && (
+                        <p className="text-[12px] text-gray-400 mt-[1px] leading-tight">{serviceSubtitle}</p>
+                    )}
+
+                    <div className="flex flex-wrap items-center gap-x-4 mt-3">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                            <Calendar size={14} className="text-gray-300" />
+                            <span className="text-[12px] text-gray-400 font-bold whitespace-nowrap">{bookingDate}, {bookingTime}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 min-w-0">
+                            <UserCircle size={14} className="text-gray-300" />
+                            <span className="text-[12px] text-gray-400 font-bold truncate max-w-[80px]">{specialistName}</span>
+                        </div>
+                        <span className="text-[17px] font-black text-gray-800 ml-auto">₹ {amount.toLocaleString()}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex items-center justify-between mt-6 pt-5 border-t border-[#fff1f2]">
+                <div className="flex items-center gap-1.5 text-gray-400 font-bold">
+                    <span className="text-[13px]">Total</span>
+                    <span className="text-[14px] text-gray-700">₹{amount.toLocaleString()}</span>
+                    <span className="mx-1 text-[12px] text-gray-200">|</span>
+                    <span className="text-[12px]">{booking.bookingType === 'in_salon' ? 'Salon Visit' : 'Home Service'}</span>
+                </div>
+
+                {isPending ? (
+                    <div className="flex gap-2">
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onAccept(booking._id); }}
+                            className="bg-[#14b8a6] text-white px-6 py-2.5 rounded-2xl font-bold text-[13px] active:scale-95 transition-all shadow-lg shadow-teal-100"
+                        >
+                            Accept
+                        </button>
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onDecline(booking._id); }}
+                            className="bg-[#f43f5e] text-white px-6 py-2.5 rounded-2xl font-bold text-[13px] active:scale-95 transition-all shadow-lg shadow-rose-100"
+                        >
+                            Decline
+                        </button>
+                    </div>
+                ) : (
+                    <div className={`px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${status === 'accepted' || status === 'confirmed' ? 'bg-[#f0fdfa] text-[#14b8a6]'
+                        : status === 'completed' ? 'bg-[#eff6ff] text-[#3b82f6]'
+                            : 'bg-[#fff1f2] text-[#f43f5e]'
+                        }`}>
+                        {status}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 };
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -316,18 +425,22 @@ export default function MobileSalonAdminDashboard() {
         totalCustomers: 0
     };
 
-    const handleAccept = (id) => {
-        setBookings((prev) =>
-            prev.map((b) => (b.id === id ? { ...b, status: 'accepted' } : b))
-        );
-        toast.success("Booking accepted!");
+    const handleAccept = async (id) => {
+        try {
+            await dispatch(updateBookingStatus({ bookingId: id, status: 'confirmed' })).unwrap();
+            toast.success("Booking accepted!");
+        } catch (error) {
+            toast.error(error?.message || "Failed to accept booking");
+        }
     };
 
-    const handleDecline = (id) => {
-        setBookings((prev) =>
-            prev.map((b) => (b.id === id ? { ...b, status: 'declined' } : b))
-        );
-        toast.error("Booking declined.");
+    const handleDecline = async (id) => {
+        try {
+            await dispatch(updateBookingStatus({ bookingId: id, status: 'cancelled' })).unwrap();
+            toast.success("Booking declined");
+        } catch (error) {
+            toast.error(error?.message || "Failed to decline booking");
+        }
     };
 
     return (
@@ -509,111 +622,13 @@ export default function MobileSalonAdminDashboard() {
 
                     {bookings.length > 0 ? (
                         bookings.map((booking) => (
-                            <div
-                                key={booking._id || booking.id}
-                                style={{
-                                    backgroundColor: '#fff',
-                                    borderRadius: '14px',
-                                    padding: '14px',
-                                    marginBottom: '12px',
-                                    ...cardShadow,
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            flexDirection: 'row',
-                                            alignItems: 'center',
-                                            flex: 1,
-                                        }}
-                                    >
-                                        <Avatar 
-                                            src={booking.customer?.avatar || booking.avatar} 
-                                            initials={(booking.customer?.name || booking.user?.name || 'G')?.substring(0, 2).toUpperCase()} 
-                                            size={48} 
-                                        />
-                                        <div style={{ marginLeft: '12px', flex: 1 }}>
-                                            <div
-                                                style={{
-                                                    fontWeight: 'bold',
-                                                    color: '#1f2937',
-                                                    fontSize: '15px',
-                                                }}
-                                            >
-                                                {booking.customer?.name || booking.user?.name || 'Guest'}
-                                            </div>
-                                            <div
-                                                style={{ color: '#9ca3af', fontSize: '13px', marginTop: '2px' }}
-                                            >
-                                                {(() => {
-                                                    const item = booking.serviceItems?.[0];
-                                                    const svc = item?.service;
-                                                    return (typeof svc === 'object' ? svc?.name : svc) || item?.name || booking.serviceName || booking.service || 'Service';
-                                                })()} • {booking.duration || '1 hr'}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div
-                                        style={{ fontWeight: 'bold', color: '#1f2937', fontSize: '15px' }}
-                                    >
-                                        ₹ {(booking.totalAmount || booking.totalPrice || booking.amount || 0).toLocaleString()}
-                                    </div>
-                                </div>
-
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        marginTop: '14px',
-                                        paddingTop: '14px',
-                                        borderTop: '1px solid #f3f4f6',
-                                    }}
-                                >
-                                    <span style={{ color: '#9ca3af', fontSize: '12px' }}>
-                                        {booking.bookingDate ? new Date(booking.bookingDate).toLocaleDateString() : 'Today'}, {booking.timeSlot || '11:00 AM'}
-                                    </span>
-                                    <div style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
-                                        <button
-                                            onClick={() => handleAccept(booking._id || booking.id)}
-                                            style={{
-                                                padding: '8px 16px',
-                                                borderRadius: '10px',
-                                                backgroundColor: '#059669',
-                                                border: 'none',
-                                                cursor: 'pointer',
-                                            }}
-                                        >
-                                            <span style={{ color: '#fff', fontWeight: '700', fontSize: '12px' }}>
-                                                Accept
-                                            </span>
-                                        </button>
-                                        <button
-                                            onClick={() => handleDecline(booking._id || booking.id)}
-                                            style={{
-                                                padding: '8px 16px',
-                                                borderRadius: '10px',
-                                                backgroundColor: '#e11d48',
-                                                border: 'none',
-                                                cursor: 'pointer',
-                                            }}
-                                        >
-                                            <span style={{ color: '#fff', fontWeight: '700', fontSize: '12px' }}>
-                                                Decline
-                                            </span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                            <BookingCard
+                                key={booking._id}
+                                booking={booking}
+                                onAccept={handleAccept}
+                                onDecline={handleDecline}
+                                onPress={() => navigate("/salon-owner/booking-detail", { state: { booking } })}
+                            />
                         ))
                     ) : (
                         <div style={{ textAlign: 'center', padding: '20px', color: '#6b7280' }}>

@@ -68,10 +68,12 @@ export const fetchNearbySalons = createAsyncThunk(
 
       // console.log("API res:", res);
 
+      const salonsArray = Array.isArray(res) ? res : (res?.salons || res?.data || []);
+
       return {
-        salons: res.data || [],
-        page: res.page || 1,
-        totalPages: res.totalPages || 1,
+        salons: salonsArray,
+        page: res?.page || 1,
+        totalPages: res?.totalPages || 1,
       };
 
     } catch (err) {

@@ -106,9 +106,9 @@ const IndependentProfessionals = () => {
 
                   {/* 56 × 56 circular avatar */}
                   <div className="w-14 h-14 rounded-full overflow-hidden shrink-0 border-2 border-teal-100">
-                    {pro.profilePhoto ? (
+                    {pro.user?.profilePhoto ? (
                       <img
-                        src={pro.profilePhoto}
+                        src={pro.user.profilePhoto}
                         alt={pro.user?.name}
                         className="w-full h-full object-cover"
                       />
@@ -129,15 +129,19 @@ const IndependentProfessionals = () => {
                       {pro.user?.name}
                     </p>
 
-                    {/* ⭐ 4.9 | N yrs Exp */}
+                    {/* ⭐ rating | N yrs Exp */}
                     <div className="flex items-center gap-1 mt-0.5 flex-wrap">
-                      <Star
-                        size={11}
-                        fill="currentColor"
-                        className="text-amber-400 shrink-0"
-                      />
-                      <span className="text-xs text-slate-500 font-medium">4.9</span>
-                      <span className="text-slate-300 text-xs">|</span>
+                      {pro.avgRating > 0 && (
+                        <>
+                          <Star
+                            size={11}
+                            fill="currentColor"
+                            className="text-amber-400 shrink-0"
+                          />
+                          <span className="text-xs text-slate-500 font-medium">{pro.avgRating}</span>
+                          <span className="text-slate-300 text-xs">|</span>
+                        </>
+                      )}
                       <span className="text-xs text-slate-500">
                         {pro.experienceYears} yrs Exp
                       </span>

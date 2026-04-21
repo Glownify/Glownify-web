@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
-import { fetchSalonOwnerDashboard } from "../../redux/slice/saloonownerSlice";
+import { fetchSalonOwnerDashboard, updateBookingStatus } from "../../redux/slice/saloonownerSlice";
 import { checkSubscription } from "../../utils/checkSubscription";
 import MobileSalonAdminDashboard from "./Mobile/MobileSalonAdminDashboard";
 import {
@@ -26,6 +26,8 @@ import {
   Wallet,
   Users,
   Star,
+  CheckCircle,
+  User,
 } from "lucide-react";
 import {
   ComposedChart,
@@ -94,6 +96,19 @@ const quickActions = [
   { icon: BookOpen, label: "Courses", bg: "#f8d3e0", color: "#c54f82", path: "#" },
 ];
 
+const formatTime = (timeStr) => {
+  if (!timeStr) return "N/A";
+  try {
+    const [hours, minutes] = timeStr.split(':');
+    const h = parseInt(hours, 10);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12 = h % 12 || 12;
+    return `${h12.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+  } catch (e) {
+    return timeStr;
+  }
+};
+
 const SalonOwnerDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -116,6 +131,24 @@ const SalonOwnerDashboard = () => {
   useEffect(() => {
     dispatch(fetchSalonOwnerDashboard());
   }, [dispatch]);
+
+  const handleAccept = async (id) => {
+    try {
+      await dispatch(updateBookingStatus({ bookingId: id, status: 'confirmed' })).unwrap();
+      toast.success("Booking confirmed!");
+    } catch (error) {
+      toast.error(error?.message || "Failed to confirm booking");
+    }
+  };
+
+  const handleDecline = async (id) => {
+    try {
+      await dispatch(updateBookingStatus({ bookingId: id, status: 'cancelled' })).unwrap();
+      toast.success("Booking cancelled");
+    } catch (error) {
+      toast.error(error?.message || "Failed to cancel booking");
+    }
+  };
 
   const stats = dashboardData?.stats || {
     bookedToday: 0,
@@ -284,108 +317,107 @@ const SalonOwnerDashboard = () => {
 
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         <div className="lg:col-span-8 bg-white/84 border border-[#dacaf4] rounded-[22px] px-5 py-5 shadow-sm overflow-hidden">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+          <div className="flex items-center justify-between mb-8">
             <div className="space-y-1">
-              <h4 className="text-[18px] font-black text-[#2c1e4c] tracking-tight">Recent Bookings</h4>
+              <h4 className="text-[20px] font-black text-[#2c1e4c] tracking-tight">Recent Bookings</h4>
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest leading-none">Awaiting Management</p>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <button
-                onClick={() => setFilterActive(!filterActive)}
-                className={`px-6 h-10 rounded-full border border-purple-100 text-[11px] font-black uppercase tracking-widest transition-all ${filterActive ? 'bg-[#8B5CF6] text-white shadow-lg shadow-purple-500/20' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
-              >
-                Active Only
-              </button>
-              <button
-                onClick={() => setFilterMonth(!filterMonth)}
-                className={`px-6 h-10 rounded-full border border-purple-100 text-[11px] font-black uppercase tracking-widest transition-all ${filterMonth ? 'bg-[#8B5CF6] text-white shadow-lg shadow-purple-500/20' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
-              >
-                This Month
-              </button>
-              <button className="px-6 h-10 rounded-full border border-purple-100 bg-white text-slate-400 text-[11px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50">By Area <ChevronDown size={14} /></button>
-            </div>
+            <button
+              onClick={() => navigate("/salon-owner/bookings")}
+              className="px-6 h-10 rounded-full bg-[#D946EF] text-white text-[11px] font-black uppercase tracking-widest shadow-lg shadow-pink-200 hover:scale-105 transition-all"
+            >
+              View All
+            </button>
           </div>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            {bookings.map((booking) => {
+              const status = booking.status?.toLowerCase();
+              const isPending = status === "pending";
+              const avatar = booking.customer?.avatar || `https://i.pravatar.cc/150?u=${booking._id}`;
+              const customerName = booking.customer?.name || "Guest";
+              const firstItem = booking.serviceItems?.[0];
+              const svc = firstItem?.service;
+              const serviceName = (typeof svc === 'object' ? svc?.name : svc) || firstItem?.name || "Service";
+              const serviceSubtitle = booking.serviceItems?.length > 1 ? `+ ${booking.serviceItems.length - 1} more` : "";
+              const specialistName = booking.specialist?.name || "Not Assigned";
+              const date = new Date(booking.bookingDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+              const time = formatTime(booking.timeSlot?.start);
+              const amount = booking.totalAmount || booking.totalPrice || booking.amount || 0;
 
-          <div className="space-y-4">
-            {bookings.map((booking) => (
-              <div key={booking._id || booking.id} className="group flex flex-col xl:flex-row xl:items-center justify-between gap-6 p-6 xl:p-8 rounded-[32px] bg-slate-50/50 border border-slate-100 transition-all hover:bg-white hover:shadow-xl hover:shadow-purple-500/5 hover:-translate-y-1">
-                <div className="flex items-center gap-6 flex-1">
-                  <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg shadow-purple-500/10 border-2 border-white grayscale-[0.2] group-hover:grayscale-0 transition-all shrink-0">
-                    <img src={booking.user?.avatar || `https://i.pravatar.cc/150?u=${booking._id || booking.id}`} alt="customer" className="w-full h-full object-cover" />
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <h5 className="text-[17px] font-black text-slate-800">{booking.user?.name || booking.name}</h5>
-                      <span className="px-2 py-0.5 rounded-lg bg-white border border-slate-100 text-[9px] font-black uppercase text-[#8B5CF6] tracking-tighter">Verified</span>
-                    </div>
-                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{booking._id || booking.id}</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-10 xl:gap-16 flex-[2]">
-                  <div className="space-y-1">
-                    <p className="text-[9px] font-black uppercase tracking-widest text-[#8B5CF6]/60">Treatment</p>
-                    <p className="text-[14px] font-black text-[#8B5CF6] truncate max-w-[150px]">{booking.serviceName || booking.service}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Schedule</p>
-                    <div className="flex items-center gap-2">
-                      <Clock size={12} className="text-[#D946EF]" />
-                      <p className="text-[13px] font-bold text-slate-700">{booking.timeSlot || booking.time}</p>
-                    </div>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-[9px] font-black uppercase tracking-widest text-rose-500/60">Revenue</p>
-                    <p className="text-[16px] font-black text-slate-900">₹ {(booking.totalPrice || booking.amount || 0).toLocaleString()}</p>
-                  </div>
-                  <div className="space-y-1 min-w-[100px]">
-                    <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Current Status</p>
-                    <div className={`text-[11px] font-black uppercase tracking-widest ${booking.status === 'Cancelled' ? 'text-rose-500' : 'text-emerald-500'}`}>
-                      {booking.status}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <button className="px-8 py-3.5 rounded-2xl bg-[#8B5CF6] text-white font-black text-[12px] uppercase tracking-widest shadow-lg shadow-purple-500/20 hover:scale-105 active:scale-95 transition-all">Accept</button>
-                  <button className="px-8 py-3.5 rounded-2xl bg-rose-50 text-rose-500 border border-rose-100 font-black text-[12px] uppercase tracking-widest hover:bg-rose-500 hover:text-white transition-all">Decline</button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex items-center justify-between pt-4 text-[13px] text-[#7f70a6]">
-            <p>Showing {(currentPage - 1) * 6 + 1} - {Math.min(currentPage * 6, 48)} of 48</p>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50 transition-all font-bold"
-              >
-                {`<`}
-              </button>
-              {[1, 2, 3].map(page => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`w-8 h-8 rounded-lg transition-all font-bold ${currentPage === page ? 'bg-[#8a63f7] text-white shadow-lg' : 'border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50'}`}
+              return (
+                <div
+                  key={booking._id}
+                  onClick={() => navigate("/salon-owner/booking-detail", { state: { booking } })}
+                  className="bg-white rounded-[24px] p-6 shadow-sm hover:shadow-xl hover:shadow-pink-500/5 transition-all duration-300 cursor-pointer border border-[#fef2f2] group"
                 >
-                  {page}
-                </button>
-              ))}
-              <span className="px-1 text-slate-300">...</span>
-              <button
-                onClick={() => setCurrentPage(79)}
-                className={`w-10 h-8 rounded-lg transition-all font-bold ${currentPage === 79 ? 'bg-[#8a63f7] text-white shadow-lg' : 'border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50'}`}
-              >
-                79
-              </button>
-              <button
-                onClick={() => setCurrentPage(Math.min(79, currentPage + 1))}
-                className="w-8 h-8 rounded-lg border border-[#d8c7f4] bg-white/95 text-[#7f70a6] hover:bg-slate-50 transition-all font-bold"
-              >
-                {`>`}
-              </button>
-            </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-[64px] h-[64px] rounded-2xl overflow-hidden bg-gray-100 flex-shrink-0 shadow-sm group-hover:scale-105 transition-transform duration-500">
+                      <img src={avatar} className="w-full h-full object-cover" alt="avatar" />
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <h1 className="font-black text-[18px] text-slate-800 leading-tight truncate tracking-tight">{customerName}</h1>
+                        {isPending && (
+                          <div className="bg-amber-50 px-3 py-1 rounded-full border border-amber-100">
+                            <span className="text-[10px] font-black uppercase tracking-wider text-amber-600">New</span>
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-[14px] text-slate-500 mt-1 font-bold">{serviceName}</p>
+                      {serviceSubtitle && (
+                        <p className="text-[11px] text-slate-400 mt-0.5 font-semibold">{serviceSubtitle}</p>
+                      )}
+
+                      <div className="flex flex-wrap items-center gap-x-4 mt-4">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <Calendar size={14} className="text-pink-400" />
+                          <span className="text-[12px] text-slate-400 font-bold whitespace-nowrap">{date}, {time}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <User size={14} className="text-purple-400" />
+                          <span className="text-[12px] text-slate-400 font-bold truncate max-w-[100px]">{specialistName}</span>
+                        </div>
+                        <span className="text-[18px] font-black text-slate-800 ml-auto">₹{amount.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between mt-6 pt-5 border-t border-slate-50">
+                    <div className="flex items-center gap-1.5 text-slate-400 font-bold">
+                      <span className="text-[11px] uppercase tracking-wider">Total</span>
+                      <span className="text-[15px] text-slate-700">₹{amount.toLocaleString()}</span>
+                      <span className="mx-1 text-slate-100">|</span>
+                      <span className="text-[11px] uppercase tracking-wider">{booking.bookingType === 'in_salon' ? 'Salon Visit' : 'Home Service'}</span>
+                    </div>
+
+                    {isPending ? (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleAccept(booking._id); }}
+                          className="bg-teal-500 text-white px-5 py-2.5 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-teal-600 active:scale-95 transition-all shadow-lg shadow-teal-500/20"
+                        >
+                          Accept
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleDecline(booking._id); }}
+                          className="bg-rose-500 text-white px-5 py-2.5 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-rose-600 active:scale-95 transition-all shadow-lg shadow-rose-500/20"
+                        >
+                          Decline
+                        </button>
+                      </div>
+                    ) : (
+                      <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${status === 'accepted' || status === 'confirmed' ? 'bg-teal-50 text-teal-600'
+                        : status === 'completed' ? 'bg-blue-50 text-blue-600'
+                          : 'bg-rose-50 text-rose-600'
+                        }`}>
+                        {status}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -394,7 +426,7 @@ const SalonOwnerDashboard = () => {
             <h4 className="text-xl font-black text-slate-800 tracking-tight">Recent Reviews</h4>
             <button className="text-[12px] font-black text-[#D946EF] uppercase tracking-widest hover:underline transition-all">View All</button>
           </div>
-          
+
           <div className="flex-1 space-y-6 overflow-y-auto no-scrollbar pr-1">
             {dashboardData?.recentReviews?.length > 0 ? (
               dashboardData.recentReviews.map((review) => (

@@ -1,11 +1,13 @@
 import axiosInstance from "./axiosInstance";
 
-export const getNearbySalons = async ({ lat, lng, category, radius = 50, page = 1, limit = 10 }) => {
+export const getNearbySalons = async ({ lat, lng, category, radius = 50, page = 1, limit = 1000 }) => {
     const res = await axiosInstance.get(`/salons/nearby`, {
         params: {
             lat,
             lng,
             category,
+            targetGender: category,
+            gender: category,
             radius,
             page,
             limit,

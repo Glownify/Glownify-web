@@ -72,8 +72,8 @@ const PartnersAndHoursForm = ({ onNext, onBack, data, onChange, theme }) => {
                     type="button"
                     onClick={() => toggleDay(item.day)}
                     className={`h-8 w-20 shrink-0 flex items-center justify-center font-bold rounded-lg border transition-all text-xs uppercase tracking-wider ${item.isActive
-                        ? "bg-purple-600 border-purple-600 text-white shadow-md shadow-purple-100"
-                        : "border-gray-200 bg-gray-50 text-gray-400 hover:border-purple-300"
+                      ? "bg-purple-600 border-purple-600 text-white shadow-md shadow-purple-100"
+                      : "border-gray-200 bg-gray-50 text-gray-400 hover:border-purple-300"
                       }`}
                   >
                     {item.day}

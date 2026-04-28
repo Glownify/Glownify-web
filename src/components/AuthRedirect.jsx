@@ -12,7 +12,7 @@ const AuthRedirect = () => {
     if (!token || !role) return;
 
     // Only redirect if user is on public pages
-    const publicRoutes = ["/", "/login", "/register"];
+    const publicRoutes = ["/login", "/register"];
 
     if (publicRoutes.includes(location.pathname)) {
       navigate(ROLE_ROUTES[role] || "/", { replace: true });

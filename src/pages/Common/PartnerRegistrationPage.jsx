@@ -109,6 +109,10 @@ const PartnerRegistrationPage = () => {
     role: "independent_pro",
     profilePhoto: null,
     independentData: {
+      serviceCategory: "",
+      servicesOffered: "",
+      pricing: "",
+      serviceArea: "",
       specializations: "69298004f63ac61abbb13f00",
       experienceYears: "",
       gender: "",
@@ -389,6 +393,60 @@ const PartnerRegistrationPage = () => {
                           <option value="male">Male</option>
                           <option value="female">Female</option>
                         </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-gray-500 ml-1 uppercase">
+                          Service Category
+                        </label>
+                        <select
+                          name="serviceCategory"
+                          value={proForm.independentData.serviceCategory}
+                          onChange={handleProNestedChange}
+                          className={inputStyle}
+                        >
+                          <option value="">Select Category</option>
+                          <option value="Makeup">Makeup</option>
+                          <option value="Hair Care">Hair Care</option>
+                          <option value="Skin Care">Skin Care</option>
+                          <option value="Nail Care">Nail Care</option>
+                          <option value="Massage">Massage</option>
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-gray-500 ml-1 uppercase">
+                          Service Area
+                        </label>
+                        <input
+                          name="serviceArea"
+                          value={proForm.independentData.serviceArea}
+                          onChange={handleProNestedChange}
+                          placeholder="Indiranagar, Koramangala"
+                          className={inputStyle}
+                        />
+                      </div>
+                      <div className="space-y-1 md:col-span-2">
+                        <label className="text-xs font-bold text-gray-500 ml-1 uppercase">
+                          Services Offered
+                        </label>
+                        <textarea
+                          name="servicesOffered"
+                          value={proForm.independentData.servicesOffered}
+                          onChange={handleProNestedChange}
+                          placeholder="Party makeup, facial cleanup, hair styling"
+                          className={`${inputStyle} min-h-24 resize-none`}
+                        />
+                      </div>
+                      <div className="space-y-1 md:col-span-2">
+                        <label className="text-xs font-bold text-gray-500 ml-1 uppercase">
+                          Pricing
+                        </label>
+                        <textarea
+                          name="pricing"
+                          value={proForm.independentData.pricing}
+                          onChange={handleProNestedChange}
+                          placeholder="Party makeup - Rs. 2500, facial cleanup - Rs. 1200"
+                          className={`${inputStyle} min-h-24 resize-none`}
+                        />
                       </div>
                     </div>
 

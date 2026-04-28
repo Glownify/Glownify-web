@@ -16,7 +16,9 @@ import ManageUsersPage from "./../pages/SuperAdmin/ManageUsersPage";
 import ManageCitiesAndStatesPage from "./../pages/SuperAdmin/ManageCitiesAndStatesPage";
 import ManageCategoriesPage from "./../pages/SuperAdmin/ManageCategoriesPage";
 import ManageSalesExecutivePage from "./../pages/SuperAdmin/ManageSalesExecutivePage";
-import ManageSubscriptionPage from "./../pages/SuperAdmin/ManageSubscriptionPage";
+import ManageSubscriptionPage from "../pages/SuperAdmin/ManageSubscriptionPage";
+import ManageProfessionalsPage from "../pages/SuperAdmin/ManageProfessionalsPage";
+import ManageNotificationsPage from "../pages/SuperAdmin/ManageNotificationsPage";
 import ManageFinancePage from "./../pages/SuperAdmin/ManageFinancePage";
 import ManageSystemLogsPage from "./../pages/SuperAdmin/ManageSystemLogsPage";
 import ManageResetPassword from "./../pages/SuperAdmin/ManageResetPassword";
@@ -43,6 +45,7 @@ import ManageSpecialistsPage from "../pages/SalonOwner/ManageSpecialistsPage";
 import ManageAnalyticsPage from "../pages/SalonOwner/ManageAnalyticsPage";
 import AIHairstyleScannerPage from "../pages/SalonOwner/AIHairstyleScannerPage";
 import AIPosterCreatorPage from "../pages/SalonOwner/AIPosterCreatorPage";
+import PosterMakingPage from "../pages/SalonOwner/PosterMakingPage";
 import SalonOwnerProfilePage from "../pages/SalonOwner/SalonOwnerProfilePage";
 import ManageAddOnPage from "../pages/SalonOwner/ManageAddOnPage";
 import SubscriptionPage from "../pages/SalonOwner/SubscriptionPage";
@@ -74,6 +77,8 @@ import TeamLeadProfilePage from "../pages/TeamLead/TeamLeadProfilePage";
 import IndependentProDashboard from "../pages/IndependentPro/IndependentProDashboard";
 import IndependentProProfilePage from "../pages/IndependentPro/IndependentProProfilePage";
 import ManageIndependentServicesPage from "../pages/IndependentPro/ManageIndependentServicesPage";
+import IndependentProBookingsPage from "../pages/IndependentPro/IndependentProBookingsPage";
+import IndependentProPreviewLayout from "../pages/IndependentPro/IndependentProPreviewLayout";
 
 // ─── Specialist Pages ─────────────────────────────────────────────────────────
 import SpecialistDashboard from "../pages/Specialist/SpecialistDashboard";
@@ -150,6 +155,14 @@ const AllRoutes = () => {
             <Route path="/booking-success" element={<BookingSuccessPage />} />
           </Route>
 
+          <Route path="/preview/independent-pro" element={<IndependentProPreviewLayout />}>
+            <Route index element={<Navigate replace to="/preview/independent-pro/dashboard" />} />
+            <Route path="dashboard" element={<IndependentProDashboard />} />
+            <Route path="bookings" element={<IndependentProBookingsPage />} />
+            <Route path="manage-services" element={<ManageIndependentServicesPage />} />
+            <Route path="profile" element={<IndependentProProfilePage />} />
+          </Route>
+
           {/* ── 2. Protected Customer Routes ── */}
           <Route element={<ProtectedRoute allowedRoles={["customer"]} />}>
             <Route element={<UserLayout />}>
@@ -169,6 +182,8 @@ const AllRoutes = () => {
             <Route path="manage-sales-executives" element={<ManageSalesExecutivePage />} />
             <Route path="manage-finance" element={<ManageFinancePage />} />
             <Route path="manage-subscriptions" element={<ManageSubscriptionPage />} />
+            <Route path="manage-professionals" element={<ManageProfessionalsPage />} />
+            <Route path="manage-notifications" element={<ManageNotificationsPage />} />
             <Route path="manage-system-logs" element={<ManageSystemLogsPage />} />
             <Route path="manage-reset-password" element={<ManageResetPassword />} />
             <Route path="profile" element={<SuperAdminProfilePage />} />
@@ -196,6 +211,7 @@ const AllRoutes = () => {
             <Route path="manage-analytics" element={<ManageAnalyticsPage />} />
             <Route path="manage-bookings" element={<SalonBookingsPage />} />
             <Route path="marketing" element={<MarketingSuitePage />} />
+            <Route path="poster-making" element={<PosterMakingPage />} />
             <Route path="ai-poster-creator" element={<AIPosterCreatorPage />} />
             <Route path="ai-hairstyle-scanner" element={<AIHairstyleScannerPage />} />
             <Route path="manage-add-ons" element={<ManageAddOnPage />} />
@@ -234,6 +250,7 @@ const AllRoutes = () => {
             <Route path="/independent-pro" element={<DashboardLayout />}>
               <Route index element={<IndependentProDashboard />} />
               <Route path="dashboard" element={<IndependentProDashboard />} />
+              <Route path="bookings" element={<IndependentProBookingsPage />} />
               <Route path="manage-services" element={<ManageIndependentServicesPage />} />
               <Route path="profile" element={<IndependentProProfilePage />} />
             </Route>

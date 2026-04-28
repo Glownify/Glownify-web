@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchAllSalons, approveSalon, rejectSalon } from '../../redux/slice/superadminSlice';
+import { fetchAllSalons, updateSalonStatus } from '../../redux/slice/superadminSlice';
 import toast from 'react-hot-toast';
 import { 
   User, Phone, Mail, CheckCircle, Clock, Users, 
@@ -62,7 +62,7 @@ const ManageSalonsPage = () => {
     dispatch(fetchAllSalons());
   }, [dispatch]);
 
-  const displaySalons = salons.length > 0 ? salons : DUMMY_SALONS;
+  const displaySalons = salons;
 
   // Pagination Logic
   const totalPages = Math.ceil(displaySalons.length / itemsPerPage);
@@ -77,29 +77,35 @@ const ManageSalonsPage = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleApprove = async (salonId) => {
-    try {
-      await toast.promise(dispatch(approveSalon(salonId)).unwrap(), {
-        loading: "Approving salon...",
-        success: "Salon verified successfully!",
-        error: (err) => err?.message || "Failed to approve salon",
-      });
-      dispatch(fetchAllSalons());
-    } catch (err) { console.error(err); }
+  const handleApprove = (salonId) => {
+    dispatch(updateSalonStatus({ salonId, field: 'isApproved', value: true }));
+    toast.success("Salon approved successfully!", {
+      duration: 2000,
+      position: 'top-right'
+    });
   };
 
   const [rejectionReason, setRejectionReason] = useState("");
-  const handleReject = async (salonId) => {
+  const handleReject = (salonId) => {
     if (!rejectionReason) return toast.error("Please provide a reason for rejection");
-    try {
-      await toast.promise(dispatch(rejectSalon({ salonId, reason: rejectionReason })).unwrap(), {
-        loading: "Rejecting application...",
-        success: "Application rejected.",
-        error: (err) => err?.message || "Failed to reject application",
-      });
-      setRejectionReason("");
-      dispatch(fetchAllSalons());
-    } catch (err) { console.error(err); }
+    
+    dispatch(updateSalonStatus({ salonId, field: 'isApproved', value: false }));
+    toast.success("Application rejected.", {
+      duration: 2000,
+      position: 'top-right'
+    });
+    setRejectionReason("");
+  };
+
+  const handleToggleActive = (salonId) => {
+    const salon = salons.find(s => s._id === salonId);
+    const action = salon?.isActive ? 'deactivated' : 'activated';
+    
+    dispatch(updateSalonStatus({ salonId, field: 'isActive', value: !salon?.isActive }));
+    toast.success(`Salon ${action} successfully`, {
+      duration: 2000,
+      position: 'top-right'
+    });
   };
 
   // Set initial selected salon
@@ -125,7 +131,7 @@ const ManageSalonsPage = () => {
               <h1 className="text-4xl font-black text-slate-800 tracking-tight">Salon Verification & Audit</h1>
               <div className="flex items-center gap-4">
                  <span className="bg-rose-50 text-rose-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border border-rose-100">
-                    {displaySalons.filter(s => !s.verifiedByAdmin).length} PENDING APPLICATIONS
+                    {displaySalons.filter(s => !s.isApproved).length} PENDING APPLICATIONS
                  </span>
                  <span className="text-slate-400 text-xs font-bold flex items-center gap-1.5">
                     <Clock size={12} /> Live Sync Active
@@ -152,7 +158,7 @@ const ManageSalonsPage = () => {
                        <h4 className={`text-sm font-black truncate max-w-[120px] ${selectedSalon?._id === salon._id ? "text-white" : "text-slate-800"}`}>
                           {salon.shopName}
                        </h4>
-                       <div className={`w-2 h-2 rounded-full ${salon.verifiedByAdmin ? "bg-emerald-500" : "bg-orange-500"}`}></div>
+                       <div className={`w-2 h-2 rounded-full ${salon.isApproved ? "bg-emerald-500" : "bg-orange-500"}`}></div>
                     </div>
                     <div className="flex items-center gap-2">
                        <MapPin size={10} className={selectedSalon?._id === salon._id ? "text-slate-400" : "text-slate-300"} />
@@ -181,7 +187,7 @@ const ManageSalonsPage = () => {
                                 <span className="text-slate-800 font-bold text-xs ring-1 ring-slate-100 px-2 py-0.5 rounded-md">
                                    {selectedSalon.owner?.name}
                                 </span>
-                                {!selectedSalon.verifiedByAdmin && (
+                                {!selectedSalon.isApproved && (
                                    <span className="bg-rose-600 text-white px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-tighter shadow-sm shadow-rose-100 animate-pulse">
                                       Action Required
                                    </span>
@@ -189,17 +195,27 @@ const ManageSalonsPage = () => {
                              </div>
                           </div>
                           
-                          {!selectedSalon.verifiedByAdmin && (
-                            <div className="flex gap-3">
-                               <button 
-                                  onClick={() => handleApprove(selectedSalon._id)}
-                                  className="bg-rose-600 hover:bg-rose-700 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-lg shadow-rose-200 active:scale-95"
-                               >
-                                  Approve Salon
-                               </button>
-                            </div>
-                          )}
-                          {selectedSalon.verifiedByAdmin && (
+                          <div className="flex gap-3">
+                             {!selectedSalon.isApproved && (
+                                <button 
+                                   onClick={() => handleApprove(selectedSalon._id)}
+                                   className="bg-rose-600 hover:bg-rose-700 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-lg shadow-rose-200 active:scale-95"
+                                >
+                                   Approve Salon
+                                </button>
+                             )}
+                             <button 
+                                onClick={() => handleToggleActive(selectedSalon._id)}
+                                className={`px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-lg active:scale-95 ${
+                                   selectedSalon.isActive 
+                                     ? "bg-slate-200 text-slate-700 hover:bg-slate-300" 
+                                     : "bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-200"
+                                }`}
+                             >
+                                {selectedSalon.isActive ? 'Deactivate' : 'Activate'}
+                             </button>
+                          </div>
+                          {selectedSalon.isApproved && (
                              <div className="bg-emerald-50 text-emerald-600 px-6 py-3 rounded-2xl border border-emerald-100 flex items-center gap-2">
                                 <ShieldCheck size={16} />
                                 <span className="text-[11px] font-black uppercase tracking-widest">Verified Account</span>
@@ -261,7 +277,7 @@ const ManageSalonsPage = () => {
                        </div>
                     </div>
 
-                    {!selectedSalon.verifiedByAdmin && (
+                    {!selectedSalon.isApproved && (
                        <div className="bg-rose-50/10 rounded-[2.5rem] p-8 border border-rose-100/30">
                           <div className="flex items-center gap-2 mb-6">
                              <AlertCircle size={14} className="text-rose-600" />
@@ -276,9 +292,14 @@ const ManageSalonsPage = () => {
                              ></textarea>
                              <button 
                                 onClick={() => handleReject(selectedSalon._id)}
-                                className="w-full py-4 bg-white border border-rose-100 text-rose-600 rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-rose-100/50 transition-colors"
+                                disabled={!rejectionReason.trim()}
+                                className={`w-full py-4 rounded-xl text-[11px] font-black uppercase tracking-widest transition-colors ${
+                                  rejectionReason.trim() 
+                                    ? "bg-rose-600 text-white hover:bg-rose-700 shadow-lg shadow-rose-200" 
+                                    : "bg-white border border-slate-100 text-slate-400 hover:bg-slate-100"
+                                }`}
                              >
-                                Reject & Send Logic
+                                Reject Application
                              </button>
                           </div>
                        </div>
@@ -313,7 +334,7 @@ const ManageSalonsPage = () => {
       <div className="grid grid-cols-2 gap-4 mb-8">
          <div className="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col justify-between h-32">
             <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Pending</span>
-            <div className="text-3xl font-black text-rose-600">{displaySalons.filter(s => !s.verifiedByAdmin).length}</div>
+            <div className="text-3xl font-black text-rose-600">{displaySalons.filter(s => !s.isApproved).length}</div>
          </div>
          <div className="bg-slate-900 p-5 rounded-[2rem] border border-slate-900 shadow-sm flex flex-col justify-between h-32">
             <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Total</span>
@@ -334,7 +355,7 @@ const ManageSalonsPage = () => {
                   <h3 className="font-black text-slate-800 text-[15px]">{salon.shopName}</h3>
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{salon.shopType}</span>
                </div>
-               <div className={`w-2.5 h-2.5 rounded-full ${salon.verifiedByAdmin ? 'bg-emerald-500' : 'bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.3)]'}`}></div>
+               <div className={`w-2.5 h-2.5 rounded-full ${salon.isApproved ? 'bg-emerald-500' : 'bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.3)]'}`}></div>
             </div>
 
             <div className="space-y-3 mb-6">
@@ -352,13 +373,23 @@ const ManageSalonsPage = () => {
                </div>
             </div>
 
-            {!salon.verifiedByAdmin ? (
+            {!salon.isApproved ? (
                <div className="flex gap-2 pt-4 border-t border-slate-50">
                   <button 
                      onClick={() => handleApprove(salon._id)}
                      className="flex-1 bg-rose-600 text-white py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-rose-100 active:scale-95"
                   >
                      Approve
+                  </button>
+                  <button 
+                     onClick={() => handleToggleActive(salon._id)}
+                     className={`flex-1 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-colors ${
+                        salon.isActive 
+                          ? "bg-slate-200 text-slate-700" 
+                          : "bg-emerald-600 text-white shadow-lg shadow-emerald-100"
+                     }`}
+                  >
+                     {salon.isActive ? 'Deactivate' : 'Activate'}
                   </button>
                   <button 
                      onClick={() => setSelectedSalon(salon)}
@@ -428,7 +459,7 @@ const ManageSalonsPage = () => {
                 <section>
                   <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-3">Status & Subscription</label>
                   <div className="flex flex-col gap-3">
-                    <div className={`flex items-center justify-between p-3 rounded-lg border ${selectedSalon.verifiedByAdmin ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-amber-50 border-amber-100 text-amber-700'}`}>
+                    <div className={`flex items-center justify-between p-3 rounded-lg border ${selectedSalon.isApproved ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-amber-50 border-amber-100 text-amber-700'}`}>
                       <span className="text-sm font-bold">Verification</span>
                       <ShieldCheck size={18} />
                     </div>

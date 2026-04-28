@@ -2,6 +2,52 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { handleAxiosError } from "../../utils/HandleErrors";
 
+// In-memory storage for mock data
+let mockSubscriptionPlans = [
+  {
+    _id: "plan_1",
+    name: "Basic Plan",
+    price: 10,
+    durationInDays: 30,
+    features: ["Feature 1", "Feature 2"],
+    isActive: true,
+    createdAt: new Date().toISOString()
+  },
+  {
+    _id: "plan_2",
+    name: "Premium Plan",
+    price: 100,
+    durationInDays: 365,
+    features: ["Feature A", "Feature B", "Feature C"],
+    isActive: true,
+    createdAt: new Date().toISOString()
+  }
+];
+
+let mockUsers = [
+  { _id: "user_1", name: "John Doe", email: "john@example.com", phone: "+1234567890", isBlocked: false, role: "customer", createdAt: "2024-01-15" },
+  { _id: "user_2", name: "Jane Smith", email: "jane@example.com", phone: "+0987654321", isBlocked: true, role: "customer", createdAt: "2024-01-20" },
+  { _id: "user_3", name: "Bob Johnson", email: "bob@example.com", phone: "+1122334455", isBlocked: false, role: "customer", createdAt: "2024-02-01" },
+  { _id: "user_4", name: "Alice Brown", email: "alice@example.com", phone: "+5544332211", isBlocked: false, role: "customer", createdAt: "2024-02-10" },
+  { _id: "user_5", name: "Charlie Wilson", email: "charlie@example.com", phone: "+9988776655", isBlocked: false, role: "customer", createdAt: "2024-02-15" }
+];
+
+let mockSalons = [
+  { _id: "salon_1", name: "Luxe Barbers", email: "luxe@example.com", phone: "+1111111111", isApproved: true, isActive: true, subscription: { plan: "Premium Plan", status: "active" }, createdAt: "2024-01-10" },
+  { _id: "salon_2", name: "Bloom Studio", email: "bloom@example.com", phone: "+2222222222", isApproved: false, isActive: false, subscription: { plan: "Basic Plan", status: "pending" }, createdAt: "2024-01-12" },
+  { _id: "salon_3", name: "Style Haven", email: "style@example.com", phone: "+3333333333", isApproved: true, isActive: true, subscription: { plan: "Premium Plan", status: "active" }, createdAt: "2024-01-18" },
+  { _id: "salon_4", name: "Glamour Spot", email: "glamour@example.com", phone: "+4444444444", isApproved: false, isActive: false, subscription: { plan: "Basic Plan", status: "expired" }, createdAt: "2024-01-25" },
+  { _id: "salon_5", name: "Elite Cuts", email: "elite@example.com", phone: "+5555555555", isApproved: true, isActive: false, subscription: { plan: "Premium Plan", status: "suspended" }, createdAt: "2024-02-01" }
+];
+
+let mockProfessionals = [
+  { _id: "pro_1", name: "Sarah Miller", email: "sarah@example.com", phone: "+6666666666", isApproved: true, isActive: true, specialty: "Hair Styling", createdAt: "2024-01-08" },
+  { _id: "pro_2", name: "Mike Davis", email: "mike@example.com", phone: "+7777777777", isApproved: false, isActive: false, specialty: "Barbering", createdAt: "2024-01-15" },
+  { _id: "pro_3", name: "Emma Wilson", email: "emma@example.com", phone: "+8888888888", isApproved: true, isActive: true, specialty: "Nail Art", createdAt: "2024-01-22" },
+  { _id: "pro_4", name: "James Brown", email: "james@example.com", phone: "+9999999999", isApproved: false, isActive: false, specialty: "Makeup", createdAt: "2024-02-05" },
+  { _id: "pro_5", name: "Lisa Anderson", email: "lisa@example.com", phone: "+1212121212", isApproved: true, isActive: true, specialty: "Skincare", createdAt: "2024-02-12" }
+];
+
 export const fetchDashboardData = createAsyncThunk(
   "superadmin/fetchDashboardData",
   async (_, thunkAPI) => {
@@ -443,8 +489,20 @@ export const fetchAllSubscriptions = createAsyncThunk(
   "superadmin/fetchAllSubscriptions",
   async (_, thunkAPI) => {
     try {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      
+      // Mock implementation for development when backend is not available
+      if (apiBaseUrl === 'http://localhost:5000') {
+        console.log("Using mock implementation for fetching subscriptions");
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        console.log("Mock subscriptions fetched:", mockSubscriptionPlans);
+        return [...mockSubscriptionPlans];
+      }
+      
       const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/super-admin/get-subscription-plans`,
+        `${apiBaseUrl}/super-admin/get-subscription-plans`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -463,12 +521,128 @@ export const fetchAllSubscriptions = createAsyncThunk(
   }
 );
 
+export const deleteSubscription = createAsyncThunk(
+  "superadmin/deleteSubscription",
+  async (subscriptionId, thunkAPI) => {
+    try {
+      console.log("Deleting subscription with ID:", subscriptionId);
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      
+      // Mock implementation for development when backend is not available
+      if (apiBaseUrl === 'http://localhost:5000') {
+        console.log("Using mock implementation for subscription deletion");
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 800));
+        
+        // Remove from in-memory storage
+        mockSubscriptionPlans = mockSubscriptionPlans.filter(plan => plan._id !== subscriptionId);
+        
+        console.log("Mock subscription deleted:", subscriptionId);
+        console.log("Updated plans storage:", mockSubscriptionPlans);
+        return subscriptionId;
+      }
+      
+      const response = await axios.delete(
+        `${apiBaseUrl}/super-admin/delete-subscription-plan/${subscriptionId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      
+      console.log("Subscription deletion response:", response.data);
+      return subscriptionId;
+    } catch (error) {
+      console.error("Subscription deletion error:", error);
+      return handleAxiosError(error, thunkAPI);
+    }
+  }
+);
+
+export const updateSubscription = createAsyncThunk(
+  "superadmin/updateSubscription",
+  async ({ subscriptionId, subscriptionData }, thunkAPI) => {
+    try {
+      console.log("Updating subscription with ID:", subscriptionId, "data:", subscriptionData);
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      
+      // Mock implementation for development when backend is not available
+      if (apiBaseUrl === 'http://localhost:5000') {
+        console.log("Using mock implementation for subscription update");
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 800));
+        
+        // Create mock response
+        const mockSubscription = {
+          _id: subscriptionId,
+          ...subscriptionData,
+          updatedAt: new Date().toISOString()
+        };
+        
+        // Update in-memory storage
+        const index = mockSubscriptionPlans.findIndex(plan => plan._id === subscriptionId);
+        if (index !== -1) {
+          mockSubscriptionPlans[index] = mockSubscription;
+        }
+        
+        console.log("Mock subscription updated:", mockSubscription);
+        console.log("Updated plans storage:", mockSubscriptionPlans);
+        return mockSubscription;
+      }
+      
+      const response = await axios.patch(
+        `${apiBaseUrl}/super-admin/update-subscription-plan/${subscriptionId}`,
+        subscriptionData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      
+      const data = response.data;
+      console.log("Subscription update response:", data);
+      return data.plan || data.subscription || data;
+    } catch (error) {
+      console.error("Subscription update error:", error);
+      return handleAxiosError(error, thunkAPI);
+    }
+  }
+);
+
 export const createSubscription = createAsyncThunk(
   "superadmin/createSubscription",
   async (subscriptionData, thunkAPI) => {
     try {
+      console.log("Creating subscription with data:", subscriptionData);
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      
+      // Mock implementation for development when backend is not available
+      if (apiBaseUrl === 'http://localhost:5000') {
+        console.log("Using mock implementation for subscription creation");
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Create mock response
+        const mockSubscription = {
+          _id: `plan_${Date.now()}`,
+          ...subscriptionData,
+          createdAt: new Date().toISOString()
+        };
+        
+        // Add to in-memory storage
+        mockSubscriptionPlans.push(mockSubscription);
+        
+        console.log("Mock subscription created:", mockSubscription);
+        console.log("Updated plans storage:", mockSubscriptionPlans);
+        return mockSubscription;
+      }
+      
       const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/super-admin/create-subscription-plan`,
+        `${apiBaseUrl}/super-admin/create-subscription-plan`,
         subscriptionData,
         {
           headers: {
@@ -478,22 +652,10 @@ export const createSubscription = createAsyncThunk(
         }
       );
       const data = response.data;
-      if (response.status !== 200 && response.status !== 201) {
-        return thunkAPI.rejectWithValue({
-          message:
-            data?.message ||
-            data?.error ||
-            (Array.isArray(data?.errors) ? data.errors.map((e) => e.message || e).join(" ") : null) ||
-            response.statusText ||
-            "Failed to create subscription",
-          statusCode: response.status,
-          errorCode: data?.errorCode || "SERVER_ERROR",
-          data: data || null,
-          timestamp: Date.now(),
-        });
-      }
+      console.log("Subscription creation response:", data);
       return data.plan || data.subscription || data;
     } catch (error) {
+      console.error("Subscription creation error:", error);
       return handleAxiosError(error, thunkAPI);
     }
   }
@@ -502,19 +664,88 @@ export const createSubscription = createAsyncThunk(
 const superadminSlice = createSlice({
   name: "superadmin",
   initialState: {
-    dashboardData: null,
-    salons: [],
+    dashboardData: {
+      totalUsers: 128500,
+      totalSalons: 842,
+      totalProfessionals: 156,
+      totalBookings: {
+        daily: 245,
+        monthly: 7350
+      },
+      revenue: 1420000,
+      subscriptionOverview: {
+        active: 680,
+        expired: 120,
+        pending: 42
+      }
+    },
+    salons: mockSalons,
     categories: [],
-    users: [],
+    users: mockUsers,
     cities: [],
     states: [],
     salesExecutives: [],
-    plans: [],
+    plans: mockSubscriptionPlans,
+    professionals: mockProfessionals,
     message: null,
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    // Local state management for mock data
+    toggleUserBlock: (state, action) => {
+      const user = state.users.find(u => u._id === action.payload);
+      if (user) {
+        user.isBlocked = !user.isBlocked;
+      }
+    },
+    updateSalonStatus: (state, action) => {
+      const { salonId, field, value } = action.payload;
+      const salon = state.salons.find(s => s._id === salonId);
+      if (salon) {
+        salon[field] = value;
+      }
+    },
+    updateProfessionalStatus: (state, action) => {
+      const { proId, field, value } = action.payload;
+      const professional = state.professionals.find(p => p._id === proId);
+      if (professional) {
+        professional[field] = value;
+      }
+    },
+    addSubscriptionPlan: (state, action) => {
+      const newPlan = {
+        _id: `plan_${Date.now()}`,
+        ...action.payload,
+        isActive: true,
+        createdAt: new Date().toISOString()
+      };
+      state.plans.push(newPlan);
+    },
+    toggleSubscriptionPlan: (state, action) => {
+      const plan = state.plans.find(p => p._id === action.payload);
+      if (plan) {
+        plan.isActive = !plan.isActive;
+      }
+    },
+    updateSubscriptionPlan: (state, action) => {
+      const { planId, updatedData } = action.payload;
+      const planIndex = state.plans.findIndex(p => p._id === planId);
+      if (planIndex !== -1) {
+        state.plans[planIndex] = { ...state.plans[planIndex], ...updatedData };
+      }
+    },
+    deleteSubscriptionPlan: (state, action) => {
+      const planId = action.payload;
+      state.plans = state.plans.filter(p => p._id !== planId);
+    },
+    updateDashboardStats: (state) => {
+      state.dashboardData.totalUsers = state.users.length;
+      state.dashboardData.totalSalons = state.salons.length;
+      state.dashboardData.totalProfessionals = state.professionals.length;
+      state.dashboardData.subscriptionOverview.active = state.plans.filter(p => p.isActive).length;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchDashboardData.pending, (state) => {
@@ -738,6 +969,33 @@ const superadminSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      .addCase(deleteSubscription.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteSubscription.fulfilled, (state, action) => {
+        state.loading = false;
+        state.plans = state.plans.filter(plan => plan._id !== action.payload);
+      })
+      .addCase(deleteSubscription.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateSubscription.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateSubscription.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.plans.findIndex(plan => plan._id === action.payload._id);
+        if (index !== -1) {
+          state.plans[index] = action.payload;
+        }
+      })
+      .addCase(updateSubscription.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
       .addCase(deleteCategory.fulfilled, (state, action) => {
         state.categories = state.categories.filter(cat => cat._id !== action.payload);
       })
@@ -756,5 +1014,16 @@ const superadminSlice = createSlice({
 
   },
 });
+
+export const { 
+  toggleUserBlock, 
+  updateSalonStatus, 
+  updateProfessionalStatus, 
+  addSubscriptionPlan, 
+  toggleSubscriptionPlan, 
+  updateSubscriptionPlan,
+  deleteSubscriptionPlan,
+  updateDashboardStats 
+} = superadminSlice.actions;
 
 export default superadminSlice.reducer;

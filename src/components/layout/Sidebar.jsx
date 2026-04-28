@@ -59,7 +59,7 @@ const Sidebar = () => {
                 className={({ isActive }) =>
                   `w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 group
                   ${isActive 
-                    ? "bg-gradient-to-r from-purple-50 to-white text-[#8B5CF6] shadow-sm ring-1 ring-purple-100/50" 
+                    ? "active bg-gradient-to-r from-purple-50 to-white text-[#8B5CF6] shadow-sm ring-1 ring-purple-100/50" 
                     : "text-slate-400 hover:text-[#8B5CF6] hover:bg-purple-50/30"}`
                 }
               >
@@ -67,13 +67,7 @@ const Sidebar = () => {
                 <span className={`text-[14px] font-bold group-hover:text-slate-800 transition-colors`}>
                   {item.name}
                 </span>
-                {/* Active Indicator */}
-                <NavLink
-                  to={`${basePath}${item.path}`}
-                  className={({ isActive }) => 
-                    isActive ? "ml-auto w-1.5 h-1.5 rounded-full bg-[#8B5CF6] shadow-[0_0_10px_rgba(139,92,246,0.5)]" : "hidden"
-                  }
-                />
+                <span className="ml-auto hidden h-1.5 w-1.5 rounded-full bg-[#8B5CF6] shadow-[0_0_10px_rgba(139,92,246,0.5)] group-[.active]:block" />
               </NavLink>
             );
           })}

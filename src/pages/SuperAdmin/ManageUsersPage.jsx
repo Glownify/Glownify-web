@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchAllUsers, blockUser, activateUser } from '../../redux/slice/superadminSlice';
+import { fetchAllUsers, toggleUserBlock } from '../../redux/slice/superadminSlice';
 import { 
   Search, User, Mail, Phone, Calendar, 
   ChevronLeft, ChevronRight, MoreVertical, Filter,
@@ -20,41 +20,35 @@ const ManageUsersPage = () => {
   const isMobile = useMobile();
 
   const [activeRole, setActiveRole] = useState("All Roles");
+  const [activeStatus, setActiveStatus] = useState("All Statuses");
+  const [activeRegion, setActiveRegion] = useState("Global");
 
   useEffect(() => {
     dispatch(fetchAllUsers());
   }, [dispatch]);
 
-  const handleBlockUser = async (userId) => {
-    try {
-      const blockPromise = dispatch(blockUser(userId)).unwrap();
-      await toast.promise(blockPromise, {
-        loading: "Blocking user...",
-        success: (res) => res?.message || "User blocked successfully",
-        error: (err) => err?.message || "Failed to block user",
-      });
-      dispatch(fetchAllUsers());
-    } catch (error) {
-      console.error("Block user failed:", error);
-    }
+  const handleToggleBlock = (userId) => {
+    const user = users.find(u => u._id === userId);
+    const action = user?.isBlocked ? 'unblocked' : 'blocked';
+    
+    dispatch(toggleUserBlock(userId));
+    toast.success(`User ${action} successfully`, {
+      duration: 2000,
+      position: 'top-right'
+    });
   };
 
-  const dummyUsers = [
-    { _id: '1', name: 'Elena Rodriguez', email: 'elena.r@glownify.com', role: 'Owner', status: 'active', region: 'North America' },
-    { _id: '2', name: 'Marcus Chen', email: 'marcus.c@fieldops.io', role: 'Sales', status: 'active', region: 'APAC' },
-    { _id: '3', name: 'Sarah Jenkins', email: 's.jenkins@styledirect.net', role: 'Pro', status: 'suspended', region: 'Europe' },
-    { _id: '4', name: 'David Wilson', email: 'dwilson@gmail.com', role: 'Customer', status: 'active', region: 'North America' },
-    { _id: '5', name: 'Aisha Khan', email: 'aisha.k@salonsync.com', role: 'Owner', status: 'active', region: 'Middle East' },
-    { _id: '6', name: 'Tariq Ahmed', email: 't.ahmed@luxebarbers.com', role: 'Pro', status: 'active', region: 'APAC' },
-  ];
-
-  const displayUsers = users.length > 0 ? users : dummyUsers;
+  const displayUsers = users;
 
   const filteredUsers = displayUsers.filter(user => {
     const matchesSearch = user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          user.email?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole = activeRole === "All Roles" || user.role?.toLowerCase() === activeRole.toLowerCase();
-    return matchesSearch && matchesRole;
+    const matchesStatus = activeStatus === "All Statuses" || 
+                         (activeStatus === "Active" && !user.isBlocked) || 
+                         (activeStatus === "Suspended" && user.isBlocked);
+    const matchesRegion = activeRegion === "Global" || user.region?.toLowerCase() === activeRegion.toLowerCase();
+    return matchesSearch && matchesRole && matchesStatus && matchesRegion;
   });
 
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
@@ -121,12 +115,19 @@ const ManageUsersPage = () => {
                 </div>
 
                 <div className="flex items-center justify-between pt-4 border-t border-slate-50">
-                   <div className={`flex items-center gap-1.5 ${user.status === 'suspended' ? 'text-rose-500' : 'text-emerald-500'}`}>
-                      <div className={`w-1.5 h-1.5 rounded-full ${user.status === 'suspended' ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
-                      <span className="text-[9px] font-black uppercase tracking-widest">{user.status}</span>
+                   <div className={`flex items-center gap-1.5 ${user.isBlocked ? 'text-rose-500' : 'text-emerald-500'}`}>
+                      <div className={`w-1.5 h-1.5 rounded-full ${user.isBlocked ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
+                      <span className="text-[9px] font-black uppercase tracking-widest">{user.isBlocked ? 'Blocked' : 'Active'}</span>
                    </div>
                    <div className="flex gap-2">
-                      <button onClick={() => handleBlockUser(user._id)} className="w-9 h-9 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center border border-slate-100 active:bg-rose-50 active:text-rose-600 transition-colors">
+                      <button 
+                      onClick={() => handleToggleBlock(user._id)} 
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center border transition-colors ${
+                        user.isBlocked 
+                          ? 'bg-emerald-50 text-emerald-600 border-emerald-100' 
+                          : 'bg-slate-50 text-slate-400 border-slate-100 active:bg-rose-50 active:text-rose-600'
+                      }`}
+                    >
                          <ShieldCheck size={16} />
                       </button>
                    </div>
@@ -147,9 +148,9 @@ const ManageUsersPage = () => {
             <div className="flex flex-col gap-1">
                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Platform Users</span>
                <div className="flex items-end gap-3">
-                  <h2 className="text-4xl font-black text-slate-800 tracking-tight">12,482</h2>
+                  <h2 className="text-4xl font-black text-slate-800 tracking-tight">{users.length}</h2>
                   <span className="text-emerald-500 text-[11px] font-black mb-1.5 flex items-center gap-1">
-                     <TrendingUp size={12} /> +14% from last month
+                     <TrendingUp size={12} /> {users.filter(u => !u.isBlocked).length} active
                   </span>
                </div>
             </div>
@@ -165,13 +166,13 @@ const ManageUsersPage = () => {
 
          <div className="col-span-2 bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm flex flex-col justify-between">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Now</span>
-            <h3 className="text-3xl font-black text-slate-800 tracking-tight">1,204</h3>
+            <h3 className="text-3xl font-black text-slate-800 tracking-tight">{users.filter(u => !u.isBlocked).length}</h3>
          </div>
 
          <div className="col-span-2 bg-emerald-50 rounded-[2.5rem] p-8 border border-emerald-100 shadow-sm flex flex-col justify-between group cursor-pointer hover:bg-emerald-100 transition-colors">
             <span className="text-[10px] font-black text-emerald-600/60 uppercase tracking-widest">Pending Approval</span>
             <div className="flex items-center justify-between">
-               <h3 className="text-3xl font-black text-emerald-700 tracking-tight">42</h3>
+               <h3 className="text-3xl font-black text-emerald-700 tracking-tight">{users.filter(u => u.isBlocked).length}</h3>
                <span className="px-2 py-0.5 bg-emerald-700 text-white text-[9px] font-black rounded uppercase">Priority</span>
             </div>
          </div>
@@ -199,7 +200,11 @@ const ManageUsersPage = () => {
          <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-4 py-2 border-r border-slate-100">
                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</span>
-               <select className="bg-transparent text-[12px] font-bold text-slate-700 outline-none cursor-pointer">
+               <select 
+                 value={activeStatus}
+                 onChange={(e) => setActiveStatus(e.target.value)}
+                 className="bg-transparent text-[12px] font-bold text-slate-700 outline-none cursor-pointer"
+               >
                   <option>All Statuses</option>
                   <option>Active</option>
                   <option>Suspended</option>
@@ -207,7 +212,11 @@ const ManageUsersPage = () => {
             </div>
             <div className="flex items-center gap-2 px-4 py-2">
                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Region</span>
-               <select className="bg-transparent text-[12px] font-bold text-slate-700 outline-none cursor-pointer">
+               <select 
+                 value={activeRegion}
+                 onChange={(e) => setActiveRegion(e.target.value)}
+                 className="bg-transparent text-[12px] font-bold text-slate-700 outline-none cursor-pointer"
+               >
                   <option>Global</option>
                   <option>North America</option>
                   <option>Europe</option>
@@ -276,15 +285,19 @@ const ManageUsersPage = () => {
                           <span className="text-[12px] font-bold text-slate-500">{user.region || 'Global'}</span>
                        </td>
                        <td className="px-8 py-5">
-                          <div className={`flex items-center gap-1.5 ${user.status === 'suspended' ? 'text-rose-500' : 'text-emerald-500'}`}>
-                             <div className={`w-1.5 h-1.5 rounded-full ${user.status === 'suspended' ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
-                             <span className="text-[10px] font-black uppercase tracking-wider">{user.status || 'Active'}</span>
+                          <div className={`flex items-center gap-1.5 ${user.isBlocked ? 'text-rose-500' : 'text-emerald-500'}`}>
+                             <div className={`w-1.5 h-1.5 rounded-full ${user.isBlocked ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
+                             <span className="text-[10px] font-black uppercase tracking-wider">{user.isBlocked ? 'Blocked' : 'Active'}</span>
                           </div>
                        </td>
                        <td className="px-8 py-5 text-right">
                           <button 
-                            onClick={() => handleBlockUser(user._id)}
-                            className="p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                            onClick={() => handleToggleBlock(user._id)}
+                            className={`p-2 rounded-lg transition-all ${
+                              user.isBlocked 
+                                ? 'text-emerald-600 hover:bg-emerald-50' 
+                                : 'text-slate-300 hover:text-rose-500 hover:bg-rose-50'
+                            }`}
                           >
                              <ShieldCheck size={18} />
                           </button>

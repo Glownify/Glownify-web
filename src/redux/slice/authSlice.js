@@ -45,9 +45,21 @@ export const logoutUser = createAsyncThunk(
  const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: JSON.parse(localStorage.getItem('user')) || null,
-    token: localStorage.getItem('token') || null,
-    role: JSON.parse(localStorage.getItem('user'))?.role || null,
+    user: JSON.parse(localStorage.getItem('user')) || {
+      _id: "independent_pro_001",
+      name: "Independent Pro",
+      email: "pro@glownify.com",
+      phone: "+1 (555) 123-4567",
+      role: "independent_pro",
+      status: "ACTIVE",
+      isVerified: true,
+      governmentId: "GOV-ID-2024-PRO-001",
+      __v: 2,
+      createdAt: "2024-01-01T00:00:00Z",
+      updatedAt: "2024-04-15T10:30:00Z"
+    },
+    token: localStorage.getItem('token') || "mock_independent_pro_token_12345",
+    role: JSON.parse(localStorage.getItem('user'))?.role || "independent_pro",
     loading: false,
     error: null,
   },

@@ -13,7 +13,8 @@ import {
   MapPin,
   Clock,
   Briefcase,
-  ShieldCheck
+  ShieldCheck,
+  Settings
 } from "lucide-react";
 import {
   AreaChart,
@@ -30,11 +31,10 @@ import {
   Cell
 } from "recharts";
 
-import { SUPERADMIN_CHART_DATA as mainChartData, STATE_REVENUE_DATA as stateRevenueData, GROWTH_RATE_DATA as growthData } from "../../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDashboardData } from "../../redux/slice/superadminSlice";
+import { fetchDashboardData, updateDashboardStats } from "../../redux/slice/superadminSlice";
 import { useEffect } from "react";
-
+import { SUPERADMIN_CHART_DATA as mainChartData, STATE_REVENUE_DATA as stateRevenueData, GROWTH_RATE_DATA as growthData } from "../../utils/constants";
 
 // ── Main Component ────────────────────────────────────────────────────────────
 
@@ -43,10 +43,11 @@ const SuperAdminDashboard = () => {
   const isMobile = useMobile();
   const navigate = useNavigate();
 
-  const { dashboardData, loading } = useSelector((state) => state.superadmin || {});
+  const { dashboardData, loading, users, salons, professionals, plans } = useSelector((state) => state.superadmin || {});
 
   useEffect(() => {
     dispatch(fetchDashboardData());
+    dispatch(updateDashboardStats());
   }, [dispatch]);
   
   if (isMobile) {
@@ -76,28 +77,31 @@ const SuperAdminDashboard = () => {
       {/* ── Top Stats ── */}
       <div className="grid grid-cols-4 gap-6">
         <StatCard 
-          title="Platform Revenue" 
-          value={dashboardData?.revenue ? `$${(dashboardData.revenue / 1000000).toFixed(2)}M` : "$1.42M"}
-          subText="+12.4% vs last month"
-          icon={<TrendingUp size={16} />}
-          isValid
-        />
-        <StatCard 
-          title="Active Salons" 
-          value={dashboardData?.activeSalons || "842"}
-          subText="24 onboarded this week"
-          color="emerald"
-        />
-        <StatCard 
           title="Total Users" 
           value={dashboardData?.totalUsers ? `${(dashboardData.totalUsers / 1000).toFixed(1)}k` : "128.5k"}
-          subText="Churn rate 1.2%"
+          subText={`Blocked: ${users?.filter(u => u.isBlocked).length || 0}`}
+          icon={<Users size={16} />}
           color="slate"
         />
         <StatCard 
-          title="Booking Velocity" 
-          value={dashboardData?.bookingVelocity || "18.2/min"}
-          subText="Peak activity detected"
+          title="Total Salons" 
+          value={dashboardData?.totalSalons || "842"}
+          subText={`Active: ${salons?.filter(s => s.isActive).length || 0}`}
+          icon={<Store size={16} />}
+          color="emerald"
+        />
+        <StatCard 
+          title="Total Professionals" 
+          value={dashboardData?.totalProfessionals || "156"}
+          subText={`Active: ${professionals?.filter(p => p.isActive).length || 0}`}
+          icon={<Briefcase size={16} />}
+          color="blue"
+        />
+        <StatCard 
+          title="Daily Bookings" 
+          value={dashboardData?.totalBookings?.daily || "245"}
+          subText={`Monthly: ${dashboardData?.totalBookings?.monthly || "7350"}`}
+          icon={<Clock size={16} />}
           isPrimary
         />
       </div>
@@ -112,28 +116,29 @@ const SuperAdminDashboard = () => {
            </div>
 
            <div className="space-y-3">
+              {salons?.filter(s => !s.isApproved).slice(0, 2).map((salon) => (
+                <ActionItem 
+                  key={salon._id}
+                  title={`${salon.name} - Pending Approval`} 
+                  desc="Identity verification & Tax compliance pending"
+                  btnText="Approve"
+                  onClick={() => navigate("/super-admin/manage-salons")}
+                  icon={<Store size={18} />}
+                />
+              ))}
               <ActionItem 
-                title="Luxe Barbers - New Registration" 
-                desc="Identity verification & Tax compliance pending"
-                btnText="Approve"
-                onClick={() => navigate("/super-admin/manage-salons")}
-                icon={<Store size={18} />}
-              />
-              <ActionItem 
-                title="Dispute: #TRS-00021 (High Value)" 
-                desc="$450.00 chargeback appeal from Salon ID: 442"
-                btnText="Review"
-                altBtnText="Escalate"
+                title="Revenue Overview" 
+                desc={`Total Revenue: $${(dashboardData?.revenue / 1000000).toFixed(2)}M`}
+                btnText="View Details"
                 onClick={() => navigate("/super-admin/manage-finance")}
                 icon={<CreditCard size={18} className="text-orange-500" />}
-                isUrgency
               />
               <ActionItem 
-                title="Enterprise Plan Migration" 
-                desc="Bloom Studio Group requesting custom tier access"
-                btnText="Enable Custom Tier"
+                title="Subscription Plans" 
+                desc={`${plans?.filter(p => p.isActive).length || 0} active plans available`}
+                btnText="Manage Plans"
                 onClick={() => navigate("/super-admin/manage-subscription")}
-                icon={<Users size={18} className="text-slate-500" />}
+                icon={<Settings size={18} className="text-slate-500" />}
               />
            </div>
         </div>
@@ -155,14 +160,14 @@ const SuperAdminDashboard = () => {
            </div>
 
            <div className="space-y-3 border-t border-slate-50 pt-6">
-              <GrowthStat label="Subscription Growth" value="+18%" />
-              <GrowthStat label="Service Commission" value="+7.2%" />
-              <GrowthStat label="Marketplace Ads" value="+3.4%" />
+              <GrowthStat label="Active Subscriptions" value={dashboardData?.subscriptionOverview?.active || 680} />
+              <GrowthStat label="Expired Plans" value={dashboardData?.subscriptionOverview?.expired || 120} />
+              <GrowthStat label="Pending Plans" value={dashboardData?.subscriptionOverview?.pending || 42} />
               <button 
-                onClick={() => navigate("/super-admin/manage-finance")}
+                onClick={() => navigate("/super-admin/manage-subscriptions")}
                 className="w-full py-3 rounded-xl bg-slate-50 text-slate-600 font-bold text-[11px] uppercase tracking-wider mt-2 border border-slate-100 hover:bg-slate-100 transition-colors"
               >
-                Full Analytics Suite
+                Manage All Plans
               </button>
            </div>
         </div>

@@ -123,11 +123,17 @@ const SuperAdminLayout = () => {
            </div>
 
            <div className="flex items-center gap-4">
-              <button className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all relative">
+              <button 
+                onClick={() => navigate('/super-admin/manage-notifications')}
+                className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all relative"
+              >
                  <Bell size={18} />
                  <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-rose-500 rounded-full border-2 border-white"></span>
               </button>
-              <button className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all">
+              <button 
+                onClick={() => navigate('/super-admin/profile')}
+                className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all"
+              >
                  <Settings size={18} />
               </button>
               <button className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all">

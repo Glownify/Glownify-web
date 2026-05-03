@@ -32,7 +32,7 @@ const PartnerWithUsPage = () => {
   return (
     <div className="w-full min-h-screen flex justify-center bg-gray-50 py-10">
       <div className="w-187.5 bg-white p-10 rounded-xl shadow-md">
-        
+
         {/* Heading */}
         <header>
           <h1 className="text-4xl font-bold text-gray-800">Choose Your Role</h1>
@@ -44,8 +44,8 @@ const PartnerWithUsPage = () => {
         {/* Role Options */}
         <div className="space-y-5 mt-8">
           {/* Salon Owner */}
-          <div 
-            onClick={() => handleNavigation('/partner-with-us/salon-owner-register')} 
+          <div
+            onClick={() => handleNavigation('/partner-with-us/salon-owner-register')}
             className="flex items-center justify-between p-5 bg-gray-50 hover:bg-gray-100 rounded-xl border cursor-pointer transition group"
           >
             <div className="flex items-center gap-4">
@@ -63,8 +63,8 @@ const PartnerWithUsPage = () => {
           </div>
 
           {/* Independent Professional */}
-          <div 
-            onClick={() => handleNavigation('/partner-with-us/independent-professional-register')} 
+          <div
+            onClick={() => handleNavigation('/partner-with-us/independent-professional-register')}
             className="flex items-center justify-between p-5 bg-gray-50 hover:bg-gray-100 rounded-xl border cursor-pointer transition group"
           >
             <div className="flex items-center gap-4">

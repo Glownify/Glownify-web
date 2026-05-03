@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllServiceItems } from "../../../redux/slice/saloonownerSlice";
+import { fetchAllServiceItems } from "../../../redux/slice/salonownerSlice";
 import { ChevronLeft, Gift, PlusCircle, CheckCircle, Clock, Trash2, Edit2, Info, XCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";

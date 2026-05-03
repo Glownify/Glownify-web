@@ -5,7 +5,7 @@ import { Camera, Image as ImageIcon, Plus, Paperclip } from "lucide-react";
 const SalonDocumentUploadForm = ({ onBack, data, onChange, onSubmit, theme }) => {
   const navigate = useNavigate();
   const isPurple = theme === "purple";
-  
+
   const fileInputRef = React.useRef(null);
   const galleryInputRef = React.useRef(null);
 
@@ -83,7 +83,7 @@ const SalonDocumentUploadForm = ({ onBack, data, onChange, onSubmit, theme }) =>
           {/* Government ID Section */}
           <div className="space-y-4 bg-gray-50 p-5 rounded-2xl border border-gray-200">
             <h3 className="text-sm font-bold text-gray-700 uppercase">Government ID Verification</h3>
-            
+
             <div className="space-y-1">
               <label className="text-xs font-bold text-gray-500 ml-1 uppercase">ID Type</label>
               <select
@@ -139,21 +139,21 @@ const SalonDocumentUploadForm = ({ onBack, data, onChange, onSubmit, theme }) =>
             <div className="grid grid-cols-2 gap-3">
               {data.galleryImages?.map((file, idx) => (
                 <div key={idx} className="relative group">
-                   <img src={URL.createObjectURL(file)} alt={`gallery-${idx}`} className="w-full h-24 object-cover rounded-2xl border border-gray-100" />
-                   <button
+                  <img src={URL.createObjectURL(file)} alt={`gallery-${idx}`} className="w-full h-24 object-cover rounded-2xl border border-gray-100" />
+                  <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       removeGalleryImage(idx);
                     }}
                     className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-sm opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity z-10"
-                   >
-                     <Plus className="w-3 h-3 rotate-45" />
-                   </button>
+                  >
+                    <Plus className="w-3 h-3 rotate-45" />
+                  </button>
                 </div>
               ))}
               {(!data.galleryImages || data.galleryImages.length < 8) && (
-                <div 
+                <div
                   onClick={() => galleryInputRef.current.click()}
                   className="border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center py-4 cursor-pointer hover:border-purple-400 transition bg-gray-50/50 h-24"
                 >

@@ -15,8 +15,9 @@ import {
     ChevronRight
 } from "lucide-react";
 import MobileBottomNav from "./MobileBottomNav";
-import { fetchBookings, updateBookingStatus } from "../../../redux/slice/saloonownerSlice";
+import { fetchBookings, acceptBooking, rejectBooking } from "../../../redux/slice/salonownerSlice";
 import { toast } from "react-hot-toast";
+import Avatar from "../../../components/common/Avatar";
 
 // ─── Colors ──────────────────────────────────────────────────────────────────
 const PINK = "#e91e63";
@@ -47,16 +48,17 @@ const BookingCard = ({ booking, onAccept, onDecline, onPress }) => {
 
     // Data Extraction 
     const customerName = booking.customer?.name || "Guest";
+    const customerInitials = customerName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     const firstItem = booking.serviceItems?.[0];
     const svc = firstItem?.service;
     const serviceName = (typeof svc === 'object' ? svc?.name : svc) || firstItem?.name || "Service";
 
     const serviceSubtitle = booking.serviceItems?.length > 1 ? `+ ${booking.serviceItems.length - 1} more` : "";
-    const specialistName = booking.specialist?.name || "Not Assigned";
+    const specialistName = booking.specialist?.name; // || "Not Assigned";
     const bookingDate = new Date(booking.bookingDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
     const bookingTime = formatTime(booking.timeSlot?.start);
     const amount = booking.totalAmount || 0;
-    const avatar = booking.customer?.avatar || `https://i.pravatar.cc/150?u=${booking._id}`;
+    const customerAvatar = booking.customer?.avatar;
 
     return (
         <div
@@ -67,8 +69,14 @@ const BookingCard = ({ booking, onAccept, onDecline, onPress }) => {
             }}
         >
             <div className="flex items-start gap-4">
-                <div className="w-[64px] h-[64px] rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
-                    <img src={avatar} className="w-full h-full object-cover" alt="avatar" />
+                <div className="w-[64px] h-[64px] rounded-full overflow-hidden flex-shrink-0">
+                    <Avatar 
+                        src={customerAvatar} 
+                        initials={customerInitials} 
+                        size={64}
+                        color="#fecdd3"
+                        textColor="#9f1239"
+                    />
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -90,10 +98,10 @@ const BookingCard = ({ booking, onAccept, onDecline, onPress }) => {
                             <Calendar size={14} className="text-gray-300" />
                             <span className="text-[12px] text-gray-400 font-bold whitespace-nowrap">{bookingDate}, {bookingTime}</span>
                         </div>
-                        <div className="flex items-center gap-1.5 min-w-0">
+                        {/* <div className="flex items-center gap-1.5 min-w-0">
                             <UserCircle size={14} className="text-gray-300" />
                             <span className="text-[12px] text-gray-400 font-bold truncate max-w-[80px]">{specialistName}</span>
-                        </div>
+                        </div> */}
                         <span className="text-[17px] font-black text-gray-800 ml-auto">₹ {amount.toLocaleString()}</span>
                     </div>
                 </div>
@@ -144,6 +152,7 @@ const SalonBookingsPage = () => {
     const [activeTab, setActiveTab] = useState("All");
     const [serviceType, setServiceType] = useState('salon'); // 'salon' | 'home'
     const [page, setPage] = useState(1);
+    const [declineModal, setDeclineModal] = useState({ open: false, bookingId: null, reason: "" });
 
     useEffect(() => {
         const statusMap = {
@@ -175,19 +184,20 @@ const SalonBookingsPage = () => {
 
     const handleAccept = async (id) => {
         try {
-            await dispatch(updateBookingStatus({ bookingId: id, status: 'confirmed' })).unwrap();
+            await dispatch(acceptBooking(id)).unwrap();
             toast.success("Booking accepted!");
         } catch (error) {
             toast.error(error?.message || "Failed to accept booking");
         }
     };
 
-    const handleDecline = async (id) => {
+    const handleDecline = async () => {
         try {
-            await dispatch(updateBookingStatus({ bookingId: id, status: 'cancelled' })).unwrap();
-            toast.success("Booking declined");
+            await dispatch(rejectBooking({ bookingId: declineModal.bookingId, cancellationReason: declineModal.reason })).unwrap();
+            toast.success("Booking rejected!");
+            setDeclineModal({ open: false, bookingId: null, reason: "" });
         } catch (error) {
-            toast.error(error?.message || "Failed to decline booking");
+            toast.error(error?.message || "Failed to reject booking");
         }
     };
 
@@ -200,8 +210,14 @@ const SalonBookingsPage = () => {
                 </button>
                 <h1 className="font-bold text-[18px] text-[#1f2937]">New Booking Requests</h1>
                 <div className="relative">
-                    <div className="w-[42px] h-[42px] rounded-full overflow-hidden bg-gray-100 border-2 border-white shadow-sm ring-1 ring-pink-100">
-                        <img src="https://i.pravatar.cc/150?u=salon_admin_f" className="w-full h-full object-cover" alt="avatar" />
+                    <div className="w-[42px] h-[42px] rounded-full overflow-hidden border-2 border-white shadow-sm ring-1 ring-pink-100">
+                        <Avatar 
+                            src={null} 
+                            initials="SA" 
+                            size={42}
+                            color="#fecdd3"
+                            textColor="#9f1239"
+                        />
                     </div>
                     {pendingCount > 0 && (
                         <div className="absolute -top-[1px] -right-[1px] w-[20px] h-[20px] rounded-full flex items-center justify-center bg-[#f43f5e] border-2 border-[#fff1f2]">
@@ -279,7 +295,7 @@ const SalonBookingsPage = () => {
                             key={booking._id}
                             booking={booking}
                             onAccept={handleAccept}
-                            onDecline={handleDecline}
+                            onDecline={(id) => setDeclineModal({ open: true, bookingId: id, reason: "" })}
                             onPress={() => navigate("/salon-owner/booking-detail", { state: { booking } })}
                         />
                     ))
@@ -313,6 +329,39 @@ const SalonBookingsPage = () => {
             </div>
 
             <MobileBottomNav />
+
+            {/* ── DECLINE MODAL ── */}
+            {declineModal.open && (
+                <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-sm">
+                    <div className="bg-white rounded-t-[2rem] p-6 w-full shadow-2xl">
+                        <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-5" />
+                        <h3 className="text-lg font-black text-slate-800 mb-1">Decline Booking</h3>
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Please provide a reason for cancellation</p>
+                        <textarea
+                            rows={4}
+                            value={declineModal.reason}
+                            onChange={(e) => setDeclineModal(prev => ({ ...prev, reason: e.target.value }))}
+                            placeholder="Enter cancellation reason..."
+                            className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent resize-none"
+                        />
+                        <div className="flex gap-3 mt-4">
+                            <button
+                                onClick={() => setDeclineModal({ open: false, bookingId: null, reason: "" })}
+                                className="flex-1 py-3.5 rounded-xl border border-slate-200 text-slate-600 font-black text-[12px] uppercase tracking-widest"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDecline}
+                                disabled={!declineModal.reason.trim()}
+                                className="flex-1 py-3.5 rounded-xl bg-rose-500 text-white font-black text-[12px] uppercase tracking-widest disabled:opacity-40 disabled:cursor-not-allowed"
+                            >
+                                Confirm Decline
+            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
-import { fetchSalonOwnerDashboard, updateBookingStatus } from "../../redux/slice/saloonownerSlice";
+import { fetchSalonOwnerDashboard, acceptBooking, rejectBooking } from "../../redux/slice/salonownerSlice";
 import { checkSubscription } from "../../utils/checkSubscription";
 import MobileSalonAdminDashboard from "./Mobile/MobileSalonAdminDashboard";
 import {
@@ -28,6 +28,7 @@ import {
   Star,
   CheckCircle,
   User,
+  Scissors,
 } from "lucide-react";
 import {
   ComposedChart,
@@ -44,9 +45,9 @@ import {
 } from "recharts";
 
 const actionCards = [
-  { label: "Add Service", icon: Plus, bg: "#f4c9d5", text: "#a63b61", path: "/salon-owner/manage-services", active: true },
-  { label: "Salon View", icon: Eye, bg: "#c8e5f6", text: "#2f7ea3", path: "/salon-owner/my-view", active: true },
-  { label: "Create Offer", icon: Gift, bg: "#f3cad9", text: "#b84879", path: "/salon-owner/manage-add-ons", active: true },
+  { label: "My Services", icon: Scissors, bg: "#f4c9d5", text: "#a63b61", path: "/salon-owner/manage-services", active: true },
+  { label: "Salon View", icon: Eye, bg: "#c8e5f6", text: "#2f7ea3", path: "/salon-owner/profile", active: true },
+  { label: "My Offers", icon: Gift, bg: "#f3cad9", text: "#b84879", path: "/salon-owner/manage-offers", active: true },
   { label: "View Reports", icon: FileText, bg: "#caead1", text: "#2a8a57", path: "/salon-owner/reports", active: true },
   { label: "Share", icon: Share2, bg: "#f7dfab", text: "#b87814", path: "/salon-owner/marketing", active: true },
   { label: "Courses", icon: BookOpen, bg: "#f1c9dc", text: "#ba4c7f", path: "#", disabled: true },
@@ -89,8 +90,8 @@ const recentBookingsData = [
 
 const quickActions = [
   { icon: Plus, label: "Add Service", bg: "#fecdd3", color: "#ef476f", path: "/salon-owner/manage-services" },
-  { icon: Eye, label: "Salon View", bg: "#dbeefe", color: "#1d9bf0", path: "/salon-owner/my-view" },
-  { icon: Gift, label: "Create Offer", bg: "#fce7f3", color: "#ec4899", path: "/salon-owner/manage-add-ons" },
+  { icon: Eye, label: "Salon View", bg: "#dbeefe", color: "#1d9bf0", path: "/salon-owner/profile" },
+  { icon: Gift, label: "My Offers", bg: "#fce7f3", color: "#ec4899", path: "/salon-owner/manage-offers" },
   { icon: FileText, label: "View Reports", bg: "#dcfce7", color: "#22c55e", path: "/salon-owner/reports" },
   { icon: Share2, label: "Share", bg: "#ffedd5", color: "#f97316", path: "#" },
   { icon: BookOpen, label: "Courses", bg: "#f8d3e0", color: "#c54f82", path: "#" },
@@ -124,6 +125,7 @@ const SalonOwnerDashboard = () => {
   const [filterMonth, setFilterMonth] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [bookings, setBookings] = useState([]);
+  const [declineModal, setDeclineModal] = useState({ open: false, bookingId: null, reason: "" });
 
   const dispatch = useDispatch();
   const { dashboardData, loading } = useSelector((state) => state.saloonowner);
@@ -134,17 +136,18 @@ const SalonOwnerDashboard = () => {
 
   const handleAccept = async (id) => {
     try {
-      await dispatch(updateBookingStatus({ bookingId: id, status: 'confirmed' })).unwrap();
+      await dispatch(acceptBooking(id)).unwrap();
       toast.success("Booking confirmed!");
     } catch (error) {
       toast.error(error?.message || "Failed to confirm booking");
     }
   };
 
-  const handleDecline = async (id) => {
+  const handleDecline = async () => {
     try {
-      await dispatch(updateBookingStatus({ bookingId: id, status: 'cancelled' })).unwrap();
+      await dispatch(rejectBooking({ bookingId: declineModal.bookingId, cancellationReason: declineModal.reason })).unwrap();
       toast.success("Booking cancelled");
+      setDeclineModal({ open: false, bookingId: null, reason: "" });
     } catch (error) {
       toast.error(error?.message || "Failed to cancel booking");
     }
@@ -157,21 +160,17 @@ const SalonOwnerDashboard = () => {
   };
 
   const metricCards = [
-    { title: "Booked Today", value: stats.bookedToday, icon: Calendar, iconWrap: "bg-[#d7f0e1] text-[#4ba57f]" },
-    { title: "Pending Requests", value: stats.pendingBookings, icon: Clock, iconWrap: "bg-[#ffe5c8] text-[#da8e48]" },
+    { title: "Booked Today", value: stats.bookedToday, icon: Calendar, iconWrap: "bg-[#d7f0e1] text-[#4ba57f]", path: "/salon-owner/bookings" },
+    { title: "Pending Requests", value: stats.pendingBookings, icon: Clock, iconWrap: "bg-[#ffe5c8] text-[#da8e48]", path: "/salon-owner/bookings" },
     { title: "Total Customers", value: stats.totalCustomers, icon: Users, iconWrap: "bg-[#e0d4ff] text-[#7452df]" },
   ];
 
   const recentBookings = dashboardData?.recentBookings || [];
 
   useEffect(() => {
-    let filtered = [...recentBookings];
-    if (filterActive) {
-      filtered = filtered.filter(b => b.status === "Accepted" || b.status === "In Service");
-    }
-    if (filterMonth) {
-      filtered = filtered.slice(0, 3);
-    }
+    let filtered = [...(dashboardData?.recentBookings || [])];
+    if (filterActive) filtered = filtered.filter(b => b.status === "Accepted" || b.status === "In Service");
+    if (filterMonth) filtered = filtered.slice(0, 3);
     setBookings(filtered);
   }, [filterActive, filterMonth, dashboardData]);
 
@@ -180,16 +179,16 @@ const SalonOwnerDashboard = () => {
   const PURPLE_BRAND = "#8B5CF6";
 
   return (
-    <div className="space-y-12 animate-in fade-in duration-1000">
+    <div className="space-y-6 animate-in fade-in duration-1000">
 
       <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
         {actionCards.map((item) => (
           <button
             key={item.label + item.bg}
             onClick={() => item.path !== "#" && navigate(item.path)}
-            className="h-[64px] rounded-full bg-white border border-slate-50 flex items-center justify-center gap-4 px-6 font-black text-[13px] text-slate-700 hover:scale-[1.03] transition-all hover:shadow-[0_15px_30px_rgba(139,92,246,0.06)] group"
+            className="h-[64px] rounded-full bg-white border border-slate-50 flex items-center justify-center gap-4 px-6 font-black text-[13px] text-slate-700 hover:scale-[1.03] transition-all hover:shadow-[0_15px_30px_rgba(139,92,246,0.06)] group cursor-pointer"
           >
-            <div className={`w-9 h-9 rounded-full flex items-center justify-center`} style={{ backgroundColor: item.bg }}>
+            <div className="w-9 h-9 shrink-0 rounded-full flex items-center justify-center" style={{ backgroundColor: item.bg }}>
               <item.icon size={16} style={{ color: item.text }} />
             </div>
             <span className="tracking-tight">{item.label}</span>
@@ -197,21 +196,25 @@ const SalonOwnerDashboard = () => {
         ))}
       </section>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {metricCards.map((card) => (
-          <div key={card.title} className="bg-white rounded-[45px] border border-purple-50/50 px-8 py-8 shadow-[0_15px_40px_rgba(0,0,0,0.02)] flex items-center justify-between min-h-[140px] hover:shadow-xl hover:-translate-y-1 transition-all group">
-            <div>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.1em] mb-2">{card.title}</p>
-              <h3 className="text-3xl font-black text-slate-800 tracking-tight">{card.value}</h3>
+          <div
+            key={card.title}
+            onClick={() => card.path && navigate(card.path)}
+            className="bg-white rounded-[24px] border border-purple-50/50 px-6 py-4 shadow-[0_15px_40px_rgba(0,0,0,0.02)] flex items-center gap-4 hover:shadow-lg transition-all group cursor-pointer"
+          >
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 ${card.iconWrap} bg-opacity-40 shrink-0`}>
+              <card.icon size={18} />
             </div>
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 ${card.iconWrap} bg-opacity-40`}>
-              <card.icon size={26} />
+            <div className="flex items-center gap-2">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em]">{card.title}:</p>
+              <h3 className="text-xl font-black text-slate-800 tracking-tight leading-none">{card.value}</h3>
             </div>
           </div>
         ))}
       </section>
 
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+      <section className="grid grid-cols-1 xl:grid-cols-12 gap-4">
         <div className="lg:col-span-12 xl:col-span-12 2xl:col-span-5 bg-white border border-purple-100/20 rounded-[45px] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.02)] min-h-[460px] flex flex-col justify-between">
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-xl font-black text-slate-800 tracking-tight">Revenue Overview</h3>
@@ -333,8 +336,9 @@ const SalonOwnerDashboard = () => {
             {bookings.map((booking) => {
               const status = booking.status?.toLowerCase();
               const isPending = status === "pending";
-              const avatar = booking.customer?.avatar || `https://i.pravatar.cc/150?u=${booking._id}`;
               const customerName = booking.customer?.name || "Guest";
+              const customerAvatar = booking.customer?.avatar || null;
+              const customerInitial = customerName.charAt(0).toUpperCase();
               const firstItem = booking.serviceItems?.[0];
               const svc = firstItem?.service;
               const serviceName = (typeof svc === 'object' ? svc?.name : svc) || firstItem?.name || "Service";
@@ -351,8 +355,11 @@ const SalonOwnerDashboard = () => {
                   className="bg-white rounded-[24px] p-6 shadow-sm hover:shadow-xl hover:shadow-pink-500/5 transition-all duration-300 cursor-pointer border border-[#fef2f2] group"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-[64px] h-[64px] rounded-2xl overflow-hidden bg-gray-100 flex-shrink-0 shadow-sm group-hover:scale-105 transition-transform duration-500">
-                      <img src={avatar} className="w-full h-full object-cover" alt="avatar" />
+                    <div className="w-[64px] h-[64px] rounded-2xl overflow-hidden bg-pink-50 flex-shrink-0 shadow-sm group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
+                      {customerAvatar
+                        ? <img src={customerAvatar} className="w-full h-full object-cover" alt={customerName} />
+                        : <span className="text-2xl font-black text-pink-400">{customerInitial}</span>
+                      }
                     </div>
 
                     <div className="flex-1 min-w-0">
@@ -374,10 +381,10 @@ const SalonOwnerDashboard = () => {
                           <Calendar size={14} className="text-pink-400" />
                           <span className="text-[12px] text-slate-400 font-bold whitespace-nowrap">{date}, {time}</span>
                         </div>
-                        <div className="flex items-center gap-1.5 min-w-0">
+                        {/* <div className="flex items-center gap-1.5 min-w-0">
                           <User size={14} className="text-purple-400" />
                           <span className="text-[12px] text-slate-400 font-bold truncate max-w-[100px]">{specialistName}</span>
-                        </div>
+                        </div> */}
                         <span className="text-[18px] font-black text-slate-800 ml-auto">₹{amount.toLocaleString()}</span>
                       </div>
                     </div>
@@ -400,7 +407,7 @@ const SalonOwnerDashboard = () => {
                           Accept
                         </button>
                         <button
-                          onClick={(e) => { e.stopPropagation(); handleDecline(booking._id); }}
+                          onClick={(e) => { e.stopPropagation(); setDeclineModal({ open: true, bookingId: booking._id, reason: "" }); }}
                           className="bg-rose-500 text-white px-5 py-2.5 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-rose-600 active:scale-95 transition-all shadow-lg shadow-rose-500/20"
                         >
                           Decline
@@ -469,6 +476,37 @@ const SalonOwnerDashboard = () => {
           </div>
         </div>
       </section>
+      {/* ── DECLINE MODAL ── */}
+      {declineModal.open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-[2rem] p-8 w-full max-w-md shadow-2xl mx-4">
+            <h3 className="text-xl font-black text-slate-800 mb-1">Decline Booking</h3>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Please provide a reason for cancellation</p>
+            <textarea
+              rows={4}
+              value={declineModal.reason}
+              onChange={(e) => setDeclineModal(prev => ({ ...prev, reason: e.target.value }))}
+              placeholder="Enter cancellation reason..."
+              className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent resize-none"
+            />
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setDeclineModal({ open: false, bookingId: null, reason: "" })}
+                className="flex-1 py-3 rounded-xl border border-slate-200 text-slate-600 font-black text-[11px] uppercase tracking-widest hover:bg-slate-50 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDecline}
+                disabled={!declineModal.reason.trim()}
+                className="flex-1 py-3 rounded-xl bg-rose-500 text-white font-black text-[11px] uppercase tracking-widest shadow-lg shadow-rose-500/20 hover:bg-rose-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Confirm Decline
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

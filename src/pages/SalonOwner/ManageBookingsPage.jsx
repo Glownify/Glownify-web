@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBookings } from "../../redux/slice/saloonownerSlice";
+import { fetchBookings } from "../../redux/slice/salonownerSlice";
 import {
   Calendar,
   Clock,

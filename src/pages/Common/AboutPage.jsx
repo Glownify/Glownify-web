@@ -106,7 +106,7 @@ function AboutPage() {
             <p>
               Abhishek Kumar, from IIIT Lucknow, is a technology-driven
               entrepreneur.
-            </p> 
+            </p>
             <p>
               He discovered that most local salons provide great service but lack
               digital presence.

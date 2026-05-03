@@ -17,85 +17,39 @@ import {
     UserCircle,
     CheckCircle,
     User,
+    Scissors,
 } from 'lucide-react';
 import MobileBottomNav from './MobileBottomNav';
-import { fetchSalonOwnerDashboard, updateBookingStatus } from '../../../redux/slice/saloonownerSlice';
+import { fetchSalonOwnerDashboard, acceptBooking, rejectBooking } from '../../../redux/slice/salonownerSlice';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const H_PAD = '16px'; // single source of truth for horizontal padding
 const SECTION_GAP = '24px'; // vertical gap between sections
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
-const MOCK_STATS = {
-    todayEarnings: 5700,
-    bookedToday: 23,
-    pendingRequests: 5,
-    totalCustomers: 863,
-};
-
-const MOCK_RECENT_BOOKINGS = [
-    {
-        id: 1,
-        customer: 'Amit K.',
-        service: 'Hair Color',
-        duration: '1 hr',
-        amount: 2500,
-        status: 'pending',
-        avatar: 'https://i.pravatar.cc/150?u=amit',
-    },
-    {
-        id: 2,
-        customer: 'Mehak S.',
-        service: 'Full Body Massage',
-        duration: '1.5 hr',
-        amount: 2000,
-        status: 'pending',
-        avatar: 'https://i.pravatar.cc/150?u=mehak',
-    },
-    {
-        id: 3,
-        customer: 'Riya',
-        service: 'Bridal Makeup',
-        duration: '2 hr',
-        amount: 5000,
-        status: 'pending',
-        avatar: 'https://i.pravatar.cc/150?u=riya',
-    },
-];
-
-const MOCK_REVIEWS = [
-    {
-        id: 1,
-        name: 'Neha T.',
-        rating: 5,
-        text: 'The bridal package was amazing! The staff was very professional and the results were exactly what I wanted.',
-        initials: 'NT',
-        avatarColor: '#fda4af',
-    },
-];
 
 // Row 1 — 4 compact actions
 const QUICK_ACTIONS_ROW1 = [
     {
-        icon: Plus,
-        label: 'Add Service',
+        icon: Scissors,
+        label: 'My Services',
         iconColor: '#f43f5e',
         bg: '#fecdd3',
-        navigateTo: '/salon-owner/manage-services-mobile',
+        navigateTo: '/salon-owner/manage-services',
     },
     {
         icon: Eye,
         label: 'Salon View',
         iconColor: '#0ea5e9',
         bg: '#e0f2fe',
-        navigateTo: '/salon-owner/my-view',
+        navigateTo: '/salon-owner/profile',
     },
     {
         icon: Gift,
-        label: 'Create Offer',
+        label: 'My Offers',
         iconColor: '#ec4899',
         bg: '#fbcfe8',
-        navigateTo: '/salon-owner/manage-add-ons',
+        navigateTo: '/salon-owner/manage-offers',
     },
     {
         icon: FileText,
@@ -128,7 +82,7 @@ const QUICK_ACTIONS_ROW2 = [
 const STATS_CONFIG = [
     {
         key: 'bookedToday',
-        label: 'Booked Today',
+        label: 'Today',
         icon: Calendar,
         iconColor: '#f43f5e',
         iconBg: '#fecdd3',
@@ -181,6 +135,8 @@ const BookingCard = ({ booking, onAccept, onDecline, onPress }) => {
     const isPending = status === "pending";
 
     const customerName = booking.customer?.name || "Guest";
+    const customerAvatar = booking.customer?.avatar || null;
+    const customerInitial = customerName.charAt(0).toUpperCase();
     const firstItem = booking.serviceItems?.[0];
     const svc = firstItem?.service;
     const serviceName = (typeof svc === 'object' ? svc?.name : svc) || firstItem?.name || "Service";
@@ -190,7 +146,6 @@ const BookingCard = ({ booking, onAccept, onDecline, onPress }) => {
     const bookingDate = new Date(booking.bookingDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
     const bookingTime = formatTime(booking.timeSlot?.start);
     const amount = booking.totalAmount || booking.totalPrice || booking.amount || 0;
-    const avatar = booking.customer?.avatar || `https://i.pravatar.cc/150?u=${booking._id}`;
 
     return (
         <div
@@ -201,8 +156,11 @@ const BookingCard = ({ booking, onAccept, onDecline, onPress }) => {
             }}
         >
             <div className="flex items-start gap-4">
-                <div className="w-[64px] h-[64px] rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
-                    <img src={avatar} className="w-full h-full object-cover" alt="avatar" />
+                <div className="w-[64px] h-[64px] rounded-full overflow-hidden bg-pink-50 flex-shrink-0 flex items-center justify-center">
+                    {customerAvatar
+                        ? <img src={customerAvatar} className="w-full h-full object-cover" alt={customerName} />
+                        : <span className="text-2xl font-black text-pink-400">{customerInitial}</span>
+                    }
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -224,10 +182,10 @@ const BookingCard = ({ booking, onAccept, onDecline, onPress }) => {
                             <Calendar size={14} className="text-gray-300" />
                             <span className="text-[12px] text-gray-400 font-bold whitespace-nowrap">{bookingDate}, {bookingTime}</span>
                         </div>
-                        <div className="flex items-center gap-1.5 min-w-0">
+                        {/* <div className="flex items-center gap-1.5 min-w-0">
                             <UserCircle size={14} className="text-gray-300" />
                             <span className="text-[12px] text-gray-400 font-bold truncate max-w-[80px]">{specialistName}</span>
-                        </div>
+                        </div> */}
                         <span className="text-[17px] font-black text-gray-800 ml-auto">₹ {amount.toLocaleString()}</span>
                     </div>
                 </div>
@@ -309,11 +267,11 @@ const StatCard = ({ config, value, onPress }) => {
                 flex: 1,
                 display: 'flex',
                 flexDirection: 'row',
-                gap: '5px',
+                gap: '8px',
                 alignItems: 'center',
                 backgroundColor: '#fff',
-                borderRadius: '14px',
-                padding: '10px',
+                borderRadius: '12px',
+                padding: '8px 12px',
                 border: 'none',
                 cursor: 'pointer',
                 textAlign: 'left',
@@ -322,9 +280,9 @@ const StatCard = ({ config, value, onPress }) => {
         >
             <div
                 style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: 10,
+                    width: 28,
+                    height: 28,
+                    borderRadius: 8,
                     backgroundColor: config.iconBg,
                     display: 'flex',
                     alignItems: 'center',
@@ -332,31 +290,15 @@ const StatCard = ({ config, value, onPress }) => {
                     flexShrink: 0,
                 }}
             >
-                <IconComponent size={16} color={config.iconColor} />
+                <IconComponent size={14} color={config.iconColor} />
             </div>
 
-            <div style={{ minWidth: 0 }}>
-                <div
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '800',
-                        color: '#111827',
-                    }}
-                >
-                    {value}
+            <div style={{ minWidth: 0, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                <div style={{ fontSize: '10px', color: '#6b7280', fontWeight: '700', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+                    {config.label}:
                 </div>
-                <div
-                    style={{
-                        fontSize: '10px',
-                        color: '#6b7280',
-                        fontWeight: '600',
-                        marginTop: '2px',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                    }}
-                >
-                    {config.label}
+                <div style={{ fontSize: '15px', fontWeight: '800', color: '#111827' }}>
+                    {value}
                 </div>
             </div>
         </button>
@@ -408,15 +350,14 @@ export default function MobileSalonAdminDashboard() {
     const { dashboardData, loading } = useSelector((state) => state.saloonowner);
     const { user } = useSelector((state) => state.auth);
     const [bookings, setBookings] = useState([]);
+    const [declineModal, setDeclineModal] = useState({ open: false, bookingId: null, reason: "" });
 
     useEffect(() => {
         dispatch(fetchSalonOwnerDashboard());
     }, [dispatch]);
 
     useEffect(() => {
-        if (dashboardData?.recentBookings) {
-            setBookings(dashboardData.recentBookings);
-        }
+        setBookings(dashboardData?.recentBookings || []);
     }, [dashboardData]);
 
     const stats = dashboardData?.stats || {
@@ -427,17 +368,18 @@ export default function MobileSalonAdminDashboard() {
 
     const handleAccept = async (id) => {
         try {
-            await dispatch(updateBookingStatus({ bookingId: id, status: 'confirmed' })).unwrap();
+            await dispatch(acceptBooking(id)).unwrap();
             toast.success("Booking accepted!");
         } catch (error) {
             toast.error(error?.message || "Failed to accept booking");
         }
     };
 
-    const handleDecline = async (id) => {
+    const handleDecline = async () => {
         try {
-            await dispatch(updateBookingStatus({ bookingId: id, status: 'cancelled' })).unwrap();
+            await dispatch(rejectBooking({ bookingId: declineModal.bookingId, cancellationReason: declineModal.reason })).unwrap();
             toast.success("Booking declined");
+            setDeclineModal({ open: false, bookingId: null, reason: "" });
         } catch (error) {
             toast.error(error?.message || "Failed to decline booking");
         }
@@ -456,34 +398,37 @@ export default function MobileSalonAdminDashboard() {
                 }}
             >
                 <div>
-                    <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937', margin: 0 }}>
-                        Hello, {user?.roleDetails?.shopName || 'Salon Owner'} 👋
+                    <h1 style={{ fontSize: '20px', fontWeight: '900', color: '#1f2937', margin: 0, textTransform: 'uppercase', tracking: '-0.02em' }}>
+                        {user?.roleDetails?.shopName || 'Glownify'}
                     </h1>
                 </div>
 
                 <div
-                    style={{ position: 'relative', cursor: 'pointer' }}
-                    onClick={() => navigate('#')}
+                    style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
+                    onClick={() => navigate('/salon-owner/profile')}
                 >
-                    <Avatar src="https://i.pravatar.cc/150?u=salon_admin" size={44} />
-                    <div
-                        style={{
-                            position: 'absolute',
-                            top: '-2px',
-                            right: '-2px',
-                            width: '18px',
-                            height: '18px',
-                            borderRadius: '9px',
-                            backgroundColor: '#f43f5e',
-                            border: '2px solid #fff1f2',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <span style={{ color: '#fff', fontSize: '10px', fontWeight: '700' }}>
-                            3
-                        </span>
+                    <div style={{ textAlign: 'right' }}>
+                        <p style={{ fontSize: '13px', fontWeight: '900', color: '#1f2937', margin: 0, lineHeight: 1 }}>{user?.name || "Manager"}</p>
+                        <p style={{ fontSize: '9px', fontWeight: '800', color: '#f43f5e', margin: '2px 0 0 0', textTransform: 'uppercase', tracking: '0.05em' }}>Owner</p>
+                    </div>
+                    <div style={{ position: 'relative' }}>
+                        <Avatar
+                            src={user?.image}
+                            initials={user?.name?.charAt(0).toUpperCase() || "S"}
+                            size={40}
+                        />
+                        <div
+                            style={{
+                                position: 'absolute',
+                                bottom: '-2px',
+                                right: '-2px',
+                                width: '12px',
+                                height: '12px',
+                                borderRadius: '6px',
+                                backgroundColor: '#10b981',
+                                border: '2px solid #fff',
+                            }}
+                        />
                     </div>
                 </div>
             </div>
@@ -626,7 +571,7 @@ export default function MobileSalonAdminDashboard() {
                                 key={booking._id}
                                 booking={booking}
                                 onAccept={handleAccept}
-                                onDecline={handleDecline}
+                                onDecline={(id) => setDeclineModal({ open: true, bookingId: id, reason: "" })}
                                 onPress={() => navigate("/salon-owner/booking-detail", { state: { booking } })}
                             />
                         ))
@@ -745,6 +690,39 @@ export default function MobileSalonAdminDashboard() {
 
             {/* Bottom Navigation */}
             <MobileBottomNav />
+
+            {/* ── DECLINE MODAL ── */}
+            {declineModal.open && (
+                <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-sm">
+                    <div className="bg-white rounded-t-[2rem] p-6 w-full shadow-2xl">
+                        <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-5" />
+                        <h3 className="text-lg font-black text-slate-800 mb-1">Decline Booking</h3>
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Please provide a reason for cancellation</p>
+                        <textarea
+                            rows={4}
+                            value={declineModal.reason}
+                            onChange={(e) => setDeclineModal(prev => ({ ...prev, reason: e.target.value }))}
+                            placeholder="Enter cancellation reason..."
+                            className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent resize-none"
+                        />
+                        <div className="flex gap-3 mt-4">
+                            <button
+                                onClick={() => setDeclineModal({ open: false, bookingId: null, reason: "" })}
+                                className="flex-1 py-3.5 rounded-xl border border-slate-200 text-slate-600 font-black text-[12px] uppercase tracking-widest"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDecline}
+                                disabled={!declineModal.reason.trim()}
+                                className="flex-1 py-3.5 rounded-xl bg-rose-500 text-white font-black text-[12px] uppercase tracking-widest disabled:opacity-40 disabled:cursor-not-allowed"
+                            >
+                                Confirm Decline
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

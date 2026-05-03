@@ -5,7 +5,7 @@ import {
   createSpecialist,
   deleteSpecialist,
   editSpecialist
-} from '../../../redux/slice/saloonownerSlice';
+} from '../../../redux/slice/salonownerSlice';
 import {
   ArrowLeft,
   UserPlus,

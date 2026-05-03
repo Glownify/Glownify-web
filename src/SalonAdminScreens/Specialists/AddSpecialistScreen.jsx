@@ -66,14 +66,14 @@ function TimePicker({ label, value, onSelect }) {
 }
 
 //Experties Picker Component
-function ExpertiesPicker({selectedExperties, onSelect}){
-  const Experties = ["Hair","Skin","Makeup","Massage","Nails","Other"]
-  const toggleExperties = (exp)=>{
-    if(selectedExperties.includes(exp)) onSelect(selectedExperties.filter((e)=>e!==exp))
-    else onSelect([...selectedExperties,exp])
+function ExpertiesPicker({ selectedExperties, onSelect }) {
+  const Experties = ["Hair", "Skin", "Makeup", "Massage", "Nails", "Other"]
+  const toggleExperties = (exp) => {
+    if (selectedExperties.includes(exp)) onSelect(selectedExperties.filter((e) => e !== exp))
+    else onSelect([...selectedExperties, exp])
   }
 
-  return(
+  return (
     <View style={{ marginBottom: 15 }}>
       <Text style={styles.label}>Expertise</Text>
       <View style={styles.daysContainer}>
@@ -128,8 +128,8 @@ export default function AddSpecialistModal({ visible, onClose }) {
 
   const [form, setForm] = useState({
     name: "",
-    phone:"",
-    email:"",
+    phone: "",
+    email: "",
     expertise: [],
     expertiseInput: "",
     experienceYears: "",
@@ -158,100 +158,100 @@ export default function AddSpecialistModal({ visible, onClose }) {
     setForm({ ...form, certifications: updated });
   };
 
-const handlePickImage = () => {
-  Alert.alert(
-    "Upload Image",
-    "Choose an option",
-    [
-      {
-        text: "Camera",
-        onPress: () =>
-          launchCamera({ mediaType: "photo", quality: 0.7 }, (response) => {
-            if (response.didCancel || response.errorCode) return;
-            // Extract only the URI string
-            handleChange("image", response.assets[0].uri);
-          }),
-      },
-      {
-        text: "Gallery",
-        onPress: () =>
-          launchImageLibrary({ mediaType: "photo", quality: 0.7 }, (response) => {
-            if (response.didCancel || response.errorCode) return;
-            // Extract only the URI string
-            handleChange("image", response.assets[0].uri);
-          }),
-      },
-      { text: "Cancel", style: "cancel" },
-    ],
-    { cancelable: true }
-  );
-};
+  const handlePickImage = () => {
+    Alert.alert(
+      "Upload Image",
+      "Choose an option",
+      [
+        {
+          text: "Camera",
+          onPress: () =>
+            launchCamera({ mediaType: "photo", quality: 0.7 }, (response) => {
+              if (response.didCancel || response.errorCode) return;
+              // Extract only the URI string
+              handleChange("image", response.assets[0].uri);
+            }),
+        },
+        {
+          text: "Gallery",
+          onPress: () =>
+            launchImageLibrary({ mediaType: "photo", quality: 0.7 }, (response) => {
+              if (response.didCancel || response.errorCode) return;
+              // Extract only the URI string
+              handleChange("image", response.assets[0].uri);
+            }),
+        },
+        { text: "Cancel", style: "cancel" },
+      ],
+      { cancelable: true }
+    );
+  };
 
 
   const handleSubmit = async () => {
-  if (!form.name || !form.phone || !form.email || form.expertise.length === 0) {
-    Alert.alert("Missing Fields", "Please fill all required fields.");
-    return;
-  }
-
-  if (!form.startTime || !form.endTime || form.availabilityDays.length === 0) {
-    Alert.alert("Missing Availability", "Please select days and time.");
-    return;
-  }
-
-  let imageUrl = "";
-  if (form.image) {
-    // upload to Cloudinary
-    try {
-      imageUrl = await uploadImageToCloudinary(form.image);
-    } catch (err) {
-      console.error("Cloudinary upload failed:", err);
-      Alert.alert("Error", "Image upload failed. Please try again.");
+    if (!form.name || !form.phone || !form.email || form.expertise.length === 0) {
+      Alert.alert("Missing Fields", "Please fill all required fields.");
       return;
     }
-  }
 
-  // Create availability array
-  const availability = form.availabilityDays.map((day) => ({
-    day,
-    start: form.startTime,
-    end: form.endTime,
-  }));
+    if (!form.startTime || !form.endTime || form.availabilityDays.length === 0) {
+      Alert.alert("Missing Availability", "Please select days and time.");
+      return;
+    }
 
-  const newSpecialist = {
-    name: form.name,
-    email: form.email,
-    phone: form.phone,
-    expertise: form.expertise,
-    experienceYears: Number(form.experienceYears) || 0,
-    image: imageUrl || "", // Cloudinary URL
-    certifications: form.certifications,
-    availability,
+    let imageUrl = "";
+    if (form.image) {
+      // upload to Cloudinary
+      try {
+        imageUrl = await uploadImageToCloudinary(form.image);
+      } catch (err) {
+        console.error("Cloudinary upload failed:", err);
+        Alert.alert("Error", "Image upload failed. Please try again.");
+        return;
+      }
+    }
+
+    // Create availability array
+    const availability = form.availabilityDays.map((day) => ({
+      day,
+      start: form.startTime,
+      end: form.endTime,
+    }));
+
+    const newSpecialist = {
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      expertise: form.expertise,
+      experienceYears: Number(form.experienceYears) || 0,
+      image: imageUrl || "", // Cloudinary URL
+      certifications: form.certifications,
+      availability,
+    };
+
+    try {
+      const result = await dispatch(addSpecialist(newSpecialist)).unwrap();
+      Alert.alert("Success", "Specialist added successfully.");
+      onClose();
+      setForm({
+        name: "",
+        phone: "",
+        email: "",
+        expertise: [],
+        expertiseInput: "",
+        experienceYears: "",
+        image: "",
+        certifications: [],
+        certificateInput: "",
+        availabilityDays: [],
+        startTime: "",
+        endTime: "",
+      });
+    } catch (err) {
+      Alert.alert("Error", err || "Failed to add specialist. Please try again.");
+      console.error("Add Specialist Error:", err);
+    }
   };
-
-  try {
-    const result = await dispatch(addSpecialist(newSpecialist)).unwrap();
-    Alert.alert("Success", "Specialist added successfully.");
-    onClose();
-    setForm({
-      name: "",
-      phone:"",
-      email:"",
-      expertise: [],
-      expertiseInput: "",
-      experienceYears: "",
-      image: "",
-      certifications: [],
-      certificateInput: "",
-      availabilityDays: [],
-      startTime: "",
-      endTime: "",
-    });
-  } catch (err) {
-    Alert.alert("Error", err || "Failed to add specialist. Please try again.");
-    console.error("Add Specialist Error:", err);
-  }
-};
 
 
   return (
@@ -268,15 +268,15 @@ const handlePickImage = () => {
           <ScrollView showsVerticalScrollIndicator={false}>
             {/* Image Upload */}
             <TouchableOpacity style={styles.imageBox} onPress={handlePickImage} activeOpacity={0.8}>
-  {form.image ? (
-    <Image source={{ uri: form.image }} style={styles.imagePreview} />
-  ) : (
-    <View style={styles.imagePlaceholder}>
-      <Icon name="camera" size={30} color="#156778" />
-      <Text style={{ color: "#156778", marginTop: 5 }}>Upload Image</Text>
-    </View>
-  )}
-</TouchableOpacity>
+              {form.image ? (
+                <Image source={{ uri: form.image }} style={styles.imagePreview} />
+              ) : (
+                <View style={styles.imagePlaceholder}>
+                  <Icon name="camera" size={30} color="#156778" />
+                  <Text style={{ color: "#156778", marginTop: 5 }}>Upload Image</Text>
+                </View>
+              )}
+            </TouchableOpacity>
 
             {/* Name & Contact */}
             <TextInput
@@ -300,7 +300,7 @@ const handlePickImage = () => {
               onChangeText={(v) => handleChange("email", v)}
             />
 
-            <ExpertiesPicker 
+            <ExpertiesPicker
               selectedExperties={form.expertise}
               onSelect={(v) => handleChange("expertise", v)}
             />
